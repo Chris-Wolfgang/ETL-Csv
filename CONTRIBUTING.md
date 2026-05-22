@@ -1,6 +1,6 @@
-# Contributing to ETL-Csv
+# Contributing to Wolfgang.Etl.Csv
 
-Thank you for your interest in contributing to **ETL-Csv**! We welcome contributions to help improve this project.
+Thank you for your interest in contributing to **Wolfgang.Etl.Csv**! We welcome contributions to help improve this project.
 
 ## How Can You Contribute?
 
