@@ -13,8 +13,8 @@
     <Authors>Chris Wolfgang</Authors>
     <Description>CsvExtractor and CsvLoader implementations for reading and writing CSV files, built on Wolfgang.Etl.Abstractions and CsvHelper.</Description>
     <Copyright>Copyright 2026 Chris Wolfgang</Copyright>
-    <PackageProjectUrl>https://github.com/Chris-Wolfgang/ETL-CSV</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/Chris-Wolfgang/ETL-CSV</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/Chris-Wolfgang/ETL-Csv</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Chris-Wolfgang/ETL-Csv</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
