@@ -4,7 +4,7 @@ A `CsvExtractor<T>` and `CsvLoader<T>` for streaming CSV files into and out of s
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![.NET](https://img.shields.io/badge/.NET-Multi--Targeted-purple.svg)](https://dotnet.microsoft.com/)
-[![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?logo=github)](https://github.com/Chris-Wolfgang/ETL-CSV)
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?logo=github)](https://github.com/Chris-Wolfgang/ETL-Csv)
 
 ---
 
@@ -26,8 +26,8 @@ This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) f
 
 ## 📚 Documentation
 
-- **GitHub Repository:** [https://github.com/Chris-Wolfgang/ETL-CSV](https://github.com/Chris-Wolfgang/ETL-CSV)
-- **API Documentation:** https://Chris-Wolfgang.github.io/ETL-CSV/
+- **GitHub Repository:** [https://github.com/Chris-Wolfgang/ETL-Csv](https://github.com/Chris-Wolfgang/ETL-Csv)
+- **API Documentation:** https://Chris-Wolfgang.github.io/ETL-Csv/
 - **Formatting Guide:** [README-FORMATTING.md](README-FORMATTING.md)
 - **Contributing Guide:** [CONTRIBUTING.md](CONTRIBUTING.md)
 
@@ -238,8 +238,8 @@ This library uses **`BannedSymbols.txt`** to prohibit synchronous APIs and enfor
 
 ```bash
 # Clone the repository
-git clone https://github.com/Chris-Wolfgang/ETL-CSV.git
-cd ETL-CSV
+git clone https://github.com/Chris-Wolfgang/ETL-Csv.git
+cd ETL-Csv
 
 # Restore dependencies
 dotnet restore

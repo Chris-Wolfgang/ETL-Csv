@@ -22,5 +22,5 @@ If you need help with Wolfgang.Etl.Csv, please:
 
 - Check the [Getting Started](getting-started.md) guide
 - Review the [API Reference](../api/index.md)
-- Visit the [GitHub repository](https://github.com/Chris-Wolfgang/ETL-CSV)
-- Open an issue on [GitHub Issues](https://github.com/Chris-Wolfgang/ETL-CSV/issues)
+- Visit the [GitHub repository](https://github.com/Chris-Wolfgang/ETL-Csv)
+- Open an issue on [GitHub Issues](https://github.com/Chris-Wolfgang/ETL-Csv/issues)
