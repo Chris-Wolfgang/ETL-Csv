@@ -46,6 +46,7 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     /// </summary>
     /// <param name="streamWriter">The <see cref="StreamWriter"/> to write CSV data to.</param>
     /// <exception cref="ArgumentNullException"><paramref name="streamWriter"/> is <c>null</c>.</exception>
+    [RequiresUnreferencedCode("CsvLoader uses CsvHelper, which reflects over TRecord's members beyond what DynamicallyAccessedMembers can express (type converter constructors, non-public getters in some flows). The library is not trim/NativeAOT safe.")]
     public CsvLoader
     (
         StreamWriter streamWriter
@@ -65,6 +66,7 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     /// <exception cref="ArgumentNullException">
     /// <paramref name="streamWriter"/> or <paramref name="logger"/> is <c>null</c>.
     /// </exception>
+    [RequiresUnreferencedCode("CsvLoader uses CsvHelper, which reflects over TRecord's members beyond what DynamicallyAccessedMembers can express (type converter constructors, non-public getters in some flows). The library is not trim/NativeAOT safe.")]
     public CsvLoader
     (
         StreamWriter streamWriter,
