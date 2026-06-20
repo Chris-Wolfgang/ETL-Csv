@@ -10,7 +10,7 @@ Welcome to the Wolfgang.Etl.Csv documentation. This site contains comprehensive 
 
 - [Getting Started](docs/getting-started.md) - Learn the basics
 - [API Reference](xref:Wolfgang.Etl.Csv) - Complete API documentation
-- [GitHub Repository](https://github.com/Chris-Wolfgang/ETL-CSV) - View source code
+- [GitHub Repository](https://github.com/Chris-Wolfgang/ETL-Csv) - View source code
 
 ## About Wolfgang.Etl.Csv
 
@@ -32,9 +32,9 @@ Complete API documentation automatically generated from source code XML comments
 
 ## Additional Resources
 
-- [Contributing Guidelines](https://github.com/Chris-Wolfgang/ETL-CSV/blob/main/CONTRIBUTING.md)
-- [Code of Conduct](https://github.com/Chris-Wolfgang/ETL-CSV/blob/main/CODE_OF_CONDUCT.md)
-- [License](https://github.com/Chris-Wolfgang/ETL-CSV/blob/main/LICENSE)
+- [Contributing Guidelines](https://github.com/Chris-Wolfgang/ETL-Csv/blob/main/CONTRIBUTING.md)
+- [Code of Conduct](https://github.com/Chris-Wolfgang/ETL-Csv/blob/main/CODE_OF_CONDUCT.md)
+- [License](https://github.com/Chris-Wolfgang/ETL-Csv/blob/main/LICENSE)
 
 ---
 

@@ -40,7 +40,7 @@ using Wolfgang.Etl.Csv;
 
 - Explore the [API Reference](../api/index.md) for detailed documentation
 - Read the [Introduction](introduction.md) to learn more about Wolfgang.Etl.Csv
-- Check out example projects in the [GitHub repository](https://github.com/Chris-Wolfgang/ETL-CSV)
+- Check out example projects in the [GitHub repository](https://github.com/Chris-Wolfgang/ETL-Csv)
 
 ## Common Issues
 
@@ -48,6 +48,6 @@ using Wolfgang.Etl.Csv;
 
 ## Additional Resources
 
-- [GitHub Repository](https://github.com/Chris-Wolfgang/ETL-CSV)
-- [Contributing Guidelines](https://github.com/Chris-Wolfgang/ETL-CSV/blob/main/CONTRIBUTING.md)
-- [Report an Issue](https://github.com/Chris-Wolfgang/ETL-CSV/issues)
+- [GitHub Repository](https://github.com/Chris-Wolfgang/ETL-Csv)
+- [Contributing Guidelines](https://github.com/Chris-Wolfgang/ETL-Csv/blob/main/CONTRIBUTING.md)
+- [Report an Issue](https://github.com/Chris-Wolfgang/ETL-Csv/issues)
