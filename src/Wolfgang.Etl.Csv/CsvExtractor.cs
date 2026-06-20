@@ -51,6 +51,7 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     /// </summary>
     /// <param name="streamReader">The <see cref="StreamReader"/> to read CSV data from.</param>
     /// <exception cref="ArgumentNullException"><paramref name="streamReader"/> is <c>null</c>.</exception>
+    [RequiresUnreferencedCode("CsvExtractor uses CsvHelper, which reflects over TRecord's members beyond what DynamicallyAccessedMembers can express (type converter constructors, non-public setters in some flows). The library is not trim/NativeAOT safe.")]
     public CsvExtractor
     (
         StreamReader streamReader
@@ -70,6 +71,7 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     /// <exception cref="ArgumentNullException">
     /// <paramref name="streamReader"/> or <paramref name="logger"/> is <c>null</c>.
     /// </exception>
+    [RequiresUnreferencedCode("CsvExtractor uses CsvHelper, which reflects over TRecord's members beyond what DynamicallyAccessedMembers can express (type converter constructors, non-public setters in some flows). The library is not trim/NativeAOT safe.")]
     public CsvExtractor
     (
         StreamReader streamReader,

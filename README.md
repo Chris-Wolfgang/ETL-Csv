@@ -196,6 +196,15 @@ the underlying exception, which still propagates out of `ExtractAsync`.
 | .NET Core | .NET Core 3.1 |
 | .NET | .NET 5.0, .NET 6.0, .NET 7.0, .NET 8.0, .NET 9.0, .NET 10.0 |
 
+### Trim / NativeAOT
+
+**Wolfgang.Etl.Csv is not trim-safe and not NativeAOT-compatible.** It depends on [CsvHelper](https://joshclose.github.io/CsvHelper/), which reflects over the record type's members (including type-converter constructors and members beyond what `DynamicallyAccessedMembers(PublicProperties)` can express) to build readers, writers, and type converters at runtime.
+
+The public `CsvExtractor` and `CsvLoader` constructors are annotated `[RequiresUnreferencedCode]`. Consumer projects with `PublishTrimmed=true` will see `IL2026` warnings on every call site, prompting the caller to either:
+- Suppress at the call site (acknowledges the risk), or
+- Annotate the calling method `[RequiresUnreferencedCode]` (propagates the contract), or
+- Avoid trimming for assemblies that use this library.
+
 ---
 
 ## 🔍 Code Quality & Static Analysis
