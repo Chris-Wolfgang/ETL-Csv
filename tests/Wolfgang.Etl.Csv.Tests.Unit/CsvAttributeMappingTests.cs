@@ -420,6 +420,48 @@ public class CsvAttributeMappingTests
 
 
     [Fact]
+    public void CsvClassMapFactory_BuildFromColumnMaps_when_same_list_passed_twice_returns_cached_instance()
+    {
+        // Reuse the SAME list reference across two calls — must hit the cache
+        // and return the identical ClassMap instance the second time.
+        var columnMaps = new[]
+        {
+            new CsvColumnMap(nameof(PriceRecord.ProductNumber)) { Index = 0 },
+            new CsvColumnMap(nameof(PriceRecord.RetailPrice))   { Index = 1 },
+        };
+
+        var first  = CsvClassMapFactory.BuildFromColumnMaps<PriceRecord>(columnMaps);
+        var second = CsvClassMapFactory.BuildFromColumnMaps<PriceRecord>(columnMaps);
+
+        Assert.Same(first, second);
+    }
+
+
+
+    [Fact]
+    public void CsvClassMapFactory_BuildFromColumnMaps_when_distinct_list_instances_with_same_content_returns_separate_maps()
+    {
+        // Two distinct list instances — even with content-identical entries —
+        // must NOT collide. The cache is reference-keyed by design because
+        // CsvColumnMap is mutable and structural equality could over-cache.
+        var listA = new[]
+        {
+            new CsvColumnMap(nameof(PriceRecord.ProductNumber)) { Index = 0 },
+        };
+        var listB = new[]
+        {
+            new CsvColumnMap(nameof(PriceRecord.ProductNumber)) { Index = 0 },
+        };
+
+        var mapA = CsvClassMapFactory.BuildFromColumnMaps<PriceRecord>(listA);
+        var mapB = CsvClassMapFactory.BuildFromColumnMaps<PriceRecord>(listB);
+
+        Assert.NotSame(mapA, mapB);
+    }
+
+
+
+    [Fact]
     public Task ExtractAsync_when_runtime_ColumnMaps_names_unknown_property_throws()
     {
         var csv = "x\r\n";
