@@ -410,6 +410,12 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
             var record = csvReader.GetRecord<TRecord>();
             if (record is null)
             {
+                // CsvHelper can produce null for reference-typed TRecord when its
+                // type converters resolve every column to null. Count as skipped
+                // so totals reconcile against the raw row count instead of
+                // silently dropping the row.
+                IncrementCurrentSkippedItemCount();
+                CsvLogMessages.SkippedItem(_logger, CurrentSkippedItemCount, SkipItemCount, null);
                 continue;
             }
 
