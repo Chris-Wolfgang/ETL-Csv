@@ -24,6 +24,47 @@ internal static class CsvClassMapFactory
     // Caching the negative result avoids re-reflecting on every extraction.
     private static readonly ConcurrentDictionary<Type, ClassMap?> Cache = new();
 
+    // Runtime-maps cache: keyed by (TRecord, ColumnMaps reference identity).
+    // Two callers passing distinct list instances with identical content still
+    // pay reflection once each — by-reference is the only safe key here
+    // because CsvColumnMap is mutable (Index/Name/Format/Default are init-only
+    // on the type but the list itself can be repopulated). Long-running
+    // services that reuse a single ColumnMaps instance across many extractions
+    // hit this cache; one-shot callers see no benefit but no regression.
+    private static readonly ConcurrentDictionary<RuntimeMapKey, ClassMap> RuntimeMapCache = new();
+
+
+
+    private readonly struct RuntimeMapKey : IEquatable<RuntimeMapKey>
+    {
+        public RuntimeMapKey(Type recordType, IReadOnlyList<CsvColumnMap> columnMaps)
+        {
+            RecordType = recordType;
+            ColumnMaps = columnMaps;
+        }
+
+        public Type RecordType { get; }
+
+        public IReadOnlyList<CsvColumnMap> ColumnMaps { get; }
+
+        public bool Equals(RuntimeMapKey other) =>
+            RecordType == other.RecordType
+            && ReferenceEquals(ColumnMaps, other.ColumnMaps);
+
+        public override bool Equals(object? obj) =>
+            obj is RuntimeMapKey other && Equals(other);
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hash = RecordType.GetHashCode();
+                hash = (hash * 31) + System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(ColumnMaps);
+                return hash;
+            }
+        }
+    }
+
 
 
     /// <summary>
@@ -91,6 +132,13 @@ internal static class CsvClassMapFactory
     /// <see cref="CsvColumnMap"/> descriptors. Used when the layout is selected at
     /// runtime (e.g. from configuration or a database) rather than via attributes.
     /// </summary>
+    /// <remarks>
+    /// Cached by <c>(typeof(T), columnMaps reference identity)</c>: passing the
+    /// same <paramref name="columnMaps"/> instance to subsequent calls returns the
+    /// cached <see cref="ClassMap{T}"/> without re-reflecting. Callers running
+    /// long-lived services should reuse a single <c>ColumnMaps</c> instance per
+    /// template to amortize the reflection cost.
+    /// </remarks>
     /// <typeparam name="T">The record type being mapped.</typeparam>
     /// <param name="columnMaps">Runtime column descriptors. Must be non-empty.</param>
     /// <exception cref="ArgumentNullException"><paramref name="columnMaps"/> is <c>null</c>.</exception>
@@ -113,6 +161,24 @@ internal static class CsvClassMapFactory
 
         ValidateNoDuplicates(columnMaps);
 
+        var key = new RuntimeMapKey(typeof(T), columnMaps);
+        if (RuntimeMapCache.TryGetValue(key, out var cached))
+        {
+            return (ClassMap<T>)cached;
+        }
+
+        var built = BuildClassMapFromColumnMaps<T>(columnMaps);
+        return (ClassMap<T>)RuntimeMapCache.GetOrAdd(key, built);
+    }
+
+
+
+    [RequiresUnreferencedCode("Reflects over the public properties of T to build a CsvHelper ClassMap from runtime column descriptors.")]
+    private static ClassMap<T> BuildClassMapFromColumnMaps<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>
+    (
+        IReadOnlyList<CsvColumnMap> columnMaps
+    )
+    {
         var type = typeof(T);
         var properties = type
             .GetProperties(BindingFlags.Public | BindingFlags.Instance)
