@@ -360,6 +360,66 @@ public class CsvAttributeMappingTests
 
 
     [Fact]
+    public void CsvClassMapFactory_BuildFromColumnMaps_when_columnMaps_contains_duplicate_property_throws()
+    {
+        var ex = Assert.Throws<ArgumentException>
+        (
+            () => CsvClassMapFactory.BuildFromColumnMaps<PriceRecord>
+            (
+                new[]
+                {
+                    new CsvColumnMap(nameof(PriceRecord.ProductNumber)) { Index = 0 },
+                    new CsvColumnMap(nameof(PriceRecord.ProductNumber)) { Index = 1 },
+                }
+            )
+        );
+
+        Assert.Contains("ProductNumber", ex.Message, StringComparison.Ordinal);
+    }
+
+
+
+    [Fact]
+    public void CsvClassMapFactory_BuildFromColumnMaps_when_columnMaps_contains_duplicate_index_throws()
+    {
+        var ex = Assert.Throws<ArgumentException>
+        (
+            () => CsvClassMapFactory.BuildFromColumnMaps<PriceRecord>
+            (
+                new[]
+                {
+                    new CsvColumnMap(nameof(PriceRecord.ProductNumber)) { Index = 2 },
+                    new CsvColumnMap(nameof(PriceRecord.RetailPrice))   { Index = 2 },
+                }
+            )
+        );
+
+        Assert.Contains("2", ex.Message, StringComparison.Ordinal);
+        Assert.Contains("RetailPrice", ex.Message, StringComparison.Ordinal);
+    }
+
+
+
+    [Fact]
+    public void CsvClassMapFactory_BuildFromColumnMaps_when_columnMaps_has_negative_indices_allows_duplicates()
+    {
+        // Negative Index means "ignored" (Name path is used). Two distinct
+        // properties both at Index = -1 is not a conflict.
+        var map = CsvClassMapFactory.BuildFromColumnMaps<PriceRecord>
+        (
+            new[]
+            {
+                new CsvColumnMap(nameof(PriceRecord.ProductNumber)) { Name = "alpha" },
+                new CsvColumnMap(nameof(PriceRecord.RetailPrice))   { Name = "beta" },
+            }
+        );
+
+        Assert.NotNull(map);
+    }
+
+
+
+    [Fact]
     public Task ExtractAsync_when_runtime_ColumnMaps_names_unknown_property_throws()
     {
         var csv = "x\r\n";

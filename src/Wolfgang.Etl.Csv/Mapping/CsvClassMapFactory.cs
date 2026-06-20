@@ -111,6 +111,8 @@ internal static class CsvClassMapFactory
             throw new ArgumentException("columnMaps must contain at least one entry.", nameof(columnMaps));
         }
 
+        ValidateNoDuplicates(columnMaps);
+
         var type = typeof(T);
         var properties = type
             .GetProperties(BindingFlags.Public | BindingFlags.Instance)
@@ -120,46 +122,93 @@ internal static class CsvClassMapFactory
 
         foreach (var col in columnMaps)
         {
-            if (!properties.TryGetValue(col.PropertyName, out var prop))
+            ApplyColumnMap(map, properties, type, col);
+        }
+
+        return map;
+    }
+
+
+
+    private static void ApplyColumnMap<T>
+    (
+        DefaultClassMap<T> map,
+        IReadOnlyDictionary<string, PropertyInfo> properties,
+        Type type,
+        CsvColumnMap col
+    )
+    {
+        if (!properties.TryGetValue(col.PropertyName, out var prop))
+        {
+            throw new ArgumentException
+            (
+                $"Property '{col.PropertyName}' was not found on type '{type.FullName}'.",
+                nameof(col)
+            );
+        }
+
+        var memberMap = map.Map(prop.DeclaringType ?? prop.ReflectedType!, prop);
+
+        // Index takes precedence over Name. Per CsvColumnMap.Name's docstring,
+        // Name is ignored when Index is non-negative. Apply only one binding
+        // path to avoid CsvHelper getting an ambiguous configuration.
+        if (col.Index >= 0)
+        {
+            memberMap.Index(col.Index);
+        }
+        else if (!string.IsNullOrEmpty(col.Name))
+        {
+            memberMap.Name(col.Name!);
+        }
+
+        if (col.Optional)
+        {
+            memberMap.Optional();
+        }
+
+        if (!string.IsNullOrEmpty(col.Format))
+        {
+            memberMap.TypeConverterOption.Format(col.Format!);
+        }
+
+        if (col.Default is not null)
+        {
+            memberMap.Default(col.Default);
+        }
+    }
+
+
+
+    private static void ValidateNoDuplicates(IReadOnlyList<CsvColumnMap> columnMaps)
+    {
+        var seenProperties = new HashSet<string>(StringComparer.Ordinal);
+        var seenIndices = new Dictionary<int, string>();
+
+        foreach (var col in columnMaps)
+        {
+            if (!seenProperties.Add(col.PropertyName))
             {
                 throw new ArgumentException
                 (
-                    $"Property '{col.PropertyName}' was not found on type '{type.FullName}'.",
+                    $"Duplicate column map for property '{col.PropertyName}'.",
                     nameof(columnMaps)
                 );
             }
 
-            var memberMap = map.Map(prop.DeclaringType ?? prop.ReflectedType!, prop);
+            if (col.Index >= 0 && seenIndices.TryGetValue(col.Index, out var firstProperty))
+            {
+                throw new ArgumentException
+                (
+                    $"Duplicate column index {col.Index} on property '{col.PropertyName}' (already bound by '{firstProperty}').",
+                    nameof(columnMaps)
+                );
+            }
 
-            // Index takes precedence over Name. Per CsvColumnMap.Name's docstring,
-            // Name is ignored when Index is non-negative. Apply only one binding
-            // path to avoid CsvHelper getting an ambiguous configuration.
             if (col.Index >= 0)
             {
-                memberMap.Index(col.Index);
-            }
-            else if (!string.IsNullOrEmpty(col.Name))
-            {
-                memberMap.Name(col.Name!);
-            }
-
-            if (col.Optional)
-            {
-                memberMap.Optional();
-            }
-
-            if (!string.IsNullOrEmpty(col.Format))
-            {
-                memberMap.TypeConverterOption.Format(col.Format!);
-            }
-
-            if (col.Default is not null)
-            {
-                memberMap.Default(col.Default);
+                seenIndices.Add(col.Index, col.PropertyName);
             }
         }
-
-        return map;
     }
 
 
