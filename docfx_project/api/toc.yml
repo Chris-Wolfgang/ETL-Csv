@@ -1,0 +1,40 @@
+### YamlMime:TableOfContent
+items:
+- uid: Wolfgang.Etl.Csv
+  name: Wolfgang.Etl.Csv
+  type: Namespace
+  items:
+  - uid: Wolfgang.Etl.Csv.CsvBadDataInfo
+    name: CsvBadDataInfo
+    type: Class
+  - uid: Wolfgang.Etl.Csv.CsvColumnAttribute
+    name: CsvColumnAttribute
+    type: Class
+  - uid: Wolfgang.Etl.Csv.CsvColumnMap
+    name: CsvColumnMap
+    type: Class
+  - uid: Wolfgang.Etl.Csv.CsvExtractorProgress
+    name: CsvExtractorProgress
+    type: Class
+  - uid: Wolfgang.Etl.Csv.CsvExtractor`1
+    name: CsvExtractor<TRecord>
+    type: Class
+  - uid: Wolfgang.Etl.Csv.CsvIgnoreAttribute
+    name: CsvIgnoreAttribute
+    type: Class
+  - uid: Wolfgang.Etl.Csv.CsvLoaderProgress
+    name: CsvLoaderProgress
+    type: Class
+  - uid: Wolfgang.Etl.Csv.CsvLoader`1
+    name: CsvLoader<TRecord>
+    type: Class
+  - uid: Wolfgang.Etl.Csv.CsvReadingExceptionInfo
+    name: CsvReadingExceptionInfo
+    type: Class
+  - uid: Wolfgang.Etl.Csv.CsvShouldQuoteContext
+    name: CsvShouldQuoteContext
+    type: Class
+  - uid: Wolfgang.Etl.Csv.CsvTrimOptions
+    name: CsvTrimOptions
+    type: Enum
+memberLayout: SamePage

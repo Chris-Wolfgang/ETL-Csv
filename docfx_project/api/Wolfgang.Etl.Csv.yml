@@ -1,0 +1,164 @@
+### YamlMime:ManagedReference
+items:
+- uid: Wolfgang.Etl.Csv
+  commentId: N:Wolfgang.Etl.Csv
+  id: Wolfgang.Etl.Csv
+  children:
+  - Wolfgang.Etl.Csv.CsvBadDataInfo
+  - Wolfgang.Etl.Csv.CsvColumnAttribute
+  - Wolfgang.Etl.Csv.CsvColumnMap
+  - Wolfgang.Etl.Csv.CsvExtractorProgress
+  - Wolfgang.Etl.Csv.CsvExtractor`1
+  - Wolfgang.Etl.Csv.CsvIgnoreAttribute
+  - Wolfgang.Etl.Csv.CsvLoaderProgress
+  - Wolfgang.Etl.Csv.CsvLoader`1
+  - Wolfgang.Etl.Csv.CsvReadingExceptionInfo
+  - Wolfgang.Etl.Csv.CsvShouldQuoteContext
+  - Wolfgang.Etl.Csv.CsvTrimOptions
+  langs:
+  - csharp
+  - vb
+  name: Wolfgang.Etl.Csv
+  nameWithType: Wolfgang.Etl.Csv
+  fullName: Wolfgang.Etl.Csv
+  type: Namespace
+  assemblies:
+  - Wolfgang.Etl.Csv
+references:
+- uid: Wolfgang.Etl.Csv.CsvBadDataInfo
+  commentId: T:Wolfgang.Etl.Csv.CsvBadDataInfo
+  href: Wolfgang.Etl.Csv.CsvBadDataInfo.html
+  name: CsvBadDataInfo
+  nameWithType: CsvBadDataInfo
+  fullName: Wolfgang.Etl.Csv.CsvBadDataInfo
+- uid: Wolfgang.Etl.Csv.CsvExtractor`1
+  commentId: T:Wolfgang.Etl.Csv.CsvExtractor`1
+  href: Wolfgang.Etl.Csv.CsvExtractor-1.html
+  name: CsvExtractor<TRecord>
+  nameWithType: CsvExtractor<TRecord>
+  fullName: Wolfgang.Etl.Csv.CsvExtractor<TRecord>
+  nameWithType.vb: CsvExtractor(Of TRecord)
+  fullName.vb: Wolfgang.Etl.Csv.CsvExtractor(Of TRecord)
+  name.vb: CsvExtractor(Of TRecord)
+  spec.csharp:
+  - uid: Wolfgang.Etl.Csv.CsvExtractor`1
+    name: CsvExtractor
+    href: Wolfgang.Etl.Csv.CsvExtractor-1.html
+  - name: <
+  - name: TRecord
+  - name: '>'
+  spec.vb:
+  - uid: Wolfgang.Etl.Csv.CsvExtractor`1
+    name: CsvExtractor
+    href: Wolfgang.Etl.Csv.CsvExtractor-1.html
+  - name: (
+  - name: Of
+  - name: " "
+  - name: TRecord
+  - name: )
+- uid: Wolfgang.Etl.Csv.CsvExtractorProgress
+  commentId: T:Wolfgang.Etl.Csv.CsvExtractorProgress
+  parent: Wolfgang.Etl.Csv
+  href: Wolfgang.Etl.Csv.CsvExtractorProgress.html
+  name: CsvExtractorProgress
+  nameWithType: CsvExtractorProgress
+  fullName: Wolfgang.Etl.Csv.CsvExtractorProgress
+- uid: Wolfgang.Etl.Csv.CsvLoader`1
+  commentId: T:Wolfgang.Etl.Csv.CsvLoader`1
+  href: Wolfgang.Etl.Csv.CsvLoader-1.html
+  name: CsvLoader<TRecord>
+  nameWithType: CsvLoader<TRecord>
+  fullName: Wolfgang.Etl.Csv.CsvLoader<TRecord>
+  nameWithType.vb: CsvLoader(Of TRecord)
+  fullName.vb: Wolfgang.Etl.Csv.CsvLoader(Of TRecord)
+  name.vb: CsvLoader(Of TRecord)
+  spec.csharp:
+  - uid: Wolfgang.Etl.Csv.CsvLoader`1
+    name: CsvLoader
+    href: Wolfgang.Etl.Csv.CsvLoader-1.html
+  - name: <
+  - name: TRecord
+  - name: '>'
+  spec.vb:
+  - uid: Wolfgang.Etl.Csv.CsvLoader`1
+    name: CsvLoader
+    href: Wolfgang.Etl.Csv.CsvLoader-1.html
+  - name: (
+  - name: Of
+  - name: " "
+  - name: TRecord
+  - name: )
+- uid: Wolfgang.Etl.Csv.CsvLoaderProgress
+  commentId: T:Wolfgang.Etl.Csv.CsvLoaderProgress
+  parent: Wolfgang.Etl.Csv
+  href: Wolfgang.Etl.Csv.CsvLoaderProgress.html
+  name: CsvLoaderProgress
+  nameWithType: CsvLoaderProgress
+  fullName: Wolfgang.Etl.Csv.CsvLoaderProgress
+- uid: Wolfgang.Etl.Csv.CsvReadingExceptionInfo
+  commentId: T:Wolfgang.Etl.Csv.CsvReadingExceptionInfo
+  href: Wolfgang.Etl.Csv.CsvReadingExceptionInfo.html
+  name: CsvReadingExceptionInfo
+  nameWithType: CsvReadingExceptionInfo
+  fullName: Wolfgang.Etl.Csv.CsvReadingExceptionInfo
+- uid: Wolfgang.Etl.Csv.CsvShouldQuoteContext
+  commentId: T:Wolfgang.Etl.Csv.CsvShouldQuoteContext
+  href: Wolfgang.Etl.Csv.CsvShouldQuoteContext.html
+  name: CsvShouldQuoteContext
+  nameWithType: CsvShouldQuoteContext
+  fullName: Wolfgang.Etl.Csv.CsvShouldQuoteContext
+- uid: Wolfgang.Etl.Csv.CsvTrimOptions
+  commentId: T:Wolfgang.Etl.Csv.CsvTrimOptions
+  parent: Wolfgang.Etl.Csv
+  href: Wolfgang.Etl.Csv.CsvTrimOptions.html
+  name: CsvTrimOptions
+  nameWithType: CsvTrimOptions
+  fullName: Wolfgang.Etl.Csv.CsvTrimOptions
+- uid: Wolfgang.Etl.Csv.CsvColumnAttribute
+  commentId: T:Wolfgang.Etl.Csv.CsvColumnAttribute
+  href: Wolfgang.Etl.Csv.CsvColumnAttribute.html
+  name: CsvColumnAttribute
+  nameWithType: CsvColumnAttribute
+  fullName: Wolfgang.Etl.Csv.CsvColumnAttribute
+- uid: Wolfgang.Etl.Csv.CsvColumnMap
+  commentId: T:Wolfgang.Etl.Csv.CsvColumnMap
+  href: Wolfgang.Etl.Csv.CsvColumnMap.html
+  name: CsvColumnMap
+  nameWithType: CsvColumnMap
+  fullName: Wolfgang.Etl.Csv.CsvColumnMap
+- uid: Wolfgang.Etl.Csv.CsvIgnoreAttribute
+  commentId: T:Wolfgang.Etl.Csv.CsvIgnoreAttribute
+  href: Wolfgang.Etl.Csv.CsvIgnoreAttribute.html
+  name: CsvIgnoreAttribute
+  nameWithType: CsvIgnoreAttribute
+  fullName: Wolfgang.Etl.Csv.CsvIgnoreAttribute
+- uid: Wolfgang.Etl.Csv
+  commentId: N:Wolfgang.Etl.Csv
+  href: Wolfgang.html
+  name: Wolfgang.Etl.Csv
+  nameWithType: Wolfgang.Etl.Csv
+  fullName: Wolfgang.Etl.Csv
+  spec.csharp:
+  - uid: Wolfgang
+    name: Wolfgang
+    href: Wolfgang.html
+  - name: .
+  - uid: Wolfgang.Etl
+    name: Etl
+    href: Wolfgang.Etl.html
+  - name: .
+  - uid: Wolfgang.Etl.Csv
+    name: Csv
+    href: Wolfgang.Etl.Csv.html
+  spec.vb:
+  - uid: Wolfgang
+    name: Wolfgang
+    href: Wolfgang.html
+  - name: .
+  - uid: Wolfgang.Etl
+    name: Etl
+    href: Wolfgang.Etl.html
+  - name: .
+  - uid: Wolfgang.Etl.Csv
+    name: Csv
+    href: Wolfgang.Etl.Csv.html
