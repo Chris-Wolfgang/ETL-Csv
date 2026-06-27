@@ -190,11 +190,17 @@ the underlying exception, which still propagates out of `ExtractAsync`.
 
 ## 🎯 Target Frameworks
 
-| Framework | Versions |
-|-----------|----------|
-| .NET Framework | .NET 4.6.2, .NET 4.7.0, .NET 4.7.1, .NET 4.7.2, .NET 4.8, .NET 4.8.1 |
-| .NET Core | .NET Core 3.1 |
-| .NET | .NET 5.0, .NET 6.0, .NET 7.0, .NET 8.0, .NET 9.0, .NET 10.0 |
+The package ships these literal TFMs:
+
+| TFM | Notes |
+|-----|-------|
+| `net462` | .NET Framework 4.6.2+ |
+| `netstandard2.0` | Runs on .NET Framework 4.6.1+, .NET Core 2.0+, Mono, Xamarin |
+| `netstandard2.1` | Runs on .NET Core 3.0+, .NET 5.0+, Mono 6.4+ |
+| `net8.0` | LTS .NET |
+| `net10.0` | Current .NET |
+
+Through `netstandard2.0`/`netstandard2.1` the package is compatible with the broader matrix of older .NET Framework and modern .NET runtimes consumers typically use.
 
 ### Trim / NativeAOT
 
@@ -240,7 +246,7 @@ This library uses **`BannedSymbols.txt`** to prohibit synchronous APIs and enfor
 ## 🛠️ Building from Source
 
 ### Prerequisites
-- [.NET 8.0 SDK](https://dotnet.microsoft.com/download) or later
+- [.NET 10.0 SDK](https://dotnet.microsoft.com/download) — required to build the highest TFM (`net10.0`). Older TFM targets (`net462`, `netstandard2.0`/`2.1`, `net8.0`) compile through the .NET 10 SDK; you don't need additional SDKs installed.
 - Optional: [PowerShell Core](https://github.com/PowerShell/PowerShell) for formatting scripts
 
 ### Build Steps
