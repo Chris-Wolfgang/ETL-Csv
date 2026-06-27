@@ -1,0 +1,2863 @@
+### YamlMime:ManagedReference
+items:
+- uid: Wolfgang.Etl.Csv.CsvLoader`1
+  commentId: T:Wolfgang.Etl.Csv.CsvLoader`1
+  id: CsvLoader`1
+  parent: Wolfgang.Etl.Csv
+  children:
+  - Wolfgang.Etl.Csv.CsvLoader`1.#ctor(System.IO.StreamWriter)
+  - Wolfgang.Etl.Csv.CsvLoader`1.#ctor(System.IO.StreamWriter,Microsoft.Extensions.Logging.ILogger{Wolfgang.Etl.Csv.CsvLoader{`0}})
+  - Wolfgang.Etl.Csv.CsvLoader`1.ColumnMaps
+  - Wolfgang.Etl.Csv.CsvLoader`1.CreateProgressReport
+  - Wolfgang.Etl.Csv.CsvLoader`1.CreateProgressTimer(System.IProgress{Wolfgang.Etl.Csv.CsvLoaderProgress})
+  - Wolfgang.Etl.Csv.CsvLoader`1.Delimiter
+  - Wolfgang.Etl.Csv.CsvLoader`1.Encoding
+  - Wolfgang.Etl.Csv.CsvLoader`1.Escape
+  - Wolfgang.Etl.Csv.CsvLoader`1.HasHeaderRecord
+  - Wolfgang.Etl.Csv.CsvLoader`1.LeaveOpen
+  - Wolfgang.Etl.Csv.CsvLoader`1.LoadWorkerAsync(System.Collections.Generic.IAsyncEnumerable{`0},System.Threading.CancellationToken)
+  - Wolfgang.Etl.Csv.CsvLoader`1.MaxRecordCount
+  - Wolfgang.Etl.Csv.CsvLoader`1.NewLine
+  - Wolfgang.Etl.Csv.CsvLoader`1.Quote
+  - Wolfgang.Etl.Csv.CsvLoader`1.ShouldQuote
+  - Wolfgang.Etl.Csv.CsvLoader`1.SkipRecordCount
+  - Wolfgang.Etl.Csv.CsvLoader`1.TrimOptions
+  langs:
+  - csharp
+  - vb
+  name: CsvLoader<TRecord>
+  nameWithType: CsvLoader<TRecord>
+  fullName: Wolfgang.Etl.Csv.CsvLoader<TRecord>
+  type: Class
+  source:
+    remote:
+      path: src/Wolfgang.Etl.Csv/CsvLoader.cs
+      branch: initial-dev
+      repo: https://github.com/Chris-Wolfgang/ETL-CSV.git
+    id: CsvLoader
+    path: ../src/Wolfgang.Etl.Csv/CsvLoader.cs
+    startLine: 28
+  assemblies:
+  - Wolfgang.Etl.Csv
+  namespace: Wolfgang.Etl.Csv
+  summary: >-
+    Loads records of type <code class="typeparamref">TRecord</code> into a CSV stream
+
+    using <a href="https://joshclose.github.io/CsvHelper/">CsvHelper</a>.
+  example:
+  - >-
+    <pre><code class="lang-csharp">using var writer = new StreamWriter("people.csv");
+
+    var loader = new CsvLoader&lt;Person&gt;(writer);
+
+    await loader.LoadAsync(items, cancellationToken);</code></pre>
+  syntax:
+    content: 'public sealed class CsvLoader<TRecord> : LoaderBase<TRecord, CsvLoaderProgress>, ILoadWithProgressAndCancellationAsync<TRecord, CsvLoaderProgress>, ILoadWithProgressAsync<TRecord, CsvLoaderProgress>, ILoadWithCancellationAsync<TRecord>, ILoadAsync<TRecord> where TRecord : notnull'
+    typeParameters:
+    - id: TRecord
+      description: The type of records to load. Must be <code>notnull</code>.
+    content.vb: Public NotInheritable Class CsvLoader(Of TRecord) Inherits LoaderBase(Of TRecord, CsvLoaderProgress) Implements ILoadWithProgressAndCancellationAsync(Of TRecord, CsvLoaderProgress), ILoadWithProgressAsync(Of TRecord, CsvLoaderProgress), ILoadWithCancellationAsync(Of TRecord), ILoadAsync(Of TRecord)
+  inheritance:
+  - System.Object
+  - Wolfgang.Etl.Abstractions.LoaderBase{{TRecord},Wolfgang.Etl.Csv.CsvLoaderProgress}
+  implements:
+  - Wolfgang.Etl.Abstractions.ILoadWithProgressAndCancellationAsync{{TRecord},Wolfgang.Etl.Csv.CsvLoaderProgress}
+  - Wolfgang.Etl.Abstractions.ILoadWithProgressAsync{{TRecord},Wolfgang.Etl.Csv.CsvLoaderProgress}
+  - Wolfgang.Etl.Abstractions.ILoadWithCancellationAsync{{TRecord}}
+  - Wolfgang.Etl.Abstractions.ILoadAsync{{TRecord}}
+  inheritedMembers:
+  - Wolfgang.Etl.Abstractions.LoaderBase{{TRecord},Wolfgang.Etl.Csv.CsvLoaderProgress}.LoadAsync(System.Collections.Generic.IAsyncEnumerable{{TRecord}})
+  - Wolfgang.Etl.Abstractions.LoaderBase{{TRecord},Wolfgang.Etl.Csv.CsvLoaderProgress}.LoadAsync(System.Collections.Generic.IAsyncEnumerable{{TRecord}},System.Threading.CancellationToken)
+  - Wolfgang.Etl.Abstractions.LoaderBase{{TRecord},Wolfgang.Etl.Csv.CsvLoaderProgress}.LoadAsync(System.Collections.Generic.IAsyncEnumerable{{TRecord}},System.IProgress{Wolfgang.Etl.Csv.CsvLoaderProgress})
+  - Wolfgang.Etl.Abstractions.LoaderBase{{TRecord},Wolfgang.Etl.Csv.CsvLoaderProgress}.LoadAsync(System.Collections.Generic.IAsyncEnumerable{{TRecord}},System.IProgress{Wolfgang.Etl.Csv.CsvLoaderProgress},System.Threading.CancellationToken)
+  - Wolfgang.Etl.Abstractions.LoaderBase{{TRecord},Wolfgang.Etl.Csv.CsvLoaderProgress}.ReportingInterval
+  - Wolfgang.Etl.Abstractions.LoaderBase{{TRecord},Wolfgang.Etl.Csv.CsvLoaderProgress}.CurrentItemCount
+  - Wolfgang.Etl.Abstractions.LoaderBase{{TRecord},Wolfgang.Etl.Csv.CsvLoaderProgress}.CurrentSkippedItemCount
+  - Wolfgang.Etl.Abstractions.LoaderBase{{TRecord},Wolfgang.Etl.Csv.CsvLoaderProgress}.MaximumItemCount
+  - Wolfgang.Etl.Abstractions.LoaderBase{{TRecord},Wolfgang.Etl.Csv.CsvLoaderProgress}.SkipItemCount
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.ToString
+  nameWithType.vb: CsvLoader(Of TRecord)
+  fullName.vb: Wolfgang.Etl.Csv.CsvLoader(Of TRecord)
+  name.vb: CsvLoader(Of TRecord)
+- uid: Wolfgang.Etl.Csv.CsvLoader`1.#ctor(System.IO.StreamWriter)
+  commentId: M:Wolfgang.Etl.Csv.CsvLoader`1.#ctor(System.IO.StreamWriter)
+  id: '#ctor(System.IO.StreamWriter)'
+  parent: Wolfgang.Etl.Csv.CsvLoader`1
+  langs:
+  - csharp
+  - vb
+  name: CsvLoader(StreamWriter)
+  nameWithType: CsvLoader<TRecord>.CsvLoader(StreamWriter)
+  fullName: Wolfgang.Etl.Csv.CsvLoader<TRecord>.CsvLoader(System.IO.StreamWriter)
+  type: Constructor
+  source:
+    remote:
+      path: src/Wolfgang.Etl.Csv/CsvLoader.cs
+      branch: initial-dev
+      repo: https://github.com/Chris-Wolfgang/ETL-CSV.git
+    id: .ctor
+    path: ../src/Wolfgang.Etl.Csv/CsvLoader.cs
+    startLine: 48
+  assemblies:
+  - Wolfgang.Etl.Csv
+  namespace: Wolfgang.Etl.Csv
+  summary: Initializes a new instance of the <xref href="Wolfgang.Etl.Csv.CsvLoader%601" data-throw-if-not-resolved="false"></xref> class.
+  example: []
+  syntax:
+    content: public CsvLoader(StreamWriter streamWriter)
+    parameters:
+    - id: streamWriter
+      type: System.IO.StreamWriter
+      description: The <xref href="System.IO.StreamWriter" data-throw-if-not-resolved="false"></xref> to write CSV data to.
+    content.vb: Public Sub New(streamWriter As StreamWriter)
+  overload: Wolfgang.Etl.Csv.CsvLoader`1.#ctor*
+  exceptions:
+  - type: System.ArgumentNullException
+    commentId: T:System.ArgumentNullException
+    description: <code class="paramref">streamWriter</code> is <code>null</code>.
+  nameWithType.vb: CsvLoader(Of TRecord).New(StreamWriter)
+  fullName.vb: Wolfgang.Etl.Csv.CsvLoader(Of TRecord).New(System.IO.StreamWriter)
+  name.vb: New(StreamWriter)
+- uid: Wolfgang.Etl.Csv.CsvLoader`1.#ctor(System.IO.StreamWriter,Microsoft.Extensions.Logging.ILogger{Wolfgang.Etl.Csv.CsvLoader{`0}})
+  commentId: M:Wolfgang.Etl.Csv.CsvLoader`1.#ctor(System.IO.StreamWriter,Microsoft.Extensions.Logging.ILogger{Wolfgang.Etl.Csv.CsvLoader{`0}})
+  id: '#ctor(System.IO.StreamWriter,Microsoft.Extensions.Logging.ILogger{Wolfgang.Etl.Csv.CsvLoader{`0}})'
+  parent: Wolfgang.Etl.Csv.CsvLoader`1
+  langs:
+  - csharp
+  - vb
+  name: CsvLoader(StreamWriter, ILogger<CsvLoader<TRecord>>)
+  nameWithType: CsvLoader<TRecord>.CsvLoader(StreamWriter, ILogger<CsvLoader<TRecord>>)
+  fullName: Wolfgang.Etl.Csv.CsvLoader<TRecord>.CsvLoader(System.IO.StreamWriter, Microsoft.Extensions.Logging.ILogger<Wolfgang.Etl.Csv.CsvLoader<TRecord>>)
+  type: Constructor
+  source:
+    remote:
+      path: src/Wolfgang.Etl.Csv/CsvLoader.cs
+      branch: initial-dev
+      repo: https://github.com/Chris-Wolfgang/ETL-CSV.git
+    id: .ctor
+    path: ../src/Wolfgang.Etl.Csv/CsvLoader.cs
+    startLine: 67
+  assemblies:
+  - Wolfgang.Etl.Csv
+  namespace: Wolfgang.Etl.Csv
+  summary: Initializes a new instance of the <xref href="Wolfgang.Etl.Csv.CsvLoader%601" data-throw-if-not-resolved="false"></xref> class with diagnostic logging.
+  example: []
+  syntax:
+    content: public CsvLoader(StreamWriter streamWriter, ILogger<CsvLoader<TRecord>> logger)
+    parameters:
+    - id: streamWriter
+      type: System.IO.StreamWriter
+      description: The <xref href="System.IO.StreamWriter" data-throw-if-not-resolved="false"></xref> to write CSV data to.
+    - id: logger
+      type: Microsoft.Extensions.Logging.ILogger{Wolfgang.Etl.Csv.CsvLoader`1}
+      description: The logger instance for diagnostic output.
+    content.vb: Public Sub New(streamWriter As StreamWriter, logger As ILogger(Of CsvLoader(Of TRecord)))
+  overload: Wolfgang.Etl.Csv.CsvLoader`1.#ctor*
+  exceptions:
+  - type: System.ArgumentNullException
+    commentId: T:System.ArgumentNullException
+    description: <code class="paramref">streamWriter</code> or <code class="paramref">logger</code> is <code>null</code>.
+  nameWithType.vb: CsvLoader(Of TRecord).New(StreamWriter, ILogger(Of CsvLoader(Of TRecord)))
+  fullName.vb: Wolfgang.Etl.Csv.CsvLoader(Of TRecord).New(System.IO.StreamWriter, Microsoft.Extensions.Logging.ILogger(Of Wolfgang.Etl.Csv.CsvLoader(Of TRecord)))
+  name.vb: New(StreamWriter, ILogger(Of CsvLoader(Of TRecord)))
+- uid: Wolfgang.Etl.Csv.CsvLoader`1.Delimiter
+  commentId: P:Wolfgang.Etl.Csv.CsvLoader`1.Delimiter
+  id: Delimiter
+  parent: Wolfgang.Etl.Csv.CsvLoader`1
+  langs:
+  - csharp
+  - vb
+  name: Delimiter
+  nameWithType: CsvLoader<TRecord>.Delimiter
+  fullName: Wolfgang.Etl.Csv.CsvLoader<TRecord>.Delimiter
+  type: Property
+  source:
+    remote:
+      path: src/Wolfgang.Etl.Csv/CsvLoader.cs
+      branch: initial-dev
+      repo: https://github.com/Chris-Wolfgang/ETL-CSV.git
+    id: Delimiter
+    path: ../src/Wolfgang.Etl.Csv/CsvLoader.cs
+    startLine: 101
+  assemblies:
+  - Wolfgang.Etl.Csv
+  namespace: Wolfgang.Etl.Csv
+  summary: Gets or sets the field delimiter. Default is <code>","</code>.
+  example: []
+  syntax:
+    content: public string Delimiter { get; set; }
+    parameters: []
+    return:
+      type: System.String
+    content.vb: Public Property Delimiter As String
+  overload: Wolfgang.Etl.Csv.CsvLoader`1.Delimiter*
+  nameWithType.vb: CsvLoader(Of TRecord).Delimiter
+  fullName.vb: Wolfgang.Etl.Csv.CsvLoader(Of TRecord).Delimiter
+- uid: Wolfgang.Etl.Csv.CsvLoader`1.Escape
+  commentId: P:Wolfgang.Etl.Csv.CsvLoader`1.Escape
+  id: Escape
+  parent: Wolfgang.Etl.Csv.CsvLoader`1
+  langs:
+  - csharp
+  - vb
+  name: Escape
+  nameWithType: CsvLoader<TRecord>.Escape
+  fullName: Wolfgang.Etl.Csv.CsvLoader<TRecord>.Escape
+  type: Property
+  source:
+    remote:
+      path: src/Wolfgang.Etl.Csv/CsvLoader.cs
+      branch: initial-dev
+      repo: https://github.com/Chris-Wolfgang/ETL-CSV.git
+    id: Escape
+    path: ../src/Wolfgang.Etl.Csv/CsvLoader.cs
+    startLine: 106
+  assemblies:
+  - Wolfgang.Etl.Csv
+  namespace: Wolfgang.Etl.Csv
+  summary: Gets or sets the character used to escape the quote character within a field.
+  example: []
+  syntax:
+    content: public char Escape { get; set; }
+    parameters: []
+    return:
+      type: System.Char
+    content.vb: Public Property Escape As Char
+  overload: Wolfgang.Etl.Csv.CsvLoader`1.Escape*
+  nameWithType.vb: CsvLoader(Of TRecord).Escape
+  fullName.vb: Wolfgang.Etl.Csv.CsvLoader(Of TRecord).Escape
+- uid: Wolfgang.Etl.Csv.CsvLoader`1.Encoding
+  commentId: P:Wolfgang.Etl.Csv.CsvLoader`1.Encoding
+  id: Encoding
+  parent: Wolfgang.Etl.Csv.CsvLoader`1
+  langs:
+  - csharp
+  - vb
+  name: Encoding
+  nameWithType: CsvLoader<TRecord>.Encoding
+  fullName: Wolfgang.Etl.Csv.CsvLoader<TRecord>.Encoding
+  type: Property
+  source:
+    remote:
+      path: src/Wolfgang.Etl.Csv/CsvLoader.cs
+      branch: initial-dev
+      repo: https://github.com/Chris-Wolfgang/ETL-CSV.git
+    id: Encoding
+    path: ../src/Wolfgang.Etl.Csv/CsvLoader.cs
+    startLine: 122
+  assemblies:
+  - Wolfgang.Etl.Csv
+  namespace: Wolfgang.Etl.Csv
+  summary: Gets or sets the encoding forwarded to CsvHelper's writer configuration.
+  remarks: >-
+    This value is informational only — it is passed to CsvHelper's
+
+    <code>CsvConfiguration.Encoding</code> but does <b>not</b> control how characters are
+
+    encoded into bytes on the output stream. Byte encoding is performed by the
+
+    <xref href="System.IO.StreamWriter" data-throw-if-not-resolved="false"></xref> supplied to the constructor, and that writer's
+
+    <xref href="System.IO.StreamWriter.Encoding" data-throw-if-not-resolved="false"></xref> is authoritative. To write a non-default
+
+    encoding, construct the <xref href="System.IO.StreamWriter" data-throw-if-not-resolved="false"></xref> with the encoding you want
+
+    and ignore this property.
+  example: []
+  syntax:
+    content: public Encoding Encoding { get; set; }
+    parameters: []
+    return:
+      type: System.Text.Encoding
+    content.vb: Public Property Encoding As Encoding
+  overload: Wolfgang.Etl.Csv.CsvLoader`1.Encoding*
+  nameWithType.vb: CsvLoader(Of TRecord).Encoding
+  fullName.vb: Wolfgang.Etl.Csv.CsvLoader(Of TRecord).Encoding
+- uid: Wolfgang.Etl.Csv.CsvLoader`1.HasHeaderRecord
+  commentId: P:Wolfgang.Etl.Csv.CsvLoader`1.HasHeaderRecord
+  id: HasHeaderRecord
+  parent: Wolfgang.Etl.Csv.CsvLoader`1
+  langs:
+  - csharp
+  - vb
+  name: HasHeaderRecord
+  nameWithType: CsvLoader<TRecord>.HasHeaderRecord
+  fullName: Wolfgang.Etl.Csv.CsvLoader<TRecord>.HasHeaderRecord
+  type: Property
+  source:
+    remote:
+      path: src/Wolfgang.Etl.Csv/CsvLoader.cs
+      branch: initial-dev
+      repo: https://github.com/Chris-Wolfgang/ETL-CSV.git
+    id: HasHeaderRecord
+    path: ../src/Wolfgang.Etl.Csv/CsvLoader.cs
+    startLine: 127
+  assemblies:
+  - Wolfgang.Etl.Csv
+  namespace: Wolfgang.Etl.Csv
+  summary: Gets or sets a value indicating whether a header record should be written.
+  example: []
+  syntax:
+    content: public bool HasHeaderRecord { get; set; }
+    parameters: []
+    return:
+      type: System.Boolean
+    content.vb: Public Property HasHeaderRecord As Boolean
+  overload: Wolfgang.Etl.Csv.CsvLoader`1.HasHeaderRecord*
+  nameWithType.vb: CsvLoader(Of TRecord).HasHeaderRecord
+  fullName.vb: Wolfgang.Etl.Csv.CsvLoader(Of TRecord).HasHeaderRecord
+- uid: Wolfgang.Etl.Csv.CsvLoader`1.LeaveOpen
+  commentId: P:Wolfgang.Etl.Csv.CsvLoader`1.LeaveOpen
+  id: LeaveOpen
+  parent: Wolfgang.Etl.Csv.CsvLoader`1
+  langs:
+  - csharp
+  - vb
+  name: LeaveOpen
+  nameWithType: CsvLoader<TRecord>.LeaveOpen
+  fullName: Wolfgang.Etl.Csv.CsvLoader<TRecord>.LeaveOpen
+  type: Property
+  source:
+    remote:
+      path: src/Wolfgang.Etl.Csv/CsvLoader.cs
+      branch: initial-dev
+      repo: https://github.com/Chris-Wolfgang/ETL-CSV.git
+    id: LeaveOpen
+    path: ../src/Wolfgang.Etl.Csv/CsvLoader.cs
+    startLine: 139
+  assemblies:
+  - Wolfgang.Etl.Csv
+  namespace: Wolfgang.Etl.Csv
+  summary: >-
+    Gets or sets a value indicating whether the underlying stream should be left open
+
+    after the writer is disposed.
+  remarks: >-
+    Defaults to <code>true</code> because the caller owns the <xref href="System.IO.StreamWriter" data-throw-if-not-resolved="false"></xref>
+
+    passed into the constructor.
+  example: []
+  syntax:
+    content: public bool LeaveOpen { get; set; }
+    parameters: []
+    return:
+      type: System.Boolean
+    content.vb: Public Property LeaveOpen As Boolean
+  overload: Wolfgang.Etl.Csv.CsvLoader`1.LeaveOpen*
+  nameWithType.vb: CsvLoader(Of TRecord).LeaveOpen
+  fullName.vb: Wolfgang.Etl.Csv.CsvLoader(Of TRecord).LeaveOpen
+- uid: Wolfgang.Etl.Csv.CsvLoader`1.NewLine
+  commentId: P:Wolfgang.Etl.Csv.CsvLoader`1.NewLine
+  id: NewLine
+  parent: Wolfgang.Etl.Csv.CsvLoader`1
+  langs:
+  - csharp
+  - vb
+  name: NewLine
+  nameWithType: CsvLoader<TRecord>.NewLine
+  fullName: Wolfgang.Etl.Csv.CsvLoader<TRecord>.NewLine
+  type: Property
+  source:
+    remote:
+      path: src/Wolfgang.Etl.Csv/CsvLoader.cs
+      branch: initial-dev
+      repo: https://github.com/Chris-Wolfgang/ETL-CSV.git
+    id: NewLine
+    path: ../src/Wolfgang.Etl.Csv/CsvLoader.cs
+    startLine: 144
+  assemblies:
+  - Wolfgang.Etl.Csv
+  namespace: Wolfgang.Etl.Csv
+  summary: Gets or sets the line terminator written between records.
+  example: []
+  syntax:
+    content: public string NewLine { get; set; }
+    parameters: []
+    return:
+      type: System.String
+    content.vb: Public Property NewLine As String
+  overload: Wolfgang.Etl.Csv.CsvLoader`1.NewLine*
+  nameWithType.vb: CsvLoader(Of TRecord).NewLine
+  fullName.vb: Wolfgang.Etl.Csv.CsvLoader(Of TRecord).NewLine
+- uid: Wolfgang.Etl.Csv.CsvLoader`1.Quote
+  commentId: P:Wolfgang.Etl.Csv.CsvLoader`1.Quote
+  id: Quote
+  parent: Wolfgang.Etl.Csv.CsvLoader`1
+  langs:
+  - csharp
+  - vb
+  name: Quote
+  nameWithType: CsvLoader<TRecord>.Quote
+  fullName: Wolfgang.Etl.Csv.CsvLoader<TRecord>.Quote
+  type: Property
+  source:
+    remote:
+      path: src/Wolfgang.Etl.Csv/CsvLoader.cs
+      branch: initial-dev
+      repo: https://github.com/Chris-Wolfgang/ETL-CSV.git
+    id: Quote
+    path: ../src/Wolfgang.Etl.Csv/CsvLoader.cs
+    startLine: 149
+  assemblies:
+  - Wolfgang.Etl.Csv
+  namespace: Wolfgang.Etl.Csv
+  summary: Gets or sets the quote character used to wrap fields when needed.
+  example: []
+  syntax:
+    content: public char Quote { get; set; }
+    parameters: []
+    return:
+      type: System.Char
+    content.vb: Public Property Quote As Char
+  overload: Wolfgang.Etl.Csv.CsvLoader`1.Quote*
+  nameWithType.vb: CsvLoader(Of TRecord).Quote
+  fullName.vb: Wolfgang.Etl.Csv.CsvLoader(Of TRecord).Quote
+- uid: Wolfgang.Etl.Csv.CsvLoader`1.ShouldQuote
+  commentId: P:Wolfgang.Etl.Csv.CsvLoader`1.ShouldQuote
+  id: ShouldQuote
+  parent: Wolfgang.Etl.Csv.CsvLoader`1
+  langs:
+  - csharp
+  - vb
+  name: ShouldQuote
+  nameWithType: CsvLoader<TRecord>.ShouldQuote
+  fullName: Wolfgang.Etl.Csv.CsvLoader<TRecord>.ShouldQuote
+  type: Property
+  source:
+    remote:
+      path: src/Wolfgang.Etl.Csv/CsvLoader.cs
+      branch: initial-dev
+      repo: https://github.com/Chris-Wolfgang/ETL-CSV.git
+    id: ShouldQuote
+    path: ../src/Wolfgang.Etl.Csv/CsvLoader.cs
+    startLine: 157
+  assemblies:
+  - Wolfgang.Etl.Csv
+  namespace: Wolfgang.Etl.Csv
+  summary: >-
+    Gets or sets a callback that decides whether a field should be quoted.
+
+    When <code>null</code>, the underlying parser's default policy is used.
+  example: []
+  syntax:
+    content: public Func<CsvShouldQuoteContext, bool>? ShouldQuote { get; set; }
+    parameters: []
+    return:
+      type: System.Func{Wolfgang.Etl.Csv.CsvShouldQuoteContext,System.Boolean}
+    content.vb: Public Property ShouldQuote As Func(Of CsvShouldQuoteContext, Boolean)
+  overload: Wolfgang.Etl.Csv.CsvLoader`1.ShouldQuote*
+  nameWithType.vb: CsvLoader(Of TRecord).ShouldQuote
+  fullName.vb: Wolfgang.Etl.Csv.CsvLoader(Of TRecord).ShouldQuote
+- uid: Wolfgang.Etl.Csv.CsvLoader`1.TrimOptions
+  commentId: P:Wolfgang.Etl.Csv.CsvLoader`1.TrimOptions
+  id: TrimOptions
+  parent: Wolfgang.Etl.Csv.CsvLoader`1
+  langs:
+  - csharp
+  - vb
+  name: TrimOptions
+  nameWithType: CsvLoader<TRecord>.TrimOptions
+  fullName: Wolfgang.Etl.Csv.CsvLoader<TRecord>.TrimOptions
+  type: Property
+  source:
+    remote:
+      path: src/Wolfgang.Etl.Csv/CsvLoader.cs
+      branch: initial-dev
+      repo: https://github.com/Chris-Wolfgang/ETL-CSV.git
+    id: TrimOptions
+    path: ../src/Wolfgang.Etl.Csv/CsvLoader.cs
+    startLine: 162
+  assemblies:
+  - Wolfgang.Etl.Csv
+  namespace: Wolfgang.Etl.Csv
+  summary: Gets or sets the trimming options applied while writing.
+  example: []
+  syntax:
+    content: public CsvTrimOptions TrimOptions { get; set; }
+    parameters: []
+    return:
+      type: Wolfgang.Etl.Csv.CsvTrimOptions
+    content.vb: Public Property TrimOptions As CsvTrimOptions
+  overload: Wolfgang.Etl.Csv.CsvLoader`1.TrimOptions*
+  nameWithType.vb: CsvLoader(Of TRecord).TrimOptions
+  fullName.vb: Wolfgang.Etl.Csv.CsvLoader(Of TRecord).TrimOptions
+- uid: Wolfgang.Etl.Csv.CsvLoader`1.ColumnMaps
+  commentId: P:Wolfgang.Etl.Csv.CsvLoader`1.ColumnMaps
+  id: ColumnMaps
+  parent: Wolfgang.Etl.Csv.CsvLoader`1
+  langs:
+  - csharp
+  - vb
+  name: ColumnMaps
+  nameWithType: CsvLoader<TRecord>.ColumnMaps
+  fullName: Wolfgang.Etl.Csv.CsvLoader<TRecord>.ColumnMaps
+  type: Property
+  source:
+    remote:
+      path: src/Wolfgang.Etl.Csv/CsvLoader.cs
+      branch: initial-dev
+      repo: https://github.com/Chris-Wolfgang/ETL-CSV.git
+    id: ColumnMaps
+    path: ../src/Wolfgang.Etl.Csv/CsvLoader.cs
+    startLine: 176
+  assemblies:
+  - Wolfgang.Etl.Csv
+  namespace: Wolfgang.Etl.Csv
+  summary: >-
+    Gets or sets a runtime column-map collection that overrides any
+
+    <xref href="Wolfgang.Etl.Csv.CsvColumnAttribute" data-throw-if-not-resolved="false"></xref> / <xref href="Wolfgang.Etl.Csv.CsvIgnoreAttribute" data-throw-if-not-resolved="false"></xref> decorations
+
+    on <code class="typeparamref">TRecord</code>.
+  remarks: >-
+    Use this property when the CSV layout isn't known at compile time. When non-null
+
+    and non-empty, the runtime maps are the only source of property-to-column
+
+    bindings; attribute-based mapping is bypassed.
+  example: []
+  syntax:
+    content: public IReadOnlyList<CsvColumnMap>? ColumnMaps { get; set; }
+    parameters: []
+    return:
+      type: System.Collections.Generic.IReadOnlyList{Wolfgang.Etl.Csv.CsvColumnMap}
+    content.vb: Public Property ColumnMaps As IReadOnlyList(Of CsvColumnMap)
+  overload: Wolfgang.Etl.Csv.CsvLoader`1.ColumnMaps*
+  nameWithType.vb: CsvLoader(Of TRecord).ColumnMaps
+  fullName.vb: Wolfgang.Etl.Csv.CsvLoader(Of TRecord).ColumnMaps
+- uid: Wolfgang.Etl.Csv.CsvLoader`1.SkipRecordCount
+  commentId: P:Wolfgang.Etl.Csv.CsvLoader`1.SkipRecordCount
+  id: SkipRecordCount
+  parent: Wolfgang.Etl.Csv.CsvLoader`1
+  langs:
+  - csharp
+  - vb
+  name: SkipRecordCount
+  nameWithType: CsvLoader<TRecord>.SkipRecordCount
+  fullName: Wolfgang.Etl.Csv.CsvLoader<TRecord>.SkipRecordCount
+  type: Property
+  source:
+    remote:
+      path: src/Wolfgang.Etl.Csv/CsvLoader.cs
+      branch: initial-dev
+      repo: https://github.com/Chris-Wolfgang/ETL-CSV.git
+    id: SkipRecordCount
+    path: ../src/Wolfgang.Etl.Csv/CsvLoader.cs
+    startLine: 184
+  assemblies:
+  - Wolfgang.Etl.Csv
+  namespace: Wolfgang.Etl.Csv
+  summary: >-
+    Gets or sets the number of records to skip before writing.
+
+    This is an alias for <xref href="Wolfgang.Etl.Abstractions.LoaderBase%602.SkipItemCount" data-throw-if-not-resolved="false"></xref>.
+  example: []
+  syntax:
+    content: public int SkipRecordCount { get; set; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: Public Property SkipRecordCount As Integer
+  overload: Wolfgang.Etl.Csv.CsvLoader`1.SkipRecordCount*
+  nameWithType.vb: CsvLoader(Of TRecord).SkipRecordCount
+  fullName.vb: Wolfgang.Etl.Csv.CsvLoader(Of TRecord).SkipRecordCount
+- uid: Wolfgang.Etl.Csv.CsvLoader`1.MaxRecordCount
+  commentId: P:Wolfgang.Etl.Csv.CsvLoader`1.MaxRecordCount
+  id: MaxRecordCount
+  parent: Wolfgang.Etl.Csv.CsvLoader`1
+  langs:
+  - csharp
+  - vb
+  name: MaxRecordCount
+  nameWithType: CsvLoader<TRecord>.MaxRecordCount
+  fullName: Wolfgang.Etl.Csv.CsvLoader<TRecord>.MaxRecordCount
+  type: Property
+  source:
+    remote:
+      path: src/Wolfgang.Etl.Csv/CsvLoader.cs
+      branch: initial-dev
+      repo: https://github.com/Chris-Wolfgang/ETL-CSV.git
+    id: MaxRecordCount
+    path: ../src/Wolfgang.Etl.Csv/CsvLoader.cs
+    startLine: 196
+  assemblies:
+  - Wolfgang.Etl.Csv
+  namespace: Wolfgang.Etl.Csv
+  summary: >-
+    Gets or sets the maximum number of records to write.
+
+    This is an alias for <xref href="Wolfgang.Etl.Abstractions.LoaderBase%602.MaximumItemCount" data-throw-if-not-resolved="false"></xref>.
+  example: []
+  syntax:
+    content: public int MaxRecordCount { get; set; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: Public Property MaxRecordCount As Integer
+  overload: Wolfgang.Etl.Csv.CsvLoader`1.MaxRecordCount*
+  nameWithType.vb: CsvLoader(Of TRecord).MaxRecordCount
+  fullName.vb: Wolfgang.Etl.Csv.CsvLoader(Of TRecord).MaxRecordCount
+- uid: Wolfgang.Etl.Csv.CsvLoader`1.LoadWorkerAsync(System.Collections.Generic.IAsyncEnumerable{`0},System.Threading.CancellationToken)
+  commentId: M:Wolfgang.Etl.Csv.CsvLoader`1.LoadWorkerAsync(System.Collections.Generic.IAsyncEnumerable{`0},System.Threading.CancellationToken)
+  id: LoadWorkerAsync(System.Collections.Generic.IAsyncEnumerable{`0},System.Threading.CancellationToken)
+  parent: Wolfgang.Etl.Csv.CsvLoader`1
+  langs:
+  - csharp
+  - vb
+  name: LoadWorkerAsync(IAsyncEnumerable<TRecord>, CancellationToken)
+  nameWithType: CsvLoader<TRecord>.LoadWorkerAsync(IAsyncEnumerable<TRecord>, CancellationToken)
+  fullName: Wolfgang.Etl.Csv.CsvLoader<TRecord>.LoadWorkerAsync(System.Collections.Generic.IAsyncEnumerable<TRecord>, System.Threading.CancellationToken)
+  type: Method
+  source:
+    remote:
+      path: src/Wolfgang.Etl.Csv/CsvLoader.cs
+      branch: initial-dev
+      repo: https://github.com/Chris-Wolfgang/ETL-CSV.git
+    id: LoadWorkerAsync
+    path: ../src/Wolfgang.Etl.Csv/CsvLoader.cs
+    startLine: 231
+  assemblies:
+  - Wolfgang.Etl.Csv
+  namespace: Wolfgang.Etl.Csv
+  summary: >-
+    This method is the core implementation of the loading logic and should be
+
+    overridden by derived classes.
+  remarks: Items may be an empty sequence if no data is available or if the loading fails.
+  example: []
+  syntax:
+    content: protected override Task LoadWorkerAsync(IAsyncEnumerable<TRecord> items, CancellationToken token)
+    parameters:
+    - id: items
+      type: System.Collections.Generic.IAsyncEnumerable{{TRecord}}
+      description: The items to be loaded to the destination.
+    - id: token
+      type: System.Threading.CancellationToken
+      description: A CancellationToken to observe while waiting for the task to complete.
+    return:
+      type: System.Threading.Tasks.Task
+      description: A task representing the asynchronous operation.
+    content.vb: Protected Overrides Function LoadWorkerAsync(items As IAsyncEnumerable(Of TRecord), token As CancellationToken) As Task
+  overridden: Wolfgang.Etl.Abstractions.LoaderBase{{TRecord},Wolfgang.Etl.Csv.CsvLoaderProgress}.LoadWorkerAsync(System.Collections.Generic.IAsyncEnumerable{{TRecord}},System.Threading.CancellationToken)
+  overload: Wolfgang.Etl.Csv.CsvLoader`1.LoadWorkerAsync*
+  exceptions:
+  - type: System.ArgumentNullException
+    commentId: T:System.ArgumentNullException
+    description: Argument items is null
+  nameWithType.vb: CsvLoader(Of TRecord).LoadWorkerAsync(IAsyncEnumerable(Of TRecord), CancellationToken)
+  fullName.vb: Wolfgang.Etl.Csv.CsvLoader(Of TRecord).LoadWorkerAsync(System.Collections.Generic.IAsyncEnumerable(Of TRecord), System.Threading.CancellationToken)
+  name.vb: LoadWorkerAsync(IAsyncEnumerable(Of TRecord), CancellationToken)
+- uid: Wolfgang.Etl.Csv.CsvLoader`1.CreateProgressReport
+  commentId: M:Wolfgang.Etl.Csv.CsvLoader`1.CreateProgressReport
+  id: CreateProgressReport
+  parent: Wolfgang.Etl.Csv.CsvLoader`1
+  langs:
+  - csharp
+  - vb
+  name: CreateProgressReport()
+  nameWithType: CsvLoader<TRecord>.CreateProgressReport()
+  fullName: Wolfgang.Etl.Csv.CsvLoader<TRecord>.CreateProgressReport()
+  type: Method
+  source:
+    remote:
+      path: src/Wolfgang.Etl.Csv/CsvLoader.cs
+      branch: initial-dev
+      repo: https://github.com/Chris-Wolfgang/ETL-CSV.git
+    id: CreateProgressReport
+    path: ../src/Wolfgang.Etl.Csv/CsvLoader.cs
+    startLine: 313
+  assemblies:
+  - Wolfgang.Etl.Csv
+  namespace: Wolfgang.Etl.Csv
+  summary: >-
+    Creates a progress report of type TProgress. This gives the derived class the opportunity to
+
+    implement a custom progress report that is specific to the loading process.
+  example: []
+  syntax:
+    content: protected override CsvLoaderProgress CreateProgressReport()
+    return:
+      type: Wolfgang.Etl.Csv.CsvLoaderProgress
+      description: Progress of type TProgress
+    content.vb: Protected Overrides Function CreateProgressReport() As CsvLoaderProgress
+  overridden: Wolfgang.Etl.Abstractions.LoaderBase{{TRecord},Wolfgang.Etl.Csv.CsvLoaderProgress}.CreateProgressReport
+  overload: Wolfgang.Etl.Csv.CsvLoader`1.CreateProgressReport*
+  nameWithType.vb: CsvLoader(Of TRecord).CreateProgressReport()
+  fullName.vb: Wolfgang.Etl.Csv.CsvLoader(Of TRecord).CreateProgressReport()
+- uid: Wolfgang.Etl.Csv.CsvLoader`1.CreateProgressTimer(System.IProgress{Wolfgang.Etl.Csv.CsvLoaderProgress})
+  commentId: M:Wolfgang.Etl.Csv.CsvLoader`1.CreateProgressTimer(System.IProgress{Wolfgang.Etl.Csv.CsvLoaderProgress})
+  id: CreateProgressTimer(System.IProgress{Wolfgang.Etl.Csv.CsvLoaderProgress})
+  parent: Wolfgang.Etl.Csv.CsvLoader`1
+  langs:
+  - csharp
+  - vb
+  name: CreateProgressTimer(IProgress<CsvLoaderProgress>)
+  nameWithType: CsvLoader<TRecord>.CreateProgressTimer(IProgress<CsvLoaderProgress>)
+  fullName: Wolfgang.Etl.Csv.CsvLoader<TRecord>.CreateProgressTimer(System.IProgress<Wolfgang.Etl.Csv.CsvLoaderProgress>)
+  type: Method
+  source:
+    remote:
+      path: src/Wolfgang.Etl.Csv/CsvLoader.cs
+      branch: initial-dev
+      repo: https://github.com/Chris-Wolfgang/ETL-CSV.git
+    id: CreateProgressTimer
+    path: ../src/Wolfgang.Etl.Csv/CsvLoader.cs
+    startLine: 324
+  assemblies:
+  - Wolfgang.Etl.Csv
+  namespace: Wolfgang.Etl.Csv
+  summary: >-
+    Creates the <xref href="Wolfgang.Etl.Abstractions.IProgressTimer" data-throw-if-not-resolved="false"></xref> used to drive progress callbacks.
+
+    Override this method in a derived class to inject a custom timer
+
+    (for example, a custom implementation that allows manual control in unit tests).
+  example: []
+  syntax:
+    content: protected override IProgressTimer CreateProgressTimer(IProgress<CsvLoaderProgress> progress)
+    parameters:
+    - id: progress
+      type: System.IProgress{Wolfgang.Etl.Csv.CsvLoaderProgress}
+      description: The progress sink that will receive callbacks.
+    return:
+      type: Wolfgang.Etl.Abstractions.IProgressTimer
+      description: A started <xref href="Wolfgang.Etl.Abstractions.IProgressTimer" data-throw-if-not-resolved="false"></xref> instance.
+    content.vb: Protected Overrides Function CreateProgressTimer(progress As IProgress(Of CsvLoaderProgress)) As IProgressTimer
+  overridden: Wolfgang.Etl.Abstractions.LoaderBase{{TRecord},Wolfgang.Etl.Csv.CsvLoaderProgress}.CreateProgressTimer(System.IProgress{Wolfgang.Etl.Csv.CsvLoaderProgress})
+  overload: Wolfgang.Etl.Csv.CsvLoader`1.CreateProgressTimer*
+  nameWithType.vb: CsvLoader(Of TRecord).CreateProgressTimer(IProgress(Of CsvLoaderProgress))
+  fullName.vb: Wolfgang.Etl.Csv.CsvLoader(Of TRecord).CreateProgressTimer(System.IProgress(Of Wolfgang.Etl.Csv.CsvLoaderProgress))
+  name.vb: CreateProgressTimer(IProgress(Of CsvLoaderProgress))
+references:
+- uid: Wolfgang.Etl.Csv
+  commentId: N:Wolfgang.Etl.Csv
+  href: Wolfgang.html
+  name: Wolfgang.Etl.Csv
+  nameWithType: Wolfgang.Etl.Csv
+  fullName: Wolfgang.Etl.Csv
+  spec.csharp:
+  - uid: Wolfgang
+    name: Wolfgang
+    href: Wolfgang.html
+  - name: .
+  - uid: Wolfgang.Etl
+    name: Etl
+    href: Wolfgang.Etl.html
+  - name: .
+  - uid: Wolfgang.Etl.Csv
+    name: Csv
+    href: Wolfgang.Etl.Csv.html
+  spec.vb:
+  - uid: Wolfgang
+    name: Wolfgang
+    href: Wolfgang.html
+  - name: .
+  - uid: Wolfgang.Etl
+    name: Etl
+    href: Wolfgang.Etl.html
+  - name: .
+  - uid: Wolfgang.Etl.Csv
+    name: Csv
+    href: Wolfgang.Etl.Csv.html
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object
+  name: object
+  nameWithType: object
+  fullName: object
+  nameWithType.vb: Object
+  fullName.vb: Object
+  name.vb: Object
+- uid: Wolfgang.Etl.Abstractions.LoaderBase{{TRecord},Wolfgang.Etl.Csv.CsvLoaderProgress}
+  commentId: T:Wolfgang.Etl.Abstractions.LoaderBase{`0,Wolfgang.Etl.Csv.CsvLoaderProgress}
+  parent: Wolfgang.Etl.Abstractions
+  definition: Wolfgang.Etl.Abstractions.LoaderBase`2
+  href: Wolfgang.Etl.Csv.CsvLoaderProgress.html
+  name: LoaderBase<TRecord, CsvLoaderProgress>
+  nameWithType: LoaderBase<TRecord, CsvLoaderProgress>
+  fullName: Wolfgang.Etl.Abstractions.LoaderBase<TRecord, Wolfgang.Etl.Csv.CsvLoaderProgress>
+  nameWithType.vb: LoaderBase(Of TRecord, CsvLoaderProgress)
+  fullName.vb: Wolfgang.Etl.Abstractions.LoaderBase(Of TRecord, Wolfgang.Etl.Csv.CsvLoaderProgress)
+  name.vb: LoaderBase(Of TRecord, CsvLoaderProgress)
+  spec.csharp:
+  - uid: Wolfgang.Etl.Abstractions.LoaderBase`2
+    name: LoaderBase
+    isExternal: true
+  - name: <
+  - name: TRecord
+  - name: ','
+  - name: " "
+  - uid: Wolfgang.Etl.Csv.CsvLoaderProgress
+    name: CsvLoaderProgress
+    href: Wolfgang.Etl.Csv.CsvLoaderProgress.html
+  - name: '>'
+  spec.vb:
+  - uid: Wolfgang.Etl.Abstractions.LoaderBase`2
+    name: LoaderBase
+    isExternal: true
+  - name: (
+  - name: Of
+  - name: " "
+  - name: TRecord
+  - name: ','
+  - name: " "
+  - uid: Wolfgang.Etl.Csv.CsvLoaderProgress
+    name: CsvLoaderProgress
+    href: Wolfgang.Etl.Csv.CsvLoaderProgress.html
+  - name: )
+- uid: Wolfgang.Etl.Abstractions.ILoadWithProgressAndCancellationAsync{{TRecord},Wolfgang.Etl.Csv.CsvLoaderProgress}
+  commentId: T:Wolfgang.Etl.Abstractions.ILoadWithProgressAndCancellationAsync{`0,Wolfgang.Etl.Csv.CsvLoaderProgress}
+  parent: Wolfgang.Etl.Abstractions
+  definition: Wolfgang.Etl.Abstractions.ILoadWithProgressAndCancellationAsync`2
+  href: Wolfgang.Etl.Csv.CsvLoaderProgress.html
+  name: ILoadWithProgressAndCancellationAsync<TRecord, CsvLoaderProgress>
+  nameWithType: ILoadWithProgressAndCancellationAsync<TRecord, CsvLoaderProgress>
+  fullName: Wolfgang.Etl.Abstractions.ILoadWithProgressAndCancellationAsync<TRecord, Wolfgang.Etl.Csv.CsvLoaderProgress>
+  nameWithType.vb: ILoadWithProgressAndCancellationAsync(Of TRecord, CsvLoaderProgress)
+  fullName.vb: Wolfgang.Etl.Abstractions.ILoadWithProgressAndCancellationAsync(Of TRecord, Wolfgang.Etl.Csv.CsvLoaderProgress)
+  name.vb: ILoadWithProgressAndCancellationAsync(Of TRecord, CsvLoaderProgress)
+  spec.csharp:
+  - uid: Wolfgang.Etl.Abstractions.ILoadWithProgressAndCancellationAsync`2
+    name: ILoadWithProgressAndCancellationAsync
+    isExternal: true
+  - name: <
+  - name: TRecord
+  - name: ','
+  - name: " "
+  - uid: Wolfgang.Etl.Csv.CsvLoaderProgress
+    name: CsvLoaderProgress
+    href: Wolfgang.Etl.Csv.CsvLoaderProgress.html
+  - name: '>'
+  spec.vb:
+  - uid: Wolfgang.Etl.Abstractions.ILoadWithProgressAndCancellationAsync`2
+    name: ILoadWithProgressAndCancellationAsync
+    isExternal: true
+  - name: (
+  - name: Of
+  - name: " "
+  - name: TRecord
+  - name: ','
+  - name: " "
+  - uid: Wolfgang.Etl.Csv.CsvLoaderProgress
+    name: CsvLoaderProgress
+    href: Wolfgang.Etl.Csv.CsvLoaderProgress.html
+  - name: )
+- uid: Wolfgang.Etl.Abstractions.ILoadWithProgressAsync{{TRecord},Wolfgang.Etl.Csv.CsvLoaderProgress}
+  commentId: T:Wolfgang.Etl.Abstractions.ILoadWithProgressAsync{`0,Wolfgang.Etl.Csv.CsvLoaderProgress}
+  parent: Wolfgang.Etl.Abstractions
+  definition: Wolfgang.Etl.Abstractions.ILoadWithProgressAsync`2
+  href: Wolfgang.Etl.Csv.CsvLoaderProgress.html
+  name: ILoadWithProgressAsync<TRecord, CsvLoaderProgress>
+  nameWithType: ILoadWithProgressAsync<TRecord, CsvLoaderProgress>
+  fullName: Wolfgang.Etl.Abstractions.ILoadWithProgressAsync<TRecord, Wolfgang.Etl.Csv.CsvLoaderProgress>
+  nameWithType.vb: ILoadWithProgressAsync(Of TRecord, CsvLoaderProgress)
+  fullName.vb: Wolfgang.Etl.Abstractions.ILoadWithProgressAsync(Of TRecord, Wolfgang.Etl.Csv.CsvLoaderProgress)
+  name.vb: ILoadWithProgressAsync(Of TRecord, CsvLoaderProgress)
+  spec.csharp:
+  - uid: Wolfgang.Etl.Abstractions.ILoadWithProgressAsync`2
+    name: ILoadWithProgressAsync
+    isExternal: true
+  - name: <
+  - name: TRecord
+  - name: ','
+  - name: " "
+  - uid: Wolfgang.Etl.Csv.CsvLoaderProgress
+    name: CsvLoaderProgress
+    href: Wolfgang.Etl.Csv.CsvLoaderProgress.html
+  - name: '>'
+  spec.vb:
+  - uid: Wolfgang.Etl.Abstractions.ILoadWithProgressAsync`2
+    name: ILoadWithProgressAsync
+    isExternal: true
+  - name: (
+  - name: Of
+  - name: " "
+  - name: TRecord
+  - name: ','
+  - name: " "
+  - uid: Wolfgang.Etl.Csv.CsvLoaderProgress
+    name: CsvLoaderProgress
+    href: Wolfgang.Etl.Csv.CsvLoaderProgress.html
+  - name: )
+- uid: Wolfgang.Etl.Abstractions.ILoadWithCancellationAsync{{TRecord}}
+  commentId: T:Wolfgang.Etl.Abstractions.ILoadWithCancellationAsync{`0}
+  parent: Wolfgang.Etl.Abstractions
+  definition: Wolfgang.Etl.Abstractions.ILoadWithCancellationAsync`1
+  name: ILoadWithCancellationAsync<TRecord>
+  nameWithType: ILoadWithCancellationAsync<TRecord>
+  fullName: Wolfgang.Etl.Abstractions.ILoadWithCancellationAsync<TRecord>
+  nameWithType.vb: ILoadWithCancellationAsync(Of TRecord)
+  fullName.vb: Wolfgang.Etl.Abstractions.ILoadWithCancellationAsync(Of TRecord)
+  name.vb: ILoadWithCancellationAsync(Of TRecord)
+  spec.csharp:
+  - uid: Wolfgang.Etl.Abstractions.ILoadWithCancellationAsync`1
+    name: ILoadWithCancellationAsync
+    isExternal: true
+  - name: <
+  - name: TRecord
+  - name: '>'
+  spec.vb:
+  - uid: Wolfgang.Etl.Abstractions.ILoadWithCancellationAsync`1
+    name: ILoadWithCancellationAsync
+    isExternal: true
+  - name: (
+  - name: Of
+  - name: " "
+  - name: TRecord
+  - name: )
+- uid: Wolfgang.Etl.Abstractions.ILoadAsync{{TRecord}}
+  commentId: T:Wolfgang.Etl.Abstractions.ILoadAsync{`0}
+  parent: Wolfgang.Etl.Abstractions
+  definition: Wolfgang.Etl.Abstractions.ILoadAsync`1
+  name: ILoadAsync<TRecord>
+  nameWithType: ILoadAsync<TRecord>
+  fullName: Wolfgang.Etl.Abstractions.ILoadAsync<TRecord>
+  nameWithType.vb: ILoadAsync(Of TRecord)
+  fullName.vb: Wolfgang.Etl.Abstractions.ILoadAsync(Of TRecord)
+  name.vb: ILoadAsync(Of TRecord)
+  spec.csharp:
+  - uid: Wolfgang.Etl.Abstractions.ILoadAsync`1
+    name: ILoadAsync
+    isExternal: true
+  - name: <
+  - name: TRecord
+  - name: '>'
+  spec.vb:
+  - uid: Wolfgang.Etl.Abstractions.ILoadAsync`1
+    name: ILoadAsync
+    isExternal: true
+  - name: (
+  - name: Of
+  - name: " "
+  - name: TRecord
+  - name: )
+- uid: Wolfgang.Etl.Abstractions.LoaderBase{{TRecord},Wolfgang.Etl.Csv.CsvLoaderProgress}.LoadAsync(System.Collections.Generic.IAsyncEnumerable{{TRecord}})
+  commentId: M:Wolfgang.Etl.Abstractions.LoaderBase{`0,Wolfgang.Etl.Csv.CsvLoaderProgress}.LoadAsync(System.Collections.Generic.IAsyncEnumerable{`0})
+  parent: Wolfgang.Etl.Abstractions.LoaderBase{{TRecord},Wolfgang.Etl.Csv.CsvLoaderProgress}
+  definition: Wolfgang.Etl.Abstractions.LoaderBase`2.LoadAsync(System.Collections.Generic.IAsyncEnumerable{`0})
+  href: https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1
+  name: LoadAsync(IAsyncEnumerable<TRecord>)
+  nameWithType: LoaderBase<TRecord, CsvLoaderProgress>.LoadAsync(IAsyncEnumerable<TRecord>)
+  fullName: Wolfgang.Etl.Abstractions.LoaderBase<TRecord, Wolfgang.Etl.Csv.CsvLoaderProgress>.LoadAsync(System.Collections.Generic.IAsyncEnumerable<TRecord>)
+  nameWithType.vb: LoaderBase(Of TRecord, CsvLoaderProgress).LoadAsync(IAsyncEnumerable(Of TRecord))
+  fullName.vb: Wolfgang.Etl.Abstractions.LoaderBase(Of TRecord, Wolfgang.Etl.Csv.CsvLoaderProgress).LoadAsync(System.Collections.Generic.IAsyncEnumerable(Of TRecord))
+  name.vb: LoadAsync(IAsyncEnumerable(Of TRecord))
+  spec.csharp:
+  - uid: Wolfgang.Etl.Abstractions.LoaderBase{`0,Wolfgang.Etl.Csv.CsvLoaderProgress}.LoadAsync(System.Collections.Generic.IAsyncEnumerable{`0})
+    name: LoadAsync
+    isExternal: true
+  - name: (
+  - uid: System.Collections.Generic.IAsyncEnumerable`1
+    name: IAsyncEnumerable
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1
+  - name: <
+  - name: TRecord
+  - name: '>'
+  - name: )
+  spec.vb:
+  - uid: Wolfgang.Etl.Abstractions.LoaderBase{`0,Wolfgang.Etl.Csv.CsvLoaderProgress}.LoadAsync(System.Collections.Generic.IAsyncEnumerable{`0})
+    name: LoadAsync
+    isExternal: true
+  - name: (
+  - uid: System.Collections.Generic.IAsyncEnumerable`1
+    name: IAsyncEnumerable
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1
+  - name: (
+  - name: Of
+  - name: " "
+  - name: TRecord
+  - name: )
+  - name: )
+- uid: Wolfgang.Etl.Abstractions.LoaderBase{{TRecord},Wolfgang.Etl.Csv.CsvLoaderProgress}.LoadAsync(System.Collections.Generic.IAsyncEnumerable{{TRecord}},System.Threading.CancellationToken)
+  commentId: M:Wolfgang.Etl.Abstractions.LoaderBase{`0,Wolfgang.Etl.Csv.CsvLoaderProgress}.LoadAsync(System.Collections.Generic.IAsyncEnumerable{`0},System.Threading.CancellationToken)
+  parent: Wolfgang.Etl.Abstractions.LoaderBase{{TRecord},Wolfgang.Etl.Csv.CsvLoaderProgress}
+  definition: Wolfgang.Etl.Abstractions.LoaderBase`2.LoadAsync(System.Collections.Generic.IAsyncEnumerable{`0},System.Threading.CancellationToken)
+  href: https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1
+  name: LoadAsync(IAsyncEnumerable<TRecord>, CancellationToken)
+  nameWithType: LoaderBase<TRecord, CsvLoaderProgress>.LoadAsync(IAsyncEnumerable<TRecord>, CancellationToken)
+  fullName: Wolfgang.Etl.Abstractions.LoaderBase<TRecord, Wolfgang.Etl.Csv.CsvLoaderProgress>.LoadAsync(System.Collections.Generic.IAsyncEnumerable<TRecord>, System.Threading.CancellationToken)
+  nameWithType.vb: LoaderBase(Of TRecord, CsvLoaderProgress).LoadAsync(IAsyncEnumerable(Of TRecord), CancellationToken)
+  fullName.vb: Wolfgang.Etl.Abstractions.LoaderBase(Of TRecord, Wolfgang.Etl.Csv.CsvLoaderProgress).LoadAsync(System.Collections.Generic.IAsyncEnumerable(Of TRecord), System.Threading.CancellationToken)
+  name.vb: LoadAsync(IAsyncEnumerable(Of TRecord), CancellationToken)
+  spec.csharp:
+  - uid: Wolfgang.Etl.Abstractions.LoaderBase{`0,Wolfgang.Etl.Csv.CsvLoaderProgress}.LoadAsync(System.Collections.Generic.IAsyncEnumerable{`0},System.Threading.CancellationToken)
+    name: LoadAsync
+    isExternal: true
+  - name: (
+  - uid: System.Collections.Generic.IAsyncEnumerable`1
+    name: IAsyncEnumerable
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1
+  - name: <
+  - name: TRecord
+  - name: '>'
+  - name: ','
+  - name: " "
+  - uid: System.Threading.CancellationToken
+    name: CancellationToken
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken
+  - name: )
+  spec.vb:
+  - uid: Wolfgang.Etl.Abstractions.LoaderBase{`0,Wolfgang.Etl.Csv.CsvLoaderProgress}.LoadAsync(System.Collections.Generic.IAsyncEnumerable{`0},System.Threading.CancellationToken)
+    name: LoadAsync
+    isExternal: true
+  - name: (
+  - uid: System.Collections.Generic.IAsyncEnumerable`1
+    name: IAsyncEnumerable
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1
+  - name: (
+  - name: Of
+  - name: " "
+  - name: TRecord
+  - name: )
+  - name: ','
+  - name: " "
+  - uid: System.Threading.CancellationToken
+    name: CancellationToken
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken
+  - name: )
+- uid: Wolfgang.Etl.Abstractions.LoaderBase{{TRecord},Wolfgang.Etl.Csv.CsvLoaderProgress}.LoadAsync(System.Collections.Generic.IAsyncEnumerable{{TRecord}},System.IProgress{Wolfgang.Etl.Csv.CsvLoaderProgress})
+  commentId: M:Wolfgang.Etl.Abstractions.LoaderBase{`0,Wolfgang.Etl.Csv.CsvLoaderProgress}.LoadAsync(System.Collections.Generic.IAsyncEnumerable{`0},System.IProgress{Wolfgang.Etl.Csv.CsvLoaderProgress})
+  parent: Wolfgang.Etl.Abstractions.LoaderBase{{TRecord},Wolfgang.Etl.Csv.CsvLoaderProgress}
+  definition: Wolfgang.Etl.Abstractions.LoaderBase`2.LoadAsync(System.Collections.Generic.IAsyncEnumerable{`0},System.IProgress{`1})
+  href: https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1
+  name: LoadAsync(IAsyncEnumerable<TRecord>, IProgress<CsvLoaderProgress>)
+  nameWithType: LoaderBase<TRecord, CsvLoaderProgress>.LoadAsync(IAsyncEnumerable<TRecord>, IProgress<CsvLoaderProgress>)
+  fullName: Wolfgang.Etl.Abstractions.LoaderBase<TRecord, Wolfgang.Etl.Csv.CsvLoaderProgress>.LoadAsync(System.Collections.Generic.IAsyncEnumerable<TRecord>, System.IProgress<Wolfgang.Etl.Csv.CsvLoaderProgress>)
+  nameWithType.vb: LoaderBase(Of TRecord, CsvLoaderProgress).LoadAsync(IAsyncEnumerable(Of TRecord), IProgress(Of CsvLoaderProgress))
+  fullName.vb: Wolfgang.Etl.Abstractions.LoaderBase(Of TRecord, Wolfgang.Etl.Csv.CsvLoaderProgress).LoadAsync(System.Collections.Generic.IAsyncEnumerable(Of TRecord), System.IProgress(Of Wolfgang.Etl.Csv.CsvLoaderProgress))
+  name.vb: LoadAsync(IAsyncEnumerable(Of TRecord), IProgress(Of CsvLoaderProgress))
+  spec.csharp:
+  - uid: Wolfgang.Etl.Abstractions.LoaderBase{`0,Wolfgang.Etl.Csv.CsvLoaderProgress}.LoadAsync(System.Collections.Generic.IAsyncEnumerable{`0},System.IProgress{Wolfgang.Etl.Csv.CsvLoaderProgress})
+    name: LoadAsync
+    isExternal: true
+  - name: (
+  - uid: System.Collections.Generic.IAsyncEnumerable`1
+    name: IAsyncEnumerable
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1
+  - name: <
+  - name: TRecord
+  - name: '>'
+  - name: ','
+  - name: " "
+  - uid: System.IProgress`1
+    name: IProgress
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.iprogress-1
+  - name: <
+  - uid: Wolfgang.Etl.Csv.CsvLoaderProgress
+    name: CsvLoaderProgress
+    href: Wolfgang.Etl.Csv.CsvLoaderProgress.html
+  - name: '>'
+  - name: )
+  spec.vb:
+  - uid: Wolfgang.Etl.Abstractions.LoaderBase{`0,Wolfgang.Etl.Csv.CsvLoaderProgress}.LoadAsync(System.Collections.Generic.IAsyncEnumerable{`0},System.IProgress{Wolfgang.Etl.Csv.CsvLoaderProgress})
+    name: LoadAsync
+    isExternal: true
+  - name: (
+  - uid: System.Collections.Generic.IAsyncEnumerable`1
+    name: IAsyncEnumerable
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1
+  - name: (
+  - name: Of
+  - name: " "
+  - name: TRecord
+  - name: )
+  - name: ','
+  - name: " "
+  - uid: System.IProgress`1
+    name: IProgress
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.iprogress-1
+  - name: (
+  - name: Of
+  - name: " "
+  - uid: Wolfgang.Etl.Csv.CsvLoaderProgress
+    name: CsvLoaderProgress
+    href: Wolfgang.Etl.Csv.CsvLoaderProgress.html
+  - name: )
+  - name: )
+- uid: Wolfgang.Etl.Abstractions.LoaderBase{{TRecord},Wolfgang.Etl.Csv.CsvLoaderProgress}.LoadAsync(System.Collections.Generic.IAsyncEnumerable{{TRecord}},System.IProgress{Wolfgang.Etl.Csv.CsvLoaderProgress},System.Threading.CancellationToken)
+  commentId: M:Wolfgang.Etl.Abstractions.LoaderBase{`0,Wolfgang.Etl.Csv.CsvLoaderProgress}.LoadAsync(System.Collections.Generic.IAsyncEnumerable{`0},System.IProgress{Wolfgang.Etl.Csv.CsvLoaderProgress},System.Threading.CancellationToken)
+  parent: Wolfgang.Etl.Abstractions.LoaderBase{{TRecord},Wolfgang.Etl.Csv.CsvLoaderProgress}
+  definition: Wolfgang.Etl.Abstractions.LoaderBase`2.LoadAsync(System.Collections.Generic.IAsyncEnumerable{`0},System.IProgress{`1},System.Threading.CancellationToken)
+  href: https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1
+  name: LoadAsync(IAsyncEnumerable<TRecord>, IProgress<CsvLoaderProgress>, CancellationToken)
+  nameWithType: LoaderBase<TRecord, CsvLoaderProgress>.LoadAsync(IAsyncEnumerable<TRecord>, IProgress<CsvLoaderProgress>, CancellationToken)
+  fullName: Wolfgang.Etl.Abstractions.LoaderBase<TRecord, Wolfgang.Etl.Csv.CsvLoaderProgress>.LoadAsync(System.Collections.Generic.IAsyncEnumerable<TRecord>, System.IProgress<Wolfgang.Etl.Csv.CsvLoaderProgress>, System.Threading.CancellationToken)
+  nameWithType.vb: LoaderBase(Of TRecord, CsvLoaderProgress).LoadAsync(IAsyncEnumerable(Of TRecord), IProgress(Of CsvLoaderProgress), CancellationToken)
+  fullName.vb: Wolfgang.Etl.Abstractions.LoaderBase(Of TRecord, Wolfgang.Etl.Csv.CsvLoaderProgress).LoadAsync(System.Collections.Generic.IAsyncEnumerable(Of TRecord), System.IProgress(Of Wolfgang.Etl.Csv.CsvLoaderProgress), System.Threading.CancellationToken)
+  name.vb: LoadAsync(IAsyncEnumerable(Of TRecord), IProgress(Of CsvLoaderProgress), CancellationToken)
+  spec.csharp:
+  - uid: Wolfgang.Etl.Abstractions.LoaderBase{`0,Wolfgang.Etl.Csv.CsvLoaderProgress}.LoadAsync(System.Collections.Generic.IAsyncEnumerable{`0},System.IProgress{Wolfgang.Etl.Csv.CsvLoaderProgress},System.Threading.CancellationToken)
+    name: LoadAsync
+    isExternal: true
+  - name: (
+  - uid: System.Collections.Generic.IAsyncEnumerable`1
+    name: IAsyncEnumerable
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1
+  - name: <
+  - name: TRecord
+  - name: '>'
+  - name: ','
+  - name: " "
+  - uid: System.IProgress`1
+    name: IProgress
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.iprogress-1
+  - name: <
+  - uid: Wolfgang.Etl.Csv.CsvLoaderProgress
+    name: CsvLoaderProgress
+    href: Wolfgang.Etl.Csv.CsvLoaderProgress.html
+  - name: '>'
+  - name: ','
+  - name: " "
+  - uid: System.Threading.CancellationToken
+    name: CancellationToken
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken
+  - name: )
+  spec.vb:
+  - uid: Wolfgang.Etl.Abstractions.LoaderBase{`0,Wolfgang.Etl.Csv.CsvLoaderProgress}.LoadAsync(System.Collections.Generic.IAsyncEnumerable{`0},System.IProgress{Wolfgang.Etl.Csv.CsvLoaderProgress},System.Threading.CancellationToken)
+    name: LoadAsync
+    isExternal: true
+  - name: (
+  - uid: System.Collections.Generic.IAsyncEnumerable`1
+    name: IAsyncEnumerable
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1
+  - name: (
+  - name: Of
+  - name: " "
+  - name: TRecord
+  - name: )
+  - name: ','
+  - name: " "
+  - uid: System.IProgress`1
+    name: IProgress
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.iprogress-1
+  - name: (
+  - name: Of
+  - name: " "
+  - uid: Wolfgang.Etl.Csv.CsvLoaderProgress
+    name: CsvLoaderProgress
+    href: Wolfgang.Etl.Csv.CsvLoaderProgress.html
+  - name: )
+  - name: ','
+  - name: " "
+  - uid: System.Threading.CancellationToken
+    name: CancellationToken
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken
+  - name: )
+- uid: Wolfgang.Etl.Abstractions.LoaderBase{{TRecord},Wolfgang.Etl.Csv.CsvLoaderProgress}.ReportingInterval
+  commentId: P:Wolfgang.Etl.Abstractions.LoaderBase{`0,Wolfgang.Etl.Csv.CsvLoaderProgress}.ReportingInterval
+  parent: Wolfgang.Etl.Abstractions.LoaderBase{{TRecord},Wolfgang.Etl.Csv.CsvLoaderProgress}
+  definition: Wolfgang.Etl.Abstractions.LoaderBase`2.ReportingInterval
+  name: ReportingInterval
+  nameWithType: LoaderBase<TRecord, CsvLoaderProgress>.ReportingInterval
+  fullName: Wolfgang.Etl.Abstractions.LoaderBase<TRecord, Wolfgang.Etl.Csv.CsvLoaderProgress>.ReportingInterval
+  nameWithType.vb: LoaderBase(Of TRecord, CsvLoaderProgress).ReportingInterval
+  fullName.vb: Wolfgang.Etl.Abstractions.LoaderBase(Of TRecord, Wolfgang.Etl.Csv.CsvLoaderProgress).ReportingInterval
+- uid: Wolfgang.Etl.Abstractions.LoaderBase{{TRecord},Wolfgang.Etl.Csv.CsvLoaderProgress}.CurrentItemCount
+  commentId: P:Wolfgang.Etl.Abstractions.LoaderBase{`0,Wolfgang.Etl.Csv.CsvLoaderProgress}.CurrentItemCount
+  parent: Wolfgang.Etl.Abstractions.LoaderBase{{TRecord},Wolfgang.Etl.Csv.CsvLoaderProgress}
+  definition: Wolfgang.Etl.Abstractions.LoaderBase`2.CurrentItemCount
+  name: CurrentItemCount
+  nameWithType: LoaderBase<TRecord, CsvLoaderProgress>.CurrentItemCount
+  fullName: Wolfgang.Etl.Abstractions.LoaderBase<TRecord, Wolfgang.Etl.Csv.CsvLoaderProgress>.CurrentItemCount
+  nameWithType.vb: LoaderBase(Of TRecord, CsvLoaderProgress).CurrentItemCount
+  fullName.vb: Wolfgang.Etl.Abstractions.LoaderBase(Of TRecord, Wolfgang.Etl.Csv.CsvLoaderProgress).CurrentItemCount
+- uid: Wolfgang.Etl.Abstractions.LoaderBase{{TRecord},Wolfgang.Etl.Csv.CsvLoaderProgress}.CurrentSkippedItemCount
+  commentId: P:Wolfgang.Etl.Abstractions.LoaderBase{`0,Wolfgang.Etl.Csv.CsvLoaderProgress}.CurrentSkippedItemCount
+  parent: Wolfgang.Etl.Abstractions.LoaderBase{{TRecord},Wolfgang.Etl.Csv.CsvLoaderProgress}
+  definition: Wolfgang.Etl.Abstractions.LoaderBase`2.CurrentSkippedItemCount
+  name: CurrentSkippedItemCount
+  nameWithType: LoaderBase<TRecord, CsvLoaderProgress>.CurrentSkippedItemCount
+  fullName: Wolfgang.Etl.Abstractions.LoaderBase<TRecord, Wolfgang.Etl.Csv.CsvLoaderProgress>.CurrentSkippedItemCount
+  nameWithType.vb: LoaderBase(Of TRecord, CsvLoaderProgress).CurrentSkippedItemCount
+  fullName.vb: Wolfgang.Etl.Abstractions.LoaderBase(Of TRecord, Wolfgang.Etl.Csv.CsvLoaderProgress).CurrentSkippedItemCount
+- uid: Wolfgang.Etl.Abstractions.LoaderBase{{TRecord},Wolfgang.Etl.Csv.CsvLoaderProgress}.MaximumItemCount
+  commentId: P:Wolfgang.Etl.Abstractions.LoaderBase{`0,Wolfgang.Etl.Csv.CsvLoaderProgress}.MaximumItemCount
+  parent: Wolfgang.Etl.Abstractions.LoaderBase{{TRecord},Wolfgang.Etl.Csv.CsvLoaderProgress}
+  definition: Wolfgang.Etl.Abstractions.LoaderBase`2.MaximumItemCount
+  name: MaximumItemCount
+  nameWithType: LoaderBase<TRecord, CsvLoaderProgress>.MaximumItemCount
+  fullName: Wolfgang.Etl.Abstractions.LoaderBase<TRecord, Wolfgang.Etl.Csv.CsvLoaderProgress>.MaximumItemCount
+  nameWithType.vb: LoaderBase(Of TRecord, CsvLoaderProgress).MaximumItemCount
+  fullName.vb: Wolfgang.Etl.Abstractions.LoaderBase(Of TRecord, Wolfgang.Etl.Csv.CsvLoaderProgress).MaximumItemCount
+- uid: Wolfgang.Etl.Abstractions.LoaderBase{{TRecord},Wolfgang.Etl.Csv.CsvLoaderProgress}.SkipItemCount
+  commentId: P:Wolfgang.Etl.Abstractions.LoaderBase{`0,Wolfgang.Etl.Csv.CsvLoaderProgress}.SkipItemCount
+  parent: Wolfgang.Etl.Abstractions.LoaderBase{{TRecord},Wolfgang.Etl.Csv.CsvLoaderProgress}
+  definition: Wolfgang.Etl.Abstractions.LoaderBase`2.SkipItemCount
+  name: SkipItemCount
+  nameWithType: LoaderBase<TRecord, CsvLoaderProgress>.SkipItemCount
+  fullName: Wolfgang.Etl.Abstractions.LoaderBase<TRecord, Wolfgang.Etl.Csv.CsvLoaderProgress>.SkipItemCount
+  nameWithType.vb: LoaderBase(Of TRecord, CsvLoaderProgress).SkipItemCount
+  fullName.vb: Wolfgang.Etl.Abstractions.LoaderBase(Of TRecord, Wolfgang.Etl.Csv.CsvLoaderProgress).SkipItemCount
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)
+  name: Equals(object)
+  nameWithType: object.Equals(object)
+  fullName: object.Equals(object)
+  nameWithType.vb: Object.Equals(Object)
+  fullName.vb: Object.Equals(Object)
+  name.vb: Equals(Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  name: Equals(object, object)
+  nameWithType: object.Equals(object, object)
+  fullName: object.Equals(object, object)
+  nameWithType.vb: Object.Equals(Object, Object)
+  fullName.vb: Object.Equals(Object, Object)
+  name.vb: Equals(Object, Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.gethashcode
+  name: GetHashCode()
+  nameWithType: object.GetHashCode()
+  fullName: object.GetHashCode()
+  nameWithType.vb: Object.GetHashCode()
+  fullName.vb: Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gethashcode
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gethashcode
+  - name: (
+  - name: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  name: GetType()
+  nameWithType: object.GetType()
+  fullName: object.GetType()
+  nameWithType.vb: Object.GetType()
+  fullName.vb: Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  - name: (
+  - name: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  name: ReferenceEquals(object, object)
+  nameWithType: object.ReferenceEquals(object, object)
+  fullName: object.ReferenceEquals(object, object)
+  nameWithType.vb: Object.ReferenceEquals(Object, Object)
+  fullName.vb: Object.ReferenceEquals(Object, Object)
+  name.vb: ReferenceEquals(Object, Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.tostring
+  name: ToString()
+  nameWithType: object.ToString()
+  fullName: object.ToString()
+  nameWithType.vb: Object.ToString()
+  fullName.vb: Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.tostring
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.tostring
+  - name: (
+  - name: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: Wolfgang.Etl.Abstractions.LoaderBase`2
+  commentId: T:Wolfgang.Etl.Abstractions.LoaderBase`2
+  isExternal: true
+  name: LoaderBase<TDestination, TProgress>
+  nameWithType: LoaderBase<TDestination, TProgress>
+  fullName: Wolfgang.Etl.Abstractions.LoaderBase<TDestination, TProgress>
+  nameWithType.vb: LoaderBase(Of TDestination, TProgress)
+  fullName.vb: Wolfgang.Etl.Abstractions.LoaderBase(Of TDestination, TProgress)
+  name.vb: LoaderBase(Of TDestination, TProgress)
+  spec.csharp:
+  - uid: Wolfgang.Etl.Abstractions.LoaderBase`2
+    name: LoaderBase
+    isExternal: true
+  - name: <
+  - name: TDestination
+  - name: ','
+  - name: " "
+  - name: TProgress
+  - name: '>'
+  spec.vb:
+  - uid: Wolfgang.Etl.Abstractions.LoaderBase`2
+    name: LoaderBase
+    isExternal: true
+  - name: (
+  - name: Of
+  - name: " "
+  - name: TDestination
+  - name: ','
+  - name: " "
+  - name: TProgress
+  - name: )
+- uid: Wolfgang.Etl.Abstractions
+  commentId: N:Wolfgang.Etl.Abstractions
+  isExternal: true
+  name: Wolfgang.Etl.Abstractions
+  nameWithType: Wolfgang.Etl.Abstractions
+  fullName: Wolfgang.Etl.Abstractions
+  spec.csharp:
+  - uid: Wolfgang
+    name: Wolfgang
+    isExternal: true
+  - name: .
+  - uid: Wolfgang.Etl
+    name: Etl
+    isExternal: true
+  - name: .
+  - uid: Wolfgang.Etl.Abstractions
+    name: Abstractions
+    isExternal: true
+  spec.vb:
+  - uid: Wolfgang
+    name: Wolfgang
+    isExternal: true
+  - name: .
+  - uid: Wolfgang.Etl
+    name: Etl
+    isExternal: true
+  - name: .
+  - uid: Wolfgang.Etl.Abstractions
+    name: Abstractions
+    isExternal: true
+- uid: Wolfgang.Etl.Abstractions.ILoadWithProgressAndCancellationAsync`2
+  commentId: T:Wolfgang.Etl.Abstractions.ILoadWithProgressAndCancellationAsync`2
+  isExternal: true
+  name: ILoadWithProgressAndCancellationAsync<TDestination, TProgress>
+  nameWithType: ILoadWithProgressAndCancellationAsync<TDestination, TProgress>
+  fullName: Wolfgang.Etl.Abstractions.ILoadWithProgressAndCancellationAsync<TDestination, TProgress>
+  nameWithType.vb: ILoadWithProgressAndCancellationAsync(Of TDestination, TProgress)
+  fullName.vb: Wolfgang.Etl.Abstractions.ILoadWithProgressAndCancellationAsync(Of TDestination, TProgress)
+  name.vb: ILoadWithProgressAndCancellationAsync(Of TDestination, TProgress)
+  spec.csharp:
+  - uid: Wolfgang.Etl.Abstractions.ILoadWithProgressAndCancellationAsync`2
+    name: ILoadWithProgressAndCancellationAsync
+    isExternal: true
+  - name: <
+  - name: TDestination
+  - name: ','
+  - name: " "
+  - name: TProgress
+  - name: '>'
+  spec.vb:
+  - uid: Wolfgang.Etl.Abstractions.ILoadWithProgressAndCancellationAsync`2
+    name: ILoadWithProgressAndCancellationAsync
+    isExternal: true
+  - name: (
+  - name: Of
+  - name: " "
+  - name: TDestination
+  - name: ','
+  - name: " "
+  - name: TProgress
+  - name: )
+- uid: Wolfgang.Etl.Abstractions.ILoadWithProgressAsync`2
+  commentId: T:Wolfgang.Etl.Abstractions.ILoadWithProgressAsync`2
+  isExternal: true
+  name: ILoadWithProgressAsync<TDestination, TProgress>
+  nameWithType: ILoadWithProgressAsync<TDestination, TProgress>
+  fullName: Wolfgang.Etl.Abstractions.ILoadWithProgressAsync<TDestination, TProgress>
+  nameWithType.vb: ILoadWithProgressAsync(Of TDestination, TProgress)
+  fullName.vb: Wolfgang.Etl.Abstractions.ILoadWithProgressAsync(Of TDestination, TProgress)
+  name.vb: ILoadWithProgressAsync(Of TDestination, TProgress)
+  spec.csharp:
+  - uid: Wolfgang.Etl.Abstractions.ILoadWithProgressAsync`2
+    name: ILoadWithProgressAsync
+    isExternal: true
+  - name: <
+  - name: TDestination
+  - name: ','
+  - name: " "
+  - name: TProgress
+  - name: '>'
+  spec.vb:
+  - uid: Wolfgang.Etl.Abstractions.ILoadWithProgressAsync`2
+    name: ILoadWithProgressAsync
+    isExternal: true
+  - name: (
+  - name: Of
+  - name: " "
+  - name: TDestination
+  - name: ','
+  - name: " "
+  - name: TProgress
+  - name: )
+- uid: Wolfgang.Etl.Abstractions.ILoadWithCancellationAsync`1
+  commentId: T:Wolfgang.Etl.Abstractions.ILoadWithCancellationAsync`1
+  isExternal: true
+  name: ILoadWithCancellationAsync<TDestination>
+  nameWithType: ILoadWithCancellationAsync<TDestination>
+  fullName: Wolfgang.Etl.Abstractions.ILoadWithCancellationAsync<TDestination>
+  nameWithType.vb: ILoadWithCancellationAsync(Of TDestination)
+  fullName.vb: Wolfgang.Etl.Abstractions.ILoadWithCancellationAsync(Of TDestination)
+  name.vb: ILoadWithCancellationAsync(Of TDestination)
+  spec.csharp:
+  - uid: Wolfgang.Etl.Abstractions.ILoadWithCancellationAsync`1
+    name: ILoadWithCancellationAsync
+    isExternal: true
+  - name: <
+  - name: TDestination
+  - name: '>'
+  spec.vb:
+  - uid: Wolfgang.Etl.Abstractions.ILoadWithCancellationAsync`1
+    name: ILoadWithCancellationAsync
+    isExternal: true
+  - name: (
+  - name: Of
+  - name: " "
+  - name: TDestination
+  - name: )
+- uid: Wolfgang.Etl.Abstractions.ILoadAsync`1
+  commentId: T:Wolfgang.Etl.Abstractions.ILoadAsync`1
+  isExternal: true
+  name: ILoadAsync<TDestination>
+  nameWithType: ILoadAsync<TDestination>
+  fullName: Wolfgang.Etl.Abstractions.ILoadAsync<TDestination>
+  nameWithType.vb: ILoadAsync(Of TDestination)
+  fullName.vb: Wolfgang.Etl.Abstractions.ILoadAsync(Of TDestination)
+  name.vb: ILoadAsync(Of TDestination)
+  spec.csharp:
+  - uid: Wolfgang.Etl.Abstractions.ILoadAsync`1
+    name: ILoadAsync
+    isExternal: true
+  - name: <
+  - name: TDestination
+  - name: '>'
+  spec.vb:
+  - uid: Wolfgang.Etl.Abstractions.ILoadAsync`1
+    name: ILoadAsync
+    isExternal: true
+  - name: (
+  - name: Of
+  - name: " "
+  - name: TDestination
+  - name: )
+- uid: Wolfgang.Etl.Abstractions.LoaderBase`2.LoadAsync(System.Collections.Generic.IAsyncEnumerable{`0})
+  commentId: M:Wolfgang.Etl.Abstractions.LoaderBase`2.LoadAsync(System.Collections.Generic.IAsyncEnumerable{`0})
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1
+  name: LoadAsync(IAsyncEnumerable<TDestination>)
+  nameWithType: LoaderBase<TDestination, TProgress>.LoadAsync(IAsyncEnumerable<TDestination>)
+  fullName: Wolfgang.Etl.Abstractions.LoaderBase<TDestination, TProgress>.LoadAsync(System.Collections.Generic.IAsyncEnumerable<TDestination>)
+  nameWithType.vb: LoaderBase(Of TDestination, TProgress).LoadAsync(IAsyncEnumerable(Of TDestination))
+  fullName.vb: Wolfgang.Etl.Abstractions.LoaderBase(Of TDestination, TProgress).LoadAsync(System.Collections.Generic.IAsyncEnumerable(Of TDestination))
+  name.vb: LoadAsync(IAsyncEnumerable(Of TDestination))
+  spec.csharp:
+  - uid: Wolfgang.Etl.Abstractions.LoaderBase`2.LoadAsync(System.Collections.Generic.IAsyncEnumerable{`0})
+    name: LoadAsync
+    isExternal: true
+  - name: (
+  - uid: System.Collections.Generic.IAsyncEnumerable`1
+    name: IAsyncEnumerable
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1
+  - name: <
+  - name: TDestination
+  - name: '>'
+  - name: )
+  spec.vb:
+  - uid: Wolfgang.Etl.Abstractions.LoaderBase`2.LoadAsync(System.Collections.Generic.IAsyncEnumerable{`0})
+    name: LoadAsync
+    isExternal: true
+  - name: (
+  - uid: System.Collections.Generic.IAsyncEnumerable`1
+    name: IAsyncEnumerable
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1
+  - name: (
+  - name: Of
+  - name: " "
+  - name: TDestination
+  - name: )
+  - name: )
+- uid: Wolfgang.Etl.Abstractions.LoaderBase`2.LoadAsync(System.Collections.Generic.IAsyncEnumerable{`0},System.Threading.CancellationToken)
+  commentId: M:Wolfgang.Etl.Abstractions.LoaderBase`2.LoadAsync(System.Collections.Generic.IAsyncEnumerable{`0},System.Threading.CancellationToken)
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1
+  name: LoadAsync(IAsyncEnumerable<TDestination>, CancellationToken)
+  nameWithType: LoaderBase<TDestination, TProgress>.LoadAsync(IAsyncEnumerable<TDestination>, CancellationToken)
+  fullName: Wolfgang.Etl.Abstractions.LoaderBase<TDestination, TProgress>.LoadAsync(System.Collections.Generic.IAsyncEnumerable<TDestination>, System.Threading.CancellationToken)
+  nameWithType.vb: LoaderBase(Of TDestination, TProgress).LoadAsync(IAsyncEnumerable(Of TDestination), CancellationToken)
+  fullName.vb: Wolfgang.Etl.Abstractions.LoaderBase(Of TDestination, TProgress).LoadAsync(System.Collections.Generic.IAsyncEnumerable(Of TDestination), System.Threading.CancellationToken)
+  name.vb: LoadAsync(IAsyncEnumerable(Of TDestination), CancellationToken)
+  spec.csharp:
+  - uid: Wolfgang.Etl.Abstractions.LoaderBase`2.LoadAsync(System.Collections.Generic.IAsyncEnumerable{`0},System.Threading.CancellationToken)
+    name: LoadAsync
+    isExternal: true
+  - name: (
+  - uid: System.Collections.Generic.IAsyncEnumerable`1
+    name: IAsyncEnumerable
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1
+  - name: <
+  - name: TDestination
+  - name: '>'
+  - name: ','
+  - name: " "
+  - uid: System.Threading.CancellationToken
+    name: CancellationToken
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken
+  - name: )
+  spec.vb:
+  - uid: Wolfgang.Etl.Abstractions.LoaderBase`2.LoadAsync(System.Collections.Generic.IAsyncEnumerable{`0},System.Threading.CancellationToken)
+    name: LoadAsync
+    isExternal: true
+  - name: (
+  - uid: System.Collections.Generic.IAsyncEnumerable`1
+    name: IAsyncEnumerable
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1
+  - name: (
+  - name: Of
+  - name: " "
+  - name: TDestination
+  - name: )
+  - name: ','
+  - name: " "
+  - uid: System.Threading.CancellationToken
+    name: CancellationToken
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken
+  - name: )
+- uid: Wolfgang.Etl.Abstractions.LoaderBase`2.LoadAsync(System.Collections.Generic.IAsyncEnumerable{`0},System.IProgress{`1})
+  commentId: M:Wolfgang.Etl.Abstractions.LoaderBase`2.LoadAsync(System.Collections.Generic.IAsyncEnumerable{`0},System.IProgress{`1})
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1
+  name: LoadAsync(IAsyncEnumerable<TDestination>, IProgress<TProgress>)
+  nameWithType: LoaderBase<TDestination, TProgress>.LoadAsync(IAsyncEnumerable<TDestination>, IProgress<TProgress>)
+  fullName: Wolfgang.Etl.Abstractions.LoaderBase<TDestination, TProgress>.LoadAsync(System.Collections.Generic.IAsyncEnumerable<TDestination>, System.IProgress<TProgress>)
+  nameWithType.vb: LoaderBase(Of TDestination, TProgress).LoadAsync(IAsyncEnumerable(Of TDestination), IProgress(Of TProgress))
+  fullName.vb: Wolfgang.Etl.Abstractions.LoaderBase(Of TDestination, TProgress).LoadAsync(System.Collections.Generic.IAsyncEnumerable(Of TDestination), System.IProgress(Of TProgress))
+  name.vb: LoadAsync(IAsyncEnumerable(Of TDestination), IProgress(Of TProgress))
+  spec.csharp:
+  - uid: Wolfgang.Etl.Abstractions.LoaderBase`2.LoadAsync(System.Collections.Generic.IAsyncEnumerable{`0},System.IProgress{`1})
+    name: LoadAsync
+    isExternal: true
+  - name: (
+  - uid: System.Collections.Generic.IAsyncEnumerable`1
+    name: IAsyncEnumerable
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1
+  - name: <
+  - name: TDestination
+  - name: '>'
+  - name: ','
+  - name: " "
+  - uid: System.IProgress`1
+    name: IProgress
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.iprogress-1
+  - name: <
+  - name: TProgress
+  - name: '>'
+  - name: )
+  spec.vb:
+  - uid: Wolfgang.Etl.Abstractions.LoaderBase`2.LoadAsync(System.Collections.Generic.IAsyncEnumerable{`0},System.IProgress{`1})
+    name: LoadAsync
+    isExternal: true
+  - name: (
+  - uid: System.Collections.Generic.IAsyncEnumerable`1
+    name: IAsyncEnumerable
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1
+  - name: (
+  - name: Of
+  - name: " "
+  - name: TDestination
+  - name: )
+  - name: ','
+  - name: " "
+  - uid: System.IProgress`1
+    name: IProgress
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.iprogress-1
+  - name: (
+  - name: Of
+  - name: " "
+  - name: TProgress
+  - name: )
+  - name: )
+- uid: Wolfgang.Etl.Abstractions.LoaderBase`2.LoadAsync(System.Collections.Generic.IAsyncEnumerable{`0},System.IProgress{`1},System.Threading.CancellationToken)
+  commentId: M:Wolfgang.Etl.Abstractions.LoaderBase`2.LoadAsync(System.Collections.Generic.IAsyncEnumerable{`0},System.IProgress{`1},System.Threading.CancellationToken)
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1
+  name: LoadAsync(IAsyncEnumerable<TDestination>, IProgress<TProgress>, CancellationToken)
+  nameWithType: LoaderBase<TDestination, TProgress>.LoadAsync(IAsyncEnumerable<TDestination>, IProgress<TProgress>, CancellationToken)
+  fullName: Wolfgang.Etl.Abstractions.LoaderBase<TDestination, TProgress>.LoadAsync(System.Collections.Generic.IAsyncEnumerable<TDestination>, System.IProgress<TProgress>, System.Threading.CancellationToken)
+  nameWithType.vb: LoaderBase(Of TDestination, TProgress).LoadAsync(IAsyncEnumerable(Of TDestination), IProgress(Of TProgress), CancellationToken)
+  fullName.vb: Wolfgang.Etl.Abstractions.LoaderBase(Of TDestination, TProgress).LoadAsync(System.Collections.Generic.IAsyncEnumerable(Of TDestination), System.IProgress(Of TProgress), System.Threading.CancellationToken)
+  name.vb: LoadAsync(IAsyncEnumerable(Of TDestination), IProgress(Of TProgress), CancellationToken)
+  spec.csharp:
+  - uid: Wolfgang.Etl.Abstractions.LoaderBase`2.LoadAsync(System.Collections.Generic.IAsyncEnumerable{`0},System.IProgress{`1},System.Threading.CancellationToken)
+    name: LoadAsync
+    isExternal: true
+  - name: (
+  - uid: System.Collections.Generic.IAsyncEnumerable`1
+    name: IAsyncEnumerable
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1
+  - name: <
+  - name: TDestination
+  - name: '>'
+  - name: ','
+  - name: " "
+  - uid: System.IProgress`1
+    name: IProgress
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.iprogress-1
+  - name: <
+  - name: TProgress
+  - name: '>'
+  - name: ','
+  - name: " "
+  - uid: System.Threading.CancellationToken
+    name: CancellationToken
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken
+  - name: )
+  spec.vb:
+  - uid: Wolfgang.Etl.Abstractions.LoaderBase`2.LoadAsync(System.Collections.Generic.IAsyncEnumerable{`0},System.IProgress{`1},System.Threading.CancellationToken)
+    name: LoadAsync
+    isExternal: true
+  - name: (
+  - uid: System.Collections.Generic.IAsyncEnumerable`1
+    name: IAsyncEnumerable
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1
+  - name: (
+  - name: Of
+  - name: " "
+  - name: TDestination
+  - name: )
+  - name: ','
+  - name: " "
+  - uid: System.IProgress`1
+    name: IProgress
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.iprogress-1
+  - name: (
+  - name: Of
+  - name: " "
+  - name: TProgress
+  - name: )
+  - name: ','
+  - name: " "
+  - uid: System.Threading.CancellationToken
+    name: CancellationToken
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken
+  - name: )
+- uid: Wolfgang.Etl.Abstractions.LoaderBase`2.ReportingInterval
+  commentId: P:Wolfgang.Etl.Abstractions.LoaderBase`2.ReportingInterval
+  isExternal: true
+  name: ReportingInterval
+  nameWithType: LoaderBase<TDestination, TProgress>.ReportingInterval
+  fullName: Wolfgang.Etl.Abstractions.LoaderBase<TDestination, TProgress>.ReportingInterval
+  nameWithType.vb: LoaderBase(Of TDestination, TProgress).ReportingInterval
+  fullName.vb: Wolfgang.Etl.Abstractions.LoaderBase(Of TDestination, TProgress).ReportingInterval
+- uid: Wolfgang.Etl.Abstractions.LoaderBase`2.CurrentItemCount
+  commentId: P:Wolfgang.Etl.Abstractions.LoaderBase`2.CurrentItemCount
+  isExternal: true
+  name: CurrentItemCount
+  nameWithType: LoaderBase<TDestination, TProgress>.CurrentItemCount
+  fullName: Wolfgang.Etl.Abstractions.LoaderBase<TDestination, TProgress>.CurrentItemCount
+  nameWithType.vb: LoaderBase(Of TDestination, TProgress).CurrentItemCount
+  fullName.vb: Wolfgang.Etl.Abstractions.LoaderBase(Of TDestination, TProgress).CurrentItemCount
+- uid: Wolfgang.Etl.Abstractions.LoaderBase`2.CurrentSkippedItemCount
+  commentId: P:Wolfgang.Etl.Abstractions.LoaderBase`2.CurrentSkippedItemCount
+  isExternal: true
+  name: CurrentSkippedItemCount
+  nameWithType: LoaderBase<TDestination, TProgress>.CurrentSkippedItemCount
+  fullName: Wolfgang.Etl.Abstractions.LoaderBase<TDestination, TProgress>.CurrentSkippedItemCount
+  nameWithType.vb: LoaderBase(Of TDestination, TProgress).CurrentSkippedItemCount
+  fullName.vb: Wolfgang.Etl.Abstractions.LoaderBase(Of TDestination, TProgress).CurrentSkippedItemCount
+- uid: Wolfgang.Etl.Abstractions.LoaderBase`2.MaximumItemCount
+  commentId: P:Wolfgang.Etl.Abstractions.LoaderBase`2.MaximumItemCount
+  isExternal: true
+  name: MaximumItemCount
+  nameWithType: LoaderBase<TDestination, TProgress>.MaximumItemCount
+  fullName: Wolfgang.Etl.Abstractions.LoaderBase<TDestination, TProgress>.MaximumItemCount
+  nameWithType.vb: LoaderBase(Of TDestination, TProgress).MaximumItemCount
+  fullName.vb: Wolfgang.Etl.Abstractions.LoaderBase(Of TDestination, TProgress).MaximumItemCount
+- uid: Wolfgang.Etl.Abstractions.LoaderBase`2.SkipItemCount
+  commentId: P:Wolfgang.Etl.Abstractions.LoaderBase`2.SkipItemCount
+  isExternal: true
+  name: SkipItemCount
+  nameWithType: LoaderBase<TDestination, TProgress>.SkipItemCount
+  fullName: Wolfgang.Etl.Abstractions.LoaderBase<TDestination, TProgress>.SkipItemCount
+  nameWithType.vb: LoaderBase(Of TDestination, TProgress).SkipItemCount
+  fullName.vb: Wolfgang.Etl.Abstractions.LoaderBase(Of TDestination, TProgress).SkipItemCount
+- uid: Wolfgang.Etl.Csv.CsvLoader`1
+  commentId: T:Wolfgang.Etl.Csv.CsvLoader`1
+  href: Wolfgang.Etl.Csv.CsvLoader-1.html
+  name: CsvLoader<TRecord>
+  nameWithType: CsvLoader<TRecord>
+  fullName: Wolfgang.Etl.Csv.CsvLoader<TRecord>
+  nameWithType.vb: CsvLoader(Of TRecord)
+  fullName.vb: Wolfgang.Etl.Csv.CsvLoader(Of TRecord)
+  name.vb: CsvLoader(Of TRecord)
+  spec.csharp:
+  - uid: Wolfgang.Etl.Csv.CsvLoader`1
+    name: CsvLoader
+    href: Wolfgang.Etl.Csv.CsvLoader-1.html
+  - name: <
+  - name: TRecord
+  - name: '>'
+  spec.vb:
+  - uid: Wolfgang.Etl.Csv.CsvLoader`1
+    name: CsvLoader
+    href: Wolfgang.Etl.Csv.CsvLoader-1.html
+  - name: (
+  - name: Of
+  - name: " "
+  - name: TRecord
+  - name: )
+- uid: System.IO.StreamWriter
+  commentId: T:System.IO.StreamWriter
+  parent: System.IO
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.io.streamwriter
+  name: StreamWriter
+  nameWithType: StreamWriter
+  fullName: System.IO.StreamWriter
+- uid: System.ArgumentNullException
+  commentId: T:System.ArgumentNullException
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.argumentnullexception
+  name: ArgumentNullException
+  nameWithType: ArgumentNullException
+  fullName: System.ArgumentNullException
+- uid: Wolfgang.Etl.Csv.CsvLoader`1.#ctor*
+  commentId: Overload:Wolfgang.Etl.Csv.CsvLoader`1.#ctor
+  href: Wolfgang.Etl.Csv.CsvLoader-1.html#Wolfgang_Etl_Csv_CsvLoader_1__ctor_System_IO_StreamWriter_
+  name: CsvLoader
+  nameWithType: CsvLoader<TRecord>.CsvLoader
+  fullName: Wolfgang.Etl.Csv.CsvLoader<TRecord>.CsvLoader
+  nameWithType.vb: CsvLoader(Of TRecord).New
+  fullName.vb: Wolfgang.Etl.Csv.CsvLoader(Of TRecord).New
+  name.vb: New
+- uid: System.IO
+  commentId: N:System.IO
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system
+  name: System.IO
+  nameWithType: System.IO
+  fullName: System.IO
+  spec.csharp:
+  - uid: System
+    name: System
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system
+  - name: .
+  - uid: System.IO
+    name: IO
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.io
+  spec.vb:
+  - uid: System
+    name: System
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system
+  - name: .
+  - uid: System.IO
+    name: IO
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.io
+- uid: Microsoft.Extensions.Logging.ILogger{Wolfgang.Etl.Csv.CsvLoader`1}
+  commentId: T:Microsoft.Extensions.Logging.ILogger{Wolfgang.Etl.Csv.CsvLoader`1}
+  parent: Microsoft.Extensions.Logging
+  definition: Microsoft.Extensions.Logging.ILogger`1
+  href: https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.ilogger-1
+  name: ILogger<CsvLoader<TRecord>>
+  nameWithType: ILogger<CsvLoader<TRecord>>
+  fullName: Microsoft.Extensions.Logging.ILogger<Wolfgang.Etl.Csv.CsvLoader<TRecord>>
+  nameWithType.vb: ILogger(Of CsvLoader(Of TRecord))
+  fullName.vb: Microsoft.Extensions.Logging.ILogger(Of Wolfgang.Etl.Csv.CsvLoader(Of TRecord))
+  name.vb: ILogger(Of CsvLoader(Of TRecord))
+  spec.csharp:
+  - uid: Microsoft.Extensions.Logging.ILogger`1
+    name: ILogger
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.ilogger-1
+  - name: <
+  - uid: Wolfgang.Etl.Csv.CsvLoader`1
+    name: CsvLoader
+    href: Wolfgang.Etl.Csv.CsvLoader-1.html
+  - name: <
+  - name: TRecord
+  - name: '>'
+  - name: '>'
+  spec.vb:
+  - uid: Microsoft.Extensions.Logging.ILogger`1
+    name: ILogger
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.ilogger-1
+  - name: (
+  - name: Of
+  - name: " "
+  - uid: Wolfgang.Etl.Csv.CsvLoader`1
+    name: CsvLoader
+    href: Wolfgang.Etl.Csv.CsvLoader-1.html
+  - name: (
+  - name: Of
+  - name: " "
+  - name: TRecord
+  - name: )
+  - name: )
+- uid: Microsoft.Extensions.Logging.ILogger`1
+  commentId: T:Microsoft.Extensions.Logging.ILogger`1
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.ilogger-1
+  name: ILogger<TCategoryName>
+  nameWithType: ILogger<TCategoryName>
+  fullName: Microsoft.Extensions.Logging.ILogger<TCategoryName>
+  nameWithType.vb: ILogger(Of TCategoryName)
+  fullName.vb: Microsoft.Extensions.Logging.ILogger(Of TCategoryName)
+  name.vb: ILogger(Of TCategoryName)
+  spec.csharp:
+  - uid: Microsoft.Extensions.Logging.ILogger`1
+    name: ILogger
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.ilogger-1
+  - name: <
+  - name: TCategoryName
+  - name: '>'
+  spec.vb:
+  - uid: Microsoft.Extensions.Logging.ILogger`1
+    name: ILogger
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.ilogger-1
+  - name: (
+  - name: Of
+  - name: " "
+  - name: TCategoryName
+  - name: )
+- uid: Microsoft.Extensions.Logging
+  commentId: N:Microsoft.Extensions.Logging
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/microsoft
+  name: Microsoft.Extensions.Logging
+  nameWithType: Microsoft.Extensions.Logging
+  fullName: Microsoft.Extensions.Logging
+  spec.csharp:
+  - uid: Microsoft
+    name: Microsoft
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/microsoft
+  - name: .
+  - uid: Microsoft.Extensions
+    name: Extensions
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/microsoft.extensions
+  - name: .
+  - uid: Microsoft.Extensions.Logging
+    name: Logging
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging
+  spec.vb:
+  - uid: Microsoft
+    name: Microsoft
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/microsoft
+  - name: .
+  - uid: Microsoft.Extensions
+    name: Extensions
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/microsoft.extensions
+  - name: .
+  - uid: Microsoft.Extensions.Logging
+    name: Logging
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging
+- uid: Wolfgang.Etl.Csv.CsvLoader`1.Delimiter*
+  commentId: Overload:Wolfgang.Etl.Csv.CsvLoader`1.Delimiter
+  href: Wolfgang.Etl.Csv.CsvLoader-1.html#Wolfgang_Etl_Csv_CsvLoader_1_Delimiter
+  name: Delimiter
+  nameWithType: CsvLoader<TRecord>.Delimiter
+  fullName: Wolfgang.Etl.Csv.CsvLoader<TRecord>.Delimiter
+  nameWithType.vb: CsvLoader(Of TRecord).Delimiter
+  fullName.vb: Wolfgang.Etl.Csv.CsvLoader(Of TRecord).Delimiter
+- uid: System.String
+  commentId: T:System.String
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.string
+  name: string
+  nameWithType: string
+  fullName: string
+  nameWithType.vb: String
+  fullName.vb: String
+  name.vb: String
+- uid: Wolfgang.Etl.Csv.CsvLoader`1.Escape*
+  commentId: Overload:Wolfgang.Etl.Csv.CsvLoader`1.Escape
+  href: Wolfgang.Etl.Csv.CsvLoader-1.html#Wolfgang_Etl_Csv_CsvLoader_1_Escape
+  name: Escape
+  nameWithType: CsvLoader<TRecord>.Escape
+  fullName: Wolfgang.Etl.Csv.CsvLoader<TRecord>.Escape
+  nameWithType.vb: CsvLoader(Of TRecord).Escape
+  fullName.vb: Wolfgang.Etl.Csv.CsvLoader(Of TRecord).Escape
+- uid: System.Char
+  commentId: T:System.Char
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.char
+  name: char
+  nameWithType: char
+  fullName: char
+  nameWithType.vb: Char
+  fullName.vb: Char
+  name.vb: Char
+- uid: System.IO.StreamWriter.Encoding
+  commentId: P:System.IO.StreamWriter.Encoding
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.io.streamwriter.encoding
+  name: Encoding
+  nameWithType: StreamWriter.Encoding
+  fullName: System.IO.StreamWriter.Encoding
+- uid: Wolfgang.Etl.Csv.CsvLoader`1.Encoding*
+  commentId: Overload:Wolfgang.Etl.Csv.CsvLoader`1.Encoding
+  href: Wolfgang.Etl.Csv.CsvLoader-1.html#Wolfgang_Etl_Csv_CsvLoader_1_Encoding
+  name: Encoding
+  nameWithType: CsvLoader<TRecord>.Encoding
+  fullName: Wolfgang.Etl.Csv.CsvLoader<TRecord>.Encoding
+  nameWithType.vb: CsvLoader(Of TRecord).Encoding
+  fullName.vb: Wolfgang.Etl.Csv.CsvLoader(Of TRecord).Encoding
+- uid: System.Text.Encoding
+  commentId: T:System.Text.Encoding
+  parent: System.Text
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.text.encoding
+  name: Encoding
+  nameWithType: Encoding
+  fullName: System.Text.Encoding
+- uid: System.Text
+  commentId: N:System.Text
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system
+  name: System.Text
+  nameWithType: System.Text
+  fullName: System.Text
+  spec.csharp:
+  - uid: System
+    name: System
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system
+  - name: .
+  - uid: System.Text
+    name: Text
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.text
+  spec.vb:
+  - uid: System
+    name: System
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system
+  - name: .
+  - uid: System.Text
+    name: Text
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.text
+- uid: Wolfgang.Etl.Csv.CsvLoader`1.HasHeaderRecord*
+  commentId: Overload:Wolfgang.Etl.Csv.CsvLoader`1.HasHeaderRecord
+  href: Wolfgang.Etl.Csv.CsvLoader-1.html#Wolfgang_Etl_Csv_CsvLoader_1_HasHeaderRecord
+  name: HasHeaderRecord
+  nameWithType: CsvLoader<TRecord>.HasHeaderRecord
+  fullName: Wolfgang.Etl.Csv.CsvLoader<TRecord>.HasHeaderRecord
+  nameWithType.vb: CsvLoader(Of TRecord).HasHeaderRecord
+  fullName.vb: Wolfgang.Etl.Csv.CsvLoader(Of TRecord).HasHeaderRecord
+- uid: System.Boolean
+  commentId: T:System.Boolean
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.boolean
+  name: bool
+  nameWithType: bool
+  fullName: bool
+  nameWithType.vb: Boolean
+  fullName.vb: Boolean
+  name.vb: Boolean
+- uid: Wolfgang.Etl.Csv.CsvLoader`1.LeaveOpen*
+  commentId: Overload:Wolfgang.Etl.Csv.CsvLoader`1.LeaveOpen
+  href: Wolfgang.Etl.Csv.CsvLoader-1.html#Wolfgang_Etl_Csv_CsvLoader_1_LeaveOpen
+  name: LeaveOpen
+  nameWithType: CsvLoader<TRecord>.LeaveOpen
+  fullName: Wolfgang.Etl.Csv.CsvLoader<TRecord>.LeaveOpen
+  nameWithType.vb: CsvLoader(Of TRecord).LeaveOpen
+  fullName.vb: Wolfgang.Etl.Csv.CsvLoader(Of TRecord).LeaveOpen
+- uid: Wolfgang.Etl.Csv.CsvLoader`1.NewLine*
+  commentId: Overload:Wolfgang.Etl.Csv.CsvLoader`1.NewLine
+  href: Wolfgang.Etl.Csv.CsvLoader-1.html#Wolfgang_Etl_Csv_CsvLoader_1_NewLine
+  name: NewLine
+  nameWithType: CsvLoader<TRecord>.NewLine
+  fullName: Wolfgang.Etl.Csv.CsvLoader<TRecord>.NewLine
+  nameWithType.vb: CsvLoader(Of TRecord).NewLine
+  fullName.vb: Wolfgang.Etl.Csv.CsvLoader(Of TRecord).NewLine
+- uid: Wolfgang.Etl.Csv.CsvLoader`1.Quote*
+  commentId: Overload:Wolfgang.Etl.Csv.CsvLoader`1.Quote
+  href: Wolfgang.Etl.Csv.CsvLoader-1.html#Wolfgang_Etl_Csv_CsvLoader_1_Quote
+  name: Quote
+  nameWithType: CsvLoader<TRecord>.Quote
+  fullName: Wolfgang.Etl.Csv.CsvLoader<TRecord>.Quote
+  nameWithType.vb: CsvLoader(Of TRecord).Quote
+  fullName.vb: Wolfgang.Etl.Csv.CsvLoader(Of TRecord).Quote
+- uid: Wolfgang.Etl.Csv.CsvLoader`1.ShouldQuote*
+  commentId: Overload:Wolfgang.Etl.Csv.CsvLoader`1.ShouldQuote
+  href: Wolfgang.Etl.Csv.CsvLoader-1.html#Wolfgang_Etl_Csv_CsvLoader_1_ShouldQuote
+  name: ShouldQuote
+  nameWithType: CsvLoader<TRecord>.ShouldQuote
+  fullName: Wolfgang.Etl.Csv.CsvLoader<TRecord>.ShouldQuote
+  nameWithType.vb: CsvLoader(Of TRecord).ShouldQuote
+  fullName.vb: Wolfgang.Etl.Csv.CsvLoader(Of TRecord).ShouldQuote
+- uid: System.Func{Wolfgang.Etl.Csv.CsvShouldQuoteContext,System.Boolean}
+  commentId: T:System.Func{Wolfgang.Etl.Csv.CsvShouldQuoteContext,System.Boolean}
+  parent: System
+  definition: System.Func`2
+  href: https://learn.microsoft.com/dotnet/api/system.func-2
+  name: Func<CsvShouldQuoteContext, bool>
+  nameWithType: Func<CsvShouldQuoteContext, bool>
+  fullName: System.Func<Wolfgang.Etl.Csv.CsvShouldQuoteContext, bool>
+  nameWithType.vb: Func(Of CsvShouldQuoteContext, Boolean)
+  fullName.vb: System.Func(Of Wolfgang.Etl.Csv.CsvShouldQuoteContext, Boolean)
+  name.vb: Func(Of CsvShouldQuoteContext, Boolean)
+  spec.csharp:
+  - uid: System.Func`2
+    name: Func
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.func-2
+  - name: <
+  - uid: Wolfgang.Etl.Csv.CsvShouldQuoteContext
+    name: CsvShouldQuoteContext
+    href: Wolfgang.Etl.Csv.CsvShouldQuoteContext.html
+  - name: ','
+  - name: " "
+  - uid: System.Boolean
+    name: bool
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.boolean
+  - name: '>'
+  spec.vb:
+  - uid: System.Func`2
+    name: Func
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.func-2
+  - name: (
+  - name: Of
+  - name: " "
+  - uid: Wolfgang.Etl.Csv.CsvShouldQuoteContext
+    name: CsvShouldQuoteContext
+    href: Wolfgang.Etl.Csv.CsvShouldQuoteContext.html
+  - name: ','
+  - name: " "
+  - uid: System.Boolean
+    name: Boolean
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.boolean
+  - name: )
+- uid: System.Func`2
+  commentId: T:System.Func`2
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.func-2
+  name: Func<T, TResult>
+  nameWithType: Func<T, TResult>
+  fullName: System.Func<T, TResult>
+  nameWithType.vb: Func(Of T, TResult)
+  fullName.vb: System.Func(Of T, TResult)
+  name.vb: Func(Of T, TResult)
+  spec.csharp:
+  - uid: System.Func`2
+    name: Func
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.func-2
+  - name: <
+  - name: T
+  - name: ','
+  - name: " "
+  - name: TResult
+  - name: '>'
+  spec.vb:
+  - uid: System.Func`2
+    name: Func
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.func-2
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: ','
+  - name: " "
+  - name: TResult
+  - name: )
+- uid: Wolfgang.Etl.Csv.CsvLoader`1.TrimOptions*
+  commentId: Overload:Wolfgang.Etl.Csv.CsvLoader`1.TrimOptions
+  href: Wolfgang.Etl.Csv.CsvLoader-1.html#Wolfgang_Etl_Csv_CsvLoader_1_TrimOptions
+  name: TrimOptions
+  nameWithType: CsvLoader<TRecord>.TrimOptions
+  fullName: Wolfgang.Etl.Csv.CsvLoader<TRecord>.TrimOptions
+  nameWithType.vb: CsvLoader(Of TRecord).TrimOptions
+  fullName.vb: Wolfgang.Etl.Csv.CsvLoader(Of TRecord).TrimOptions
+- uid: Wolfgang.Etl.Csv.CsvTrimOptions
+  commentId: T:Wolfgang.Etl.Csv.CsvTrimOptions
+  parent: Wolfgang.Etl.Csv
+  href: Wolfgang.Etl.Csv.CsvTrimOptions.html
+  name: CsvTrimOptions
+  nameWithType: CsvTrimOptions
+  fullName: Wolfgang.Etl.Csv.CsvTrimOptions
+- uid: Wolfgang.Etl.Csv.CsvColumnAttribute
+  commentId: T:Wolfgang.Etl.Csv.CsvColumnAttribute
+  href: Wolfgang.Etl.Csv.CsvColumnAttribute.html
+  name: CsvColumnAttribute
+  nameWithType: CsvColumnAttribute
+  fullName: Wolfgang.Etl.Csv.CsvColumnAttribute
+- uid: Wolfgang.Etl.Csv.CsvIgnoreAttribute
+  commentId: T:Wolfgang.Etl.Csv.CsvIgnoreAttribute
+  href: Wolfgang.Etl.Csv.CsvIgnoreAttribute.html
+  name: CsvIgnoreAttribute
+  nameWithType: CsvIgnoreAttribute
+  fullName: Wolfgang.Etl.Csv.CsvIgnoreAttribute
+- uid: Wolfgang.Etl.Csv.CsvLoader`1.ColumnMaps*
+  commentId: Overload:Wolfgang.Etl.Csv.CsvLoader`1.ColumnMaps
+  href: Wolfgang.Etl.Csv.CsvLoader-1.html#Wolfgang_Etl_Csv_CsvLoader_1_ColumnMaps
+  name: ColumnMaps
+  nameWithType: CsvLoader<TRecord>.ColumnMaps
+  fullName: Wolfgang.Etl.Csv.CsvLoader<TRecord>.ColumnMaps
+  nameWithType.vb: CsvLoader(Of TRecord).ColumnMaps
+  fullName.vb: Wolfgang.Etl.Csv.CsvLoader(Of TRecord).ColumnMaps
+- uid: System.Collections.Generic.IReadOnlyList{Wolfgang.Etl.Csv.CsvColumnMap}
+  commentId: T:System.Collections.Generic.IReadOnlyList{Wolfgang.Etl.Csv.CsvColumnMap}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.IReadOnlyList`1
+  href: https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1
+  name: IReadOnlyList<CsvColumnMap>
+  nameWithType: IReadOnlyList<CsvColumnMap>
+  fullName: System.Collections.Generic.IReadOnlyList<Wolfgang.Etl.Csv.CsvColumnMap>
+  nameWithType.vb: IReadOnlyList(Of CsvColumnMap)
+  fullName.vb: System.Collections.Generic.IReadOnlyList(Of Wolfgang.Etl.Csv.CsvColumnMap)
+  name.vb: IReadOnlyList(Of CsvColumnMap)
+  spec.csharp:
+  - uid: System.Collections.Generic.IReadOnlyList`1
+    name: IReadOnlyList
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1
+  - name: <
+  - uid: Wolfgang.Etl.Csv.CsvColumnMap
+    name: CsvColumnMap
+    href: Wolfgang.Etl.Csv.CsvColumnMap.html
+  - name: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IReadOnlyList`1
+    name: IReadOnlyList
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1
+  - name: (
+  - name: Of
+  - name: " "
+  - uid: Wolfgang.Etl.Csv.CsvColumnMap
+    name: CsvColumnMap
+    href: Wolfgang.Etl.Csv.CsvColumnMap.html
+  - name: )
+- uid: System.Collections.Generic.IReadOnlyList`1
+  commentId: T:System.Collections.Generic.IReadOnlyList`1
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1
+  name: IReadOnlyList<T>
+  nameWithType: IReadOnlyList<T>
+  fullName: System.Collections.Generic.IReadOnlyList<T>
+  nameWithType.vb: IReadOnlyList(Of T)
+  fullName.vb: System.Collections.Generic.IReadOnlyList(Of T)
+  name.vb: IReadOnlyList(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.IReadOnlyList`1
+    name: IReadOnlyList
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1
+  - name: <
+  - name: T
+  - name: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IReadOnlyList`1
+    name: IReadOnlyList
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: )
+- uid: System.Collections.Generic
+  commentId: N:System.Collections.Generic
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system
+  name: System.Collections.Generic
+  nameWithType: System.Collections.Generic
+  fullName: System.Collections.Generic
+  spec.csharp:
+  - uid: System
+    name: System
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system
+  - name: .
+  - uid: System.Collections
+    name: Collections
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.collections
+  - name: .
+  - uid: System.Collections.Generic
+    name: Generic
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.collections.generic
+  spec.vb:
+  - uid: System
+    name: System
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system
+  - name: .
+  - uid: System.Collections
+    name: Collections
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.collections
+  - name: .
+  - uid: System.Collections.Generic
+    name: Generic
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.collections.generic
+- uid: Wolfgang.Etl.Csv.CsvLoader`1.SkipRecordCount*
+  commentId: Overload:Wolfgang.Etl.Csv.CsvLoader`1.SkipRecordCount
+  href: Wolfgang.Etl.Csv.CsvLoader-1.html#Wolfgang_Etl_Csv_CsvLoader_1_SkipRecordCount
+  name: SkipRecordCount
+  nameWithType: CsvLoader<TRecord>.SkipRecordCount
+  fullName: Wolfgang.Etl.Csv.CsvLoader<TRecord>.SkipRecordCount
+  nameWithType.vb: CsvLoader(Of TRecord).SkipRecordCount
+  fullName.vb: Wolfgang.Etl.Csv.CsvLoader(Of TRecord).SkipRecordCount
+- uid: System.Int32
+  commentId: T:System.Int32
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.int32
+  name: int
+  nameWithType: int
+  fullName: int
+  nameWithType.vb: Integer
+  fullName.vb: Integer
+  name.vb: Integer
+- uid: Wolfgang.Etl.Csv.CsvLoader`1.MaxRecordCount*
+  commentId: Overload:Wolfgang.Etl.Csv.CsvLoader`1.MaxRecordCount
+  href: Wolfgang.Etl.Csv.CsvLoader-1.html#Wolfgang_Etl_Csv_CsvLoader_1_MaxRecordCount
+  name: MaxRecordCount
+  nameWithType: CsvLoader<TRecord>.MaxRecordCount
+  fullName: Wolfgang.Etl.Csv.CsvLoader<TRecord>.MaxRecordCount
+  nameWithType.vb: CsvLoader(Of TRecord).MaxRecordCount
+  fullName.vb: Wolfgang.Etl.Csv.CsvLoader(Of TRecord).MaxRecordCount
+- uid: Wolfgang.Etl.Abstractions.LoaderBase{{TRecord},Wolfgang.Etl.Csv.CsvLoaderProgress}.LoadWorkerAsync(System.Collections.Generic.IAsyncEnumerable{{TRecord}},System.Threading.CancellationToken)
+  commentId: M:Wolfgang.Etl.Abstractions.LoaderBase{`0,Wolfgang.Etl.Csv.CsvLoaderProgress}.LoadWorkerAsync(System.Collections.Generic.IAsyncEnumerable{`0},System.Threading.CancellationToken)
+  parent: Wolfgang.Etl.Abstractions.LoaderBase{{TRecord},Wolfgang.Etl.Csv.CsvLoaderProgress}
+  definition: Wolfgang.Etl.Abstractions.LoaderBase`2.LoadWorkerAsync(System.Collections.Generic.IAsyncEnumerable{`0},System.Threading.CancellationToken)
+  href: https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1
+  name: LoadWorkerAsync(IAsyncEnumerable<TRecord>, CancellationToken)
+  nameWithType: LoaderBase<TRecord, CsvLoaderProgress>.LoadWorkerAsync(IAsyncEnumerable<TRecord>, CancellationToken)
+  fullName: Wolfgang.Etl.Abstractions.LoaderBase<TRecord, Wolfgang.Etl.Csv.CsvLoaderProgress>.LoadWorkerAsync(System.Collections.Generic.IAsyncEnumerable<TRecord>, System.Threading.CancellationToken)
+  nameWithType.vb: LoaderBase(Of TRecord, CsvLoaderProgress).LoadWorkerAsync(IAsyncEnumerable(Of TRecord), CancellationToken)
+  fullName.vb: Wolfgang.Etl.Abstractions.LoaderBase(Of TRecord, Wolfgang.Etl.Csv.CsvLoaderProgress).LoadWorkerAsync(System.Collections.Generic.IAsyncEnumerable(Of TRecord), System.Threading.CancellationToken)
+  name.vb: LoadWorkerAsync(IAsyncEnumerable(Of TRecord), CancellationToken)
+  spec.csharp:
+  - uid: Wolfgang.Etl.Abstractions.LoaderBase{`0,Wolfgang.Etl.Csv.CsvLoaderProgress}.LoadWorkerAsync(System.Collections.Generic.IAsyncEnumerable{`0},System.Threading.CancellationToken)
+    name: LoadWorkerAsync
+    isExternal: true
+  - name: (
+  - uid: System.Collections.Generic.IAsyncEnumerable`1
+    name: IAsyncEnumerable
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1
+  - name: <
+  - name: TRecord
+  - name: '>'
+  - name: ','
+  - name: " "
+  - uid: System.Threading.CancellationToken
+    name: CancellationToken
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken
+  - name: )
+  spec.vb:
+  - uid: Wolfgang.Etl.Abstractions.LoaderBase{`0,Wolfgang.Etl.Csv.CsvLoaderProgress}.LoadWorkerAsync(System.Collections.Generic.IAsyncEnumerable{`0},System.Threading.CancellationToken)
+    name: LoadWorkerAsync
+    isExternal: true
+  - name: (
+  - uid: System.Collections.Generic.IAsyncEnumerable`1
+    name: IAsyncEnumerable
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1
+  - name: (
+  - name: Of
+  - name: " "
+  - name: TRecord
+  - name: )
+  - name: ','
+  - name: " "
+  - uid: System.Threading.CancellationToken
+    name: CancellationToken
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken
+  - name: )
+- uid: Wolfgang.Etl.Csv.CsvLoader`1.LoadWorkerAsync*
+  commentId: Overload:Wolfgang.Etl.Csv.CsvLoader`1.LoadWorkerAsync
+  href: Wolfgang.Etl.Csv.CsvLoader-1.html#Wolfgang_Etl_Csv_CsvLoader_1_LoadWorkerAsync_System_Collections_Generic_IAsyncEnumerable__0__System_Threading_CancellationToken_
+  name: LoadWorkerAsync
+  nameWithType: CsvLoader<TRecord>.LoadWorkerAsync
+  fullName: Wolfgang.Etl.Csv.CsvLoader<TRecord>.LoadWorkerAsync
+  nameWithType.vb: CsvLoader(Of TRecord).LoadWorkerAsync
+  fullName.vb: Wolfgang.Etl.Csv.CsvLoader(Of TRecord).LoadWorkerAsync
+- uid: System.Collections.Generic.IAsyncEnumerable{{TRecord}}
+  commentId: T:System.Collections.Generic.IAsyncEnumerable{`0}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.IAsyncEnumerable`1
+  href: https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1
+  name: IAsyncEnumerable<TRecord>
+  nameWithType: IAsyncEnumerable<TRecord>
+  fullName: System.Collections.Generic.IAsyncEnumerable<TRecord>
+  nameWithType.vb: IAsyncEnumerable(Of TRecord)
+  fullName.vb: System.Collections.Generic.IAsyncEnumerable(Of TRecord)
+  name.vb: IAsyncEnumerable(Of TRecord)
+  spec.csharp:
+  - uid: System.Collections.Generic.IAsyncEnumerable`1
+    name: IAsyncEnumerable
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1
+  - name: <
+  - name: TRecord
+  - name: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IAsyncEnumerable`1
+    name: IAsyncEnumerable
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1
+  - name: (
+  - name: Of
+  - name: " "
+  - name: TRecord
+  - name: )
+- uid: System.Threading.CancellationToken
+  commentId: T:System.Threading.CancellationToken
+  parent: System.Threading
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken
+  name: CancellationToken
+  nameWithType: CancellationToken
+  fullName: System.Threading.CancellationToken
+- uid: System.Threading.Tasks.Task
+  commentId: T:System.Threading.Tasks.Task
+  parent: System.Threading.Tasks
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.threading.tasks.task
+  name: Task
+  nameWithType: Task
+  fullName: System.Threading.Tasks.Task
+- uid: Wolfgang.Etl.Abstractions.LoaderBase`2.LoadWorkerAsync(System.Collections.Generic.IAsyncEnumerable{`0},System.Threading.CancellationToken)
+  commentId: M:Wolfgang.Etl.Abstractions.LoaderBase`2.LoadWorkerAsync(System.Collections.Generic.IAsyncEnumerable{`0},System.Threading.CancellationToken)
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1
+  name: LoadWorkerAsync(IAsyncEnumerable<TDestination>, CancellationToken)
+  nameWithType: LoaderBase<TDestination, TProgress>.LoadWorkerAsync(IAsyncEnumerable<TDestination>, CancellationToken)
+  fullName: Wolfgang.Etl.Abstractions.LoaderBase<TDestination, TProgress>.LoadWorkerAsync(System.Collections.Generic.IAsyncEnumerable<TDestination>, System.Threading.CancellationToken)
+  nameWithType.vb: LoaderBase(Of TDestination, TProgress).LoadWorkerAsync(IAsyncEnumerable(Of TDestination), CancellationToken)
+  fullName.vb: Wolfgang.Etl.Abstractions.LoaderBase(Of TDestination, TProgress).LoadWorkerAsync(System.Collections.Generic.IAsyncEnumerable(Of TDestination), System.Threading.CancellationToken)
+  name.vb: LoadWorkerAsync(IAsyncEnumerable(Of TDestination), CancellationToken)
+  spec.csharp:
+  - uid: Wolfgang.Etl.Abstractions.LoaderBase`2.LoadWorkerAsync(System.Collections.Generic.IAsyncEnumerable{`0},System.Threading.CancellationToken)
+    name: LoadWorkerAsync
+    isExternal: true
+  - name: (
+  - uid: System.Collections.Generic.IAsyncEnumerable`1
+    name: IAsyncEnumerable
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1
+  - name: <
+  - name: TDestination
+  - name: '>'
+  - name: ','
+  - name: " "
+  - uid: System.Threading.CancellationToken
+    name: CancellationToken
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken
+  - name: )
+  spec.vb:
+  - uid: Wolfgang.Etl.Abstractions.LoaderBase`2.LoadWorkerAsync(System.Collections.Generic.IAsyncEnumerable{`0},System.Threading.CancellationToken)
+    name: LoadWorkerAsync
+    isExternal: true
+  - name: (
+  - uid: System.Collections.Generic.IAsyncEnumerable`1
+    name: IAsyncEnumerable
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1
+  - name: (
+  - name: Of
+  - name: " "
+  - name: TDestination
+  - name: )
+  - name: ','
+  - name: " "
+  - uid: System.Threading.CancellationToken
+    name: CancellationToken
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken
+  - name: )
+- uid: System.Collections.Generic.IAsyncEnumerable`1
+  commentId: T:System.Collections.Generic.IAsyncEnumerable`1
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1
+  name: IAsyncEnumerable<T>
+  nameWithType: IAsyncEnumerable<T>
+  fullName: System.Collections.Generic.IAsyncEnumerable<T>
+  nameWithType.vb: IAsyncEnumerable(Of T)
+  fullName.vb: System.Collections.Generic.IAsyncEnumerable(Of T)
+  name.vb: IAsyncEnumerable(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.IAsyncEnumerable`1
+    name: IAsyncEnumerable
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1
+  - name: <
+  - name: T
+  - name: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IAsyncEnumerable`1
+    name: IAsyncEnumerable
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: )
+- uid: System.Threading
+  commentId: N:System.Threading
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system
+  name: System.Threading
+  nameWithType: System.Threading
+  fullName: System.Threading
+  spec.csharp:
+  - uid: System
+    name: System
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system
+  - name: .
+  - uid: System.Threading
+    name: Threading
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.threading
+  spec.vb:
+  - uid: System
+    name: System
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system
+  - name: .
+  - uid: System.Threading
+    name: Threading
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.threading
+- uid: System.Threading.Tasks
+  commentId: N:System.Threading.Tasks
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system
+  name: System.Threading.Tasks
+  nameWithType: System.Threading.Tasks
+  fullName: System.Threading.Tasks
+  spec.csharp:
+  - uid: System
+    name: System
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system
+  - name: .
+  - uid: System.Threading
+    name: Threading
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.threading
+  - name: .
+  - uid: System.Threading.Tasks
+    name: Tasks
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.threading.tasks
+  spec.vb:
+  - uid: System
+    name: System
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system
+  - name: .
+  - uid: System.Threading
+    name: Threading
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.threading
+  - name: .
+  - uid: System.Threading.Tasks
+    name: Tasks
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.threading.tasks
+- uid: Wolfgang.Etl.Abstractions.LoaderBase{{TRecord},Wolfgang.Etl.Csv.CsvLoaderProgress}.CreateProgressReport
+  commentId: M:Wolfgang.Etl.Abstractions.LoaderBase{`0,Wolfgang.Etl.Csv.CsvLoaderProgress}.CreateProgressReport
+  parent: Wolfgang.Etl.Abstractions.LoaderBase{{TRecord},Wolfgang.Etl.Csv.CsvLoaderProgress}
+  definition: Wolfgang.Etl.Abstractions.LoaderBase`2.CreateProgressReport
+  name: CreateProgressReport()
+  nameWithType: LoaderBase<TRecord, CsvLoaderProgress>.CreateProgressReport()
+  fullName: Wolfgang.Etl.Abstractions.LoaderBase<TRecord, Wolfgang.Etl.Csv.CsvLoaderProgress>.CreateProgressReport()
+  nameWithType.vb: LoaderBase(Of TRecord, CsvLoaderProgress).CreateProgressReport()
+  fullName.vb: Wolfgang.Etl.Abstractions.LoaderBase(Of TRecord, Wolfgang.Etl.Csv.CsvLoaderProgress).CreateProgressReport()
+  spec.csharp:
+  - uid: Wolfgang.Etl.Abstractions.LoaderBase{`0,Wolfgang.Etl.Csv.CsvLoaderProgress}.CreateProgressReport
+    name: CreateProgressReport
+    isExternal: true
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: Wolfgang.Etl.Abstractions.LoaderBase{`0,Wolfgang.Etl.Csv.CsvLoaderProgress}.CreateProgressReport
+    name: CreateProgressReport
+    isExternal: true
+  - name: (
+  - name: )
+- uid: Wolfgang.Etl.Csv.CsvLoader`1.CreateProgressReport*
+  commentId: Overload:Wolfgang.Etl.Csv.CsvLoader`1.CreateProgressReport
+  href: Wolfgang.Etl.Csv.CsvLoader-1.html#Wolfgang_Etl_Csv_CsvLoader_1_CreateProgressReport
+  name: CreateProgressReport
+  nameWithType: CsvLoader<TRecord>.CreateProgressReport
+  fullName: Wolfgang.Etl.Csv.CsvLoader<TRecord>.CreateProgressReport
+  nameWithType.vb: CsvLoader(Of TRecord).CreateProgressReport
+  fullName.vb: Wolfgang.Etl.Csv.CsvLoader(Of TRecord).CreateProgressReport
+- uid: Wolfgang.Etl.Csv.CsvLoaderProgress
+  commentId: T:Wolfgang.Etl.Csv.CsvLoaderProgress
+  parent: Wolfgang.Etl.Csv
+  href: Wolfgang.Etl.Csv.CsvLoaderProgress.html
+  name: CsvLoaderProgress
+  nameWithType: CsvLoaderProgress
+  fullName: Wolfgang.Etl.Csv.CsvLoaderProgress
+- uid: Wolfgang.Etl.Abstractions.LoaderBase`2.CreateProgressReport
+  commentId: M:Wolfgang.Etl.Abstractions.LoaderBase`2.CreateProgressReport
+  isExternal: true
+  name: CreateProgressReport()
+  nameWithType: LoaderBase<TDestination, TProgress>.CreateProgressReport()
+  fullName: Wolfgang.Etl.Abstractions.LoaderBase<TDestination, TProgress>.CreateProgressReport()
+  nameWithType.vb: LoaderBase(Of TDestination, TProgress).CreateProgressReport()
+  fullName.vb: Wolfgang.Etl.Abstractions.LoaderBase(Of TDestination, TProgress).CreateProgressReport()
+  spec.csharp:
+  - uid: Wolfgang.Etl.Abstractions.LoaderBase`2.CreateProgressReport
+    name: CreateProgressReport
+    isExternal: true
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: Wolfgang.Etl.Abstractions.LoaderBase`2.CreateProgressReport
+    name: CreateProgressReport
+    isExternal: true
+  - name: (
+  - name: )
+- uid: Wolfgang.Etl.Abstractions.IProgressTimer
+  commentId: T:Wolfgang.Etl.Abstractions.IProgressTimer
+  parent: Wolfgang.Etl.Abstractions
+  isExternal: true
+  name: IProgressTimer
+  nameWithType: IProgressTimer
+  fullName: Wolfgang.Etl.Abstractions.IProgressTimer
+- uid: Wolfgang.Etl.Abstractions.LoaderBase{{TRecord},Wolfgang.Etl.Csv.CsvLoaderProgress}.CreateProgressTimer(System.IProgress{Wolfgang.Etl.Csv.CsvLoaderProgress})
+  commentId: M:Wolfgang.Etl.Abstractions.LoaderBase{`0,Wolfgang.Etl.Csv.CsvLoaderProgress}.CreateProgressTimer(System.IProgress{Wolfgang.Etl.Csv.CsvLoaderProgress})
+  parent: Wolfgang.Etl.Abstractions.LoaderBase{{TRecord},Wolfgang.Etl.Csv.CsvLoaderProgress}
+  definition: Wolfgang.Etl.Abstractions.LoaderBase`2.CreateProgressTimer(System.IProgress{`1})
+  href: https://learn.microsoft.com/dotnet/api/system.iprogress-1
+  name: CreateProgressTimer(IProgress<CsvLoaderProgress>)
+  nameWithType: LoaderBase<TRecord, CsvLoaderProgress>.CreateProgressTimer(IProgress<CsvLoaderProgress>)
+  fullName: Wolfgang.Etl.Abstractions.LoaderBase<TRecord, Wolfgang.Etl.Csv.CsvLoaderProgress>.CreateProgressTimer(System.IProgress<Wolfgang.Etl.Csv.CsvLoaderProgress>)
+  nameWithType.vb: LoaderBase(Of TRecord, CsvLoaderProgress).CreateProgressTimer(IProgress(Of CsvLoaderProgress))
+  fullName.vb: Wolfgang.Etl.Abstractions.LoaderBase(Of TRecord, Wolfgang.Etl.Csv.CsvLoaderProgress).CreateProgressTimer(System.IProgress(Of Wolfgang.Etl.Csv.CsvLoaderProgress))
+  name.vb: CreateProgressTimer(IProgress(Of CsvLoaderProgress))
+  spec.csharp:
+  - uid: Wolfgang.Etl.Abstractions.LoaderBase{`0,Wolfgang.Etl.Csv.CsvLoaderProgress}.CreateProgressTimer(System.IProgress{Wolfgang.Etl.Csv.CsvLoaderProgress})
+    name: CreateProgressTimer
+    isExternal: true
+  - name: (
+  - uid: System.IProgress`1
+    name: IProgress
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.iprogress-1
+  - name: <
+  - uid: Wolfgang.Etl.Csv.CsvLoaderProgress
+    name: CsvLoaderProgress
+    href: Wolfgang.Etl.Csv.CsvLoaderProgress.html
+  - name: '>'
+  - name: )
+  spec.vb:
+  - uid: Wolfgang.Etl.Abstractions.LoaderBase{`0,Wolfgang.Etl.Csv.CsvLoaderProgress}.CreateProgressTimer(System.IProgress{Wolfgang.Etl.Csv.CsvLoaderProgress})
+    name: CreateProgressTimer
+    isExternal: true
+  - name: (
+  - uid: System.IProgress`1
+    name: IProgress
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.iprogress-1
+  - name: (
+  - name: Of
+  - name: " "
+  - uid: Wolfgang.Etl.Csv.CsvLoaderProgress
+    name: CsvLoaderProgress
+    href: Wolfgang.Etl.Csv.CsvLoaderProgress.html
+  - name: )
+  - name: )
+- uid: Wolfgang.Etl.Csv.CsvLoader`1.CreateProgressTimer*
+  commentId: Overload:Wolfgang.Etl.Csv.CsvLoader`1.CreateProgressTimer
+  href: Wolfgang.Etl.Csv.CsvLoader-1.html#Wolfgang_Etl_Csv_CsvLoader_1_CreateProgressTimer_System_IProgress_Wolfgang_Etl_Csv_CsvLoaderProgress__
+  name: CreateProgressTimer
+  nameWithType: CsvLoader<TRecord>.CreateProgressTimer
+  fullName: Wolfgang.Etl.Csv.CsvLoader<TRecord>.CreateProgressTimer
+  nameWithType.vb: CsvLoader(Of TRecord).CreateProgressTimer
+  fullName.vb: Wolfgang.Etl.Csv.CsvLoader(Of TRecord).CreateProgressTimer
+- uid: System.IProgress{Wolfgang.Etl.Csv.CsvLoaderProgress}
+  commentId: T:System.IProgress{Wolfgang.Etl.Csv.CsvLoaderProgress}
+  parent: System
+  definition: System.IProgress`1
+  href: https://learn.microsoft.com/dotnet/api/system.iprogress-1
+  name: IProgress<CsvLoaderProgress>
+  nameWithType: IProgress<CsvLoaderProgress>
+  fullName: System.IProgress<Wolfgang.Etl.Csv.CsvLoaderProgress>
+  nameWithType.vb: IProgress(Of CsvLoaderProgress)
+  fullName.vb: System.IProgress(Of Wolfgang.Etl.Csv.CsvLoaderProgress)
+  name.vb: IProgress(Of CsvLoaderProgress)
+  spec.csharp:
+  - uid: System.IProgress`1
+    name: IProgress
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.iprogress-1
+  - name: <
+  - uid: Wolfgang.Etl.Csv.CsvLoaderProgress
+    name: CsvLoaderProgress
+    href: Wolfgang.Etl.Csv.CsvLoaderProgress.html
+  - name: '>'
+  spec.vb:
+  - uid: System.IProgress`1
+    name: IProgress
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.iprogress-1
+  - name: (
+  - name: Of
+  - name: " "
+  - uid: Wolfgang.Etl.Csv.CsvLoaderProgress
+    name: CsvLoaderProgress
+    href: Wolfgang.Etl.Csv.CsvLoaderProgress.html
+  - name: )
+- uid: Wolfgang.Etl.Abstractions.LoaderBase`2.CreateProgressTimer(System.IProgress{`1})
+  commentId: M:Wolfgang.Etl.Abstractions.LoaderBase`2.CreateProgressTimer(System.IProgress{`1})
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.iprogress-1
+  name: CreateProgressTimer(IProgress<TProgress>)
+  nameWithType: LoaderBase<TDestination, TProgress>.CreateProgressTimer(IProgress<TProgress>)
+  fullName: Wolfgang.Etl.Abstractions.LoaderBase<TDestination, TProgress>.CreateProgressTimer(System.IProgress<TProgress>)
+  nameWithType.vb: LoaderBase(Of TDestination, TProgress).CreateProgressTimer(IProgress(Of TProgress))
+  fullName.vb: Wolfgang.Etl.Abstractions.LoaderBase(Of TDestination, TProgress).CreateProgressTimer(System.IProgress(Of TProgress))
+  name.vb: CreateProgressTimer(IProgress(Of TProgress))
+  spec.csharp:
+  - uid: Wolfgang.Etl.Abstractions.LoaderBase`2.CreateProgressTimer(System.IProgress{`1})
+    name: CreateProgressTimer
+    isExternal: true
+  - name: (
+  - uid: System.IProgress`1
+    name: IProgress
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.iprogress-1
+  - name: <
+  - name: TProgress
+  - name: '>'
+  - name: )
+  spec.vb:
+  - uid: Wolfgang.Etl.Abstractions.LoaderBase`2.CreateProgressTimer(System.IProgress{`1})
+    name: CreateProgressTimer
+    isExternal: true
+  - name: (
+  - uid: System.IProgress`1
+    name: IProgress
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.iprogress-1
+  - name: (
+  - name: Of
+  - name: " "
+  - name: TProgress
+  - name: )
+  - name: )
+- uid: System.IProgress`1
+  commentId: T:System.IProgress`1
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.iprogress-1
+  name: IProgress<T>
+  nameWithType: IProgress<T>
+  fullName: System.IProgress<T>
+  nameWithType.vb: IProgress(Of T)
+  fullName.vb: System.IProgress(Of T)
+  name.vb: IProgress(Of T)
+  spec.csharp:
+  - uid: System.IProgress`1
+    name: IProgress
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.iprogress-1
+  - name: <
+  - name: T
+  - name: '>'
+  spec.vb:
+  - uid: System.IProgress`1
+    name: IProgress
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.iprogress-1
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: )

@@ -1,0 +1,165 @@
+### YamlMime:ManagedReference
+items:
+- uid: Wolfgang.Etl.Csv.CsvTrimOptions
+  commentId: T:Wolfgang.Etl.Csv.CsvTrimOptions
+  id: CsvTrimOptions
+  parent: Wolfgang.Etl.Csv
+  children:
+  - Wolfgang.Etl.Csv.CsvTrimOptions.InsideQuotes
+  - Wolfgang.Etl.Csv.CsvTrimOptions.None
+  - Wolfgang.Etl.Csv.CsvTrimOptions.Trim
+  langs:
+  - csharp
+  - vb
+  name: CsvTrimOptions
+  nameWithType: CsvTrimOptions
+  fullName: Wolfgang.Etl.Csv.CsvTrimOptions
+  type: Enum
+  source:
+    remote:
+      path: src/Wolfgang.Etl.Csv/CsvTrimOptions.cs
+      branch: initial-dev
+      repo: https://github.com/Chris-Wolfgang/ETL-CSV.git
+    id: CsvTrimOptions
+    path: ../src/Wolfgang.Etl.Csv/CsvTrimOptions.cs
+    startLine: 7
+  assemblies:
+  - Wolfgang.Etl.Csv
+  namespace: Wolfgang.Etl.Csv
+  summary: Specifies how whitespace should be trimmed when reading or writing CSV fields.
+  example: []
+  syntax:
+    content: >-
+      [Flags]
+
+      public enum CsvTrimOptions
+    content.vb: >-
+      <Flags>
+
+      Public Enum CsvTrimOptions
+  attributes:
+  - type: System.FlagsAttribute
+    ctor: System.FlagsAttribute.#ctor
+    arguments: []
+- uid: Wolfgang.Etl.Csv.CsvTrimOptions.None
+  commentId: F:Wolfgang.Etl.Csv.CsvTrimOptions.None
+  id: None
+  parent: Wolfgang.Etl.Csv.CsvTrimOptions
+  langs:
+  - csharp
+  - vb
+  name: None
+  nameWithType: CsvTrimOptions.None
+  fullName: Wolfgang.Etl.Csv.CsvTrimOptions.None
+  type: Field
+  source:
+    remote:
+      path: src/Wolfgang.Etl.Csv/CsvTrimOptions.cs
+      branch: initial-dev
+      repo: https://github.com/Chris-Wolfgang/ETL-CSV.git
+    id: None
+    path: ../src/Wolfgang.Etl.Csv/CsvTrimOptions.cs
+    startLine: 11
+  assemblies:
+  - Wolfgang.Etl.Csv
+  namespace: Wolfgang.Etl.Csv
+  summary: No trimming is performed.
+  example: []
+  syntax:
+    content: None = 0
+    return:
+      type: Wolfgang.Etl.Csv.CsvTrimOptions
+- uid: Wolfgang.Etl.Csv.CsvTrimOptions.Trim
+  commentId: F:Wolfgang.Etl.Csv.CsvTrimOptions.Trim
+  id: Trim
+  parent: Wolfgang.Etl.Csv.CsvTrimOptions
+  langs:
+  - csharp
+  - vb
+  name: Trim
+  nameWithType: CsvTrimOptions.Trim
+  fullName: Wolfgang.Etl.Csv.CsvTrimOptions.Trim
+  type: Field
+  source:
+    remote:
+      path: src/Wolfgang.Etl.Csv/CsvTrimOptions.cs
+      branch: initial-dev
+      repo: https://github.com/Chris-Wolfgang/ETL-CSV.git
+    id: Trim
+    path: ../src/Wolfgang.Etl.Csv/CsvTrimOptions.cs
+    startLine: 14
+  assemblies:
+  - Wolfgang.Etl.Csv
+  namespace: Wolfgang.Etl.Csv
+  summary: Trims the whitespace surrounding a field.
+  example: []
+  syntax:
+    content: Trim = 1
+    return:
+      type: Wolfgang.Etl.Csv.CsvTrimOptions
+- uid: Wolfgang.Etl.Csv.CsvTrimOptions.InsideQuotes
+  commentId: F:Wolfgang.Etl.Csv.CsvTrimOptions.InsideQuotes
+  id: InsideQuotes
+  parent: Wolfgang.Etl.Csv.CsvTrimOptions
+  langs:
+  - csharp
+  - vb
+  name: InsideQuotes
+  nameWithType: CsvTrimOptions.InsideQuotes
+  fullName: Wolfgang.Etl.Csv.CsvTrimOptions.InsideQuotes
+  type: Field
+  source:
+    remote:
+      path: src/Wolfgang.Etl.Csv/CsvTrimOptions.cs
+      branch: initial-dev
+      repo: https://github.com/Chris-Wolfgang/ETL-CSV.git
+    id: InsideQuotes
+    path: ../src/Wolfgang.Etl.Csv/CsvTrimOptions.cs
+    startLine: 17
+  assemblies:
+  - Wolfgang.Etl.Csv
+  namespace: Wolfgang.Etl.Csv
+  summary: Trims the whitespace inside of quotes around a field.
+  example: []
+  syntax:
+    content: InsideQuotes = 2
+    return:
+      type: Wolfgang.Etl.Csv.CsvTrimOptions
+references:
+- uid: Wolfgang.Etl.Csv
+  commentId: N:Wolfgang.Etl.Csv
+  href: Wolfgang.html
+  name: Wolfgang.Etl.Csv
+  nameWithType: Wolfgang.Etl.Csv
+  fullName: Wolfgang.Etl.Csv
+  spec.csharp:
+  - uid: Wolfgang
+    name: Wolfgang
+    href: Wolfgang.html
+  - name: .
+  - uid: Wolfgang.Etl
+    name: Etl
+    href: Wolfgang.Etl.html
+  - name: .
+  - uid: Wolfgang.Etl.Csv
+    name: Csv
+    href: Wolfgang.Etl.Csv.html
+  spec.vb:
+  - uid: Wolfgang
+    name: Wolfgang
+    href: Wolfgang.html
+  - name: .
+  - uid: Wolfgang.Etl
+    name: Etl
+    href: Wolfgang.Etl.html
+  - name: .
+  - uid: Wolfgang.Etl.Csv
+    name: Csv
+    href: Wolfgang.Etl.Csv.html
+- uid: Wolfgang.Etl.Csv.CsvTrimOptions
+  commentId: T:Wolfgang.Etl.Csv.CsvTrimOptions
+  parent: Wolfgang.Etl.Csv
+  href: Wolfgang.Etl.Csv.CsvTrimOptions.html
+  name: CsvTrimOptions
+  nameWithType: CsvTrimOptions
+  fullName: Wolfgang.Etl.Csv.CsvTrimOptions
