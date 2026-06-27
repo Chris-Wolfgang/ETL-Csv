@@ -7,6 +7,17 @@ namespace Wolfgang.Etl.Csv;
 /// Cached <see cref="LoggerMessage"/> delegates for high-performance structured logging
 /// across the CSV extractor and loader.
 /// </summary>
+/// <remarks>
+/// <para><b>EventId numbering scheme</b> — IDs are reserved by category so future maintainers
+/// don't reuse retired IDs (log aggregators key alerts on EventId; reuse confuses dashboards):</para>
+/// <list type="bullet">
+///   <item><description><c>1–9</c>: Lifecycle / general (currently 1=StartingOperation, 2=SkippedItem, 3=ReachedMaximumItemCount; 4–9 reserved)</description></item>
+///   <item><description><c>10–19</c>: Extractor-specific (10=ExtractedItem, 11=ExtractionCompleted, 12=IgnoredRow; 13 retired = removed default BadDataFound log per PII privacy; 14 retired = removed default ReadingExceptionOccurred log)</description></item>
+///   <item><description><c>20–29</c>: Loader-specific (20=LoadedItem, 21=LoadingCompleted; 22–29 reserved)</description></item>
+/// </list>
+/// <para>When adding a new event, use the next free ID within the appropriate category. Never reuse
+/// a retired ID — pick a fresh one even if the new event is conceptually similar.</para>
+/// </remarks>
 internal static class CsvLogMessages
 {
     internal static readonly Action<ILogger, string, Exception?> StartingOperation =

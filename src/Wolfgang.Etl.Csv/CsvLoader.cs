@@ -242,9 +242,14 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
 
         CsvLogMessages.StartingOperation(_logger, OperationName, null);
 
-#pragma warning disable CA2007, MA0004
-        await using var csvWriter = new CsvWriter(_writer, BuildConfiguration(), LeaveOpen);
-#pragma warning restore CA2007, MA0004
+        // The `await using var` form doesn't compose with ConfigureAwait(false) —
+        // there's no way to ConfigureAwait the implicit DisposeAsync that runs at
+        // scope exit. Split into construction + explicit ConfiguredAsyncDisposable
+        // so the disposal continuation never captures the caller's
+        // SynchronizationContext (real deadlock risk on net462/netstandard targets
+        // where sync-over-async consumers exist in the wild).
+        var csvWriter = new CsvWriter(_writer, BuildConfiguration(), LeaveOpen);
+        await using var _csvWriterDisposal = csvWriter.ConfigureAwait(false);
 
         RegisterRecordMap(csvWriter.Context);
 
