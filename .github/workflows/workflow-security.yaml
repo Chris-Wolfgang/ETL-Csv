@@ -42,16 +42,21 @@ jobs:
           persist-credentials: false
 
       - name: Run actionlint
-        # Pinned to v1.7.7. actionlint validates workflow YAML for syntax,
-        # expression errors, common pitfalls (e.g. missing `if:` on a step
-        # that needs one), and shellcheck on `run:` scripts.
-        # The official action installs the binary and runs it; see
-        # https://github.com/rhysd/actionlint/blob/main/docs/usage.md.
-        # No args needed — actionlint scans all workflow YAMLs by default.
-        # Don't pass `-color=never`; actionlint's CLI uses a boolean -color
-        # flag, not GNU-style key=value, so `-color=never` fails parse.
-        # Color is auto-disabled in non-TTY CI output anyway.
-        uses: docker://rhysd/actionlint:1.7.7
+        # Pinned to v1.7.7. Installation matches the maintainer's own
+        # recommendation in actionlint's README: download the binary via
+        # the official bash script and run it directly. Faster than a
+        # Docker pull, cleaner argv handling (no container ENTRYPOINT
+        # in the loop), and one fewer trust boundary.
+        #
+        # Script is fetched from the v1.7.7 tag for content-pinning —
+        # not from main — so a future change to download-actionlint.bash
+        # can't retroactively alter what this CI does.
+        run: |
+          curl -sSfLo /tmp/download-actionlint.bash \
+            https://raw.githubusercontent.com/rhysd/actionlint/v1.7.7/scripts/download-actionlint.bash
+          bash /tmp/download-actionlint.bash 1.7.7 /tmp
+          /tmp/actionlint
+        shell: bash
 
   zizmor:
     name: zizmor
