@@ -1,1 +1,133 @@
 #nullable enable
+Wolfgang.Etl.Csv.CsvBadDataInfo
+Wolfgang.Etl.Csv.CsvBadDataInfo.ColumnNumber.get -> int
+Wolfgang.Etl.Csv.CsvBadDataInfo.ColumnNumber.init -> void
+Wolfgang.Etl.Csv.CsvBadDataInfo.CsvBadDataInfo(int LineNumber, int ColumnNumber, string? Field, string! RawRecord) -> void
+Wolfgang.Etl.Csv.CsvBadDataInfo.Field.get -> string?
+Wolfgang.Etl.Csv.CsvBadDataInfo.Field.init -> void
+Wolfgang.Etl.Csv.CsvBadDataInfo.LineNumber.get -> int
+Wolfgang.Etl.Csv.CsvBadDataInfo.LineNumber.init -> void
+Wolfgang.Etl.Csv.CsvBadDataInfo.RawRecord.get -> string!
+Wolfgang.Etl.Csv.CsvBadDataInfo.RawRecord.init -> void
+Wolfgang.Etl.Csv.CsvColumnAttribute
+Wolfgang.Etl.Csv.CsvColumnAttribute.CsvColumnAttribute() -> void
+Wolfgang.Etl.Csv.CsvColumnAttribute.CsvColumnAttribute(string? name) -> void
+Wolfgang.Etl.Csv.CsvColumnAttribute.Default.get -> string?
+Wolfgang.Etl.Csv.CsvColumnAttribute.Default.init -> void
+Wolfgang.Etl.Csv.CsvColumnAttribute.Format.get -> string?
+Wolfgang.Etl.Csv.CsvColumnAttribute.Format.init -> void
+Wolfgang.Etl.Csv.CsvColumnAttribute.Index.get -> int
+Wolfgang.Etl.Csv.CsvColumnAttribute.Index.init -> void
+Wolfgang.Etl.Csv.CsvColumnAttribute.Name.get -> string?
+Wolfgang.Etl.Csv.CsvColumnAttribute.Name.init -> void
+Wolfgang.Etl.Csv.CsvColumnAttribute.Optional.get -> bool
+Wolfgang.Etl.Csv.CsvColumnAttribute.Optional.init -> void
+Wolfgang.Etl.Csv.CsvColumnMap
+Wolfgang.Etl.Csv.CsvColumnMap.CsvColumnMap(string! PropertyName) -> void
+Wolfgang.Etl.Csv.CsvColumnMap.Default.get -> string?
+Wolfgang.Etl.Csv.CsvColumnMap.Default.init -> void
+Wolfgang.Etl.Csv.CsvColumnMap.Format.get -> string?
+Wolfgang.Etl.Csv.CsvColumnMap.Format.init -> void
+Wolfgang.Etl.Csv.CsvColumnMap.Index.get -> int
+Wolfgang.Etl.Csv.CsvColumnMap.Index.init -> void
+Wolfgang.Etl.Csv.CsvColumnMap.Name.get -> string?
+Wolfgang.Etl.Csv.CsvColumnMap.Name.init -> void
+Wolfgang.Etl.Csv.CsvColumnMap.Optional.get -> bool
+Wolfgang.Etl.Csv.CsvColumnMap.Optional.init -> void
+Wolfgang.Etl.Csv.CsvColumnMap.PropertyName.get -> string!
+Wolfgang.Etl.Csv.CsvColumnMap.PropertyName.init -> void
+Wolfgang.Etl.Csv.CsvExtractor<TRecord>
+Wolfgang.Etl.Csv.CsvExtractor<TRecord>.AllowComments.get -> bool
+Wolfgang.Etl.Csv.CsvExtractor<TRecord>.AllowComments.set -> void
+Wolfgang.Etl.Csv.CsvExtractor<TRecord>.BadDataFound.get -> System.Action<Wolfgang.Etl.Csv.CsvBadDataInfo!>?
+Wolfgang.Etl.Csv.CsvExtractor<TRecord>.BadDataFound.set -> void
+Wolfgang.Etl.Csv.CsvExtractor<TRecord>.ColumnMaps.get -> System.Collections.Generic.IReadOnlyList<Wolfgang.Etl.Csv.CsvColumnMap!>?
+Wolfgang.Etl.Csv.CsvExtractor<TRecord>.ColumnMaps.set -> void
+Wolfgang.Etl.Csv.CsvExtractor<TRecord>.Comment.get -> char
+Wolfgang.Etl.Csv.CsvExtractor<TRecord>.Comment.set -> void
+Wolfgang.Etl.Csv.CsvExtractor<TRecord>.CsvExtractor(System.IO.StreamReader! streamReader) -> void
+Wolfgang.Etl.Csv.CsvExtractor<TRecord>.CsvExtractor(System.IO.StreamReader! streamReader, Microsoft.Extensions.Logging.ILogger<Wolfgang.Etl.Csv.CsvExtractor<TRecord>!>! logger) -> void
+Wolfgang.Etl.Csv.CsvExtractor<TRecord>.Delimiter.get -> string!
+Wolfgang.Etl.Csv.CsvExtractor<TRecord>.Delimiter.set -> void
+Wolfgang.Etl.Csv.CsvExtractor<TRecord>.Encoding.get -> System.Text.Encoding!
+Wolfgang.Etl.Csv.CsvExtractor<TRecord>.Encoding.set -> void
+Wolfgang.Etl.Csv.CsvExtractor<TRecord>.Escape.get -> char
+Wolfgang.Etl.Csv.CsvExtractor<TRecord>.Escape.set -> void
+Wolfgang.Etl.Csv.CsvExtractor<TRecord>.HasHeaderRecord.get -> bool
+Wolfgang.Etl.Csv.CsvExtractor<TRecord>.HasHeaderRecord.set -> void
+Wolfgang.Etl.Csv.CsvExtractor<TRecord>.IgnoreBlankLines.get -> bool
+Wolfgang.Etl.Csv.CsvExtractor<TRecord>.IgnoreBlankLines.set -> void
+Wolfgang.Etl.Csv.CsvExtractor<TRecord>.InitialRecordIndex.get -> int
+Wolfgang.Etl.Csv.CsvExtractor<TRecord>.InitialRecordIndex.set -> void
+Wolfgang.Etl.Csv.CsvExtractor<TRecord>.LeaveOpen.get -> bool
+Wolfgang.Etl.Csv.CsvExtractor<TRecord>.LeaveOpen.set -> void
+Wolfgang.Etl.Csv.CsvExtractor<TRecord>.MaxRecordCount.get -> int
+Wolfgang.Etl.Csv.CsvExtractor<TRecord>.MaxRecordCount.set -> void
+Wolfgang.Etl.Csv.CsvExtractor<TRecord>.Quote.get -> char
+Wolfgang.Etl.Csv.CsvExtractor<TRecord>.Quote.set -> void
+Wolfgang.Etl.Csv.CsvExtractor<TRecord>.ReadingExceptionOccurred.get -> System.Action<Wolfgang.Etl.Csv.CsvReadingExceptionInfo!>?
+Wolfgang.Etl.Csv.CsvExtractor<TRecord>.ReadingExceptionOccurred.set -> void
+Wolfgang.Etl.Csv.CsvExtractor<TRecord>.SkipRecordCount.get -> int
+Wolfgang.Etl.Csv.CsvExtractor<TRecord>.SkipRecordCount.set -> void
+Wolfgang.Etl.Csv.CsvExtractor<TRecord>.TrimOptions.get -> Wolfgang.Etl.Csv.CsvTrimOptions
+Wolfgang.Etl.Csv.CsvExtractor<TRecord>.TrimOptions.set -> void
+Wolfgang.Etl.Csv.CsvExtractorProgress
+Wolfgang.Etl.Csv.CsvExtractorProgress.CsvExtractorProgress(int currentItemCount, int currentSkippedItemCount, int currentLineNumber, int currentBadDataCount) -> void
+Wolfgang.Etl.Csv.CsvExtractorProgress.CurrentBadDataCount.get -> int
+Wolfgang.Etl.Csv.CsvExtractorProgress.CurrentLineNumber.get -> int
+Wolfgang.Etl.Csv.CsvExtractorProgress.CurrentSkippedItemCount.get -> int
+Wolfgang.Etl.Csv.CsvIgnoreAttribute
+Wolfgang.Etl.Csv.CsvIgnoreAttribute.CsvIgnoreAttribute() -> void
+Wolfgang.Etl.Csv.CsvLoader<TRecord>
+Wolfgang.Etl.Csv.CsvLoader<TRecord>.ColumnMaps.get -> System.Collections.Generic.IReadOnlyList<Wolfgang.Etl.Csv.CsvColumnMap!>?
+Wolfgang.Etl.Csv.CsvLoader<TRecord>.ColumnMaps.set -> void
+Wolfgang.Etl.Csv.CsvLoader<TRecord>.CsvLoader(System.IO.StreamWriter! streamWriter) -> void
+Wolfgang.Etl.Csv.CsvLoader<TRecord>.CsvLoader(System.IO.StreamWriter! streamWriter, Microsoft.Extensions.Logging.ILogger<Wolfgang.Etl.Csv.CsvLoader<TRecord>!>! logger) -> void
+Wolfgang.Etl.Csv.CsvLoader<TRecord>.Delimiter.get -> string!
+Wolfgang.Etl.Csv.CsvLoader<TRecord>.Delimiter.set -> void
+Wolfgang.Etl.Csv.CsvLoader<TRecord>.Encoding.get -> System.Text.Encoding!
+Wolfgang.Etl.Csv.CsvLoader<TRecord>.Encoding.set -> void
+Wolfgang.Etl.Csv.CsvLoader<TRecord>.Escape.get -> char
+Wolfgang.Etl.Csv.CsvLoader<TRecord>.Escape.set -> void
+Wolfgang.Etl.Csv.CsvLoader<TRecord>.HasHeaderRecord.get -> bool
+Wolfgang.Etl.Csv.CsvLoader<TRecord>.HasHeaderRecord.set -> void
+Wolfgang.Etl.Csv.CsvLoader<TRecord>.LeaveOpen.get -> bool
+Wolfgang.Etl.Csv.CsvLoader<TRecord>.LeaveOpen.set -> void
+Wolfgang.Etl.Csv.CsvLoader<TRecord>.MaxRecordCount.get -> int
+Wolfgang.Etl.Csv.CsvLoader<TRecord>.MaxRecordCount.set -> void
+Wolfgang.Etl.Csv.CsvLoader<TRecord>.NewLine.get -> string!
+Wolfgang.Etl.Csv.CsvLoader<TRecord>.NewLine.set -> void
+Wolfgang.Etl.Csv.CsvLoader<TRecord>.Quote.get -> char
+Wolfgang.Etl.Csv.CsvLoader<TRecord>.Quote.set -> void
+Wolfgang.Etl.Csv.CsvLoader<TRecord>.ShouldQuote.get -> System.Func<Wolfgang.Etl.Csv.CsvShouldQuoteContext!, bool>?
+Wolfgang.Etl.Csv.CsvLoader<TRecord>.ShouldQuote.set -> void
+Wolfgang.Etl.Csv.CsvLoader<TRecord>.SkipRecordCount.get -> int
+Wolfgang.Etl.Csv.CsvLoader<TRecord>.SkipRecordCount.set -> void
+Wolfgang.Etl.Csv.CsvLoader<TRecord>.TrimOptions.get -> Wolfgang.Etl.Csv.CsvTrimOptions
+Wolfgang.Etl.Csv.CsvLoader<TRecord>.TrimOptions.set -> void
+Wolfgang.Etl.Csv.CsvLoaderProgress
+Wolfgang.Etl.Csv.CsvLoaderProgress.CsvLoaderProgress(int currentItemCount, int currentSkippedItemCount, int currentLineNumber) -> void
+Wolfgang.Etl.Csv.CsvLoaderProgress.CurrentLineNumber.get -> int
+Wolfgang.Etl.Csv.CsvLoaderProgress.CurrentSkippedItemCount.get -> int
+Wolfgang.Etl.Csv.CsvReadingExceptionInfo
+Wolfgang.Etl.Csv.CsvReadingExceptionInfo.ColumnName.get -> string?
+Wolfgang.Etl.Csv.CsvReadingExceptionInfo.ColumnName.init -> void
+Wolfgang.Etl.Csv.CsvReadingExceptionInfo.ColumnNumber.get -> int
+Wolfgang.Etl.Csv.CsvReadingExceptionInfo.ColumnNumber.init -> void
+Wolfgang.Etl.Csv.CsvReadingExceptionInfo.ColumnValue.get -> string?
+Wolfgang.Etl.Csv.CsvReadingExceptionInfo.ColumnValue.init -> void
+Wolfgang.Etl.Csv.CsvReadingExceptionInfo.CsvReadingExceptionInfo(int LineNumber, int ColumnNumber, string? ColumnName, string? ColumnValue, System.Exception! Exception) -> void
+Wolfgang.Etl.Csv.CsvReadingExceptionInfo.Exception.get -> System.Exception!
+Wolfgang.Etl.Csv.CsvReadingExceptionInfo.Exception.init -> void
+Wolfgang.Etl.Csv.CsvReadingExceptionInfo.LineNumber.get -> int
+Wolfgang.Etl.Csv.CsvReadingExceptionInfo.LineNumber.init -> void
+Wolfgang.Etl.Csv.CsvShouldQuoteContext
+Wolfgang.Etl.Csv.CsvShouldQuoteContext.CsvShouldQuoteContext(string? Field, System.Type? FieldType) -> void
+Wolfgang.Etl.Csv.CsvShouldQuoteContext.Field.get -> string?
+Wolfgang.Etl.Csv.CsvShouldQuoteContext.Field.init -> void
+Wolfgang.Etl.Csv.CsvShouldQuoteContext.FieldType.get -> System.Type?
+Wolfgang.Etl.Csv.CsvShouldQuoteContext.FieldType.init -> void
+Wolfgang.Etl.Csv.CsvTrimOptions
+Wolfgang.Etl.Csv.CsvTrimOptions.InsideQuotes = 2 -> Wolfgang.Etl.Csv.CsvTrimOptions
+Wolfgang.Etl.Csv.CsvTrimOptions.None = 0 -> Wolfgang.Etl.Csv.CsvTrimOptions
+Wolfgang.Etl.Csv.CsvTrimOptions.Trim = 1 -> Wolfgang.Etl.Csv.CsvTrimOptions
