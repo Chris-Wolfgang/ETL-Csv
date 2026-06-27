@@ -47,9 +47,11 @@ jobs:
         # that needs one), and shellcheck on `run:` scripts.
         # The official action installs the binary and runs it; see
         # https://github.com/rhysd/actionlint/blob/main/docs/usage.md.
+        # No args needed — actionlint scans all workflow YAMLs by default.
+        # Don't pass `-color=never`; actionlint's CLI uses a boolean -color
+        # flag, not GNU-style key=value, so `-color=never` fails parse.
+        # Color is auto-disabled in non-TTY CI output anyway.
         uses: docker://rhysd/actionlint:1.7.7
-        with:
-          args: -color=never
 
   zizmor:
     name: zizmor
