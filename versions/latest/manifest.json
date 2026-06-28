@@ -11,16 +11,6 @@
       }
     },
     {
-      "type": "Conceptual",
-      "source_relative_path": "api/README.md",
-      "output": {
-        ".html": {
-          "relative_path": "api/README.html"
-        }
-      },
-      "version": ""
-    },
-    {
       "type": "ManagedReference",
       "source_relative_path": "api/Wolfgang.Etl.Csv.CsvBadDataInfo.yml",
       "output": {
@@ -187,16 +177,6 @@
       "IsMRef": true,
       "Title": "Wolfgang.Etl.Csv",
       "Summary": null
-    },
-    {
-      "type": "Conceptual",
-      "source_relative_path": "api/index.md",
-      "output": {
-        ".html": {
-          "relative_path": "api/index.html"
-        }
-      },
-      "version": ""
     },
     {
       "type": "Toc",
