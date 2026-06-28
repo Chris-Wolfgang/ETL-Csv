@@ -5,7 +5,7 @@ This guide explains how to configure a repository to use the standard `release.y
 ## Overview
 
 The release workflow triggers when you **publish a GitHub Release** and implements a comprehensive validation and automatic deployment process that:
-- ✅ Tests all target frameworks per test project on Windows
+- ✅ Tests on both Linux (`ubuntu-latest`) and Windows (`windows-latest`) runners across every shipped target framework
 - ✅ Enforces 90% code coverage threshold
 - ✅ Validates NuGet package integrity with smoke tests
 - ✅ Automatically publishes to NuGet.org after validation passes

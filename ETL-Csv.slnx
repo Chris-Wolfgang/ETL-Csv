@@ -1,6 +1,9 @@
 <Solution>
   <Folder Name="/.root/">
+    <File Path=".gitignore" />
+    <File Path=".zizmor.yml" />
     <File Path="BannedSymbols.txt" />
+    <File Path="CHANGELOG.md" />
     <File Path="CODE_OF_CONDUCT.md" />
     <File Path="CONTRIBUTING.md" />
     <File Path="coverlet.runsettings" />
@@ -11,35 +14,52 @@
     <File Path="SECURITY.md" />
   </Folder>
   <Folder Name="/.root/.github/">
+    <File Path=".github/actionlint.yaml" />
     <File Path=".github/CODEOWNERS" />
     <File Path=".github/copilot-instructions.md" />
     <File Path=".github/dependabot.yml" />
     <File Path=".github/pull_request_template.md" />
-    <File Path=".github/version-picker-template.html" />
   </Folder>
   <Folder Name="/.root/.github/ISSUE_TEMPLATE/">
     <File Path=".github/ISSUE_TEMPLATE/BUG_REPORT.yaml" />
     <File Path=".github/ISSUE_TEMPLATE/feature_request.yaml" />
   </Folder>
   <Folder Name="/.root/.github/workflows/">
+    <File Path=".github/workflows/benchmarks.yaml" />
     <File Path=".github/workflows/build-all-versions.yaml" />
     <File Path=".github/workflows/codeql.yaml" />
     <File Path=".github/workflows/docfx.yaml" />
     <File Path=".github/workflows/pr.yaml" />
     <File Path=".github/workflows/release.yaml" />
+    <File Path=".github/workflows/scorecard.yaml" />
+    <File Path=".github/workflows/stryker.yaml" />
+    <File Path=".github/workflows/workflow-security.yaml" />
   </Folder>
   <Folder Name="/.root/docs/">
+    <File Path="docs/abi-stability.md" />
+    <File Path="docs/disaster-recovery.md" />
+    <File Path="docs/DOCFX-VERSION-PICKER.md" />
+    <File Path="docs/license-audit.md" />
+    <File Path="docs/README-FORMATTING.md" />
     <File Path="docs/RELEASE-WORKFLOW-SETUP.md" />
-    <File Path="docs/SECURITY.md" />
+    <File Path="docs/reproducible-build-verification.md" />
+    <File Path="docs/WORKFLOW_SECURITY.md" />
+  </Folder>
+  <Folder Name="/.root/docs/adr/">
+    <File Path="docs/adr/0000-template.md" />
+    <File Path="docs/adr/0001-csvhelper-as-internal-parser.md" />
+    <File Path="docs/adr/README.md" />
+  </Folder>
+  <Folder Name="/.root/docs/migration/">
+    <File Path="docs/migration/README.md" />
   </Folder>
   <Folder Name="/.root/scripts/">
     <File Path="scripts/build-pr.ps1" />
+    <File Path="scripts/check-api-compat.ps1" />
     <File Path="scripts/Fix-BranchRuleset.ps1" />
     <File Path="scripts/format.ps1" />
-    <File Path="scripts/Setup-BranchRuleset.ps1" />
-    <File Path="scripts/Setup-GitHubPages.ps1" />
     <File Path="scripts/Setup-Labels.ps1" />
-    <File Path="scripts/setup.ps1" />
+    <File Path="scripts/Validate-DocsDeploy.sh" />
   </Folder>
   <Folder Name="/benchmarks/">
     <Project Path="benchmarks/Wolfgang.Etl.Csv.Benchmarks/Wolfgang.Etl.Csv.Benchmarks.csproj" />
@@ -54,4 +74,3 @@
     <Project Path="tests/Wolfgang.Etl.Csv.Tests.Unit/Wolfgang.Etl.Csv.Tests.Unit.csproj" />
   </Folder>
 </Solution>
-
