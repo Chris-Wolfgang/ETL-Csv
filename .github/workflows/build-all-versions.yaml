@@ -254,8 +254,9 @@ jobs:
           }
 
       - name: Generate versions.json for every version
-        # Writes a versions.json (consumed by the version-switcher dropdown) into
-        # each version's output directory.  All URLs are rooted under versions/.
+        # Writes a versions.json (consumed by the version-switcher dropdown) into both
+        # each version's output directory AND the site root (the picker fetches from the root).
+        # All URLs are rooted under versions/.
         shell: pwsh
         env:
           GITHUB_REPOSITORY: ${{ github.repository }}
@@ -309,6 +310,12 @@ jobs:
             $versionsJson | Set-Content -Path (Join-Path $_.FullName 'versions.json') -Encoding utf8NoBOM
             Write-Host "Wrote versions.json to $($_.Name)/"
           }
+          # Also write versions.json to the site root — the picker script
+          # (docfx_project/public/version-picker.js) fetches /<repo>/versions.json
+          # from the root, not from any versions/<tag>/ subdirectory.
+          $versionsJson | Set-Content -Path (Join-Path $outDir 'versions.json') -Encoding utf8NoBOM
+          Write-Host "Wrote versions.json to site root"
+
 
           Write-Host "Generated versions.json with $($versions.Count) entries: $($versions | ForEach-Object { $_.version })"
 
