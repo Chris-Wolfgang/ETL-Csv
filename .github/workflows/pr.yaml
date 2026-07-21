@@ -120,6 +120,7 @@ jobs:
             "BannedSymbols.txt"
             "*.globalconfig"
             "*.ruleset"
+            "*.DotSettings"
             ".github/workflows/*.yml"
             ".github/workflows/*.yaml"
           )
@@ -271,6 +272,7 @@ jobs:
     timeout-minutes: 20
     permissions:
       contents: read
+      actions: read            # upload-sarif reads the workflow run to associate the analysis
       security-events: write   # required for upload-sarif
 
     steps:
@@ -302,6 +304,7 @@ jobs:
             "BannedSymbols.txt"
             "*.globalconfig"
             "*.ruleset"
+            "*.DotSettings"
             ".github/workflows/*.yml"
             ".github/workflows/*.yaml"
           )
@@ -435,6 +438,7 @@ jobs:
             "BannedSymbols.txt"
             "*.globalconfig"
             "*.ruleset"
+            "*.DotSettings"
             ".github/workflows/*.yml"
             ".github/workflows/*.yaml"
           )
@@ -850,7 +854,7 @@ jobs:
           }
           
           # Handle glob patterns for .globalconfig, .ruleset, and workflow files
-          $globPatterns = @("*.globalconfig", "*.ruleset", ".github/workflows/*.yml", ".github/workflows/*.yaml")
+          $globPatterns = @("*.globalconfig", "*.ruleset", "*.DotSettings", ".github/workflows/*.yml", ".github/workflows/*.yaml")
           foreach ($pattern in $globPatterns) {
             $files = git ls-tree -r --name-only main-branch | Select-String -Pattern $pattern.Replace("*", ".*")
             foreach ($file in $files) {
@@ -1147,6 +1151,7 @@ jobs:
             "BannedSymbols.txt"
             "*.globalconfig"
             "*.ruleset"
+            "*.DotSettings"
             ".github/workflows/*.yml"
             ".github/workflows/*.yaml"
           )
@@ -1534,6 +1539,7 @@ jobs:
             "BannedSymbols.txt"
             "*.globalconfig"
             "*.ruleset"
+            "*.DotSettings"
             ".github/workflows/*.yml"
             ".github/workflows/*.yaml"
           )
