@@ -9,6 +9,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- CSV pipeline extensions for the generic `EtlPipeline` chain introduced in
+  `Wolfgang.Etl.Abstractions` 0.16.0 (#14):
+  - `EtlPipeline.Create().CsvExtractor<T>(...)` source factories over a file path, a
+    caller-supplied `StreamReader`, or a pre-built `CsvExtractor<T>`, returning
+    `ICsvExtractorBuilder<T>` for inline fluent configuration.
+  - `pipeline.CsvLoader<T>(...)` sink terminators over a file path, a caller-supplied
+    `StreamWriter`, or a pre-built `CsvLoader<T>`, returning `ICsvLoaderBuilder<T>`.
+  - Fluent setters on both builders map 1:1 to the underlying `CsvExtractor<T>` /
+    `CsvLoader<T>` properties (delimiter, quote, escape, encoding, header handling,
+    record windowing, trim options, column maps, bad-data / reading-exception callbacks,
+    `ShouldQuote`, `NewLine`). The first pipeline operator narrows the builder to
+    `IEtlPipeline<T>`, dropping the configuration surface — no explicit `Build()` step.
+  - Path-based factories own the file stream they open and dispose it after the run
+    (success and failure); caller-supplied streams and pre-built extractors/loaders are
+    left to the caller. `.Encoding(...)` binds the actual stream encoding.
+  - Bumped the `Wolfgang.Etl.Abstractions` dependency to 0.16.0.
+
 ### Changed
 
 ### Deprecated
