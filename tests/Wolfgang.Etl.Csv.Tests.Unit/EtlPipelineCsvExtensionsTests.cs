@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Wolfgang.Etl.Abstractions;
 using Wolfgang.Etl.Csv.Tests.Unit.TestModels;
@@ -263,7 +265,15 @@ public sealed class EtlPipelineCsvExtensionsTests : IDisposable
     {
         var pipeline = EtlPipeline.Create();
 
+        using var reader = ReaderOver("FirstName,LastName,Age\r\n");
+        var extractor = new CsvExtractor<PersonRecord>(reader);
+
+        // Null pipeline receiver — every overload.
         Assert.Throws<ArgumentNullException>(() => ((EtlPipeline)null!).CsvExtractor<PersonRecord>("x.csv"));
+        Assert.Throws<ArgumentNullException>(() => ((EtlPipeline)null!).CsvExtractor<PersonRecord>(reader));
+        Assert.Throws<ArgumentNullException>(() => ((EtlPipeline)null!).CsvExtractor<PersonRecord>(extractor));
+
+        // Null argument — every overload.
         Assert.Throws<ArgumentNullException>(() => pipeline.CsvExtractor<PersonRecord>((string)null!));
         Assert.Throws<ArgumentNullException>(() => pipeline.CsvExtractor<PersonRecord>((StreamReader)null!));
         Assert.Throws<ArgumentNullException>(() => pipeline.CsvExtractor<PersonRecord>((CsvExtractor<PersonRecord>)null!));
@@ -276,10 +286,259 @@ public sealed class EtlPipelineCsvExtensionsTests : IDisposable
         var source = WriteTempFile("guard.csv", "FirstName,LastName,Age\r\nAlice,Smith,30\r\n");
         var pipeline = EtlPipeline.Create().CsvExtractor<PersonRecord>(source);
 
+        using var writer = new StreamWriter(new MemoryStream(), Utf8NoBom);
+        var loader = new CsvLoader<PersonRecord>(writer) { LeaveOpen = true };
+
+        // Null pipeline receiver — every overload.
         Assert.Throws<ArgumentNullException>(() => ((IEtlPipeline<PersonRecord>)null!).CsvLoader<PersonRecord>("x.csv"));
+        Assert.Throws<ArgumentNullException>(() => ((IEtlPipeline<PersonRecord>)null!).CsvLoader<PersonRecord>(writer));
+        Assert.Throws<ArgumentNullException>(() => ((IEtlPipeline<PersonRecord>)null!).CsvLoader<PersonRecord>(loader));
+
+        // Null argument — every overload.
         Assert.Throws<ArgumentNullException>(() => pipeline.CsvLoader<PersonRecord>((string)null!));
         Assert.Throws<ArgumentNullException>(() => pipeline.CsvLoader<PersonRecord>((StreamWriter)null!));
         Assert.Throws<ArgumentNullException>(() => pipeline.CsvLoader<PersonRecord>((CsvLoader<PersonRecord>)null!));
+    }
+
+
+    [Fact]
+    public async Task Extractor_scalar_setters_apply_and_round_trip()
+    {
+        // Data with no comments, blank lines, quotes, or surrounding whitespace, so
+        // Quote/Escape/Comment/AllowComments/IgnoreBlankLines/TrimOptions/Encoding are all
+        // exercised without altering the round-tripped bytes.
+        var source = WriteTempFile("scalars.csv", "FirstName,LastName,Age\r\nAlice,Smith,30\r\nBob,Jones,25\r\n");
+        var target = Path.Combine(_tempDir, "scalars-out.csv");
+
+        await EtlPipeline
+            .Create()
+            .CsvExtractor<PersonRecord>(source)
+            .Quote('"')
+            .Escape('"')
+            .Comment('#')
+            .AllowComments(true)
+            .IgnoreBlankLines(true)
+            .Encoding(Utf8NoBom)
+            .TrimOptions(CsvTrimOptions.Trim)
+            .CsvLoader<PersonRecord>(target)
+            .RunAsync();
+
+        Assert.Equal
+        (
+            "FirstName,LastName,Age\r\nAlice,Smith,30\r\nBob,Jones,25\r\n",
+            File.ReadAllText(target)
+        );
+    }
+
+
+    [Fact]
+    public async Task Extractor_InitialRecordIndex_skips_leading_lines()
+    {
+        // InitialRecordIndex is 1-based over raw lines; 2 makes line 2 the header, skipping the banner.
+        var source = WriteTempFile("banner.csv", "BANNER LINE\r\nFirstName,LastName,Age\r\nAlice,Smith,30\r\n");
+        var target = Path.Combine(_tempDir, "banner-out.csv");
+
+        await EtlPipeline
+            .Create()
+            .CsvExtractor<PersonRecord>(source)
+            .InitialRecordIndex(2)
+            .CsvLoader<PersonRecord>(target)
+            .RunAsync();
+
+        Assert.Equal
+        (
+            "FirstName,LastName,Age\r\nAlice,Smith,30\r\n",
+            File.ReadAllText(target)
+        );
+    }
+
+
+    [Fact]
+    public async Task Extractor_ColumnMaps_bind_columns_by_index()
+    {
+        // Headerless, positionally-ordered LastName,FirstName,Age remapped onto the record.
+        var source = WriteTempFile("maps.csv", "Smith,Alice,30\r\n");
+        var target = Path.Combine(_tempDir, "maps-out.csv");
+
+        var maps = new List<CsvColumnMap>
+        {
+            new(nameof(PersonRecord.LastName)) { Index = 0 },
+            new(nameof(PersonRecord.FirstName)) { Index = 1 },
+            new(nameof(PersonRecord.Age)) { Index = 2 },
+        };
+
+        await EtlPipeline
+            .Create()
+            .CsvExtractor<PersonRecord>(source)
+            .HasHeaderRecord(false)
+            .ColumnMaps(maps)
+            .CsvLoader<PersonRecord>(target)
+            .HasHeaderRecord(false)
+            .RunAsync();
+
+        Assert.Equal("Alice,Smith,30\r\n", File.ReadAllText(target));
+    }
+
+
+    [Fact]
+    public async Task Extractor_BadDataFound_and_ReadingExceptionOccurred_handlers_are_accepted()
+    {
+        var source = WriteTempFile("handlers.csv", "FirstName,LastName,Age\r\nAlice,Smith,30\r\n");
+        var target = Path.Combine(_tempDir, "handlers-out.csv");
+
+        await EtlPipeline
+            .Create()
+            .CsvExtractor<PersonRecord>(source)
+            .BadDataFound(_ => { })
+            .ReadingExceptionOccurred(_ => { })
+            .CsvLoader<PersonRecord>(target)
+            .RunAsync();
+
+        Assert.Equal
+        (
+            "FirstName,LastName,Age\r\nAlice,Smith,30\r\n",
+            File.ReadAllText(target)
+        );
+    }
+
+
+    [Fact]
+    public async Task Extractor_AsAsyncEnumerable_yields_configured_records()
+    {
+        var source = WriteTempFile("enum.csv", "FirstName,LastName,Age\r\nAlice,Smith,30\r\nBob,Jones,25\r\n");
+
+        var names = new List<string>();
+
+        await foreach (var person in EtlPipeline.Create().CsvExtractor<PersonRecord>(source).AsAsyncEnumerable())
+        {
+            names.Add(person.FirstName);
+        }
+
+        Assert.Equal(new[] { "Alice", "Bob" }, names);
+    }
+
+
+    [Fact]
+    public async Task Extractor_To_loader_terminates_the_pipeline()
+    {
+        var source = WriteTempFile("to.csv", "FirstName,LastName,Age\r\nAlice,Smith,30\r\n");
+        var target = Path.Combine(_tempDir, "to-out.csv");
+
+        var loader = new CsvLoader<PersonRecord>(new StreamWriter(target, append: false, Utf8NoBom)) { LeaveOpen = false };
+
+        await EtlPipeline
+            .Create()
+            .CsvExtractor<PersonRecord>(source)
+            .To(loader)
+            .RunAsync();
+
+        Assert.Equal
+        (
+            "FirstName,LastName,Age\r\nAlice,Smith,30\r\n",
+            File.ReadAllText(target)
+        );
+    }
+
+
+    [Fact]
+    public async Task Extractor_Through_cancellation_aware_stage_runs()
+    {
+        var source = WriteTempFile("through-ct.csv", "FirstName,LastName,Age\r\nAlice,Smith,30\r\nBob,Jones,25\r\n");
+        var target = Path.Combine(_tempDir, "through-ct-out.csv");
+
+        await EtlPipeline
+            .Create()
+            .CsvExtractor<PersonRecord>(source)
+            .Through(FilterAdultsWithCancellation)
+            .CsvLoader<PersonRecord>(target)
+            .RunAsync();
+
+        Assert.Equal
+        (
+            "FirstName,LastName,Age\r\nAlice,Smith,30\r\n",
+            File.ReadAllText(target)
+        );
+    }
+
+
+    [Fact]
+    public void Extractor_setters_reject_null_arguments()
+    {
+        var source = WriteTempFile("xguard.csv", "FirstName,LastName,Age\r\nAlice,Smith,30\r\n");
+        var builder = EtlPipeline.Create().CsvExtractor<PersonRecord>(source);
+
+        Assert.Throws<ArgumentNullException>(() => builder.Delimiter(null!));
+        Assert.Throws<ArgumentNullException>(() => builder.Encoding(null!));
+        Assert.Throws<ArgumentNullException>(() => builder.ColumnMaps(null!));
+        Assert.Throws<ArgumentNullException>(() => builder.BadDataFound(null!));
+        Assert.Throws<ArgumentNullException>(() => builder.ReadingExceptionOccurred(null!));
+    }
+
+
+    [Fact]
+    public async Task Loader_scalar_setters_apply_and_round_trip()
+    {
+        var source = WriteTempFile("lscalars.csv", "FirstName,LastName,Age\r\nAlice,Smith,30\r\n");
+        var target = Path.Combine(_tempDir, "lscalars-out.csv");
+
+        await EtlPipeline
+            .Create()
+            .CsvExtractor<PersonRecord>(source)
+            .CsvLoader<PersonRecord>(target)
+            .Quote('"')
+            .Escape('"')
+            .NewLine("\r\n")
+            .TrimOptions(CsvTrimOptions.None)
+            .ShouldQuote(_ => false)
+            .RunAsync();
+
+        Assert.Equal
+        (
+            "FirstName,LastName,Age\r\nAlice,Smith,30\r\n",
+            File.ReadAllText(target)
+        );
+    }
+
+
+    [Fact]
+    public async Task Loader_ColumnMaps_control_output_columns()
+    {
+        var source = WriteTempFile("lmaps.csv", "FirstName,LastName,Age\r\nAlice,Smith,30\r\n");
+        var target = Path.Combine(_tempDir, "lmaps-out.csv");
+
+        var maps = new List<CsvColumnMap>
+        {
+            new(nameof(PersonRecord.LastName)) { Index = 0 },
+            new(nameof(PersonRecord.FirstName)) { Index = 1 },
+            new(nameof(PersonRecord.Age)) { Index = 2 },
+        };
+
+        await EtlPipeline
+            .Create()
+            .CsvExtractor<PersonRecord>(source)
+            .CsvLoader<PersonRecord>(target)
+            .HasHeaderRecord(false)
+            .ColumnMaps(maps)
+            .RunAsync();
+
+        Assert.Equal("Smith,Alice,30\r\n", File.ReadAllText(target));
+    }
+
+
+    [Fact]
+    public void Loader_setters_reject_null_arguments()
+    {
+        var source = WriteTempFile("lguard.csv", "FirstName,LastName,Age\r\nAlice,Smith,30\r\n");
+        var loader = EtlPipeline
+            .Create()
+            .CsvExtractor<PersonRecord>(source)
+            .CsvLoader<PersonRecord>(Path.Combine(_tempDir, "lguard-out.csv"));
+
+        Assert.Throws<ArgumentNullException>(() => loader.Delimiter(null!));
+        Assert.Throws<ArgumentNullException>(() => loader.NewLine(null!));
+        Assert.Throws<ArgumentNullException>(() => loader.Encoding(null!));
+        Assert.Throws<ArgumentNullException>(() => loader.ShouldQuote(null!));
+        Assert.Throws<ArgumentNullException>(() => loader.ColumnMaps(null!));
     }
 
 
@@ -289,6 +548,22 @@ public sealed class EtlPipelineCsvExtensionsTests : IDisposable
     private static async IAsyncEnumerable<PersonRecord> FilterAdults(IAsyncEnumerable<PersonRecord> source)
     {
         await foreach (var person in source.ConfigureAwait(false))
+        {
+            if (person.Age >= 30)
+            {
+                yield return person;
+            }
+        }
+    }
+
+
+    private static async IAsyncEnumerable<PersonRecord> FilterAdultsWithCancellation
+    (
+        IAsyncEnumerable<PersonRecord> source,
+        [EnumeratorCancellation] CancellationToken token
+    )
+    {
+        await foreach (var person in source.WithCancellation(token).ConfigureAwait(false))
         {
             if (person.Age >= 30)
             {
