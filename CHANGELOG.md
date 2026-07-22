@@ -9,6 +9,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+
+
+
+## [0.3.0] - 2026-07-21
+
+CSV pipeline extensions atop the generic `EtlPipeline` framework introduced in `Wolfgang.Etl.Abstractions` 0.16.0 — class-named `CsvExtractor<T>` / `CsvLoader<T>` source/sink factories with inline fluent configuration. No breaking changes.
+
+### Added
+
 - CSV pipeline extensions for the generic `EtlPipeline` chain introduced in
   `Wolfgang.Etl.Abstractions` 0.16.0 (#14):
   - `EtlPipeline.Create().CsvExtractor<T>(...)` source factories over a file path, a
@@ -25,16 +43,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     (success and failure); caller-supplied streams and pre-built extractors/loaders are
     left to the caller. `.Encoding(...)` binds the actual stream encoding.
   - Bumped the `Wolfgang.Etl.Abstractions` dependency to 0.16.0.
-
-### Changed
-
-### Deprecated
-
-### Removed
-
-### Fixed
-
-### Security
 
 
 
