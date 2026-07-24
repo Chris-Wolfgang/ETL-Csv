@@ -188,19 +188,15 @@ the underlying exception, which still propagates out of `ExtractAsync`.
 
 ---
 
-## 🎯 Target Frameworks
+## 🎯 Supported Frameworks
 
-The package ships these literal TFMs:
+This library targets:
 
-| TFM | Notes |
-|-----|-------|
-| `net462` | .NET Framework 4.6.2+ |
-| `netstandard2.0` | Runs on .NET Framework 4.6.1+, .NET Core 2.0+, Mono, Xamarin |
-| `netstandard2.1` | Runs on .NET Core 3.0+, .NET 5.0+, Mono 6.4+ |
-| `net8.0` | LTS .NET |
-| `net10.0` | Current .NET |
+- **.NET Framework:** 4.6.2
+- **.NET Standard:** 2.0, 2.1
+- **.NET:** 8.0, 10.0
 
-Through `netstandard2.0`/`netstandard2.1` the package is compatible with the broader matrix of older .NET Framework and modern .NET runtimes consumers typically use.
+See the [NuGet package page](https://www.nuget.org/packages/Wolfgang.Etl.Csv/) for the authoritative per-TFM compatibility matrix.
 
 ### Trim / NativeAOT
 
