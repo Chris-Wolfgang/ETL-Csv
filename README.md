@@ -2,6 +2,10 @@
 
 A `CsvExtractor<T>` and `CsvLoader<T>` for streaming CSV files into and out of strongly-typed records, built on [`Wolfgang.Etl.Abstractions`](https://github.com/Chris-Wolfgang/ETL-Abstractions) and powered internally by [CsvHelper](https://joshclose.github.io/CsvHelper/). Supports compile-time and runtime column mapping, progress reporting with line numbers and bad-data counts, and an async-first I/O model.
 
+[![NuGet](https://img.shields.io/nuget/v/Wolfgang.Etl.Csv.svg?logo=nuget&label=NuGet)](https://www.nuget.org/packages/Wolfgang.Etl.Csv/)
+[![Downloads](https://img.shields.io/nuget/dt/Wolfgang.Etl.Csv.svg?logo=nuget&label=downloads)](https://www.nuget.org/packages/Wolfgang.Etl.Csv/)
+[![PR build](https://img.shields.io/github/actions/workflow/status/Chris-Wolfgang/ETL-Csv/pr.yaml?event=pull_request_target&label=PR%20build&logo=github)](https://github.com/Chris-Wolfgang/ETL-Csv/actions/workflows/pr.yaml)
+[![release](https://img.shields.io/github/actions/workflow/status/Chris-Wolfgang/ETL-Csv/release.yaml?event=release&label=release&logo=github)](https://github.com/Chris-Wolfgang/ETL-Csv/actions/workflows/release.yaml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![.NET](https://img.shields.io/badge/.NET-Multi--Targeted-purple.svg)](https://dotnet.microsoft.com/)
 [![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?logo=github)](https://github.com/Chris-Wolfgang/ETL-Csv)
