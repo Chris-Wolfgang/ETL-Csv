@@ -2,6 +2,10 @@
 
 A `CsvExtractor<T>` and `CsvLoader<T>` for streaming CSV files into and out of strongly-typed records, built on [`Wolfgang.Etl.Abstractions`](https://github.com/Chris-Wolfgang/ETL-Abstractions) and powered internally by [CsvHelper](https://joshclose.github.io/CsvHelper/). Supports compile-time and runtime column mapping, progress reporting with line numbers and bad-data counts, and an async-first I/O model.
 
+[![NuGet](https://img.shields.io/nuget/v/Wolfgang.Etl.Csv.svg?logo=nuget&label=NuGet)](https://www.nuget.org/packages/Wolfgang.Etl.Csv/)
+[![Downloads](https://img.shields.io/nuget/dt/Wolfgang.Etl.Csv.svg?logo=nuget&label=downloads)](https://www.nuget.org/packages/Wolfgang.Etl.Csv/)
+[![PR build](https://img.shields.io/github/actions/workflow/status/Chris-Wolfgang/ETL-Csv/pr.yaml?event=pull_request_target&label=PR%20build&logo=github)](https://github.com/Chris-Wolfgang/ETL-Csv/actions/workflows/pr.yaml)
+[![release](https://img.shields.io/github/actions/workflow/status/Chris-Wolfgang/ETL-Csv/release.yaml?event=release&label=release&logo=github)](https://github.com/Chris-Wolfgang/ETL-Csv/actions/workflows/release.yaml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![.NET](https://img.shields.io/badge/.NET-Multi--Targeted-purple.svg)](https://dotnet.microsoft.com/)
 [![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?logo=github)](https://github.com/Chris-Wolfgang/ETL-Csv)
@@ -188,19 +192,15 @@ the underlying exception, which still propagates out of `ExtractAsync`.
 
 ---
 
-## 🎯 Target Frameworks
+## 🎯 Supported Frameworks
 
-The package ships these literal TFMs:
+This library targets:
 
-| TFM | Notes |
-|-----|-------|
-| `net462` | .NET Framework 4.6.2+ |
-| `netstandard2.0` | Runs on .NET Framework 4.6.1+, .NET Core 2.0+, Mono, Xamarin |
-| `netstandard2.1` | Runs on .NET Core 3.0+, .NET 5.0+, Mono 6.4+ |
-| `net8.0` | LTS .NET |
-| `net10.0` | Current .NET |
+- **.NET Framework:** 4.6.2
+- **.NET Standard:** 2.0, 2.1
+- **.NET:** 8.0, 10.0
 
-Through `netstandard2.0`/`netstandard2.1` the package is compatible with the broader matrix of older .NET Framework and modern .NET runtimes consumers typically use.
+See the [NuGet package page](https://www.nuget.org/packages/Wolfgang.Etl.Csv/) for the authoritative per-TFM compatibility matrix.
 
 ### Trim / NativeAOT
 
