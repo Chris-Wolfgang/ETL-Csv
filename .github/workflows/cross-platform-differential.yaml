@@ -1,0 +1,105 @@
+# Cross-platform / multi-arch differential (#72). Stages 1/2/3 in pr.yaml prove
+# the suite PASSES on Linux/Windows/macOS, but they never diff the results
+# against each other, and ARM64 is untested. This workflow runs the same net10.0
+# test set on linux-x64, linux-arm64, macos-arm64 and windows-x64, reduces each
+# run to a sorted "TestName=Outcome" manifest, and fails if any platform's
+# manifest diverges from the linux-x64 baseline.
+#
+# Divergence-by-design: tests that are legitimately platform-specific must be
+# tagged [Trait("Category","PlatformSpecific")] so they can be excluded here
+# (none today — the filter is in place for when the need arises).
+name: Cross-platform differential
+
+on:
+  schedule:
+    - cron: '0 5 * * 1'   # Mondays 05:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: ubuntu-latest, name: linux-x64 }
+          - { os: ubuntu-24.04-arm, name: linux-arm64 }
+          - { os: macos-latest, name: macos-arm64 }
+          - { os: windows-latest, name: windows-x64 }
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          persist-credentials: false
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Test (net10.0, TRX)
+        shell: bash
+        # Exclude PlatformSpecific so only cross-platform-invariant tests are diffed.
+        # Don't fail the step on a red test — a divergent failure must reach the
+        # manifest so the diff job can report it, not abort here.
+        run: >-
+          dotnet test tests/Wolfgang.Etl.Csv.Tests.Unit/Wolfgang.Etl.Csv.Tests.Unit.csproj
+          -c Release -f net10.0 --filter "Category!=PlatformSpecific"
+          --logger "trx;LogFileName=results.trx"
+          --results-directory "${{ github.workspace }}/trx" || true
+
+      - name: Reduce TRX to sorted TestName=Outcome manifest
+        shell: pwsh
+        run: |
+          $trxFile = Get-ChildItem -Path "${{ github.workspace }}/trx" -Filter *.trx -Recurse | Select-Object -First 1
+          if (-not $trxFile) { Write-Error "No TRX produced"; exit 1 }
+          [xml]$trx = Get-Content -LiteralPath $trxFile.FullName
+          $ns = @{ t = 'http://microsoft.com/schemas/VisualStudio/TeamTest/2010' }
+          $results = Select-Xml -Xml $trx -Namespace $ns -XPath '//t:UnitTestResult'
+          $lines = $results.Node | ForEach-Object { "{0}={1}" -f $_.testName, $_.outcome } | Sort-Object
+          $out = "${{ github.workspace }}/manifest-${{ matrix.name }}.txt"
+          $lines | Out-File -LiteralPath $out -Encoding utf8
+          Write-Host "Wrote $($lines.Count) results to manifest-${{ matrix.name }}.txt"
+
+      - name: Upload manifest
+        uses: actions/upload-artifact@v7
+        with:
+          name: manifest-${{ matrix.name }}
+          path: manifest-${{ matrix.name }}.txt
+          if-no-files-found: error
+
+  diff:
+    name: Diff manifests vs linux-x64
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download manifests
+        uses: actions/download-artifact@v8.0.1
+        with:
+          path: manifests
+          merge-multiple: true
+
+      - name: Compare each platform against the linux-x64 baseline
+        shell: bash
+        run: |
+          baseline="manifests/manifest-linux-x64.txt"
+          if [ ! -f "$baseline" ]; then echo "::error::baseline manifest missing"; exit 1; fi
+
+          status=0
+          for f in manifests/manifest-*.txt; do
+            name=$(basename "$f" .txt); name=${name#manifest-}
+            [ "$name" = "linux-x64" ] && continue
+            if ! diff -u "$baseline" "$f" > "/tmp/$name.diff"; then
+              echo "::error::$name diverges from linux-x64:"
+              cat "/tmp/$name.diff"
+              status=1
+            else
+              echo "✅ $name matches linux-x64"
+            fi
+          done
+          exit $status
