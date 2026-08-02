@@ -29,7 +29,6 @@ jobs:
     timeout-minutes: 30
     env:
       PROJECT: benchmarks/Wolfgang.Etl.Csv.Benchmarks/Wolfgang.Etl.Csv.Benchmarks.csproj
-      RESULTS: benchmarks/Wolfgang.Etl.Csv.Benchmarks/BenchmarkDotNet.Artifacts/results
     steps:
       - name: Checkout PR head
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
@@ -47,17 +46,19 @@ jobs:
       - name: Stash delta script
         run: cp .github/scripts/bdn_delta.py /tmp/bdn_delta.py
 
+      # --artifacts pins BDN's output dir explicitly (otherwise it lands under the
+      # process cwd, not the project dir). Copy only the compressed JSON reports
+      # into a clean dir the delta script reads.
       - name: Benchmark PR head
         run: |
-          dotnet run -c Release --project "$PROJECT" -- --filter "*" --job short --memory --exporters json
-          mkdir -p /tmp/head && cp "$RESULTS"/*-report-full-compressed.json /tmp/head/
+          dotnet run -c Release --project "$PROJECT" -- --filter "*" --job short --memory --exporters json --artifacts /tmp/head-art
+          mkdir -p /tmp/head && cp /tmp/head-art/results/*-report-full-compressed.json /tmp/head/
 
       - name: Benchmark base (${{ github.event.pull_request.base.ref }})
         run: |
           git checkout --force --detach "${{ github.event.pull_request.base.sha }}"
-          rm -rf "$RESULTS"
-          dotnet run -c Release --project "$PROJECT" -- --filter "*" --job short --memory --exporters json
-          mkdir -p /tmp/base && cp "$RESULTS"/*-report-full-compressed.json /tmp/base/
+          dotnet run -c Release --project "$PROJECT" -- --filter "*" --job short --memory --exporters json --artifacts /tmp/base-art
+          mkdir -p /tmp/base && cp /tmp/base-art/results/*-report-full-compressed.json /tmp/base/
 
       - name: Compute delta table
         run: python3 /tmp/bdn_delta.py /tmp/base /tmp/head > /tmp/body.md
