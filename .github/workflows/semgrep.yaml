@@ -1,0 +1,60 @@
+# Semgrep SAST (#64) — a second static-analysis engine alongside CodeQL.
+#
+# CodeQL (codeql.yaml) is the OSS-grade dataflow SAST; DevSkim + gitleaks cover
+# pattern/secret scanning. Semgrep adds a different rule engine that catches
+# issue classes those surface with low confidence or miss. It runs entirely on
+# the public community rulesets (p/csharp, p/security-audit, p/secrets) — no
+# Semgrep Cloud account or token, so it stays free for this public repo.
+#
+# Findings upload to GitHub Code Scanning (Security tab) but do NOT gate merge —
+# the scan step is continue-on-error, matching how the InspectCode job introduces
+# a new analyzer (surface first, gate later once the noise floor is known).
+name: Semgrep SAST
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '0 4 * * 1'   # Mondays 04:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write   # upload-sarif → Code Scanning
+  actions: read            # upload-sarif needs it to associate the analysis
+
+concurrency:
+  group: semgrep-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  semgrep:
+    name: Semgrep scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          persist-credentials: false
+
+      # continue-on-error: a Semgrep finding exits non-zero, but findings are a
+      # signal in Code Scanning, not a merge gate (yet). We still want the SARIF
+      # uploaded, so don't let the exit code abort the job.
+      - name: Run Semgrep (public rulesets, no account)
+        continue-on-error: true
+        run: |
+          pipx run semgrep scan \
+            --config p/csharp \
+            --config p/security-audit \
+            --config p/secrets \
+            --sarif --output semgrep.sarif \
+            --metrics off
+
+      - name: Upload SARIF to Code Scanning
+        if: ${{ hashFiles('semgrep.sarif') != '' }}
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: semgrep.sarif
+          category: semgrep
