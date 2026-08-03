@@ -350,6 +350,13 @@ jobs:
     name: Pack & Validate NuGet
     needs: validate-release
     runs-on: windows-latest
+    # id-token/attestations: write let this job mint an SLSA build-provenance
+    # attestation for the packed .nupkg (#71), proving to consumers that what
+    # they download was built from this repo at this commit.
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
     outputs:
       has-packages: ${{ steps.check-packages.outputs.has-packages }}
     steps:
@@ -559,6 +566,17 @@ jobs:
               Write-Host "✅ SBOM generated: $sbomName" -ForegroundColor Green
             }
           }
+
+      # SLSA build provenance (#71). Records a signed attestation binding each
+      # .nupkg's digest to this workflow run + commit, stored in GitHub's
+      # attestation API. Consumers verify with `gh attestation verify <nupkg>
+      # --repo Chris-Wolfgang/ETL-Csv`. Pinned to the v4.1.1 COMMIT (attest
+      # actions publish annotated tags that break tag-pin verification).
+      - name: Attest build provenance (SLSA)
+        if: steps.check-packages.outputs.has-packages == 'true'
+        uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373 # v4.1.1
+        with:
+          subject-path: 'nuget-packages/*.nupkg'
 
 
       - name: Upload NuGet packages
