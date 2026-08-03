@@ -13,6 +13,7 @@
     <ImplicitUsings>disable</ImplicitUsings>
     <IsPackable>false</IsPackable>
     <PublishAot>true</PublishAot>
+    <PublishTrimmed>true</PublishTrimmed>   <!-- implied by AOT; explicit so this reads as a trim + AOT check (#76) -->
     <InvariantGlobalization>true</InvariantGlobalization>
 
     <!-- The library is [RequiresUnreferencedCode] (CsvHelper reflection), so

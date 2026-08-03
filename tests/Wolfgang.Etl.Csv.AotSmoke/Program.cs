@@ -101,10 +101,13 @@ internal static class Program
         string csv;
         using (var stream = new MemoryStream())
         {
-            var writer = new StreamWriter(stream, Utf8NoBom, 1024, leaveOpen: true);
-            var loader = new CsvLoader<Person>(writer) { LeaveOpen = true };
-            await loader.LoadAsync(ToAsync(people)).ConfigureAwait(false);
-            await writer.FlushAsync().ConfigureAwait(false);
+            using (var writer = new StreamWriter(stream, Utf8NoBom, 1024, leaveOpen: true))
+            {
+                var loader = new CsvLoader<Person>(writer) { LeaveOpen = true };
+                await loader.LoadAsync(ToAsync(people)).ConfigureAwait(false);
+                await writer.FlushAsync().ConfigureAwait(false);
+            }
+
             csv = Utf8NoBom.GetString(stream.ToArray());
         }
 
