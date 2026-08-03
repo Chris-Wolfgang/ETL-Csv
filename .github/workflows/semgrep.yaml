@@ -7,8 +7,9 @@
 # Semgrep Cloud account or token, so it stays free for this public repo.
 #
 # Findings upload to GitHub Code Scanning (Security tab) but do NOT gate merge —
-# the scan step is continue-on-error, matching how the InspectCode job introduces
-# a new analyzer (surface first, gate later once the noise floor is known).
+# the scan step swallows Semgrep's findings exit code (1) while still failing on a
+# real scanner error (>=2), matching how the InspectCode job introduces a new
+# analyzer (surface first, gate later once the noise floor is known).
 name: Semgrep SAST
 
 on:
@@ -39,18 +40,26 @@ jobs:
         with:
           persist-credentials: false
 
-      # continue-on-error: a Semgrep finding exits non-zero, but findings are a
-      # signal in Code Scanning, not a merge gate (yet). We still want the SARIF
-      # uploaded, so don't let the exit code abort the job.
+      # Semgrep exit codes: 0 = clean, 1 = findings, >=2 = scanner/config/network
+      # error. Findings are a Code Scanning signal, not a merge gate (yet), so we
+      # swallow exit 1 — but a real run failure (>=2) must fail the job rather than
+      # be masked by a blanket continue-on-error. Version pinned for reproducibility
+      # and supply-chain safety (this is a security workflow) — bump deliberately.
       - name: Run Semgrep (public rulesets, no account)
-        continue-on-error: true
         run: |
-          pipx run semgrep scan \
+          set +e
+          pipx run --spec 'semgrep==1.172.0' semgrep scan \
             --config p/csharp \
             --config p/security-audit \
             --config p/secrets \
             --sarif --output semgrep.sarif \
             --metrics off
+          code=$?
+          if [ "$code" -ge 2 ]; then
+            echo "::error::Semgrep failed to run (exit $code) — not a findings result."
+            exit "$code"
+          fi
+          exit 0
 
       - name: Upload SARIF to Code Scanning
         if: ${{ hashFiles('semgrep.sarif') != '' }}
