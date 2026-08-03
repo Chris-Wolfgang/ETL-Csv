@@ -1,0 +1,8 @@
+﻿[
+  FirstName,LastName,Age,
+  "Comma,Name","Quote""Name",1,
+  "Line,
+  Break",Plain,2,
+  "  Padded  ",,3,
+  
+]
