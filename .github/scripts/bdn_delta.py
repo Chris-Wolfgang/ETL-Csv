@@ -64,7 +64,9 @@ def main():
     base = load(sys.argv[1])
     head = load(sys.argv[2])
 
-    names = sorted(set(base) | set(head), key=short_name)
+    # Full name as tie-breaker so ordering is deterministic even when two
+    # benchmarks share a short_name (set iteration order is otherwise arbitrary).
+    names = sorted(set(base) | set(head), key=lambda n: (short_name(n), n))
 
     rows = []
     flagged = False

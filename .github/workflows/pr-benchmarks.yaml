@@ -5,7 +5,7 @@
 # regression is visible before merge, not after.
 #
 # ShortRun keeps each pass to a few minutes; GitHub-hosted runners are noisy, so
-# the comment flags only double-digit time changes and any allocation change.
+# the comment flags double-digit time changes and >20% allocation increases.
 name: PR Benchmarks
 
 on:
