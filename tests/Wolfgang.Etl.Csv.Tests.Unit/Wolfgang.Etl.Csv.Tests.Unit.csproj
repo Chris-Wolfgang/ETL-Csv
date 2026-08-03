@@ -38,6 +38,14 @@
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.6.0" />
   </ItemGroup>
 
+  <!-- CsCheck property/fuzz testing (CsvFuzzTests, #62). net8.0+ only (CsCheck
+       targets net8.0). The same [Trait("Category","Fuzz")] tests run a fast
+       default pass in PR CI and a long pass in fuzz.yaml, which scales the case
+       count via the CsCheck_Time / CsCheck_Iter environment variables. -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net8.0' OR '$(TargetFramework)' == 'net9.0' OR '$(TargetFramework)' == 'net10.0'">
+    <PackageReference Include="CsCheck" Version="4.7.0" />
+  </ItemGroup>
+
   <!-- Verify snapshot/approval testing (CsvSnapshotTests, #73). Restricted to
        net10.0 — the CSV output is TFM-independent, so one modern-TFM pass is
        sufficient, and pinning a single TFM keeps one shared snapshot file per
