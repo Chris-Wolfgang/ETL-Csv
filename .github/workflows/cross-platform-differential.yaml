@@ -29,7 +29,7 @@ jobs:
         include:
           - { os: ubuntu-latest, name: linux-x64 }
           - { os: ubuntu-24.04-arm, name: linux-arm64 }
-          - { os: macos-latest, name: macos-arm64 }
+          - { os: macos-14, name: macos-arm64 }   # pinned Apple Silicon image; macos-latest could drift off arm64
           - { os: windows-latest, name: windows-x64 }
     steps:
       - name: Checkout code
@@ -61,7 +61,17 @@ jobs:
           [xml]$trx = Get-Content -LiteralPath $trxFile.FullName
           $ns = @{ t = 'http://microsoft.com/schemas/VisualStudio/TeamTest/2010' }
           $results = Select-Xml -Xml $trx -Namespace $ns -XPath '//t:UnitTestResult'
-          $lines = $results.Node | ForEach-Object { "{0}={1}" -f $_.testName, $_.outcome } | Sort-Object
+          # Include the failure message for non-passing tests so a divergence in
+          # assertion message / numeric tolerance is caught even when the outcome
+          # matches. Newlines collapsed so one result stays one manifest line.
+          $lines = $results.Node | ForEach-Object {
+            $suffix = ''
+            if ($_.outcome -ne 'Passed') {
+              $m = $_.Output.ErrorInfo.Message
+              if ($m) { $suffix = '|' + (($m -replace '\s+', ' ').Trim()) }
+            }
+            "{0}={1}{2}" -f $_.testName, $_.outcome, $suffix
+          } | Sort-Object
           $out = "${{ github.workspace }}/manifest-${{ matrix.name }}.txt"
           $lines | Out-File -LiteralPath $out -Encoding utf8
           Write-Host "Wrote $($lines.Count) results to manifest-${{ matrix.name }}.txt"
@@ -89,6 +99,16 @@ jobs:
         run: |
           baseline="manifests/manifest-linux-x64.txt"
           if [ ! -f "$baseline" ]; then echo "::error::baseline manifest missing"; exit 1; fi
+
+          # The test step is forced to succeed (|| true) so a divergent failure
+          # reaches the manifest — but that means a suite that fails IDENTICALLY on
+          # every platform would otherwise pass here on a "matching" diff. Guard
+          # against that: if the linux-x64 baseline has any failing test, fail.
+          if grep -qE '=Failed(\||$)' "$baseline"; then
+            echo "::error::linux-x64 baseline contains failing tests — a red suite must not pass the differential:"
+            grep -E '=Failed(\||$)' "$baseline"
+            exit 1
+          fi
 
           status=0
           for f in manifests/manifest-*.txt; do
