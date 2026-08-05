@@ -115,7 +115,9 @@ internal sealed class CsvExtractorBuilder<[DynamicallyAccessedMembers(Dynamicall
             throw new ArgumentNullException(nameof(handler));
         }
 
+#pragma warning disable CS0618 // forwards to the deprecated observation callback for back-compat.
         return Configure(e => e.BadDataFound = handler);
+#pragma warning restore CS0618
     }
 
 
@@ -126,7 +128,9 @@ internal sealed class CsvExtractorBuilder<[DynamicallyAccessedMembers(Dynamicall
             throw new ArgumentNullException(nameof(handler));
         }
 
+#pragma warning disable CS0618 // forwards to the deprecated observation callback for back-compat.
         return Configure(e => e.ReadingExceptionOccurred = handler);
+#pragma warning restore CS0618
     }
 
 

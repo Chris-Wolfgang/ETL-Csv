@@ -10,6 +10,10 @@ using Wolfgang.Etl.Csv.Tests.Unit.TestModels;
 using Wolfgang.Etl.TestKit.Xunit;
 using Xunit;
 
+// Several tests exercise the now-deprecated BadDataFound / ReadingExceptionOccurred
+// observation callbacks, which remain functional; the skip/abort decision moved to ErrorPolicy.
+#pragma warning disable CS0618
+
 namespace Wolfgang.Etl.Csv.Tests.Unit;
 
 public class CsvExtractorTests
@@ -516,5 +520,57 @@ public class CsvExtractorTests
         Assert.Equal(3, captured.ColumnNumber);
         Assert.Equal("Age", captured.ColumnName);
         Assert.Equal("not-a-number", captured.ColumnValue);
+    }
+
+
+    [Fact]
+    public async Task ErrorPolicy_Skip_discards_a_failed_row_and_continues()
+    {
+        // Bob's Age fails type conversion; Skip discards that row and extraction continues.
+        var csv = "FirstName,LastName,Age\r\nAlice,Smith,30\r\nBob,Jones,not-a-number\r\nCarol,White,42\r\n";
+        var sut = new CsvExtractor<PersonRecord>
+        (
+            new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(csv)), Encoding.UTF8)
+        )
+        {
+            ErrorPolicy = _ => ItemErrorAction.Skip,
+        };
+
+        var progress = new SyncProgress<CsvExtractorProgress>();
+        var results = new List<PersonRecord>();
+        await foreach (var item in sut.ExtractAsync(progress).ConfigureAwait(false))
+        {
+            results.Add(item);
+        }
+
+        Assert.Equal(2, results.Count);
+        Assert.Equal("Alice", results[0].FirstName);
+        Assert.Equal("Carol", results[1].FirstName);
+        Assert.Equal(1, sut.CurrentErrorItemCount);
+        Assert.Equal(1, progress.LastValue!.CurrentErrorItemCount);
+    }
+
+
+    [Fact]
+    public async Task ErrorPolicy_defaults_to_fail_fast_and_aborts_on_a_failed_row()
+    {
+        var csv = "FirstName,LastName,Age\r\nAlice,Smith,30\r\nBob,Jones,not-a-number\r\n";
+        var sut = new CsvExtractor<PersonRecord>
+        (
+            new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(csv)), Encoding.UTF8)
+        );
+
+        await Assert.ThrowsAsync<CsvHelper.TypeConversion.TypeConverterException>
+        (
+            async () =>
+            {
+                await foreach (var _ in sut.ExtractAsync().ConfigureAwait(false))
+                {
+                    // drain — the first failure aborts under the default fail-fast policy.
+                }
+            }
+        );
+
+        Assert.Equal(0, sut.CurrentErrorItemCount);   // fail-fast aborts rather than counting a skip
     }
 }

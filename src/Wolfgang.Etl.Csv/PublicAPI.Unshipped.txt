@@ -32,3 +32,5 @@ static Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.CsvExtractor<T>(this Wolfgang.E
 static Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.CsvLoader<T>(this Wolfgang.Etl.Abstractions.IEtlPipeline<T>! pipeline, System.IO.StreamWriter! writer) -> Wolfgang.Etl.Csv.ICsvLoaderBuilder<T>!
 static Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.CsvLoader<T>(this Wolfgang.Etl.Abstractions.IEtlPipeline<T>! pipeline, Wolfgang.Etl.Csv.CsvLoader<T>! loader) -> Wolfgang.Etl.Csv.ICsvLoaderBuilder<T>!
 static Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.CsvLoader<T>(this Wolfgang.Etl.Abstractions.IEtlPipeline<T>! pipeline, string! path) -> Wolfgang.Etl.Csv.ICsvLoaderBuilder<T>!
+Wolfgang.Etl.Csv.CsvExtractorProgress.CsvExtractorProgress(int currentItemCount, int currentSkippedItemCount, int currentLineNumber, int currentBadDataCount, int currentErrorItemCount) -> void
+Wolfgang.Etl.Csv.CsvExtractorProgress.CurrentErrorItemCount.get -> int
