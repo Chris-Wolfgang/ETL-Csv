@@ -31,8 +31,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   the expanded `LoaderBase` / `ExtractorBase` contract-test suites (cancellation,
   disposal, error-handling, allocation-budget) — removed the now-redundant hand-written
   `CsvLoader` null-`items` guard test that the contract base now covers.
+- `CsvExtractor` parse / type-conversion failures now route through the unified
+  `ErrorPolicy` (Abstractions 0.22). Set `ErrorPolicy` to `ItemErrorAction.Skip` to skip a
+  failed row and continue (`CurrentErrorItemCount` / `CsvExtractorProgress.CurrentErrorItemCount`
+  track skipped failures); the default is fail-fast (the first failure aborts the run, as before).
 
 ### Deprecated
+
+- `CsvExtractor.ReadingExceptionOccurred` and `CsvExtractor.BadDataFound` — use `ErrorPolicy`
+  for the skip-vs-abort decision. Both callbacks still fire for observation; parse/type
+  failures are now governed by `ErrorPolicy` and bad data remains tolerated
+  (`CurrentBadDataCount`).
 
 ### Removed
 

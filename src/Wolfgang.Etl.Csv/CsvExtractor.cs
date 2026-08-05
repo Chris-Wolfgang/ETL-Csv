@@ -127,6 +127,7 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     /// the callback or trip the <see cref="System.Threading.CancellationToken"/>
     /// passed to <c>ExtractAsync</c>.
     /// </remarks>
+    [Obsolete("Deprecated in favor of the unified ErrorPolicy for failure handling. This observation callback still fires (and CurrentBadDataCount still counts) when the parser reports malformed data; bad data remains tolerated, while parse/type-conversion failures are governed by ErrorPolicy.")]
     public Action<CsvBadDataInfo>? BadDataFound { get; set; }
 
 
@@ -147,6 +148,7 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     ///         info.LineNumber, info.ColumnNumber, info.ColumnValue);
     /// </code>
     /// </remarks>
+    [Obsolete("Deprecated in favor of the unified ErrorPolicy. Parse / type-conversion failures now route through HandleItemError so ErrorPolicy governs skip-vs-abort; ItemErrorContext.Exception carries the failure. This callback still fires for observation only.")]
     public Action<CsvReadingExceptionInfo>? ReadingExceptionOccurred { get; set; }
 
 
@@ -283,7 +285,9 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
 
     private CsvConfiguration BuildConfiguration()
     {
+#pragma warning disable CS0618 // ErrorPolicy supersedes the decision; the callback is read for observation only.
         var callerBadDataFound = BadDataFound;
+#pragma warning restore CS0618
 
         return new CsvConfiguration(CultureInfo.CurrentCulture)
         {
@@ -328,11 +332,12 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
 
     private bool OnReadingExceptionOccurred(ReadingExceptionOccurredArgs args)
     {
-        // Translate to our parser-agnostic info record only when the caller has
-        // wired a handler. With no handler we just let CsvHelper rethrow — the
-        // exception already carries everything diagnostic via the user's catch
-        // around `await foreach`. Returning true tells CsvHelper to rethrow.
+        // Fire the deprecated observation callback, then return true so CsvHelper
+        // rethrows out of GetRecord — the extract loop's try/catch routes the
+        // failure through the ErrorPolicy (which owns the skip-vs-abort decision).
+#pragma warning disable CS0618 // observation-only; ErrorPolicy owns the decision.
         ReadingExceptionOccurred?.Invoke(ToCsvReadingExceptionInfo(args));
+#pragma warning restore CS0618
         return true;
     }
 
@@ -370,6 +375,7 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
 
 
     /// <inheritdoc />
+    [SuppressMessage("Design", "MA0051:Method is too long", Justification = "Cohesive async extraction loop — the per-row read / error-policy / yield flow cannot be split across the yield boundary without hurting readability.")]
     protected override async IAsyncEnumerable<TRecord> ExtractWorkerAsync
     (
         [EnumeratorCancellation] CancellationToken token
@@ -409,7 +415,25 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
 
             UpdateLineNumber(csvReader);
 
-            var record = csvReader.GetRecord<TRecord>();
+            TRecord? record;
+            try
+            {
+                record = csvReader.GetRecord<TRecord>();
+            }
+            catch (CsvHelperException ex)
+            {
+                // Parse / type-conversion failure. The ErrorPolicy owns skip-vs-abort:
+                // Skip continues to the next row (CurrentErrorItemCount++); the default
+                // fail-fast policy aborts — re-throw preserving the original stack (the
+                // prior behavior for an unhandled reading exception).
+                if (RouteItemError(csvReader, ex) == ItemErrorAction.Abort)
+                {
+                    throw;
+                }
+
+                continue;
+            }
+
             if (record is null)
             {
                 // CsvHelper can produce null for reference-typed TRecord when its
@@ -428,6 +452,17 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
         }
 
         CsvLogMessages.ExtractionCompleted(_logger, CurrentItemCount, CurrentSkippedItemCount, null);
+    }
+
+
+
+    // Routes a failed row through the base ErrorPolicy and returns its decision. On Skip,
+    // HandleItemError has already incremented CurrentErrorItemCount; the caller re-throws
+    // on Abort so the stack is preserved.
+    private ItemErrorAction RouteItemError(CsvReader csvReader, Exception exception)
+    {
+        var rawRow = csvReader.Parser.RawRecord;
+        return HandleItemError(new ItemErrorContext(csvReader.Parser.RawRow, exception, () => rawRow));
     }
 
 
@@ -494,7 +529,8 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
             CurrentItemCount,
             CurrentSkippedItemCount,
             Volatile.Read(ref _currentLineNumber),
-            Volatile.Read(ref _currentBadDataCount)
+            Volatile.Read(ref _currentBadDataCount),
+            CurrentErrorItemCount
         );
 
 

@@ -33,11 +33,35 @@ public record CsvExtractorProgress : Report
         int currentLineNumber,
         int currentBadDataCount
     )
+        : this(currentItemCount, currentSkippedItemCount, currentLineNumber, currentBadDataCount, 0)
+    {
+    }
+
+
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CsvExtractorProgress"/> class,
+    /// including the count of rows the <c>ErrorPolicy</c> skipped.
+    /// </summary>
+    /// <param name="currentItemCount">The number of items extracted so far.</param>
+    /// <param name="currentSkippedItemCount">The number of items skipped so far.</param>
+    /// <param name="currentLineNumber">The 1-based line number most recently read, or <c>0</c>.</param>
+    /// <param name="currentBadDataCount">The number of bad-data events observed so far.</param>
+    /// <param name="currentErrorItemCount">The number of rows skipped by the <c>ErrorPolicy</c>.</param>
+    public CsvExtractorProgress
+    (
+        int currentItemCount,
+        int currentSkippedItemCount,
+        int currentLineNumber,
+        int currentBadDataCount,
+        int currentErrorItemCount
+    )
         : base(currentItemCount)
     {
         CurrentSkippedItemCount = currentSkippedItemCount;
         CurrentLineNumber = currentLineNumber;
         CurrentBadDataCount = currentBadDataCount;
+        CurrentErrorItemCount = currentErrorItemCount;
     }
 
 
@@ -61,4 +85,12 @@ public record CsvExtractorProgress : Report
     /// Gets the number of bad-data events observed so far.
     /// </summary>
     public int CurrentBadDataCount { get; }
+
+
+
+    /// <summary>
+    /// Gets the number of rows that failed to process and were skipped by the
+    /// <c>ErrorPolicy</c>. Zero under the default fail-fast policy.
+    /// </summary>
+    public int CurrentErrorItemCount { get; }
 }
