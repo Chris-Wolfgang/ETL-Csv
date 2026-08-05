@@ -26,8 +26,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Bumped the `Wolfgang.Etl.Abstractions` dependency to **0.20.0** and the test-only
-  `Wolfgang.Etl.TestKit` / `Wolfgang.Etl.TestKit.Xunit` packages to **0.13.0**. Adopts
+- Bumped the `Wolfgang.Etl.Abstractions` dependency to **0.22.0** and the test-only
+  `Wolfgang.Etl.TestKit` / `Wolfgang.Etl.TestKit.Xunit` packages to **0.22.0**. Adopts
   the expanded `LoaderBase` / `ExtractorBase` contract-test suites (cancellation,
   disposal, error-handling, allocation-budget) — removed the now-redundant hand-written
   `CsvLoader` null-`items` guard test that the contract base now covers.
