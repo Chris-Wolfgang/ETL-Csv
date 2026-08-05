@@ -408,7 +408,25 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
                 yield break;
             }
 
-            if (!await csvReader.ReadAsync().ConfigureAwait(false))
+            bool hasRow;
+            try
+            {
+                hasRow = await csvReader.ReadAsync().ConfigureAwait(false);
+            }
+            catch (CsvHelperException ex)
+            {
+                // Parse-level failure while reading the raw row. Route through the
+                // ErrorPolicy so it governs the same skip-vs-abort decision as a
+                // mapping failure below.
+                if (RouteItemError(csvReader, ex) == ItemErrorAction.Abort)
+                {
+                    throw;
+                }
+
+                continue;
+            }
+
+            if (!hasRow)
             {
                 break;
             }
@@ -422,7 +440,7 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
             }
             catch (CsvHelperException ex)
             {
-                // Parse / type-conversion failure. The ErrorPolicy owns skip-vs-abort:
+                // Type-conversion / mapping failure. The ErrorPolicy owns skip-vs-abort:
                 // Skip continues to the next row (CurrentErrorItemCount++); the default
                 // fail-fast policy aborts — re-throw preserving the original stack (the
                 // prior behavior for an unhandled reading exception).
