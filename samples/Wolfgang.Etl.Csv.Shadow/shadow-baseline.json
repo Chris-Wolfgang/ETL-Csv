@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "note": "Golden allocation baseline for the #63 shadow scenarios. Allocation is deterministic (measured <0.1% run-to-run) and is the HARD gate. Latency is machine-dependent and CI-noisy, so it is ADVISORY only (reported for trend, never fails the run). Regenerate after an intentional change: run the sample (`dotnet run -c Release -- report.json`) and copy the AllocatedBytes values here; latency values are a local reference. Per-metric thresholds below are overridable via the SHADOW_ALLOC_PCT / SHADOW_LATENCY_PCT workflow env vars.",
+  "thresholds": {
+    "allocationPct": 50,
+    "latencyPct": 20
+  },
+  "scenarios": {
+    "round_trip_mixed": {
+      "allocatedBytes": 33531856,
+      "elapsedMs": 206.6
+    },
+    "concurrent_streaming": {
+      "allocatedBytes": 34529776,
+      "elapsedMs": 290.0
+    },
+    "windowed_paging": {
+      "allocatedBytes": 28026616,
+      "elapsedMs": 110.2
+    },
+    "bursty_small": {
+      "allocatedBytes": 273111488,
+      "elapsedMs": 5279.0
+    }
+  }
+}
