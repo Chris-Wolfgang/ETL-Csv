@@ -45,7 +45,10 @@ jobs:
           dotnet-version: '10.0.x'
 
       - name: Run sustained-load GC profile
+        # GC_PROFILE_ISOLATED enables the process-wide gen2 assertion — set only here,
+        # where the --filter runs the GcProfile test alone so isolation is guaranteed.
         env:
+          GC_PROFILE_ISOLATED: 'true'
           GC_PROFILE_RECORDS: ${{ github.event.inputs.records || '5000000' }}
         run: >-
           dotnet test tests/Wolfgang.Etl.Csv.Tests.Unit/Wolfgang.Etl.Csv.Tests.Unit.csproj

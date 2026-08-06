@@ -40,11 +40,16 @@ public class CsvSustainedLoadGcTests
     public async Task Streaming_a_large_dataset_stays_gc_healthy()
     {
         // GC.CollectionCount is process-wide, so the gen2 assertion is only reliable when this
-        // test runs in isolation — i.e. gc-profiling.yaml, which sets GC_PROFILE_RECORDS and
-        // filters to Category=GcProfile. In the normal parallel PR run a neighbouring test could
-        // trigger a gen2 collection in our window, so there we assert only the per-thread
-        // allocation guard.
-        var isolatedRun = Environment.GetEnvironmentVariable("GC_PROFILE_RECORDS") is not null;
+        // test genuinely runs alone. That is asserted only when GC_PROFILE_ISOLATED=true, which
+        // gc-profiling.yaml sets while filtering to Category=GcProfile (nothing else running).
+        // The row count (GC_PROFILE_RECORDS) is orthogonal — setting it does not imply isolation,
+        // so in the normal parallel PR run we assert only the per-thread allocation guard.
+        var isolatedRun = string.Equals
+        (
+            Environment.GetEnvironmentVariable("GC_PROFILE_ISOLATED"),
+            "true",
+            StringComparison.OrdinalIgnoreCase
+        );
         var records = ResolveRecordCount();
 
         // Build the source bytes OUTSIDE the measured region — the ~MB byte[] is itself an LOH
