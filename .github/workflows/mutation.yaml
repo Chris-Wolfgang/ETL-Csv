@@ -50,11 +50,11 @@ jobs:
         env:
           BREAK_AT: ${{ github.event.inputs.break_at }}
         run: |
-          args=""
+          args=()
           if [ -n "$BREAK_AT" ]; then
-            args="--break-at $BREAK_AT"
+            args+=(--break-at "$BREAK_AT")
           fi
-          dotnet stryker $args
+          dotnet stryker "${args[@]}"
 
       - name: Upload mutation report
         if: always()
