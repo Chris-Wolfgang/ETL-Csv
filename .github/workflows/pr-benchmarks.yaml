@@ -1,0 +1,81 @@
+# Per-PR benchmark regression detection (#87). benchmarks.yaml graphs the BDN
+# trend AFTER merge to main (backward-looking). This runs the BDN suite on the
+# PR HEAD and on the PR's base, computes the per-benchmark time/allocation delta,
+# and upserts a single markdown comment on the PR (forward-looking) so a hot-path
+# regression is visible before merge, not after.
+#
+# ShortRun keeps each pass to a few minutes; GitHub-hosted runners are noisy, so
+# the comment flags double-digit time changes and >20% allocation increases.
+name: PR Benchmarks
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+# pull_request (not _target): the PR HEAD is trusted repo code and we never
+# expose secrets. pull-requests:write lets the job upsert its comment.
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: pr-benchmarks-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  benchmark-delta:
+    name: BDN delta vs base
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      PROJECT: benchmarks/Wolfgang.Etl.Csv.Benchmarks/Wolfgang.Etl.Csv.Benchmarks.csproj
+    steps:
+      - name: Checkout PR head
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          dotnet-version: '10.0.x'
+
+      # Copy the delta script off the work tree — the base checkout below reverts
+      # the tree to the base commit, which does not contain this PR's script.
+      - name: Stash delta script
+        run: cp .github/scripts/bdn_delta.py /tmp/bdn_delta.py
+
+      # --artifacts pins BDN's output dir explicitly (otherwise it lands under the
+      # process cwd, not the project dir). Copy only the compressed JSON reports
+      # into a clean dir the delta script reads.
+      - name: Benchmark PR head
+        run: |
+          dotnet run -c Release --project "$PROJECT" -- --filter "*" --job short --memory --exporters json --artifacts /tmp/head-art
+          mkdir -p /tmp/head && cp /tmp/head-art/results/*-report-full-compressed.json /tmp/head/
+
+      - name: Benchmark base (${{ github.event.pull_request.base.ref }})
+        run: |
+          git checkout --force --detach "${{ github.event.pull_request.base.sha }}"
+          dotnet run -c Release --project "$PROJECT" -- --filter "*" --job short --memory --exporters json --artifacts /tmp/base-art
+          mkdir -p /tmp/base && cp /tmp/base-art/results/*-report-full-compressed.json /tmp/base/
+
+      - name: Compute delta table
+        run: python3 /tmp/bdn_delta.py /tmp/base /tmp/head > /tmp/body.md
+
+      - name: Upsert PR comment
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          marker='<!-- pr-benchmarks-delta -->'
+          id=$(gh api "repos/$REPO/issues/$PR/comments" --jq \
+            ".[] | select(.body | startswith(\"$marker\")) | .id" | head -n1)
+          if [ -n "$id" ]; then
+            gh api -X PATCH "repos/$REPO/issues/comments/$id" -F body=@/tmp/body.md >/dev/null
+            echo "Updated comment $id"
+          else
+            gh api "repos/$REPO/issues/$PR/comments" -F body=@/tmp/body.md >/dev/null
+            echo "Created comment"
+          fi

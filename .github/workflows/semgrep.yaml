@@ -1,0 +1,69 @@
+# Semgrep SAST (#64) — a second static-analysis engine alongside CodeQL.
+#
+# CodeQL (codeql.yaml) is the OSS-grade dataflow SAST; DevSkim + gitleaks cover
+# pattern/secret scanning. Semgrep adds a different rule engine that catches
+# issue classes those surface with low confidence or miss. It runs entirely on
+# the public community rulesets (p/csharp, p/security-audit, p/secrets) — no
+# Semgrep Cloud account or token, so it stays free for this public repo.
+#
+# Findings upload to GitHub Code Scanning (Security tab) but do NOT gate merge —
+# the scan step swallows Semgrep's findings exit code (1) while still failing on a
+# real scanner error (>=2), matching how the InspectCode job introduces a new
+# analyzer (surface first, gate later once the noise floor is known).
+name: Semgrep SAST
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '0 4 * * 1'   # Mondays 04:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write   # upload-sarif → Code Scanning
+  actions: read            # upload-sarif needs it to associate the analysis
+
+concurrency:
+  group: semgrep-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  semgrep:
+    name: Semgrep scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          persist-credentials: false
+
+      # Semgrep exit codes: 0 = clean, 1 = findings, >=2 = scanner/config/network
+      # error. Findings are a Code Scanning signal, not a merge gate (yet), so we
+      # swallow exit 1 — but a real run failure (>=2) must fail the job rather than
+      # be masked by a blanket continue-on-error. Version pinned for reproducibility
+      # and supply-chain safety (this is a security workflow) — bump deliberately.
+      - name: Run Semgrep (public rulesets, no account)
+        run: |
+          set +e
+          pipx run --spec 'semgrep==1.172.0' semgrep scan \
+            --config p/csharp \
+            --config p/security-audit \
+            --config p/secrets \
+            --sarif --output semgrep.sarif \
+            --metrics off
+          code=$?
+          if [ "$code" -ge 2 ]; then
+            echo "::error::Semgrep failed to run (exit $code) — not a findings result."
+            exit "$code"
+          fi
+          exit 0
+
+      - name: Upload SARIF to Code Scanning
+        if: ${{ hashFiles('semgrep.sarif') != '' }}
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: semgrep.sarif
+          category: semgrep

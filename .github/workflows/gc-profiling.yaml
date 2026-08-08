@@ -1,0 +1,56 @@
+# Long-running GC / allocation profiling (#75). The Category=GcProfile test
+# (CsvSustainedLoadGcTests) streams a large synthetic dataset through
+# CsvExtractor and asserts the streaming path stays GC-healthy under sustained
+# load — bounded per-record allocation and no gen2 promotion (retention/LOH).
+# It runs in the normal PR suite at a small default row count (allocation guard
+# only); here it runs ALONE at high volume, so the process-wide gen2 assertion
+# is reliable and characterises sustained-load behaviour. GC_PROFILE_RECORDS
+# scales the load; the test logs allocated / per-record / gen0-1-2 to the run log.
+#
+# The full PerfView/ETW analysis (top allocation sites, per-type heap census) is
+# heavier Windows-only tooling tracked separately.
+name: GC profiling
+
+on:
+  schedule:
+    - cron: '0 3 * * 1'   # Mondays 03:00 UTC
+  workflow_dispatch:
+    inputs:
+      records:
+        description: 'GC_PROFILE_RECORDS — rows to stream'
+        required: false
+        default: '5000000'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: gc-profiling-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gc-profile:
+    name: Sustained-load GC profile
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          persist-credentials: false
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Run sustained-load GC profile
+        # GC_PROFILE_ISOLATED enables the process-wide gen2 assertion — set only here,
+        # where the --filter runs the GcProfile test alone so isolation is guaranteed.
+        env:
+          GC_PROFILE_ISOLATED: 'true'
+          GC_PROFILE_RECORDS: ${{ github.event.inputs.records || '5000000' }}
+        run: >-
+          dotnet test tests/Wolfgang.Etl.Csv.Tests.Unit/Wolfgang.Etl.Csv.Tests.Unit.csproj
+          -c Release -f net10.0 --filter "Category=GcProfile"
+          --logger "console;verbosity=detailed"
