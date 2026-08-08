@@ -57,7 +57,7 @@ jobs:
           SHADOW_ALLOC_PCT: ${{ github.event.inputs.alloc_pct }}
           SHADOW_LATENCY_PCT: ${{ github.event.inputs.latency_pct }}
         run: |
-          if python .github/scripts/shadow_delta.py \
+          if python3 .github/scripts/shadow_delta.py \
               samples/Wolfgang.Etl.Csv.Shadow/shadow-baseline.json \
               shadow-report.json shadow-summary.md; then
             echo "regressed=false" >> "$GITHUB_OUTPUT"

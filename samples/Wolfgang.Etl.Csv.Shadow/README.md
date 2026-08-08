@@ -39,6 +39,8 @@ workflow inputs (blank = the baseline's own thresholds).
 
 ## Re-baselining
 
-After an intentional change to allocation behaviour, run the sample and copy the new
-`AllocatedBytes` values into `shadow-baseline.json` (the `elapsedMs` values are a local
-reference only).
+After an intentional change to allocation behaviour, run the sample and copy each scenario's
+report `AllocatedBytes` value into the matching scenario's `allocatedBytes` field in
+`shadow-baseline.json` (the report is PascalCase — C# record serialization — while the baseline
+is camelCase; `shadow_delta.py` reads each in its own casing). The `elapsedMs` values are a local
+reference only.
