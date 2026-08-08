@@ -301,6 +301,15 @@ references:
   fullName.vb: Wolfgang.Etl.Csv.CsvExtractorProgress.New(Integer, Integer, Integer, Integer)
   nameWithType: CsvExtractorProgress.CsvExtractorProgress(int, int, int, int)
   nameWithType.vb: CsvExtractorProgress.New(Integer, Integer, Integer, Integer)
+- uid: Wolfgang.Etl.Csv.CsvExtractorProgress.#ctor(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)
+  name: CsvExtractorProgress(int, int, int, int, int)
+  href: api/Wolfgang.Etl.Csv.CsvExtractorProgress.html#Wolfgang_Etl_Csv_CsvExtractorProgress__ctor_System_Int32_System_Int32_System_Int32_System_Int32_System_Int32_
+  commentId: M:Wolfgang.Etl.Csv.CsvExtractorProgress.#ctor(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)
+  name.vb: New(Integer, Integer, Integer, Integer, Integer)
+  fullName: Wolfgang.Etl.Csv.CsvExtractorProgress.CsvExtractorProgress(int, int, int, int, int)
+  fullName.vb: Wolfgang.Etl.Csv.CsvExtractorProgress.New(Integer, Integer, Integer, Integer, Integer)
+  nameWithType: CsvExtractorProgress.CsvExtractorProgress(int, int, int, int, int)
+  nameWithType.vb: CsvExtractorProgress.New(Integer, Integer, Integer, Integer, Integer)
 - uid: Wolfgang.Etl.Csv.CsvExtractorProgress.#ctor*
   name: CsvExtractorProgress
   href: api/Wolfgang.Etl.Csv.CsvExtractorProgress.html#Wolfgang_Etl_Csv_CsvExtractorProgress__ctor_
@@ -324,6 +333,19 @@ references:
   isSpec: "True"
   fullName: Wolfgang.Etl.Csv.CsvExtractorProgress.CurrentBadDataCount
   nameWithType: CsvExtractorProgress.CurrentBadDataCount
+- uid: Wolfgang.Etl.Csv.CsvExtractorProgress.CurrentErrorItemCount
+  name: CurrentErrorItemCount
+  href: api/Wolfgang.Etl.Csv.CsvExtractorProgress.html#Wolfgang_Etl_Csv_CsvExtractorProgress_CurrentErrorItemCount
+  commentId: P:Wolfgang.Etl.Csv.CsvExtractorProgress.CurrentErrorItemCount
+  fullName: Wolfgang.Etl.Csv.CsvExtractorProgress.CurrentErrorItemCount
+  nameWithType: CsvExtractorProgress.CurrentErrorItemCount
+- uid: Wolfgang.Etl.Csv.CsvExtractorProgress.CurrentErrorItemCount*
+  name: CurrentErrorItemCount
+  href: api/Wolfgang.Etl.Csv.CsvExtractorProgress.html#Wolfgang_Etl_Csv_CsvExtractorProgress_CurrentErrorItemCount_
+  commentId: Overload:Wolfgang.Etl.Csv.CsvExtractorProgress.CurrentErrorItemCount
+  isSpec: "True"
+  fullName: Wolfgang.Etl.Csv.CsvExtractorProgress.CurrentErrorItemCount
+  nameWithType: CsvExtractorProgress.CurrentErrorItemCount
 - uid: Wolfgang.Etl.Csv.CsvExtractorProgress.CurrentLineNumber
   name: CurrentLineNumber
   href: api/Wolfgang.Etl.Csv.CsvExtractorProgress.html#Wolfgang_Etl_Csv_CsvExtractorProgress_CurrentLineNumber
@@ -1227,3 +1249,523 @@ references:
   commentId: F:Wolfgang.Etl.Csv.CsvTrimOptions.Trim
   fullName: Wolfgang.Etl.Csv.CsvTrimOptions.Trim
   nameWithType: CsvTrimOptions.Trim
+- uid: Wolfgang.Etl.Csv.EtlPipelineCsvExtensions
+  name: EtlPipelineCsvExtensions
+  href: api/Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.html
+  commentId: T:Wolfgang.Etl.Csv.EtlPipelineCsvExtensions
+  fullName: Wolfgang.Etl.Csv.EtlPipelineCsvExtensions
+  nameWithType: EtlPipelineCsvExtensions
+- uid: Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.CsvExtractor*
+  name: CsvExtractor
+  href: api/Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.html#Wolfgang_Etl_Csv_EtlPipelineCsvExtensions_CsvExtractor_
+  commentId: Overload:Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.CsvExtractor
+  isSpec: "True"
+  fullName: Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.CsvExtractor
+  nameWithType: EtlPipelineCsvExtensions.CsvExtractor
+- uid: Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.CsvExtractor``1(Wolfgang.Etl.Abstractions.EtlPipeline,System.IO.StreamReader)
+  name: CsvExtractor<T>(EtlPipeline, StreamReader)
+  href: api/Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.html#Wolfgang_Etl_Csv_EtlPipelineCsvExtensions_CsvExtractor__1_Wolfgang_Etl_Abstractions_EtlPipeline_System_IO_StreamReader_
+  commentId: M:Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.CsvExtractor``1(Wolfgang.Etl.Abstractions.EtlPipeline,System.IO.StreamReader)
+  name.vb: CsvExtractor(Of T)(EtlPipeline, StreamReader)
+  fullName: Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.CsvExtractor<T>(Wolfgang.Etl.Abstractions.EtlPipeline, System.IO.StreamReader)
+  fullName.vb: Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.CsvExtractor(Of T)(Wolfgang.Etl.Abstractions.EtlPipeline, System.IO.StreamReader)
+  nameWithType: EtlPipelineCsvExtensions.CsvExtractor<T>(EtlPipeline, StreamReader)
+  nameWithType.vb: EtlPipelineCsvExtensions.CsvExtractor(Of T)(EtlPipeline, StreamReader)
+- uid: Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.CsvExtractor``1(Wolfgang.Etl.Abstractions.EtlPipeline,System.String)
+  name: CsvExtractor<T>(EtlPipeline, string)
+  href: api/Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.html#Wolfgang_Etl_Csv_EtlPipelineCsvExtensions_CsvExtractor__1_Wolfgang_Etl_Abstractions_EtlPipeline_System_String_
+  commentId: M:Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.CsvExtractor``1(Wolfgang.Etl.Abstractions.EtlPipeline,System.String)
+  name.vb: CsvExtractor(Of T)(EtlPipeline, String)
+  fullName: Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.CsvExtractor<T>(Wolfgang.Etl.Abstractions.EtlPipeline, string)
+  fullName.vb: Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.CsvExtractor(Of T)(Wolfgang.Etl.Abstractions.EtlPipeline, String)
+  nameWithType: EtlPipelineCsvExtensions.CsvExtractor<T>(EtlPipeline, string)
+  nameWithType.vb: EtlPipelineCsvExtensions.CsvExtractor(Of T)(EtlPipeline, String)
+- uid: Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.CsvExtractor``1(Wolfgang.Etl.Abstractions.EtlPipeline,Wolfgang.Etl.Csv.CsvExtractor{``0})
+  name: CsvExtractor<T>(EtlPipeline, CsvExtractor<T>)
+  href: api/Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.html#Wolfgang_Etl_Csv_EtlPipelineCsvExtensions_CsvExtractor__1_Wolfgang_Etl_Abstractions_EtlPipeline_Wolfgang_Etl_Csv_CsvExtractor___0__
+  commentId: M:Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.CsvExtractor``1(Wolfgang.Etl.Abstractions.EtlPipeline,Wolfgang.Etl.Csv.CsvExtractor{``0})
+  name.vb: CsvExtractor(Of T)(EtlPipeline, CsvExtractor(Of T))
+  fullName: Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.CsvExtractor<T>(Wolfgang.Etl.Abstractions.EtlPipeline, Wolfgang.Etl.Csv.CsvExtractor<T>)
+  fullName.vb: Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.CsvExtractor(Of T)(Wolfgang.Etl.Abstractions.EtlPipeline, Wolfgang.Etl.Csv.CsvExtractor(Of T))
+  nameWithType: EtlPipelineCsvExtensions.CsvExtractor<T>(EtlPipeline, CsvExtractor<T>)
+  nameWithType.vb: EtlPipelineCsvExtensions.CsvExtractor(Of T)(EtlPipeline, CsvExtractor(Of T))
+- uid: Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.CsvLoader*
+  name: CsvLoader
+  href: api/Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.html#Wolfgang_Etl_Csv_EtlPipelineCsvExtensions_CsvLoader_
+  commentId: Overload:Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.CsvLoader
+  isSpec: "True"
+  fullName: Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.CsvLoader
+  nameWithType: EtlPipelineCsvExtensions.CsvLoader
+- uid: Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.CsvLoader``1(Wolfgang.Etl.Abstractions.IEtlPipeline{``0},System.IO.StreamWriter)
+  name: CsvLoader<T>(IEtlPipeline<T>, StreamWriter)
+  href: api/Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.html#Wolfgang_Etl_Csv_EtlPipelineCsvExtensions_CsvLoader__1_Wolfgang_Etl_Abstractions_IEtlPipeline___0__System_IO_StreamWriter_
+  commentId: M:Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.CsvLoader``1(Wolfgang.Etl.Abstractions.IEtlPipeline{``0},System.IO.StreamWriter)
+  name.vb: CsvLoader(Of T)(IEtlPipeline(Of T), StreamWriter)
+  fullName: Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.CsvLoader<T>(Wolfgang.Etl.Abstractions.IEtlPipeline<T>, System.IO.StreamWriter)
+  fullName.vb: Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.CsvLoader(Of T)(Wolfgang.Etl.Abstractions.IEtlPipeline(Of T), System.IO.StreamWriter)
+  nameWithType: EtlPipelineCsvExtensions.CsvLoader<T>(IEtlPipeline<T>, StreamWriter)
+  nameWithType.vb: EtlPipelineCsvExtensions.CsvLoader(Of T)(IEtlPipeline(Of T), StreamWriter)
+- uid: Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.CsvLoader``1(Wolfgang.Etl.Abstractions.IEtlPipeline{``0},System.String)
+  name: CsvLoader<T>(IEtlPipeline<T>, string)
+  href: api/Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.html#Wolfgang_Etl_Csv_EtlPipelineCsvExtensions_CsvLoader__1_Wolfgang_Etl_Abstractions_IEtlPipeline___0__System_String_
+  commentId: M:Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.CsvLoader``1(Wolfgang.Etl.Abstractions.IEtlPipeline{``0},System.String)
+  name.vb: CsvLoader(Of T)(IEtlPipeline(Of T), String)
+  fullName: Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.CsvLoader<T>(Wolfgang.Etl.Abstractions.IEtlPipeline<T>, string)
+  fullName.vb: Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.CsvLoader(Of T)(Wolfgang.Etl.Abstractions.IEtlPipeline(Of T), String)
+  nameWithType: EtlPipelineCsvExtensions.CsvLoader<T>(IEtlPipeline<T>, string)
+  nameWithType.vb: EtlPipelineCsvExtensions.CsvLoader(Of T)(IEtlPipeline(Of T), String)
+- uid: Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.CsvLoader``1(Wolfgang.Etl.Abstractions.IEtlPipeline{``0},Wolfgang.Etl.Csv.CsvLoader{``0})
+  name: CsvLoader<T>(IEtlPipeline<T>, CsvLoader<T>)
+  href: api/Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.html#Wolfgang_Etl_Csv_EtlPipelineCsvExtensions_CsvLoader__1_Wolfgang_Etl_Abstractions_IEtlPipeline___0__Wolfgang_Etl_Csv_CsvLoader___0__
+  commentId: M:Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.CsvLoader``1(Wolfgang.Etl.Abstractions.IEtlPipeline{``0},Wolfgang.Etl.Csv.CsvLoader{``0})
+  name.vb: CsvLoader(Of T)(IEtlPipeline(Of T), CsvLoader(Of T))
+  fullName: Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.CsvLoader<T>(Wolfgang.Etl.Abstractions.IEtlPipeline<T>, Wolfgang.Etl.Csv.CsvLoader<T>)
+  fullName.vb: Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.CsvLoader(Of T)(Wolfgang.Etl.Abstractions.IEtlPipeline(Of T), Wolfgang.Etl.Csv.CsvLoader(Of T))
+  nameWithType: EtlPipelineCsvExtensions.CsvLoader<T>(IEtlPipeline<T>, CsvLoader<T>)
+  nameWithType.vb: EtlPipelineCsvExtensions.CsvLoader(Of T)(IEtlPipeline(Of T), CsvLoader(Of T))
+- uid: Wolfgang.Etl.Csv.ICsvExtractorBuilder`1
+  name: ICsvExtractorBuilder<T>
+  href: api/Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.html
+  commentId: T:Wolfgang.Etl.Csv.ICsvExtractorBuilder`1
+  name.vb: ICsvExtractorBuilder(Of T)
+  fullName: Wolfgang.Etl.Csv.ICsvExtractorBuilder<T>
+  fullName.vb: Wolfgang.Etl.Csv.ICsvExtractorBuilder(Of T)
+  nameWithType: ICsvExtractorBuilder<T>
+  nameWithType.vb: ICsvExtractorBuilder(Of T)
+- uid: Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.AllowComments(System.Boolean)
+  name: AllowComments(bool)
+  href: api/Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.html#Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_AllowComments_System_Boolean_
+  commentId: M:Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.AllowComments(System.Boolean)
+  name.vb: AllowComments(Boolean)
+  fullName: Wolfgang.Etl.Csv.ICsvExtractorBuilder<T>.AllowComments(bool)
+  fullName.vb: Wolfgang.Etl.Csv.ICsvExtractorBuilder(Of T).AllowComments(Boolean)
+  nameWithType: ICsvExtractorBuilder<T>.AllowComments(bool)
+  nameWithType.vb: ICsvExtractorBuilder(Of T).AllowComments(Boolean)
+- uid: Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.AllowComments*
+  name: AllowComments
+  href: api/Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.html#Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_AllowComments_
+  commentId: Overload:Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.AllowComments
+  isSpec: "True"
+  fullName: Wolfgang.Etl.Csv.ICsvExtractorBuilder<T>.AllowComments
+  fullName.vb: Wolfgang.Etl.Csv.ICsvExtractorBuilder(Of T).AllowComments
+  nameWithType: ICsvExtractorBuilder<T>.AllowComments
+  nameWithType.vb: ICsvExtractorBuilder(Of T).AllowComments
+- uid: Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.BadDataFound(System.Action{Wolfgang.Etl.Csv.CsvBadDataInfo})
+  name: BadDataFound(Action<CsvBadDataInfo>)
+  href: api/Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.html#Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_BadDataFound_System_Action_Wolfgang_Etl_Csv_CsvBadDataInfo__
+  commentId: M:Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.BadDataFound(System.Action{Wolfgang.Etl.Csv.CsvBadDataInfo})
+  name.vb: BadDataFound(Action(Of CsvBadDataInfo))
+  fullName: Wolfgang.Etl.Csv.ICsvExtractorBuilder<T>.BadDataFound(System.Action<Wolfgang.Etl.Csv.CsvBadDataInfo>)
+  fullName.vb: Wolfgang.Etl.Csv.ICsvExtractorBuilder(Of T).BadDataFound(System.Action(Of Wolfgang.Etl.Csv.CsvBadDataInfo))
+  nameWithType: ICsvExtractorBuilder<T>.BadDataFound(Action<CsvBadDataInfo>)
+  nameWithType.vb: ICsvExtractorBuilder(Of T).BadDataFound(Action(Of CsvBadDataInfo))
+- uid: Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.BadDataFound*
+  name: BadDataFound
+  href: api/Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.html#Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_BadDataFound_
+  commentId: Overload:Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.BadDataFound
+  isSpec: "True"
+  fullName: Wolfgang.Etl.Csv.ICsvExtractorBuilder<T>.BadDataFound
+  fullName.vb: Wolfgang.Etl.Csv.ICsvExtractorBuilder(Of T).BadDataFound
+  nameWithType: ICsvExtractorBuilder<T>.BadDataFound
+  nameWithType.vb: ICsvExtractorBuilder(Of T).BadDataFound
+- uid: Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.ColumnMaps(System.Collections.Generic.IReadOnlyList{Wolfgang.Etl.Csv.CsvColumnMap})
+  name: ColumnMaps(IReadOnlyList<CsvColumnMap>)
+  href: api/Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.html#Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_ColumnMaps_System_Collections_Generic_IReadOnlyList_Wolfgang_Etl_Csv_CsvColumnMap__
+  commentId: M:Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.ColumnMaps(System.Collections.Generic.IReadOnlyList{Wolfgang.Etl.Csv.CsvColumnMap})
+  name.vb: ColumnMaps(IReadOnlyList(Of CsvColumnMap))
+  fullName: Wolfgang.Etl.Csv.ICsvExtractorBuilder<T>.ColumnMaps(System.Collections.Generic.IReadOnlyList<Wolfgang.Etl.Csv.CsvColumnMap>)
+  fullName.vb: Wolfgang.Etl.Csv.ICsvExtractorBuilder(Of T).ColumnMaps(System.Collections.Generic.IReadOnlyList(Of Wolfgang.Etl.Csv.CsvColumnMap))
+  nameWithType: ICsvExtractorBuilder<T>.ColumnMaps(IReadOnlyList<CsvColumnMap>)
+  nameWithType.vb: ICsvExtractorBuilder(Of T).ColumnMaps(IReadOnlyList(Of CsvColumnMap))
+- uid: Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.ColumnMaps*
+  name: ColumnMaps
+  href: api/Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.html#Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_ColumnMaps_
+  commentId: Overload:Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.ColumnMaps
+  isSpec: "True"
+  fullName: Wolfgang.Etl.Csv.ICsvExtractorBuilder<T>.ColumnMaps
+  fullName.vb: Wolfgang.Etl.Csv.ICsvExtractorBuilder(Of T).ColumnMaps
+  nameWithType: ICsvExtractorBuilder<T>.ColumnMaps
+  nameWithType.vb: ICsvExtractorBuilder(Of T).ColumnMaps
+- uid: Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.Comment(System.Char)
+  name: Comment(char)
+  href: api/Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.html#Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_Comment_System_Char_
+  commentId: M:Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.Comment(System.Char)
+  name.vb: Comment(Char)
+  fullName: Wolfgang.Etl.Csv.ICsvExtractorBuilder<T>.Comment(char)
+  fullName.vb: Wolfgang.Etl.Csv.ICsvExtractorBuilder(Of T).Comment(Char)
+  nameWithType: ICsvExtractorBuilder<T>.Comment(char)
+  nameWithType.vb: ICsvExtractorBuilder(Of T).Comment(Char)
+- uid: Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.Comment*
+  name: Comment
+  href: api/Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.html#Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_Comment_
+  commentId: Overload:Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.Comment
+  isSpec: "True"
+  fullName: Wolfgang.Etl.Csv.ICsvExtractorBuilder<T>.Comment
+  fullName.vb: Wolfgang.Etl.Csv.ICsvExtractorBuilder(Of T).Comment
+  nameWithType: ICsvExtractorBuilder<T>.Comment
+  nameWithType.vb: ICsvExtractorBuilder(Of T).Comment
+- uid: Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.Delimiter(System.String)
+  name: Delimiter(string)
+  href: api/Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.html#Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_Delimiter_System_String_
+  commentId: M:Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.Delimiter(System.String)
+  name.vb: Delimiter(String)
+  fullName: Wolfgang.Etl.Csv.ICsvExtractorBuilder<T>.Delimiter(string)
+  fullName.vb: Wolfgang.Etl.Csv.ICsvExtractorBuilder(Of T).Delimiter(String)
+  nameWithType: ICsvExtractorBuilder<T>.Delimiter(string)
+  nameWithType.vb: ICsvExtractorBuilder(Of T).Delimiter(String)
+- uid: Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.Delimiter*
+  name: Delimiter
+  href: api/Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.html#Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_Delimiter_
+  commentId: Overload:Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.Delimiter
+  isSpec: "True"
+  fullName: Wolfgang.Etl.Csv.ICsvExtractorBuilder<T>.Delimiter
+  fullName.vb: Wolfgang.Etl.Csv.ICsvExtractorBuilder(Of T).Delimiter
+  nameWithType: ICsvExtractorBuilder<T>.Delimiter
+  nameWithType.vb: ICsvExtractorBuilder(Of T).Delimiter
+- uid: Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.Encoding(System.Text.Encoding)
+  name: Encoding(Encoding)
+  href: api/Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.html#Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_Encoding_System_Text_Encoding_
+  commentId: M:Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.Encoding(System.Text.Encoding)
+  fullName: Wolfgang.Etl.Csv.ICsvExtractorBuilder<T>.Encoding(System.Text.Encoding)
+  fullName.vb: Wolfgang.Etl.Csv.ICsvExtractorBuilder(Of T).Encoding(System.Text.Encoding)
+  nameWithType: ICsvExtractorBuilder<T>.Encoding(Encoding)
+  nameWithType.vb: ICsvExtractorBuilder(Of T).Encoding(Encoding)
+- uid: Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.Encoding*
+  name: Encoding
+  href: api/Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.html#Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_Encoding_
+  commentId: Overload:Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.Encoding
+  isSpec: "True"
+  fullName: Wolfgang.Etl.Csv.ICsvExtractorBuilder<T>.Encoding
+  fullName.vb: Wolfgang.Etl.Csv.ICsvExtractorBuilder(Of T).Encoding
+  nameWithType: ICsvExtractorBuilder<T>.Encoding
+  nameWithType.vb: ICsvExtractorBuilder(Of T).Encoding
+- uid: Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.Escape(System.Char)
+  name: Escape(char)
+  href: api/Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.html#Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_Escape_System_Char_
+  commentId: M:Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.Escape(System.Char)
+  name.vb: Escape(Char)
+  fullName: Wolfgang.Etl.Csv.ICsvExtractorBuilder<T>.Escape(char)
+  fullName.vb: Wolfgang.Etl.Csv.ICsvExtractorBuilder(Of T).Escape(Char)
+  nameWithType: ICsvExtractorBuilder<T>.Escape(char)
+  nameWithType.vb: ICsvExtractorBuilder(Of T).Escape(Char)
+- uid: Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.Escape*
+  name: Escape
+  href: api/Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.html#Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_Escape_
+  commentId: Overload:Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.Escape
+  isSpec: "True"
+  fullName: Wolfgang.Etl.Csv.ICsvExtractorBuilder<T>.Escape
+  fullName.vb: Wolfgang.Etl.Csv.ICsvExtractorBuilder(Of T).Escape
+  nameWithType: ICsvExtractorBuilder<T>.Escape
+  nameWithType.vb: ICsvExtractorBuilder(Of T).Escape
+- uid: Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.HasHeaderRecord(System.Boolean)
+  name: HasHeaderRecord(bool)
+  href: api/Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.html#Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_HasHeaderRecord_System_Boolean_
+  commentId: M:Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.HasHeaderRecord(System.Boolean)
+  name.vb: HasHeaderRecord(Boolean)
+  fullName: Wolfgang.Etl.Csv.ICsvExtractorBuilder<T>.HasHeaderRecord(bool)
+  fullName.vb: Wolfgang.Etl.Csv.ICsvExtractorBuilder(Of T).HasHeaderRecord(Boolean)
+  nameWithType: ICsvExtractorBuilder<T>.HasHeaderRecord(bool)
+  nameWithType.vb: ICsvExtractorBuilder(Of T).HasHeaderRecord(Boolean)
+- uid: Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.HasHeaderRecord*
+  name: HasHeaderRecord
+  href: api/Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.html#Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_HasHeaderRecord_
+  commentId: Overload:Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.HasHeaderRecord
+  isSpec: "True"
+  fullName: Wolfgang.Etl.Csv.ICsvExtractorBuilder<T>.HasHeaderRecord
+  fullName.vb: Wolfgang.Etl.Csv.ICsvExtractorBuilder(Of T).HasHeaderRecord
+  nameWithType: ICsvExtractorBuilder<T>.HasHeaderRecord
+  nameWithType.vb: ICsvExtractorBuilder(Of T).HasHeaderRecord
+- uid: Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.IgnoreBlankLines(System.Boolean)
+  name: IgnoreBlankLines(bool)
+  href: api/Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.html#Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_IgnoreBlankLines_System_Boolean_
+  commentId: M:Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.IgnoreBlankLines(System.Boolean)
+  name.vb: IgnoreBlankLines(Boolean)
+  fullName: Wolfgang.Etl.Csv.ICsvExtractorBuilder<T>.IgnoreBlankLines(bool)
+  fullName.vb: Wolfgang.Etl.Csv.ICsvExtractorBuilder(Of T).IgnoreBlankLines(Boolean)
+  nameWithType: ICsvExtractorBuilder<T>.IgnoreBlankLines(bool)
+  nameWithType.vb: ICsvExtractorBuilder(Of T).IgnoreBlankLines(Boolean)
+- uid: Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.IgnoreBlankLines*
+  name: IgnoreBlankLines
+  href: api/Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.html#Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_IgnoreBlankLines_
+  commentId: Overload:Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.IgnoreBlankLines
+  isSpec: "True"
+  fullName: Wolfgang.Etl.Csv.ICsvExtractorBuilder<T>.IgnoreBlankLines
+  fullName.vb: Wolfgang.Etl.Csv.ICsvExtractorBuilder(Of T).IgnoreBlankLines
+  nameWithType: ICsvExtractorBuilder<T>.IgnoreBlankLines
+  nameWithType.vb: ICsvExtractorBuilder(Of T).IgnoreBlankLines
+- uid: Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.InitialRecordIndex(System.Int32)
+  name: InitialRecordIndex(int)
+  href: api/Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.html#Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_InitialRecordIndex_System_Int32_
+  commentId: M:Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.InitialRecordIndex(System.Int32)
+  name.vb: InitialRecordIndex(Integer)
+  fullName: Wolfgang.Etl.Csv.ICsvExtractorBuilder<T>.InitialRecordIndex(int)
+  fullName.vb: Wolfgang.Etl.Csv.ICsvExtractorBuilder(Of T).InitialRecordIndex(Integer)
+  nameWithType: ICsvExtractorBuilder<T>.InitialRecordIndex(int)
+  nameWithType.vb: ICsvExtractorBuilder(Of T).InitialRecordIndex(Integer)
+- uid: Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.InitialRecordIndex*
+  name: InitialRecordIndex
+  href: api/Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.html#Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_InitialRecordIndex_
+  commentId: Overload:Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.InitialRecordIndex
+  isSpec: "True"
+  fullName: Wolfgang.Etl.Csv.ICsvExtractorBuilder<T>.InitialRecordIndex
+  fullName.vb: Wolfgang.Etl.Csv.ICsvExtractorBuilder(Of T).InitialRecordIndex
+  nameWithType: ICsvExtractorBuilder<T>.InitialRecordIndex
+  nameWithType.vb: ICsvExtractorBuilder(Of T).InitialRecordIndex
+- uid: Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.MaxRecordCount(System.Int32)
+  name: MaxRecordCount(int)
+  href: api/Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.html#Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_MaxRecordCount_System_Int32_
+  commentId: M:Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.MaxRecordCount(System.Int32)
+  name.vb: MaxRecordCount(Integer)
+  fullName: Wolfgang.Etl.Csv.ICsvExtractorBuilder<T>.MaxRecordCount(int)
+  fullName.vb: Wolfgang.Etl.Csv.ICsvExtractorBuilder(Of T).MaxRecordCount(Integer)
+  nameWithType: ICsvExtractorBuilder<T>.MaxRecordCount(int)
+  nameWithType.vb: ICsvExtractorBuilder(Of T).MaxRecordCount(Integer)
+- uid: Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.MaxRecordCount*
+  name: MaxRecordCount
+  href: api/Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.html#Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_MaxRecordCount_
+  commentId: Overload:Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.MaxRecordCount
+  isSpec: "True"
+  fullName: Wolfgang.Etl.Csv.ICsvExtractorBuilder<T>.MaxRecordCount
+  fullName.vb: Wolfgang.Etl.Csv.ICsvExtractorBuilder(Of T).MaxRecordCount
+  nameWithType: ICsvExtractorBuilder<T>.MaxRecordCount
+  nameWithType.vb: ICsvExtractorBuilder(Of T).MaxRecordCount
+- uid: Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.Quote(System.Char)
+  name: Quote(char)
+  href: api/Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.html#Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_Quote_System_Char_
+  commentId: M:Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.Quote(System.Char)
+  name.vb: Quote(Char)
+  fullName: Wolfgang.Etl.Csv.ICsvExtractorBuilder<T>.Quote(char)
+  fullName.vb: Wolfgang.Etl.Csv.ICsvExtractorBuilder(Of T).Quote(Char)
+  nameWithType: ICsvExtractorBuilder<T>.Quote(char)
+  nameWithType.vb: ICsvExtractorBuilder(Of T).Quote(Char)
+- uid: Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.Quote*
+  name: Quote
+  href: api/Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.html#Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_Quote_
+  commentId: Overload:Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.Quote
+  isSpec: "True"
+  fullName: Wolfgang.Etl.Csv.ICsvExtractorBuilder<T>.Quote
+  fullName.vb: Wolfgang.Etl.Csv.ICsvExtractorBuilder(Of T).Quote
+  nameWithType: ICsvExtractorBuilder<T>.Quote
+  nameWithType.vb: ICsvExtractorBuilder(Of T).Quote
+- uid: Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.ReadingExceptionOccurred(System.Action{Wolfgang.Etl.Csv.CsvReadingExceptionInfo})
+  name: ReadingExceptionOccurred(Action<CsvReadingExceptionInfo>)
+  href: api/Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.html#Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_ReadingExceptionOccurred_System_Action_Wolfgang_Etl_Csv_CsvReadingExceptionInfo__
+  commentId: M:Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.ReadingExceptionOccurred(System.Action{Wolfgang.Etl.Csv.CsvReadingExceptionInfo})
+  name.vb: ReadingExceptionOccurred(Action(Of CsvReadingExceptionInfo))
+  fullName: Wolfgang.Etl.Csv.ICsvExtractorBuilder<T>.ReadingExceptionOccurred(System.Action<Wolfgang.Etl.Csv.CsvReadingExceptionInfo>)
+  fullName.vb: Wolfgang.Etl.Csv.ICsvExtractorBuilder(Of T).ReadingExceptionOccurred(System.Action(Of Wolfgang.Etl.Csv.CsvReadingExceptionInfo))
+  nameWithType: ICsvExtractorBuilder<T>.ReadingExceptionOccurred(Action<CsvReadingExceptionInfo>)
+  nameWithType.vb: ICsvExtractorBuilder(Of T).ReadingExceptionOccurred(Action(Of CsvReadingExceptionInfo))
+- uid: Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.ReadingExceptionOccurred*
+  name: ReadingExceptionOccurred
+  href: api/Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.html#Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_ReadingExceptionOccurred_
+  commentId: Overload:Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.ReadingExceptionOccurred
+  isSpec: "True"
+  fullName: Wolfgang.Etl.Csv.ICsvExtractorBuilder<T>.ReadingExceptionOccurred
+  fullName.vb: Wolfgang.Etl.Csv.ICsvExtractorBuilder(Of T).ReadingExceptionOccurred
+  nameWithType: ICsvExtractorBuilder<T>.ReadingExceptionOccurred
+  nameWithType.vb: ICsvExtractorBuilder(Of T).ReadingExceptionOccurred
+- uid: Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.SkipRecordCount(System.Int32)
+  name: SkipRecordCount(int)
+  href: api/Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.html#Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_SkipRecordCount_System_Int32_
+  commentId: M:Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.SkipRecordCount(System.Int32)
+  name.vb: SkipRecordCount(Integer)
+  fullName: Wolfgang.Etl.Csv.ICsvExtractorBuilder<T>.SkipRecordCount(int)
+  fullName.vb: Wolfgang.Etl.Csv.ICsvExtractorBuilder(Of T).SkipRecordCount(Integer)
+  nameWithType: ICsvExtractorBuilder<T>.SkipRecordCount(int)
+  nameWithType.vb: ICsvExtractorBuilder(Of T).SkipRecordCount(Integer)
+- uid: Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.SkipRecordCount*
+  name: SkipRecordCount
+  href: api/Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.html#Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_SkipRecordCount_
+  commentId: Overload:Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.SkipRecordCount
+  isSpec: "True"
+  fullName: Wolfgang.Etl.Csv.ICsvExtractorBuilder<T>.SkipRecordCount
+  fullName.vb: Wolfgang.Etl.Csv.ICsvExtractorBuilder(Of T).SkipRecordCount
+  nameWithType: ICsvExtractorBuilder<T>.SkipRecordCount
+  nameWithType.vb: ICsvExtractorBuilder(Of T).SkipRecordCount
+- uid: Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.TrimOptions(Wolfgang.Etl.Csv.CsvTrimOptions)
+  name: TrimOptions(CsvTrimOptions)
+  href: api/Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.html#Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_TrimOptions_Wolfgang_Etl_Csv_CsvTrimOptions_
+  commentId: M:Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.TrimOptions(Wolfgang.Etl.Csv.CsvTrimOptions)
+  fullName: Wolfgang.Etl.Csv.ICsvExtractorBuilder<T>.TrimOptions(Wolfgang.Etl.Csv.CsvTrimOptions)
+  fullName.vb: Wolfgang.Etl.Csv.ICsvExtractorBuilder(Of T).TrimOptions(Wolfgang.Etl.Csv.CsvTrimOptions)
+  nameWithType: ICsvExtractorBuilder<T>.TrimOptions(CsvTrimOptions)
+  nameWithType.vb: ICsvExtractorBuilder(Of T).TrimOptions(CsvTrimOptions)
+- uid: Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.TrimOptions*
+  name: TrimOptions
+  href: api/Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.html#Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_TrimOptions_
+  commentId: Overload:Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.TrimOptions
+  isSpec: "True"
+  fullName: Wolfgang.Etl.Csv.ICsvExtractorBuilder<T>.TrimOptions
+  fullName.vb: Wolfgang.Etl.Csv.ICsvExtractorBuilder(Of T).TrimOptions
+  nameWithType: ICsvExtractorBuilder<T>.TrimOptions
+  nameWithType.vb: ICsvExtractorBuilder(Of T).TrimOptions
+- uid: Wolfgang.Etl.Csv.ICsvLoaderBuilder`1
+  name: ICsvLoaderBuilder<T>
+  href: api/Wolfgang.Etl.Csv.ICsvLoaderBuilder-1.html
+  commentId: T:Wolfgang.Etl.Csv.ICsvLoaderBuilder`1
+  name.vb: ICsvLoaderBuilder(Of T)
+  fullName: Wolfgang.Etl.Csv.ICsvLoaderBuilder<T>
+  fullName.vb: Wolfgang.Etl.Csv.ICsvLoaderBuilder(Of T)
+  nameWithType: ICsvLoaderBuilder<T>
+  nameWithType.vb: ICsvLoaderBuilder(Of T)
+- uid: Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.ColumnMaps(System.Collections.Generic.IReadOnlyList{Wolfgang.Etl.Csv.CsvColumnMap})
+  name: ColumnMaps(IReadOnlyList<CsvColumnMap>)
+  href: api/Wolfgang.Etl.Csv.ICsvLoaderBuilder-1.html#Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_ColumnMaps_System_Collections_Generic_IReadOnlyList_Wolfgang_Etl_Csv_CsvColumnMap__
+  commentId: M:Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.ColumnMaps(System.Collections.Generic.IReadOnlyList{Wolfgang.Etl.Csv.CsvColumnMap})
+  name.vb: ColumnMaps(IReadOnlyList(Of CsvColumnMap))
+  fullName: Wolfgang.Etl.Csv.ICsvLoaderBuilder<T>.ColumnMaps(System.Collections.Generic.IReadOnlyList<Wolfgang.Etl.Csv.CsvColumnMap>)
+  fullName.vb: Wolfgang.Etl.Csv.ICsvLoaderBuilder(Of T).ColumnMaps(System.Collections.Generic.IReadOnlyList(Of Wolfgang.Etl.Csv.CsvColumnMap))
+  nameWithType: ICsvLoaderBuilder<T>.ColumnMaps(IReadOnlyList<CsvColumnMap>)
+  nameWithType.vb: ICsvLoaderBuilder(Of T).ColumnMaps(IReadOnlyList(Of CsvColumnMap))
+- uid: Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.ColumnMaps*
+  name: ColumnMaps
+  href: api/Wolfgang.Etl.Csv.ICsvLoaderBuilder-1.html#Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_ColumnMaps_
+  commentId: Overload:Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.ColumnMaps
+  isSpec: "True"
+  fullName: Wolfgang.Etl.Csv.ICsvLoaderBuilder<T>.ColumnMaps
+  fullName.vb: Wolfgang.Etl.Csv.ICsvLoaderBuilder(Of T).ColumnMaps
+  nameWithType: ICsvLoaderBuilder<T>.ColumnMaps
+  nameWithType.vb: ICsvLoaderBuilder(Of T).ColumnMaps
+- uid: Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.Delimiter(System.String)
+  name: Delimiter(string)
+  href: api/Wolfgang.Etl.Csv.ICsvLoaderBuilder-1.html#Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_Delimiter_System_String_
+  commentId: M:Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.Delimiter(System.String)
+  name.vb: Delimiter(String)
+  fullName: Wolfgang.Etl.Csv.ICsvLoaderBuilder<T>.Delimiter(string)
+  fullName.vb: Wolfgang.Etl.Csv.ICsvLoaderBuilder(Of T).Delimiter(String)
+  nameWithType: ICsvLoaderBuilder<T>.Delimiter(string)
+  nameWithType.vb: ICsvLoaderBuilder(Of T).Delimiter(String)
+- uid: Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.Delimiter*
+  name: Delimiter
+  href: api/Wolfgang.Etl.Csv.ICsvLoaderBuilder-1.html#Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_Delimiter_
+  commentId: Overload:Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.Delimiter
+  isSpec: "True"
+  fullName: Wolfgang.Etl.Csv.ICsvLoaderBuilder<T>.Delimiter
+  fullName.vb: Wolfgang.Etl.Csv.ICsvLoaderBuilder(Of T).Delimiter
+  nameWithType: ICsvLoaderBuilder<T>.Delimiter
+  nameWithType.vb: ICsvLoaderBuilder(Of T).Delimiter
+- uid: Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.Encoding(System.Text.Encoding)
+  name: Encoding(Encoding)
+  href: api/Wolfgang.Etl.Csv.ICsvLoaderBuilder-1.html#Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_Encoding_System_Text_Encoding_
+  commentId: M:Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.Encoding(System.Text.Encoding)
+  fullName: Wolfgang.Etl.Csv.ICsvLoaderBuilder<T>.Encoding(System.Text.Encoding)
+  fullName.vb: Wolfgang.Etl.Csv.ICsvLoaderBuilder(Of T).Encoding(System.Text.Encoding)
+  nameWithType: ICsvLoaderBuilder<T>.Encoding(Encoding)
+  nameWithType.vb: ICsvLoaderBuilder(Of T).Encoding(Encoding)
+- uid: Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.Encoding*
+  name: Encoding
+  href: api/Wolfgang.Etl.Csv.ICsvLoaderBuilder-1.html#Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_Encoding_
+  commentId: Overload:Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.Encoding
+  isSpec: "True"
+  fullName: Wolfgang.Etl.Csv.ICsvLoaderBuilder<T>.Encoding
+  fullName.vb: Wolfgang.Etl.Csv.ICsvLoaderBuilder(Of T).Encoding
+  nameWithType: ICsvLoaderBuilder<T>.Encoding
+  nameWithType.vb: ICsvLoaderBuilder(Of T).Encoding
+- uid: Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.Escape(System.Char)
+  name: Escape(char)
+  href: api/Wolfgang.Etl.Csv.ICsvLoaderBuilder-1.html#Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_Escape_System_Char_
+  commentId: M:Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.Escape(System.Char)
+  name.vb: Escape(Char)
+  fullName: Wolfgang.Etl.Csv.ICsvLoaderBuilder<T>.Escape(char)
+  fullName.vb: Wolfgang.Etl.Csv.ICsvLoaderBuilder(Of T).Escape(Char)
+  nameWithType: ICsvLoaderBuilder<T>.Escape(char)
+  nameWithType.vb: ICsvLoaderBuilder(Of T).Escape(Char)
+- uid: Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.Escape*
+  name: Escape
+  href: api/Wolfgang.Etl.Csv.ICsvLoaderBuilder-1.html#Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_Escape_
+  commentId: Overload:Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.Escape
+  isSpec: "True"
+  fullName: Wolfgang.Etl.Csv.ICsvLoaderBuilder<T>.Escape
+  fullName.vb: Wolfgang.Etl.Csv.ICsvLoaderBuilder(Of T).Escape
+  nameWithType: ICsvLoaderBuilder<T>.Escape
+  nameWithType.vb: ICsvLoaderBuilder(Of T).Escape
+- uid: Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.HasHeaderRecord(System.Boolean)
+  name: HasHeaderRecord(bool)
+  href: api/Wolfgang.Etl.Csv.ICsvLoaderBuilder-1.html#Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_HasHeaderRecord_System_Boolean_
+  commentId: M:Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.HasHeaderRecord(System.Boolean)
+  name.vb: HasHeaderRecord(Boolean)
+  fullName: Wolfgang.Etl.Csv.ICsvLoaderBuilder<T>.HasHeaderRecord(bool)
+  fullName.vb: Wolfgang.Etl.Csv.ICsvLoaderBuilder(Of T).HasHeaderRecord(Boolean)
+  nameWithType: ICsvLoaderBuilder<T>.HasHeaderRecord(bool)
+  nameWithType.vb: ICsvLoaderBuilder(Of T).HasHeaderRecord(Boolean)
+- uid: Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.HasHeaderRecord*
+  name: HasHeaderRecord
+  href: api/Wolfgang.Etl.Csv.ICsvLoaderBuilder-1.html#Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_HasHeaderRecord_
+  commentId: Overload:Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.HasHeaderRecord
+  isSpec: "True"
+  fullName: Wolfgang.Etl.Csv.ICsvLoaderBuilder<T>.HasHeaderRecord
+  fullName.vb: Wolfgang.Etl.Csv.ICsvLoaderBuilder(Of T).HasHeaderRecord
+  nameWithType: ICsvLoaderBuilder<T>.HasHeaderRecord
+  nameWithType.vb: ICsvLoaderBuilder(Of T).HasHeaderRecord
+- uid: Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.NewLine(System.String)
+  name: NewLine(string)
+  href: api/Wolfgang.Etl.Csv.ICsvLoaderBuilder-1.html#Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_NewLine_System_String_
+  commentId: M:Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.NewLine(System.String)
+  name.vb: NewLine(String)
+  fullName: Wolfgang.Etl.Csv.ICsvLoaderBuilder<T>.NewLine(string)
+  fullName.vb: Wolfgang.Etl.Csv.ICsvLoaderBuilder(Of T).NewLine(String)
+  nameWithType: ICsvLoaderBuilder<T>.NewLine(string)
+  nameWithType.vb: ICsvLoaderBuilder(Of T).NewLine(String)
+- uid: Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.NewLine*
+  name: NewLine
+  href: api/Wolfgang.Etl.Csv.ICsvLoaderBuilder-1.html#Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_NewLine_
+  commentId: Overload:Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.NewLine
+  isSpec: "True"
+  fullName: Wolfgang.Etl.Csv.ICsvLoaderBuilder<T>.NewLine
+  fullName.vb: Wolfgang.Etl.Csv.ICsvLoaderBuilder(Of T).NewLine
+  nameWithType: ICsvLoaderBuilder<T>.NewLine
+  nameWithType.vb: ICsvLoaderBuilder(Of T).NewLine
+- uid: Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.Quote(System.Char)
+  name: Quote(char)
+  href: api/Wolfgang.Etl.Csv.ICsvLoaderBuilder-1.html#Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_Quote_System_Char_
+  commentId: M:Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.Quote(System.Char)
+  name.vb: Quote(Char)
+  fullName: Wolfgang.Etl.Csv.ICsvLoaderBuilder<T>.Quote(char)
+  fullName.vb: Wolfgang.Etl.Csv.ICsvLoaderBuilder(Of T).Quote(Char)
+  nameWithType: ICsvLoaderBuilder<T>.Quote(char)
+  nameWithType.vb: ICsvLoaderBuilder(Of T).Quote(Char)
+- uid: Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.Quote*
+  name: Quote
+  href: api/Wolfgang.Etl.Csv.ICsvLoaderBuilder-1.html#Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_Quote_
+  commentId: Overload:Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.Quote
+  isSpec: "True"
+  fullName: Wolfgang.Etl.Csv.ICsvLoaderBuilder<T>.Quote
+  fullName.vb: Wolfgang.Etl.Csv.ICsvLoaderBuilder(Of T).Quote
+  nameWithType: ICsvLoaderBuilder<T>.Quote
+  nameWithType.vb: ICsvLoaderBuilder(Of T).Quote
+- uid: Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.ShouldQuote(System.Func{Wolfgang.Etl.Csv.CsvShouldQuoteContext,System.Boolean})
+  name: ShouldQuote(Func<CsvShouldQuoteContext, bool>)
+  href: api/Wolfgang.Etl.Csv.ICsvLoaderBuilder-1.html#Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_ShouldQuote_System_Func_Wolfgang_Etl_Csv_CsvShouldQuoteContext_System_Boolean__
+  commentId: M:Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.ShouldQuote(System.Func{Wolfgang.Etl.Csv.CsvShouldQuoteContext,System.Boolean})
+  name.vb: ShouldQuote(Func(Of CsvShouldQuoteContext, Boolean))
+  fullName: Wolfgang.Etl.Csv.ICsvLoaderBuilder<T>.ShouldQuote(System.Func<Wolfgang.Etl.Csv.CsvShouldQuoteContext, bool>)
+  fullName.vb: Wolfgang.Etl.Csv.ICsvLoaderBuilder(Of T).ShouldQuote(System.Func(Of Wolfgang.Etl.Csv.CsvShouldQuoteContext, Boolean))
+  nameWithType: ICsvLoaderBuilder<T>.ShouldQuote(Func<CsvShouldQuoteContext, bool>)
+  nameWithType.vb: ICsvLoaderBuilder(Of T).ShouldQuote(Func(Of CsvShouldQuoteContext, Boolean))
+- uid: Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.ShouldQuote*
+  name: ShouldQuote
+  href: api/Wolfgang.Etl.Csv.ICsvLoaderBuilder-1.html#Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_ShouldQuote_
+  commentId: Overload:Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.ShouldQuote
+  isSpec: "True"
+  fullName: Wolfgang.Etl.Csv.ICsvLoaderBuilder<T>.ShouldQuote
+  fullName.vb: Wolfgang.Etl.Csv.ICsvLoaderBuilder(Of T).ShouldQuote
+  nameWithType: ICsvLoaderBuilder<T>.ShouldQuote
+  nameWithType.vb: ICsvLoaderBuilder(Of T).ShouldQuote
+- uid: Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.TrimOptions(Wolfgang.Etl.Csv.CsvTrimOptions)
+  name: TrimOptions(CsvTrimOptions)
+  href: api/Wolfgang.Etl.Csv.ICsvLoaderBuilder-1.html#Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_TrimOptions_Wolfgang_Etl_Csv_CsvTrimOptions_
+  commentId: M:Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.TrimOptions(Wolfgang.Etl.Csv.CsvTrimOptions)
+  fullName: Wolfgang.Etl.Csv.ICsvLoaderBuilder<T>.TrimOptions(Wolfgang.Etl.Csv.CsvTrimOptions)
+  fullName.vb: Wolfgang.Etl.Csv.ICsvLoaderBuilder(Of T).TrimOptions(Wolfgang.Etl.Csv.CsvTrimOptions)
+  nameWithType: ICsvLoaderBuilder<T>.TrimOptions(CsvTrimOptions)
+  nameWithType.vb: ICsvLoaderBuilder(Of T).TrimOptions(CsvTrimOptions)
+- uid: Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.TrimOptions*
+  name: TrimOptions
+  href: api/Wolfgang.Etl.Csv.ICsvLoaderBuilder-1.html#Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_TrimOptions_
+  commentId: Overload:Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.TrimOptions
+  isSpec: "True"
+  fullName: Wolfgang.Etl.Csv.ICsvLoaderBuilder<T>.TrimOptions
+  fullName.vb: Wolfgang.Etl.Csv.ICsvLoaderBuilder(Of T).TrimOptions
+  nameWithType: ICsvLoaderBuilder<T>.TrimOptions
+  nameWithType.vb: ICsvLoaderBuilder(Of T).TrimOptions

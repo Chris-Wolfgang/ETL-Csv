@@ -166,6 +166,48 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Wolfgang.Etl.Csv.EtlPipelineCsvExtensions",
+      "Summary": "<p sourcefile=\"api/Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.yml\" sourcestartlinenumber=\"1\">Class-named CSV source factories and sink terminators for the fluent <xref href=\"Wolfgang.Etl.Abstractions.EtlPipeline\" data-throw-if-not-resolved=\"false\"></xref>\nchain. Source factories hang off <xref href=\"Wolfgang.Etl.Abstractions.EtlPipeline\" data-throw-if-not-resolved=\"false\"></xref> so a pipeline reads\n<code>EtlPipeline.Create().CsvExtractor&lt;Order&gt;(&quot;orders.csv&quot;)</code>; sink terminators hang off\n<xref href=\"Wolfgang.Etl.Abstractions.IEtlPipeline%601\" data-throw-if-not-resolved=\"false\"></xref> so it ends <code>… .CsvLoader&lt;Order&gt;(&quot;out.csv&quot;).RunAsync()</code>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Wolfgang.Etl.Csv.ICsvExtractorBuilder<T>",
+      "Summary": "<p sourcefile=\"api/Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.yml\" sourcestartlinenumber=\"1\">Fluent builder for a <xref href=\"Wolfgang.Etl.Csv.CsvExtractor%601\" data-throw-if-not-resolved=\"false\"></xref> hung off the generic\n<xref href=\"Wolfgang.Etl.Abstractions.EtlPipeline\" data-throw-if-not-resolved=\"false\"></xref> chain. Extends <xref href=\"Wolfgang.Etl.Abstractions.IEtlPipeline%601\" data-throw-if-not-resolved=\"false\"></xref>, so a consumer\ntransitions from configuring the extractor to appending pipeline operators simply by\ncalling one — no explicit <code>Build()</code> step. The first pipeline operator (for example\n<code>Where</code>, <code>Select</code>, or a <xref href=\"Wolfgang.Etl.Abstractions.IEtlPipeline%601.Through%60%601(Wolfgang.Etl.Abstractions.ITransformAsync%7b%600%2c%60%600%7d)\" data-throw-if-not-resolved=\"false\"></xref>\nstage) materializes the extractor and the configuration setters fall off the surface.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wolfgang.Etl.Csv.ICsvLoaderBuilder-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wolfgang.Etl.Csv.ICsvLoaderBuilder-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Wolfgang.Etl.Csv.ICsvLoaderBuilder<T>",
+      "Summary": "<p sourcefile=\"api/Wolfgang.Etl.Csv.ICsvLoaderBuilder-1.yml\" sourcestartlinenumber=\"1\">Fluent builder for a <xref href=\"Wolfgang.Etl.Csv.CsvLoader%601\" data-throw-if-not-resolved=\"false\"></xref> that terminates the generic\n<xref href=\"Wolfgang.Etl.Abstractions.EtlPipeline\" data-throw-if-not-resolved=\"false\"></xref> chain. Extends <xref href=\"Wolfgang.Etl.Abstractions.IEtlPipelineSink\" data-throw-if-not-resolved=\"false\"></xref>, so the pipeline is\nrunnable as soon as the terminator is called; the fluent setters simply refine the loader\nbefore <xref href=\"Wolfgang.Etl.Abstractions.IEtlPipelineSink.RunAsync(System.IProgress%7bWolfgang.Etl.Abstractions.EtlPipelineProgress%7d%2cSystem.Threading.CancellationToken)\" data-throw-if-not-resolved=\"false\"></xref>\nmaterializes and runs it.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Wolfgang.Etl.Csv.yml",
       "output": {
         ".html": {

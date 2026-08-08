@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Interface ICsvLoaderBuilder&lt;T&gt; | Wolfgang.Etl.Csv Documentation </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Interface ICsvLoaderBuilder&lt;T&gt; | Wolfgang.Etl.Csv Documentation ">
+      
+      <meta name="description" content="Fluent builder for a  that terminates the generic  chain. Extends , so the pipeline is runnable as soon as the terminator is called; the fluent setters simply refine the loader before  materializes and runs it.">
+      <link rel="icon" href="../favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Chris-Wolfgang/ETL-Csv/new/v0.3.0/apiSpec/new?filename=Wolfgang_Etl_Csv_ICsvLoaderBuilder_1.md&amp;value=---%0Auid%3A%20Wolfgang.Etl.Csv.ICsvLoaderBuilder%601%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="Wolfgang.Etl.Csv">
+            Wolfgang.Etl.Csv
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Wolfgang.Etl.Csv.ICsvLoaderBuilder`1">
+
+
+
+  <h1 id="Wolfgang_Etl_Csv_ICsvLoaderBuilder_1" data-uid="Wolfgang.Etl.Csv.ICsvLoaderBuilder`1" class="text-break">
+Interface ICsvLoaderBuilder&lt;T&gt;  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/ICsvLoaderBuilder.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Wolfgang.html">Wolfgang</a>.<a class="xref" href="Wolfgang.Etl.html">Etl</a>.<a class="xref" href="Wolfgang.Etl.Csv.html">Csv</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Wolfgang.Etl.Csv.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Fluent builder for a <a class="xref" href="Wolfgang.Etl.Csv.CsvLoader-1.html">CsvLoader&lt;TRecord&gt;</a> that terminates the generic
+<span class="xref">Wolfgang.Etl.Abstractions.EtlPipeline</span> chain. Extends <span class="xref">Wolfgang.Etl.Abstractions.IEtlPipelineSink</span>, so the pipeline is
+runnable as soon as the terminator is called; the fluent setters simply refine the loader
+before <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iprogress-1">RunAsync(IProgress&lt;EtlPipelineProgress&gt;, CancellationToken)</a>
+materializes and runs it.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public interface ICsvLoaderBuilder&lt;T&gt; : IEtlPipelineSink where T : notnull</code></pre>
+  </div>
+
+
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The record type consumed by the loader.</p>
+</dd>
+  </dl>
+
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iprogress-1">IEtlPipelineSink.RunAsync(IProgress&lt;EtlPipelineProgress&gt;, CancellationToken)</a>
+    </div>
+  </dd></dl>
+
+
+
+
+  <h2 id="Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>Each setter maps 1:1 to a public property on <a class="xref" href="Wolfgang.Etl.Csv.CsvLoader-1.html">CsvLoader&lt;TRecord&gt;</a>; no new
+configuration surface is introduced. Stream ownership is decided by the terminator overload,
+not a setter: a path-based sink owns and disposes the file it opens (on success and failure),
+while a caller-supplied <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.streamwriter">StreamWriter</a> is left open for the caller.</p>
+</div>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_ColumnMaps_" data-uid="Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.ColumnMaps*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_ColumnMaps_System_Collections_Generic_IReadOnlyList_Wolfgang_Etl_Csv_CsvColumnMap__" data-uid="Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.ColumnMaps(System.Collections.Generic.IReadOnlyList{Wolfgang.Etl.Csv.CsvColumnMap})">
+  ColumnMaps(IReadOnlyList&lt;CsvColumnMap&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/ICsvLoaderBuilder.cs/#L84"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets <a class="xref" href="Wolfgang.Etl.Csv.CsvLoader-1.html#Wolfgang_Etl_Csv_CsvLoader_1_ColumnMaps">ColumnMaps</a> — explicit member-to-column mappings
+applied instead of convention-based binding.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ICsvLoaderBuilder&lt;T&gt; ColumnMaps(IReadOnlyList&lt;CsvColumnMap&gt; maps)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>maps</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Wolfgang.Etl.Csv.CsvColumnMap.html">CsvColumnMap</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Wolfgang.Etl.Csv.ICsvLoaderBuilder-1.html">ICsvLoaderBuilder</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">maps</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_Delimiter_" data-uid="Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.Delimiter*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_Delimiter_System_String_" data-uid="Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.Delimiter(System.String)">
+  Delimiter(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/ICsvLoaderBuilder.cs/#L29"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets <a class="xref" href="Wolfgang.Etl.Csv.CsvLoader-1.html#Wolfgang_Etl_Csv_CsvLoader_1_Delimiter">Delimiter</a>. Default: <code>&quot;,&quot;</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ICsvLoaderBuilder&lt;T&gt; Delimiter(string delimiter)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>delimiter</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Wolfgang.Etl.Csv.ICsvLoaderBuilder-1.html">ICsvLoaderBuilder</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">delimiter</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_Encoding_" data-uid="Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.Encoding*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_Encoding_System_Text_Encoding_" data-uid="Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.Encoding(System.Text.Encoding)">
+  Encoding(Encoding)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/ICsvLoaderBuilder.cs/#L62"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets <a class="xref" href="Wolfgang.Etl.Csv.CsvLoader-1.html#Wolfgang_Etl_Csv_CsvLoader_1_Encoding">Encoding</a> and the encoding used to open a path-based
+sink. Default: <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoding.utf8">UTF8</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ICsvLoaderBuilder&lt;T&gt; Encoding(Encoding encoding)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>encoding</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoding">Encoding</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Wolfgang.Etl.Csv.ICsvLoaderBuilder-1.html">ICsvLoaderBuilder</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">encoding</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_Escape_" data-uid="Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.Escape*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_Escape_System_Char_" data-uid="Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.Escape(System.Char)">
+  Escape(char)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/ICsvLoaderBuilder.cs/#L41"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets <a class="xref" href="Wolfgang.Etl.Csv.CsvLoader-1.html#Wolfgang_Etl_Csv_CsvLoader_1_Escape">Escape</a>. Default: <code>&quot;</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ICsvLoaderBuilder&lt;T&gt; Escape(char escape)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>escape</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Wolfgang.Etl.Csv.ICsvLoaderBuilder-1.html">ICsvLoaderBuilder</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_HasHeaderRecord_" data-uid="Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.HasHeaderRecord*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_HasHeaderRecord_System_Boolean_" data-uid="Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.HasHeaderRecord(System.Boolean)">
+  HasHeaderRecord(bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/ICsvLoaderBuilder.cs/#L54"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets <a class="xref" href="Wolfgang.Etl.Csv.CsvLoader-1.html#Wolfgang_Etl_Csv_CsvLoader_1_HasHeaderRecord">HasHeaderRecord</a>. Default: <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ICsvLoaderBuilder&lt;T&gt; HasHeaderRecord(bool hasHeader)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>hasHeader</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Wolfgang.Etl.Csv.ICsvLoaderBuilder-1.html">ICsvLoaderBuilder</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_NewLine_" data-uid="Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.NewLine*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_NewLine_System_String_" data-uid="Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.NewLine(System.String)">
+  NewLine(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/ICsvLoaderBuilder.cs/#L48"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets <a class="xref" href="Wolfgang.Etl.Csv.CsvLoader-1.html#Wolfgang_Etl_Csv_CsvLoader_1_NewLine">NewLine</a>. Default: <code>\r\n</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ICsvLoaderBuilder&lt;T&gt; NewLine(string newLine)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>newLine</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Wolfgang.Etl.Csv.ICsvLoaderBuilder-1.html">ICsvLoaderBuilder</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">newLine</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_Quote_" data-uid="Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.Quote*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_Quote_System_Char_" data-uid="Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.Quote(System.Char)">
+  Quote(char)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/ICsvLoaderBuilder.cs/#L35"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets <a class="xref" href="Wolfgang.Etl.Csv.CsvLoader-1.html#Wolfgang_Etl_Csv_CsvLoader_1_Quote">Quote</a>. Default: <code>&quot;</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ICsvLoaderBuilder&lt;T&gt; Quote(char quote)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>quote</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Wolfgang.Etl.Csv.ICsvLoaderBuilder-1.html">ICsvLoaderBuilder</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_ShouldQuote_" data-uid="Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.ShouldQuote*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_ShouldQuote_System_Func_Wolfgang_Etl_Csv_CsvShouldQuoteContext_System_Boolean__" data-uid="Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.ShouldQuote(System.Func{Wolfgang.Etl.Csv.CsvShouldQuoteContext,System.Boolean})">
+  ShouldQuote(Func&lt;CsvShouldQuoteContext, bool&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/ICsvLoaderBuilder.cs/#L76"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets <a class="xref" href="Wolfgang.Etl.Csv.CsvLoader-1.html#Wolfgang_Etl_Csv_CsvLoader_1_ShouldQuote">ShouldQuote</a> — a predicate deciding, per field, whether
+the value is quoted.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ICsvLoaderBuilder&lt;T&gt; ShouldQuote(Func&lt;CsvShouldQuoteContext, bool&gt; shouldQuote)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>shouldQuote</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="Wolfgang.Etl.Csv.CsvShouldQuoteContext.html">CsvShouldQuoteContext</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Wolfgang.Etl.Csv.ICsvLoaderBuilder-1.html">ICsvLoaderBuilder</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">shouldQuote</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_TrimOptions_" data-uid="Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.TrimOptions*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_TrimOptions_Wolfgang_Etl_Csv_CsvTrimOptions_" data-uid="Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.TrimOptions(Wolfgang.Etl.Csv.CsvTrimOptions)">
+  TrimOptions(CsvTrimOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/ICsvLoaderBuilder.cs/#L68"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets <a class="xref" href="Wolfgang.Etl.Csv.CsvLoader-1.html#Wolfgang_Etl_Csv_CsvLoader_1_TrimOptions">TrimOptions</a>. Default: <a class="xref" href="Wolfgang.Etl.Csv.CsvTrimOptions.html#Wolfgang_Etl_Csv_CsvTrimOptions_None">None</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ICsvLoaderBuilder&lt;T&gt; TrimOptions(CsvTrimOptions options)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>options</code> <a class="xref" href="Wolfgang.Etl.Csv.CsvTrimOptions.html">CsvTrimOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Wolfgang.Etl.Csv.ICsvLoaderBuilder-1.html">ICsvLoaderBuilder</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/ICsvLoaderBuilder.cs/#L22" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Made with DocFX <script>(function(){var r='/';if(window.location.hostname.endsWith('.github.io')){var s=window.location.pathname.split('/').filter(Boolean);if(s.length)r='/'+s[0]+'/';}var t=document.createElement('script');t.src=r+'public/version-picker.js';t.async=true;document.head.appendChild(t);})();</script>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

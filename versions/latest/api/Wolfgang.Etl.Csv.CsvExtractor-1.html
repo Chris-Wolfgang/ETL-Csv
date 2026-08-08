@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/Chris-Wolfgang/ETL-Csv/new/v0.2.0/apiSpec/new?filename=Wolfgang_Etl_Csv_CsvExtractor_1.md&amp;value=---%0Auid%3A%20Wolfgang.Etl.Csv.CsvExtractor%601%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="docfx:docurl" content="https://github.com/Chris-Wolfgang/ETL-Csv/new/v0.3.0/apiSpec/new?filename=Wolfgang_Etl_Csv_CsvExtractor_1.md&amp;value=---%0Auid%3A%20Wolfgang.Etl.Csv.CsvExtractor%601%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -75,7 +75,7 @@
 
 
   <h1 id="Wolfgang_Etl_Csv_CsvExtractor_1" data-uid="Wolfgang.Etl.Csv.CsvExtractor`1" class="text-break">
-Class CsvExtractor&lt;TRecord&gt;  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.2.0/src/Wolfgang.Etl.Csv/CsvExtractor.cs/#L33"><i class="bi bi-code-slash"></i></a>
+Class CsvExtractor&lt;TRecord&gt;  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/CsvExtractor.cs/#L33"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -89,7 +89,7 @@ using <a href="https://joshclose.github.io/CsvHelper/">CsvHelper</a>.</p>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class CsvExtractor&lt;TRecord&gt; : ExtractorBase&lt;TRecord, CsvExtractorProgress&gt;, IExtractWithProgressAndCancellationAsync&lt;TRecord, CsvExtractorProgress&gt;, IExtractWithCancellationAsync&lt;TRecord&gt;, IExtractWithProgressAsync&lt;TRecord, CsvExtractorProgress&gt;, IExtractAsync&lt;TRecord&gt;, IAsyncDisposable, IDisposable where TRecord : notnull</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed class CsvExtractor&lt;TRecord&gt; : ExtractorBase&lt;TRecord, CsvExtractorProgress&gt;, IExtractWithProgressAndCancellationAsync&lt;TRecord, CsvExtractorProgress&gt;, IExtractWithCancellationAsync&lt;TRecord&gt;, IExtractWithProgressAsync&lt;TRecord, CsvExtractorProgress&gt;, IExtractAsync&lt;TRecord&gt;, IReportsItemErrors, IAsyncDisposable, IDisposable where TRecord : notnull</code></pre>
   </div>
 
 
@@ -117,6 +117,7 @@ using <a href="https://joshclose.github.io/CsvHelper/">CsvHelper</a>.</p>
       <div><span class="xref">IExtractWithCancellationAsync</span>&lt;TRecord&gt;</div>
       <div><span class="xref">IExtractWithProgressAsync</span>&lt;TRecord, <a class="xref" href="Wolfgang.Etl.Csv.CsvExtractorProgress.html">CsvExtractorProgress</a>&gt;</div>
       <div><span class="xref">IExtractAsync</span>&lt;TRecord&gt;</div>
+      <div><span class="xref">IReportsItemErrors</span></div>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iasyncdisposable">IAsyncDisposable</a></div>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
     </dd>
@@ -154,10 +155,16 @@ using <a href="https://joshclose.github.io/CsvHelper/">CsvHelper</a>.</p>
       <span class="xref">ExtractorBase&lt;TRecord, CsvExtractorProgress&gt;.CurrentSkippedItemCount</span>
     </div>
     <div>
+      <span class="xref">ExtractorBase&lt;TRecord, CsvExtractorProgress&gt;.CurrentErrorItemCount</span>
+    </div>
+    <div>
       <span class="xref">ExtractorBase&lt;TRecord, CsvExtractorProgress&gt;.MaximumItemCount</span>
     </div>
     <div>
       <span class="xref">ExtractorBase&lt;TRecord, CsvExtractorProgress&gt;.SkipItemCount</span>
+    </div>
+    <div>
+      <span class="xref">ExtractorBase&lt;TRecord, CsvExtractorProgress&gt;.ErrorPolicy</span>
     </div>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
@@ -200,7 +207,7 @@ await foreach (var person in extractor.ExtractAsync(cancellationToken))
 
   <h3 id="Wolfgang_Etl_Csv_CsvExtractor_1__ctor_System_IO_StreamReader_" data-uid="Wolfgang.Etl.Csv.CsvExtractor`1.#ctor(System.IO.StreamReader)">
   CsvExtractor(StreamReader)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.2.0/src/Wolfgang.Etl.Csv/CsvExtractor.cs/#L54"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/CsvExtractor.cs/#L54"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Wolfgang.Etl.Csv.CsvExtractor-1.html">CsvExtractor&lt;TRecord&gt;</a> class.</p>
@@ -240,7 +247,7 @@ public CsvExtractor(StreamReader streamReader)</code></pre>
 
   <h3 id="Wolfgang_Etl_Csv_CsvExtractor_1__ctor_System_IO_StreamReader_Microsoft_Extensions_Logging_ILogger_Wolfgang_Etl_Csv_CsvExtractor__0___" data-uid="Wolfgang.Etl.Csv.CsvExtractor`1.#ctor(System.IO.StreamReader,Microsoft.Extensions.Logging.ILogger{Wolfgang.Etl.Csv.CsvExtractor{`0}})">
   CsvExtractor(StreamReader, ILogger&lt;CsvExtractor&lt;TRecord&gt;&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.2.0/src/Wolfgang.Etl.Csv/CsvExtractor.cs/#L74"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/CsvExtractor.cs/#L74"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Wolfgang.Etl.Csv.CsvExtractor-1.html">CsvExtractor&lt;TRecord&gt;</a> class with diagnostic logging.</p>
@@ -287,7 +294,7 @@ public CsvExtractor(StreamReader streamReader, ILogger&lt;CsvExtractor&lt;TRecor
 
   <h3 id="Wolfgang_Etl_Csv_CsvExtractor_1_AllowComments" data-uid="Wolfgang.Etl.Csv.CsvExtractor`1.AllowComments">
   AllowComments
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.2.0/src/Wolfgang.Etl.Csv/CsvExtractor.cs/#L109"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/CsvExtractor.cs/#L109"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets a value indicating whether comment lines are allowed.</p>
@@ -319,7 +326,7 @@ public CsvExtractor(StreamReader streamReader, ILogger&lt;CsvExtractor&lt;TRecor
 
   <h3 id="Wolfgang_Etl_Csv_CsvExtractor_1_BadDataFound" data-uid="Wolfgang.Etl.Csv.CsvExtractor`1.BadDataFound">
   BadDataFound
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.2.0/src/Wolfgang.Etl.Csv/CsvExtractor.cs/#L130"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/CsvExtractor.cs/#L130"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets a callback invoked when the underlying parser detects bad data.
@@ -328,7 +335,8 @@ Use this to log, count, or quarantine bad records as they're encountered.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Action&lt;CsvBadDataInfo&gt;? BadDataFound { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">[Obsolete(&quot;Deprecated in favor of the unified ErrorPolicy for failure handling. This observation callback still fires (and CurrentBadDataCount still counts) when the parser reports malformed data; bad data remains tolerated, while parse/type-conversion failures are governed by ErrorPolicy.&quot;)]
+public Action&lt;CsvBadDataInfo&gt;? BadDataFound { get; set; }</code></pre>
   </div>
 
 
@@ -363,7 +371,7 @@ passed to <code>ExtractAsync</code>.</p>
 
   <h3 id="Wolfgang_Etl_Csv_CsvExtractor_1_ColumnMaps" data-uid="Wolfgang.Etl.Csv.CsvExtractor`1.ColumnMaps">
   ColumnMaps
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.2.0/src/Wolfgang.Etl.Csv/CsvExtractor.cs/#L256"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/CsvExtractor.cs/#L258"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets a runtime column-map collection that overrides any
@@ -403,7 +411,7 @@ only source of property-to-column bindings; attribute-based mapping is bypassed.
 
   <h3 id="Wolfgang_Etl_Csv_CsvExtractor_1_Comment" data-uid="Wolfgang.Etl.Csv.CsvExtractor`1.Comment">
   Comment
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.2.0/src/Wolfgang.Etl.Csv/CsvExtractor.cs/#L155"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/CsvExtractor.cs/#L157"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the character used to mark a comment line.</p>
@@ -435,7 +443,7 @@ only source of property-to-column bindings; attribute-based mapping is bypassed.
 
   <h3 id="Wolfgang_Etl_Csv_CsvExtractor_1_Delimiter" data-uid="Wolfgang.Etl.Csv.CsvExtractor`1.Delimiter">
   Delimiter
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.2.0/src/Wolfgang.Etl.Csv/CsvExtractor.cs/#L160"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/CsvExtractor.cs/#L162"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the field delimiter. Default is <code>&quot;,&quot;</code>.</p>
@@ -467,7 +475,7 @@ only source of property-to-column bindings; attribute-based mapping is bypassed.
 
   <h3 id="Wolfgang_Etl_Csv_CsvExtractor_1_Encoding" data-uid="Wolfgang.Etl.Csv.CsvExtractor`1.Encoding">
   Encoding
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.2.0/src/Wolfgang.Etl.Csv/CsvExtractor.cs/#L180"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/CsvExtractor.cs/#L182"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the encoding forwarded to the underlying parser configuration.</p>
@@ -507,7 +515,7 @@ is authoritative. To read a non-default encoding, construct the
 
   <h3 id="Wolfgang_Etl_Csv_CsvExtractor_1_Escape" data-uid="Wolfgang.Etl.Csv.CsvExtractor`1.Escape">
   Escape
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.2.0/src/Wolfgang.Etl.Csv/CsvExtractor.cs/#L165"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/CsvExtractor.cs/#L167"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the character used to escape the quote character within a field.</p>
@@ -539,7 +547,7 @@ is authoritative. To read a non-default encoding, construct the
 
   <h3 id="Wolfgang_Etl_Csv_CsvExtractor_1_HasHeaderRecord" data-uid="Wolfgang.Etl.Csv.CsvExtractor`1.HasHeaderRecord">
   HasHeaderRecord
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.2.0/src/Wolfgang.Etl.Csv/CsvExtractor.cs/#L185"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/CsvExtractor.cs/#L187"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets a value indicating whether the CSV has a header record.</p>
@@ -571,7 +579,7 @@ is authoritative. To read a non-default encoding, construct the
 
   <h3 id="Wolfgang_Etl_Csv_CsvExtractor_1_IgnoreBlankLines" data-uid="Wolfgang.Etl.Csv.CsvExtractor`1.IgnoreBlankLines">
   IgnoreBlankLines
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.2.0/src/Wolfgang.Etl.Csv/CsvExtractor.cs/#L190"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/CsvExtractor.cs/#L192"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets a value indicating whether blank lines are skipped.</p>
@@ -603,7 +611,7 @@ is authoritative. To read a non-default encoding, construct the
 
   <h3 id="Wolfgang_Etl_Csv_CsvExtractor_1_InitialRecordIndex" data-uid="Wolfgang.Etl.Csv.CsvExtractor`1.InitialRecordIndex">
   InitialRecordIndex
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.2.0/src/Wolfgang.Etl.Csv/CsvExtractor.cs/#L206"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/CsvExtractor.cs/#L208"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the 1-based index of the first line the parser will consume from
@@ -649,7 +657,7 @@ lines that precede the header / data section.</p>
 
   <h3 id="Wolfgang_Etl_Csv_CsvExtractor_1_LeaveOpen" data-uid="Wolfgang.Etl.Csv.CsvExtractor`1.LeaveOpen">
   LeaveOpen
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.2.0/src/Wolfgang.Etl.Csv/CsvExtractor.cs/#L231"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/CsvExtractor.cs/#L233"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets a value indicating whether the underlying stream should be left open
@@ -686,7 +694,7 @@ passed into the constructor.</p>
 
   <h3 id="Wolfgang_Etl_Csv_CsvExtractor_1_MaxRecordCount" data-uid="Wolfgang.Etl.Csv.CsvExtractor`1.MaxRecordCount">
   MaxRecordCount
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.2.0/src/Wolfgang.Etl.Csv/CsvExtractor.cs/#L276"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/CsvExtractor.cs/#L278"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the maximum number of records to extract.
@@ -719,7 +727,7 @@ This is an alias for <span class="xref">Wolfgang.Etl.Abstractions.ExtractorBase&
 
   <h3 id="Wolfgang_Etl_Csv_CsvExtractor_1_Quote" data-uid="Wolfgang.Etl.Csv.CsvExtractor`1.Quote">
   Quote
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.2.0/src/Wolfgang.Etl.Csv/CsvExtractor.cs/#L236"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/CsvExtractor.cs/#L238"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the quote character used to wrap fields.</p>
@@ -751,7 +759,7 @@ This is an alias for <span class="xref">Wolfgang.Etl.Abstractions.ExtractorBase&
 
   <h3 id="Wolfgang_Etl_Csv_CsvExtractor_1_ReadingExceptionOccurred" data-uid="Wolfgang.Etl.Csv.CsvExtractor`1.ReadingExceptionOccurred">
   ReadingExceptionOccurred
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.2.0/src/Wolfgang.Etl.Csv/CsvExtractor.cs/#L150"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/CsvExtractor.cs/#L151"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets a callback invoked when the underlying parser raises a
@@ -761,7 +769,8 @@ specific field). Use this to log, count, or send to telemetry.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Action&lt;CsvReadingExceptionInfo&gt;? ReadingExceptionOccurred { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">[Obsolete(&quot;Deprecated in favor of the unified ErrorPolicy. Parse / type-conversion failures now route through HandleItemError so ErrorPolicy governs skip-vs-abort; ItemErrorContext.Exception carries the failure. This callback still fires for observation only.&quot;)]
+public Action&lt;CsvReadingExceptionInfo&gt;? ReadingExceptionOccurred { get; set; }</code></pre>
   </div>
 
 
@@ -794,7 +803,7 @@ in <code>try / catch</code> if you want to swallow individual row failures.</p>
 
   <h3 id="Wolfgang_Etl_Csv_CsvExtractor_1_SkipRecordCount" data-uid="Wolfgang.Etl.Csv.CsvExtractor`1.SkipRecordCount">
   SkipRecordCount
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.2.0/src/Wolfgang.Etl.Csv/CsvExtractor.cs/#L264"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/CsvExtractor.cs/#L266"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the number of records to skip before yielding results.
@@ -827,7 +836,7 @@ This is an alias for <span class="xref">Wolfgang.Etl.Abstractions.ExtractorBase&
 
   <h3 id="Wolfgang_Etl_Csv_CsvExtractor_1_TrimOptions" data-uid="Wolfgang.Etl.Csv.CsvExtractor`1.TrimOptions">
   TrimOptions
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.2.0/src/Wolfgang.Etl.Csv/CsvExtractor.cs/#L241"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/CsvExtractor.cs/#L243"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the trimming options applied while reading.</p>
@@ -863,7 +872,7 @@ This is an alias for <span class="xref">Wolfgang.Etl.Abstractions.ExtractorBase&
 
   <h3 id="Wolfgang_Etl_Csv_CsvExtractor_1_CreateProgressReport" data-uid="Wolfgang.Etl.Csv.CsvExtractor`1.CreateProgressReport">
   CreateProgressReport()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.2.0/src/Wolfgang.Etl.Csv/CsvExtractor.cs/#L491"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/CsvExtractor.cs/#L544"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Creates a progress report of type TProgress. This gives the derived class the opportunity to
@@ -897,7 +906,7 @@ implement a custom progress report that is specific to the extraction process.</
 
   <h3 id="Wolfgang_Etl_Csv_CsvExtractor_1_CreateProgressTimer_System_IProgress_Wolfgang_Etl_Csv_CsvExtractorProgress__" data-uid="Wolfgang.Etl.Csv.CsvExtractor`1.CreateProgressTimer(System.IProgress{Wolfgang.Etl.Csv.CsvExtractorProgress})">
   CreateProgressTimer(IProgress&lt;CsvExtractorProgress&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.2.0/src/Wolfgang.Etl.Csv/CsvExtractor.cs/#L503"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/CsvExtractor.cs/#L557"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Creates the <span class="xref">Wolfgang.Etl.Abstractions.IProgressTimer</span> used to drive progress callbacks.
@@ -938,7 +947,7 @@ Override this method in a derived class to inject a custom timer
 
   <h3 id="Wolfgang_Etl_Csv_CsvExtractor_1_ExtractWorkerAsync_System_Threading_CancellationToken_" data-uid="Wolfgang.Etl.Csv.CsvExtractor`1.ExtractWorkerAsync(System.Threading.CancellationToken)">
   ExtractWorkerAsync(CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.2.0/src/Wolfgang.Etl.Csv/CsvExtractor.cs/#L373"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/CsvExtractor.cs/#L378"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>This method is the core implementation of the extraction logic and should be
@@ -947,7 +956,8 @@ overridden by derived classes.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">protected override IAsyncEnumerable&lt;TRecord&gt; ExtractWorkerAsync(CancellationToken token)</code></pre>
+    <pre><code class="lang-csharp hljs">[SuppressMessage(&quot;Design&quot;, &quot;MA0051:Method is too long&quot;, Justification = &quot;Cohesive async extraction loop — the per-row read / error-policy / yield flow cannot be split across the yield boundary without hurting readability.&quot;)]
+protected override IAsyncEnumerable&lt;TRecord&gt; ExtractWorkerAsync(CancellationToken token)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -979,7 +989,7 @@ The result may be an empty sequence if no data is available or if the extraction
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.2.0/src/Wolfgang.Etl.Csv/CsvExtractor.cs/#L33" class="edit-link">Edit this page</a>
+          <a href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/CsvExtractor.cs/#L33" class="edit-link">Edit this page</a>
         </div>
 
 

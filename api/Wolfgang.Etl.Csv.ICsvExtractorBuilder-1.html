@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Interface ICsvExtractorBuilder&lt;T&gt; | Wolfgang.Etl.Csv Documentation </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Interface ICsvExtractorBuilder&lt;T&gt; | Wolfgang.Etl.Csv Documentation ">
+      
+      <meta name="description" content="Fluent builder for a  hung off the generic  chain. Extends , so a consumer transitions from configuring the extractor to appending pipeline operators simply by calling one — no explicit Build() step. The first pipeline operator (for example Where, Select, or a  stage) materializes the extractor and the configuration setters fall off the surface.">
+      <link rel="icon" href="../favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Chris-Wolfgang/ETL-Csv/new/v0.3.0/apiSpec/new?filename=Wolfgang_Etl_Csv_ICsvExtractorBuilder_1.md&amp;value=---%0Auid%3A%20Wolfgang.Etl.Csv.ICsvExtractorBuilder%601%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="Wolfgang.Etl.Csv">
+            Wolfgang.Etl.Csv
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Wolfgang.Etl.Csv.ICsvExtractorBuilder`1">
+
+
+
+  <h1 id="Wolfgang_Etl_Csv_ICsvExtractorBuilder_1" data-uid="Wolfgang.Etl.Csv.ICsvExtractorBuilder`1" class="text-break">
+Interface ICsvExtractorBuilder&lt;T&gt;  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/ICsvExtractorBuilder.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Wolfgang.html">Wolfgang</a>.<a class="xref" href="Wolfgang.Etl.html">Etl</a>.<a class="xref" href="Wolfgang.Etl.Csv.html">Csv</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Wolfgang.Etl.Csv.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Fluent builder for a <a class="xref" href="Wolfgang.Etl.Csv.CsvExtractor-1.html">CsvExtractor&lt;TRecord&gt;</a> hung off the generic
+<span class="xref">Wolfgang.Etl.Abstractions.EtlPipeline</span> chain. Extends <span class="xref">Wolfgang.Etl.Abstractions.IEtlPipeline&lt;T&gt;</span>, so a consumer
+transitions from configuring the extractor to appending pipeline operators simply by
+calling one — no explicit <code>Build()</code> step. The first pipeline operator (for example
+<code>Where</code>, <code>Select</code>, or a <span class="xref">Wolfgang.Etl.Abstractions.IEtlPipeline&lt;T&gt;.Through&lt;TOut&gt;(Wolfgang.Etl.Abstractions.ITransformAsync&lt;T, TOut&gt;)</span>
+stage) materializes the extractor and the configuration setters fall off the surface.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public interface ICsvExtractorBuilder&lt;T&gt; : IEtlPipeline&lt;T&gt; where T : notnull</code></pre>
+  </div>
+
+
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The record type produced by the extractor.</p>
+</dd>
+  </dl>
+
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <span class="xref">IEtlPipeline&lt;T&gt;.Through&lt;TOut&gt;(ITransformAsync&lt;T, TOut&gt;)</span>
+    </div>
+    <div>
+      <span class="xref">IEtlPipeline&lt;T&gt;.Through&lt;TOut&gt;(ITransformWithCancellationAsync&lt;T, TOut&gt;)</span>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">IEtlPipeline&lt;T&gt;.Through&lt;TOut&gt;(Func&lt;IAsyncEnumerable&lt;T&gt;, IAsyncEnumerable&lt;TOut&gt;&gt;)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-3">IEtlPipeline&lt;T&gt;.Through&lt;TOut&gt;(Func&lt;IAsyncEnumerable&lt;T&gt;, CancellationToken, IAsyncEnumerable&lt;TOut&gt;&gt;)</a>
+    </div>
+    <div>
+      <span class="xref">IEtlPipeline&lt;T&gt;.To&lt;TProgress&gt;(LoaderBase&lt;T, TProgress&gt;)</span>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">IEtlPipeline&lt;T&gt;.AsAsyncEnumerable(CancellationToken)</a>
+    </div>
+  </dd></dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.html#Wolfgang_Etl_Csv_EtlPipelineCsvExtensions_CsvLoader__1_Wolfgang_Etl_Abstractions_IEtlPipeline___0__System_IO_StreamWriter_">EtlPipelineCsvExtensions.CsvLoader&lt;T&gt;(IEtlPipeline&lt;T&gt;, StreamWriter)</a>
+  </div>
+  <div>
+      <a class="xref" href="Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.html#Wolfgang_Etl_Csv_EtlPipelineCsvExtensions_CsvLoader__1_Wolfgang_Etl_Abstractions_IEtlPipeline___0__System_String_">EtlPipelineCsvExtensions.CsvLoader&lt;T&gt;(IEtlPipeline&lt;T&gt;, string)</a>
+  </div>
+  <div>
+      <a class="xref" href="Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.html#Wolfgang_Etl_Csv_EtlPipelineCsvExtensions_CsvLoader__1_Wolfgang_Etl_Abstractions_IEtlPipeline___0__Wolfgang_Etl_Csv_CsvLoader___0__">EtlPipelineCsvExtensions.CsvLoader&lt;T&gt;(IEtlPipeline&lt;T&gt;, CsvLoader&lt;T&gt;)</a>
+  </div>
+  </dd></dl>
+
+
+
+  <h2 id="Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>Each setter maps 1:1 to a public property on <a class="xref" href="Wolfgang.Etl.Csv.CsvExtractor-1.html">CsvExtractor&lt;TRecord&gt;</a>; no new
+configuration surface is introduced. Setters return the builder for chaining and take
+effect when the pipeline is first enumerated. Stream ownership is decided by the factory
+overload, not a setter: a path-based source owns and disposes the file it opens, while a
+caller-supplied <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.streamreader">StreamReader</a> is left open for the caller to dispose.</p>
+</div>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_AllowComments_" data-uid="Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.AllowComments*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_AllowComments_System_Boolean_" data-uid="Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.AllowComments(System.Boolean)">
+  AllowComments(bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/ICsvExtractorBuilder.cs/#L56"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets <a class="xref" href="Wolfgang.Etl.Csv.CsvExtractor-1.html#Wolfgang_Etl_Csv_CsvExtractor_1_AllowComments">AllowComments</a>. Default: <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ICsvExtractorBuilder&lt;T&gt; AllowComments(bool allow)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>allow</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.html">ICsvExtractorBuilder</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_BadDataFound_" data-uid="Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.BadDataFound*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_BadDataFound_System_Action_Wolfgang_Etl_Csv_CsvBadDataInfo__" data-uid="Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.BadDataFound(System.Action{Wolfgang.Etl.Csv.CsvBadDataInfo})">
+  BadDataFound(Action&lt;CsvBadDataInfo&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/ICsvExtractorBuilder.cs/#L119"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets <a class="xref" href="Wolfgang.Etl.Csv.CsvExtractor-1.html#Wolfgang_Etl_Csv_CsvExtractor_1_BadDataFound">BadDataFound</a> — a callback invoked when the parser
+detects bad data. Extraction always continues after the callback.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ICsvExtractorBuilder&lt;T&gt; BadDataFound(Action&lt;CsvBadDataInfo&gt; handler)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="Wolfgang.Etl.Csv.CsvBadDataInfo.html">CsvBadDataInfo</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.html">ICsvExtractorBuilder</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">handler</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_ColumnMaps_" data-uid="Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.ColumnMaps*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_ColumnMaps_System_Collections_Generic_IReadOnlyList_Wolfgang_Etl_Csv_CsvColumnMap__" data-uid="Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.ColumnMaps(System.Collections.Generic.IReadOnlyList{Wolfgang.Etl.Csv.CsvColumnMap})">
+  ColumnMaps(IReadOnlyList&lt;CsvColumnMap&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/ICsvExtractorBuilder.cs/#L111"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets <a class="xref" href="Wolfgang.Etl.Csv.CsvExtractor-1.html#Wolfgang_Etl_Csv_CsvExtractor_1_ColumnMaps">ColumnMaps</a> — explicit column-to-member mappings
+applied instead of convention-based binding.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ICsvExtractorBuilder&lt;T&gt; ColumnMaps(IReadOnlyList&lt;CsvColumnMap&gt; maps)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>maps</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Wolfgang.Etl.Csv.CsvColumnMap.html">CsvColumnMap</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.html">ICsvExtractorBuilder</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">maps</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_Comment_" data-uid="Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.Comment*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_Comment_System_Char_" data-uid="Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.Comment(System.Char)">
+  Comment(char)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/ICsvExtractorBuilder.cs/#L50"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets <a class="xref" href="Wolfgang.Etl.Csv.CsvExtractor-1.html#Wolfgang_Etl_Csv_CsvExtractor_1_Comment">Comment</a>. Default: <code>#</code>. Only honoured when
+<a class="xref" href="Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.html#Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_AllowComments_System_Boolean_">AllowComments(bool)</a> is enabled.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ICsvExtractorBuilder&lt;T&gt; Comment(char comment)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>comment</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.html">ICsvExtractorBuilder</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_Delimiter_" data-uid="Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.Delimiter*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_Delimiter_System_String_" data-uid="Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.Delimiter(System.String)">
+  Delimiter(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/ICsvExtractorBuilder.cs/#L31"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets <a class="xref" href="Wolfgang.Etl.Csv.CsvExtractor-1.html#Wolfgang_Etl_Csv_CsvExtractor_1_Delimiter">Delimiter</a>. Default: <code>&quot;,&quot;</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ICsvExtractorBuilder&lt;T&gt; Delimiter(string delimiter)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>delimiter</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.html">ICsvExtractorBuilder</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">delimiter</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_Encoding_" data-uid="Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.Encoding*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_Encoding_System_Text_Encoding_" data-uid="Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.Encoding(System.Text.Encoding)">
+  Encoding(Encoding)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/ICsvExtractorBuilder.cs/#L76"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets <a class="xref" href="Wolfgang.Etl.Csv.CsvExtractor-1.html#Wolfgang_Etl_Csv_CsvExtractor_1_Encoding">Encoding</a> and the encoding used to open a
+path-based source. Default: <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoding.utf8">UTF8</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ICsvExtractorBuilder&lt;T&gt; Encoding(Encoding encoding)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>encoding</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoding">Encoding</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.html">ICsvExtractorBuilder</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">encoding</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_Escape_" data-uid="Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.Escape*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_Escape_System_Char_" data-uid="Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.Escape(System.Char)">
+  Escape(char)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/ICsvExtractorBuilder.cs/#L43"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets <a class="xref" href="Wolfgang.Etl.Csv.CsvExtractor-1.html#Wolfgang_Etl_Csv_CsvExtractor_1_Escape">Escape</a>. Default: <code>&quot;</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ICsvExtractorBuilder&lt;T&gt; Escape(char escape)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>escape</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.html">ICsvExtractorBuilder</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_HasHeaderRecord_" data-uid="Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.HasHeaderRecord*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_HasHeaderRecord_System_Boolean_" data-uid="Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.HasHeaderRecord(System.Boolean)">
+  HasHeaderRecord(bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/ICsvExtractorBuilder.cs/#L68"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets <a class="xref" href="Wolfgang.Etl.Csv.CsvExtractor-1.html#Wolfgang_Etl_Csv_CsvExtractor_1_HasHeaderRecord">HasHeaderRecord</a>. Default: <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ICsvExtractorBuilder&lt;T&gt; HasHeaderRecord(bool hasHeader)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>hasHeader</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.html">ICsvExtractorBuilder</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_IgnoreBlankLines_" data-uid="Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.IgnoreBlankLines*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_IgnoreBlankLines_System_Boolean_" data-uid="Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.IgnoreBlankLines(System.Boolean)">
+  IgnoreBlankLines(bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/ICsvExtractorBuilder.cs/#L62"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets <a class="xref" href="Wolfgang.Etl.Csv.CsvExtractor-1.html#Wolfgang_Etl_Csv_CsvExtractor_1_IgnoreBlankLines">IgnoreBlankLines</a>. Default: <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ICsvExtractorBuilder&lt;T&gt; IgnoreBlankLines(bool ignore)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>ignore</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.html">ICsvExtractorBuilder</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_InitialRecordIndex_" data-uid="Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.InitialRecordIndex*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_InitialRecordIndex_System_Int32_" data-uid="Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.InitialRecordIndex(System.Int32)">
+  InitialRecordIndex(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/ICsvExtractorBuilder.cs/#L83"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets <a class="xref" href="Wolfgang.Etl.Csv.CsvExtractor-1.html#Wolfgang_Etl_Csv_CsvExtractor_1_InitialRecordIndex">InitialRecordIndex</a> — the 1-based line treated as
+the first line read. Default: <code>1</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ICsvExtractorBuilder&lt;T&gt; InitialRecordIndex(int oneBasedIndex)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>oneBasedIndex</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.html">ICsvExtractorBuilder</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_MaxRecordCount_" data-uid="Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.MaxRecordCount*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_MaxRecordCount_System_Int32_" data-uid="Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.MaxRecordCount(System.Int32)">
+  MaxRecordCount(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/ICsvExtractorBuilder.cs/#L97"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets <a class="xref" href="Wolfgang.Etl.Csv.CsvExtractor-1.html#Wolfgang_Etl_Csv_CsvExtractor_1_MaxRecordCount">MaxRecordCount</a> — the maximum number of records to
+yield.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ICsvExtractorBuilder&lt;T&gt; MaxRecordCount(int count)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>count</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.html">ICsvExtractorBuilder</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_Quote_" data-uid="Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.Quote*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_Quote_System_Char_" data-uid="Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.Quote(System.Char)">
+  Quote(char)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/ICsvExtractorBuilder.cs/#L37"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets <a class="xref" href="Wolfgang.Etl.Csv.CsvExtractor-1.html#Wolfgang_Etl_Csv_CsvExtractor_1_Quote">Quote</a>. Default: <code>&quot;</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ICsvExtractorBuilder&lt;T&gt; Quote(char quote)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>quote</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.html">ICsvExtractorBuilder</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_ReadingExceptionOccurred_" data-uid="Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.ReadingExceptionOccurred*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_ReadingExceptionOccurred_System_Action_Wolfgang_Etl_Csv_CsvReadingExceptionInfo__" data-uid="Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.ReadingExceptionOccurred(System.Action{Wolfgang.Etl.Csv.CsvReadingExceptionInfo})">
+  ReadingExceptionOccurred(Action&lt;CsvReadingExceptionInfo&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/ICsvExtractorBuilder.cs/#L127"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets <a class="xref" href="Wolfgang.Etl.Csv.CsvExtractor-1.html#Wolfgang_Etl_Csv_CsvExtractor_1_ReadingExceptionOccurred">ReadingExceptionOccurred</a> — a callback invoked when
+the parser raises a recoverable parse exception. The exception still propagates.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ICsvExtractorBuilder&lt;T&gt; ReadingExceptionOccurred(Action&lt;CsvReadingExceptionInfo&gt; handler)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="Wolfgang.Etl.Csv.CsvReadingExceptionInfo.html">CsvReadingExceptionInfo</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.html">ICsvExtractorBuilder</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">handler</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_SkipRecordCount_" data-uid="Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.SkipRecordCount*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_SkipRecordCount_System_Int32_" data-uid="Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.SkipRecordCount(System.Int32)">
+  SkipRecordCount(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/ICsvExtractorBuilder.cs/#L90"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets <a class="xref" href="Wolfgang.Etl.Csv.CsvExtractor-1.html#Wolfgang_Etl_Csv_CsvExtractor_1_SkipRecordCount">SkipRecordCount</a> — the number of records to skip
+after the header before yielding.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ICsvExtractorBuilder&lt;T&gt; SkipRecordCount(int count)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>count</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.html">ICsvExtractorBuilder</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_TrimOptions_" data-uid="Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.TrimOptions*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_ICsvExtractorBuilder_1_TrimOptions_Wolfgang_Etl_Csv_CsvTrimOptions_" data-uid="Wolfgang.Etl.Csv.ICsvExtractorBuilder`1.TrimOptions(Wolfgang.Etl.Csv.CsvTrimOptions)">
+  TrimOptions(CsvTrimOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/ICsvExtractorBuilder.cs/#L103"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets <a class="xref" href="Wolfgang.Etl.Csv.CsvExtractor-1.html#Wolfgang_Etl_Csv_CsvExtractor_1_TrimOptions">TrimOptions</a>. Default: <a class="xref" href="Wolfgang.Etl.Csv.CsvTrimOptions.html#Wolfgang_Etl_Csv_CsvTrimOptions_None">None</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ICsvExtractorBuilder&lt;T&gt; TrimOptions(CsvTrimOptions options)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>options</code> <a class="xref" href="Wolfgang.Etl.Csv.CsvTrimOptions.html">CsvTrimOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.html">ICsvExtractorBuilder</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.3.0/src/Wolfgang.Etl.Csv/ICsvExtractorBuilder.cs/#L24" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Made with DocFX <script>(function(){var r='/';if(window.location.hostname.endsWith('.github.io')){var s=window.location.pathname.split('/').filter(Boolean);if(s.length)r='/'+s[0]+'/';}var t=document.createElement('script');t.src=r+'public/version-picker.js';t.async=true;document.head.appendChild(t);})();</script>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

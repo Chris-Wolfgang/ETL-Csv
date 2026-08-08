@@ -137,6 +137,36 @@ making logging decisions on the caller's behalf.</p>
       <dd><p>Provides per-field context to a <code>ShouldQuote</code> callback while writing a CSV stream.</p>
 </dd>
     </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.html">EtlPipelineCsvExtensions</a></dt>
+      <dd><p>Class-named CSV source factories and sink terminators for the fluent <span class="xref">Wolfgang.Etl.Abstractions.EtlPipeline</span>
+chain. Source factories hang off <span class="xref">Wolfgang.Etl.Abstractions.EtlPipeline</span> so a pipeline reads
+<code>EtlPipeline.Create().CsvExtractor&lt;Order&gt;(&quot;orders.csv&quot;)</code>; sink terminators hang off
+<span class="xref">Wolfgang.Etl.Abstractions.IEtlPipeline&lt;T&gt;</span> so it ends <code>… .CsvLoader&lt;Order&gt;(&quot;out.csv&quot;).RunAsync()</code>.</p>
+</dd>
+    </dl>
+    <h3 id="interfaces">
+Interfaces
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.html">ICsvExtractorBuilder&lt;T&gt;</a></dt>
+      <dd><p>Fluent builder for a <a class="xref" href="Wolfgang.Etl.Csv.CsvExtractor-1.html">CsvExtractor&lt;TRecord&gt;</a> hung off the generic
+<span class="xref">Wolfgang.Etl.Abstractions.EtlPipeline</span> chain. Extends <span class="xref">Wolfgang.Etl.Abstractions.IEtlPipeline&lt;T&gt;</span>, so a consumer
+transitions from configuring the extractor to appending pipeline operators simply by
+calling one — no explicit <code>Build()</code> step. The first pipeline operator (for example
+<code>Where</code>, <code>Select</code>, or a <span class="xref">Wolfgang.Etl.Abstractions.IEtlPipeline&lt;T&gt;.Through&lt;TOut&gt;(Wolfgang.Etl.Abstractions.ITransformAsync&lt;T, TOut&gt;)</span>
+stage) materializes the extractor and the configuration setters fall off the surface.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Wolfgang.Etl.Csv.ICsvLoaderBuilder-1.html">ICsvLoaderBuilder&lt;T&gt;</a></dt>
+      <dd><p>Fluent builder for a <a class="xref" href="Wolfgang.Etl.Csv.CsvLoader-1.html">CsvLoader&lt;TRecord&gt;</a> that terminates the generic
+<span class="xref">Wolfgang.Etl.Abstractions.EtlPipeline</span> chain. Extends <span class="xref">Wolfgang.Etl.Abstractions.IEtlPipelineSink</span>, so the pipeline is
+runnable as soon as the terminator is called; the fluent setters simply refine the loader
+before <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iprogress-1">RunAsync(IProgress&lt;EtlPipelineProgress&gt;, CancellationToken)</a>
+materializes and runs it.</p>
+</dd>
+    </dl>
     <h3 id="enums">
 Enums
 </h3>
