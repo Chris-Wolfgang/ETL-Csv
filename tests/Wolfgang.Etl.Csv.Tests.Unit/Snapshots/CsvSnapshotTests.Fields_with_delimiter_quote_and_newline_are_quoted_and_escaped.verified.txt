@@ -1,4 +1,4 @@
-﻿[
+[
   FirstName,LastName,Age,
   "Comma,Name","Quote""Name",1,
   "Line,
