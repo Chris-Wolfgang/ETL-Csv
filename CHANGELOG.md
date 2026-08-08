@@ -26,13 +26,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Bumped the `Wolfgang.Etl.Abstractions` dependency to **0.22.0** and the test-only
-  `Wolfgang.Etl.TestKit` / `Wolfgang.Etl.TestKit.Xunit` packages to **0.22.0**. Adopts
+- Bumped the `Wolfgang.Etl.Abstractions` dependency to **0.21.0** and the test-only
+  `Wolfgang.Etl.TestKit` / `Wolfgang.Etl.TestKit.Xunit` packages to **0.14.0**. Adopts
   the expanded `LoaderBase` / `ExtractorBase` contract-test suites (cancellation,
   disposal, error-handling, allocation-budget) — removed the now-redundant hand-written
   `CsvLoader` null-`items` guard test that the contract base now covers.
 - `CsvExtractor` row-level failures (parse and type-conversion) now route through the unified
-  `ErrorPolicy` (Abstractions 0.22). Assign an `ErrorPolicy` that returns `ItemErrorAction.Skip`
+  `ErrorPolicy` (Abstractions 0.21). Assign an `ErrorPolicy` that returns `ItemErrorAction.Skip`
   (e.g. `ErrorPolicy = _ => ItemErrorAction.Skip`) to skip a failed row and continue
   (`CurrentErrorItemCount` / `CsvExtractorProgress.CurrentErrorItemCount` track skipped failures);
   the default is fail-fast (the first failure aborts the run, as before).
