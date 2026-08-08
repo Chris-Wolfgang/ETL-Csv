@@ -70,6 +70,10 @@ jobs:
           REPO: ${{ github.repository }}
         run: |
           marker='<!-- pr-benchmarks-delta -->'
+          # Prepend the marker so the comment body starts with it — the search below
+          # matches on that, so a subsequent run finds and updates this comment instead
+          # of posting a fresh one every time.
+          printf '%s\n\n' "$marker" | cat - /tmp/body.md > /tmp/body.marked && mv /tmp/body.marked /tmp/body.md
           id=$(gh api "repos/$REPO/issues/$PR/comments" --jq \
             ".[] | select(.body | startswith(\"$marker\")) | .id" | head -n1)
           if [ -n "$id" ]; then
