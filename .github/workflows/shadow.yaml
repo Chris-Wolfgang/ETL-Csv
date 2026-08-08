@@ -1,0 +1,102 @@
+# Shadow testing via sample consumer workloads (#63). Runs the realistic-scenario
+# sample (samples/Wolfgang.Etl.Csv.Shadow) nightly, captures per-scenario allocation
+# + GC + latency, and compares against the committed golden baseline. Allocation is
+# the hard gate (deterministic); latency is advisory (CI wall-clock is noisy). On an
+# allocation regression it opens/updates a tracking issue and fails the run.
+name: Shadow testing
+
+on:
+  schedule:
+    - cron: '0 4 * * *'   # nightly 04:00 UTC
+  workflow_dispatch:
+    inputs:
+      alloc_pct:
+        description: 'Allocation regression threshold % (blank = baseline default)'
+        required: false
+        default: ''
+      latency_pct:
+        description: 'Latency advisory threshold % (blank = baseline default)'
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+
+concurrency:
+  group: shadow-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  shadow:
+    name: Shadow scenarios vs baseline
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      issues: write   # open/update the regression tracking issue
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          persist-credentials: false
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Run shadow scenarios
+        run: >-
+          dotnet run -c Release
+          --project samples/Wolfgang.Etl.Csv.Shadow/Wolfgang.Etl.Csv.Shadow.csproj
+          -- shadow-report.json
+
+      - name: Compare vs golden baseline
+        id: compare
+        env:
+          SHADOW_ALLOC_PCT: ${{ github.event.inputs.alloc_pct }}
+          SHADOW_LATENCY_PCT: ${{ github.event.inputs.latency_pct }}
+        run: |
+          if python3 .github/scripts/shadow_delta.py \
+              samples/Wolfgang.Etl.Csv.Shadow/shadow-baseline.json \
+              shadow-report.json shadow-summary.md; then
+            echo "regressed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "regressed=true" >> "$GITHUB_OUTPUT"
+          fi
+          cat shadow-summary.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload shadow report
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: shadow-report
+          path: |
+            shadow-report.json
+            shadow-summary.md
+          retention-days: 90
+
+      - name: Open / update regression issue
+        if: steps.compare.outputs.regressed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          title='[shadow-regression] Shadow-test allocation regression'
+          {
+            echo "A nightly shadow-test scenario allocated beyond its budget. Run: $RUN_URL"
+            echo
+            cat shadow-summary.md
+          } > issue-body.md
+          existing=$(gh issue list --state open --search "$title in:title" --json number --jq '.[0].number // empty')
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body-file issue-body.md
+          else
+            gh issue create --title "$title" --body-file issue-body.md
+          fi
+
+      - name: Fail on allocation regression
+        if: steps.compare.outputs.regressed == 'true'
+        run: |
+          echo "::error::Shadow-test allocation regression — see the job summary and the tracking issue."
+          exit 1
