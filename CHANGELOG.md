@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-08-07
+
 ### Added
 
 - CSV pipeline extensions for the generic `EtlPipeline` chain (#14):
@@ -44,17 +46,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   failures are now governed by `ErrorPolicy` and bad data remains tolerated
   (`CurrentBadDataCount`).
 
-### Removed
-
 ### Fixed
 
 - `CsvLoader.LoadAsync` now honors a token that is **already cancelled before the first
   record is read** — it reads nothing and throws `OperationCanceledException` immediately,
-  matching `CsvExtractor` and the `LoaderBase` cancellation contract (TestKit 0.13).
+  matching `CsvExtractor` and the `LoaderBase` cancellation contract (TestKit 0.14).
   Previously it read (and wrote) one record before observing cancellation.
-
-### Security
-
 
 
 ## [0.2.0] - 2026-06-27
