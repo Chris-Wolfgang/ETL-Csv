@@ -63,6 +63,11 @@ public class CsvSustainedLoadGcTests
         var gen0 = GC.CollectionCount(0);
         var gen1 = GC.CollectionCount(1);
         var gen2 = GC.CollectionCount(2);
+        // GetAllocatedBytesForCurrentThread is thread-affine — which is intended here. The source
+        // is an in-memory MemoryStream, so every await in the loop below completes synchronously
+        // and enumeration never leaves this thread; the start/end reads therefore measure the same
+        // thread. (If this ever drove a genuinely async source that resumed on the thread pool,
+        // this would need a thread-agnostic measure such as GC.GetTotalAllocatedBytes.)
         var allocatedStart = GC.GetAllocatedBytesForCurrentThread();
 
         var count = 0;
