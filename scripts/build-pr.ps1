@@ -296,11 +296,18 @@ if (-not $SkipSecurity) {
         }
         else {
             # gitleaks ships separate builds per OS and architecture. Resolve
-            # linux/darwin × x64/arm64 in one selector so ARM64 hosts (Apple
-            # Silicon, AWS Graviton, ARM Linux CI) get the matching binary
-            # instead of the x64 default, which would fail to run (#140).
-            $arch = if ([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture -eq 'Arm64') { 'arm64' } else { 'x64' }
-            $os = if ($IsMacOS) { 'darwin' } else { 'linux' }
+            # linux/darwin × x64/arm64 so ARM64 hosts (Apple Silicon, AWS Graviton,
+            # ARM Linux CI) get the matching binary instead of the x64 default,
+            # which would fail to run (#140). Map only the architectures/OSes
+            # gitleaks actually publishes and error clearly on anything else,
+            # rather than silently downloading an incompatible archive.
+            $osArch = [System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture
+            $arch = switch ($osArch) {
+                'X64'   { 'x64' }
+                'Arm64' { 'arm64' }
+                default { throw "gitleaks install: unsupported CPU architecture '$osArch' (need X64 or Arm64)." }
+            }
+            $os = if ($IsMacOS) { 'darwin' } elseif ($IsLinux) { 'linux' } else { throw "gitleaks install: unsupported OS (need macOS or Linux)." }
             $archive = "gitleaks_${version}_${os}_${arch}.tar.gz"
             $url = "https://github.com/gitleaks/gitleaks/releases/download/v${version}/$archive"
             # Install to a user-writable location instead of /usr/local/bin
