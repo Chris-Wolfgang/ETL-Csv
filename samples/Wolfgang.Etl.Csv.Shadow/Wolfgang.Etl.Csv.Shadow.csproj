@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Shadow-testing sample consumer (#63). Deliberately OUT of ETL-Csv.slnx: it
+       is a net10.0 scenario runner exercised only by shadow.yaml (nightly), so it
+       must not join the multi-TFM solution build or the coverage-gated test run.
+       It doubles as executable "real usage" documentation of the public API. -->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+    <RootNamespace>Wolfgang.Etl.Csv.Shadow</RootNamespace>
+
+    <!-- This is a sample, not shipped library code: the library-grade analyzer
+         gate (banned sync APIs, doc-comment rules, etc.) would only add friction.
+         The scenarios still use async I/O throughout by design. -->
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <RunAnalyzers>false</RunAnalyzers>
+    <NoWarn>$(NoWarn);IL2026;IL3050</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Wolfgang.Etl.Csv\Wolfgang.Etl.Csv.csproj" />
+  </ItemGroup>
+
+</Project>

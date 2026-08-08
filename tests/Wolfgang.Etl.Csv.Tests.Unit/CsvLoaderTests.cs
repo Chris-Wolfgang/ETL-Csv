@@ -334,17 +334,4 @@ public class CsvLoaderTests
         Assert.Equal(9, sut.MaxRecordCount);
         Assert.Equal(9, sut.MaximumItemCount);
     }
-
-
-
-    [Fact]
-    public Task LoadAsync_when_items_is_null_throws_ArgumentNullException()
-    {
-        var (sut, _, _) = CreateLoader();
-
-        return Assert.ThrowsAsync<ArgumentNullException>
-        (
-            () => sut.LoadAsync(null!)
-        );
-    }
 }

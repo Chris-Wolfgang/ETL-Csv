@@ -22,8 +22,8 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.3.0" Condition="!$(TargetFramework.StartsWith('net5.')) AND !$(TargetFramework.StartsWith('net6.')) AND !$(TargetFramework.StartsWith('net7.')) AND !$(TargetFramework.StartsWith('netcoreapp'))" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" Condition="$(TargetFramework.StartsWith('net5.')) OR $(TargetFramework.StartsWith('net6.')) OR $(TargetFramework.StartsWith('net7.')) OR $(TargetFramework.StartsWith('netcoreapp'))" />
     <PackageReference Include="System.Linq.Async" Version="7.0.1" />
-    <PackageReference Include="Wolfgang.Etl.TestKit" Version="0.10.0" />
-    <PackageReference Include="Wolfgang.Etl.TestKit.Xunit" Version="0.10.0" />
+    <PackageReference Include="Wolfgang.Etl.TestKit" Version="0.14.0" />
+    <PackageReference Include="Wolfgang.Etl.TestKit.Xunit" Version="0.14.0" />
     <PackageReference Include="xunit" Version="2.9.3" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" NoWarn="NU1701">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -36,6 +36,22 @@
        the Roslyn analyzers require .NET 8+ to load cleanly. -->
   <ItemGroup Condition="'$(TargetFramework)' == 'net8.0' OR '$(TargetFramework)' == 'net9.0' OR '$(TargetFramework)' == 'net10.0'">
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.6.0" />
+  </ItemGroup>
+
+  <!-- CsCheck property/fuzz testing (CsvFuzzTests, #62). net8.0+ only (CsCheck
+       targets net8.0). The same [Trait("Category","Fuzz")] tests run a fast
+       default pass in PR CI and a long pass in fuzz.yaml, which scales the case
+       count via the CsCheck_Time / CsCheck_Iter environment variables. -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net8.0' OR '$(TargetFramework)' == 'net9.0' OR '$(TargetFramework)' == 'net10.0'">
+    <PackageReference Include="CsCheck" Version="4.7.0" />
+  </ItemGroup>
+
+  <!-- Verify snapshot/approval testing (CsvSnapshotTests, #73). Restricted to
+       net10.0 — the CSV output is TFM-independent, so one modern-TFM pass is
+       sufficient, and pinning a single TFM keeps one shared snapshot file per
+       test instead of Verify's per-runtime (.DotNet8_0/9_0/10_0) variants. -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+    <PackageReference Include="Verify.Xunit" Version="31.12.5" />
   </ItemGroup>
 
   <!-- Analyzer PackageReferences are centralized in Directory.Build.props -->

@@ -432,3 +432,6 @@ docfx_project/_site/
 docfx_project/obj/
 docfx_project/api/
 
+
+# Stryker.NET mutation-test output
+StrykerOutput/

@@ -260,6 +260,11 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
             UpdateLineNumber(csvWriter);
         }
 
+        // Honor a token that is already cancelled before we pull the first record
+        // from the source — mirrors CsvExtractor's top-of-loop check so a
+        // pre-cancelled load reads nothing (LoaderBase contract, TestKit 0.13).
+        token.ThrowIfCancellationRequested();
+
         await foreach (var item in items.WithCancellation(token).ConfigureAwait(false))
         {
             token.ThrowIfCancellationRequested();

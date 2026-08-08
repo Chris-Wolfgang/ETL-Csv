@@ -7,10 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-08-07
+
 ### Added
 
-- CSV pipeline extensions for the generic `EtlPipeline` chain introduced in
-  `Wolfgang.Etl.Abstractions` 0.16.0 (#14):
+- CSV pipeline extensions for the generic `EtlPipeline` chain (#14):
   - `EtlPipeline.Create().CsvExtractor<T>(...)` source factories over a file path, a
     caller-supplied `StreamReader`, or a pre-built `CsvExtractor<T>`, returning
     `ICsvExtractorBuilder<T>` for inline fluent configuration.
@@ -24,18 +25,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Path-based factories own the file stream they open and dispose it after the run
     (success and failure); caller-supplied streams and pre-built extractors/loaders are
     left to the caller. `.Encoding(...)` binds the actual stream encoding.
-  - Bumped the `Wolfgang.Etl.Abstractions` dependency to 0.16.0.
 
 ### Changed
 
+- Bumped the `Wolfgang.Etl.Abstractions` dependency to **0.21.0** and the test-only
+  `Wolfgang.Etl.TestKit` / `Wolfgang.Etl.TestKit.Xunit` packages to **0.14.0**. Adopts
+  the expanded `LoaderBase` / `ExtractorBase` contract-test suites (cancellation,
+  disposal, error-handling, allocation-budget) — removed the now-redundant hand-written
+  `CsvLoader` null-`items` guard test that the contract base now covers.
+- `CsvExtractor` row-level failures (parse and type-conversion) now route through the unified
+  `ErrorPolicy` (Abstractions 0.21). Assign an `ErrorPolicy` that returns `ItemErrorAction.Skip`
+  (e.g. `ErrorPolicy = _ => ItemErrorAction.Skip`) to skip a failed row and continue
+  (`CurrentErrorItemCount` / `CsvExtractorProgress.CurrentErrorItemCount` track skipped failures);
+  the default is fail-fast (the first failure aborts the run, as before).
+
 ### Deprecated
 
-### Removed
+- `CsvExtractor.ReadingExceptionOccurred` and `CsvExtractor.BadDataFound` — use `ErrorPolicy`
+  for the skip-vs-abort decision. Both callbacks still fire for observation; parse/type
+  failures are now governed by `ErrorPolicy` and bad data remains tolerated
+  (`CurrentBadDataCount`).
 
 ### Fixed
 
-### Security
-
+- `CsvLoader.LoadAsync` now honors a token that is **already cancelled before the first
+  record is read** — it reads nothing and throws `OperationCanceledException` immediately,
+  matching `CsvExtractor` and the `LoaderBase` cancellation contract (TestKit 0.14).
+  Previously it read (and wrote) one record before observing cancellation.
 
 
 ## [0.2.0] - 2026-06-27
