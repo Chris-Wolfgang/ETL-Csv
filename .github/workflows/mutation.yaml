@@ -2,12 +2,17 @@
 # and fails when the mutation score drops below the `break` threshold in
 # stryker-config.json (currently 60%; the suite measures ~69% at the Standard
 # mutation level — break is set conservatively for a non-flaky first CI run and is
-# meant to be ratcheted up once CI establishes a baseline). Scheduled weekly + on
-# demand; the HTML/JSON report is uploaded so survivors can be triaged. Stryker is
-# version-pinned via .config/dotnet-tools.json.
+# meant to be ratcheted up once CI establishes a baseline). Runs as a release gate
+# on PRs into main, plus weekly + on demand; the HTML/JSON report is uploaded so
+# survivors can be triaged. Stryker is version-pinned via .config/dotnet-tools.json.
 name: Mutation testing
 
 on:
+  # Release gate: mutation score must hold on every PR into main (where releases
+  # cut from). The vNext integration stack isn't burdened per-PR; the weekly run
+  # catches drift on main between releases.
+  pull_request:
+    branches: [main]
   schedule:
     - cron: '0 5 * * 1'   # Mondays 05:00 UTC
   workflow_dispatch:
