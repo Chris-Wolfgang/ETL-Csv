@@ -560,7 +560,6 @@ jobs:
             }
           }
 
-
       - name: Upload NuGet packages
         uses: actions/upload-artifact@v7
         with:
@@ -568,6 +567,35 @@ jobs:
           path: ./nuget-packages/
           retention-days: 90
           if-no-files-found: warn
+
+  # SLSA build provenance (#71) in a dedicated job so the elevated
+  # id-token/attestations:write scope is isolated to a job that only downloads
+  # the packed .nupkg and attests it — pack-and-validate (which runs the build)
+  # keeps the default contents:read. Attestation binds each .nupkg's digest to
+  # this run + commit; consumers verify with
+  # `gh attestation verify <nupkg> --repo Chris-Wolfgang/ETL-Csv`.
+  attest-provenance:
+    name: Attest build provenance (SLSA)
+    needs: pack-and-validate
+    if: needs.pack-and-validate.outputs.has-packages == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    steps:
+      - name: Download packages
+        uses: actions/download-artifact@v8.0.1
+        with:
+          name: nuget-packages
+          path: ./nuget-packages
+
+      - name: Attest build provenance
+        # Pinned to the v4.1.1 COMMIT — attest actions publish annotated tags
+        # that break tag-pin verification.
+        uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373 # v4.1.1
+        with:
+          subject-path: 'nuget-packages/*.nupkg'
 
   # Verify the documentation builds cleanly BEFORE publishing the release —
   # initiative D8. Builds DocFX without deploying so a docs failure blocks
@@ -672,6 +700,12 @@ jobs:
     needs: [pack-and-validate, verify-docs-build]
     if: needs.pack-and-validate.outputs.has-packages == 'true'
     runs-on: windows-latest
+    # NuGet Trusted Publishing (OIDC) — no long-lived NUGET_API_KEY secret. The
+    # NuGet/login step exchanges the workflow's OIDC identity for a short-lived
+    # push token, so id-token: write is required (#142).
+    permissions:
+      id-token: write
+      contents: read
     steps:
       - name: Setup .NET
         uses: actions/setup-dotnet@v6
@@ -691,22 +725,16 @@ jobs:
           name: nuget-packages
           path: ./packages
 
-      - name: Validate NuGet API key
-        shell: pwsh
-        env:
-          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-        run: |
-          if ([string]::IsNullOrEmpty($env:NUGET_API_KEY)) {
-            Write-Error "❌ NUGET_API_KEY secret not configured!"
-            Write-Host "Please add it in: Repository Settings → Secrets and variables → Actions → New repository secret"
-            exit 1
-          }
-          Write-Host "✅ NUGET_API_KEY is configured" -ForegroundColor Green
+      - name: NuGet login (OIDC → temporary API key)
+        uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841 # v1
+        id: nuget-login
+        with:
+          user: Chris-Wolfgang
 
       - name: Publish to NuGet
         shell: pwsh
         env:
-          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+          NUGET_API_KEY: ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
         run: |
           $packages = Get-ChildItem -Path './packages' -Filter '*.nupkg' -ErrorAction SilentlyContinue
           

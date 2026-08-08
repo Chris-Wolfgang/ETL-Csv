@@ -1,0 +1,71 @@
+# Mutation testing as a quality gate (#68). Runs Stryker.NET against the library
+# and fails when the mutation score drops below the `break` threshold in
+# stryker-config.json (currently 60%; the suite measures ~69% at the Standard
+# mutation level — break is set conservatively for a non-flaky first CI run and is
+# meant to be ratcheted up once CI establishes a baseline). Runs as a release gate
+# on PRs into main, plus weekly + on demand; the HTML/JSON report is uploaded so
+# survivors can be triaged. Stryker is version-pinned via .config/dotnet-tools.json.
+name: Mutation testing
+
+on:
+  # Release gate: mutation score must hold on every PR into main (where releases
+  # cut from). The vNext integration stack isn't burdened per-PR; the weekly run
+  # catches drift on main between releases.
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '0 5 * * 1'   # Mondays 05:00 UTC
+  workflow_dispatch:
+    inputs:
+      break_at:
+        description: 'Override the break threshold % (blank = stryker-config.json)'
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mutation-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  mutation:
+    name: Stryker mutation score
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          persist-credentials: false
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore tools
+        run: dotnet tool restore
+
+      - name: Run Stryker
+        # The break threshold in stryker-config.json fails this step on a score
+        # regression. break_at (dispatch input) overrides it via env, never inlined
+        # into the shell (injection-safe).
+        env:
+          BREAK_AT: ${{ github.event.inputs.break_at }}
+        run: |
+          args=()
+          if [ -n "$BREAK_AT" ]; then
+            args+=(--break-at "$BREAK_AT")
+          fi
+          dotnet stryker "${args[@]}"
+
+      - name: Upload mutation report
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: mutation-report
+          path: StrykerOutput/**/reports/mutation-report.*
+          retention-days: 90
+          if-no-files-found: warn
