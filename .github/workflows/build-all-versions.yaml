@@ -312,8 +312,9 @@ jobs:
 
           # version-picker.js fetches versions.json from the SITE ROOT
           # (https://.../ETL-Csv/versions.json), not the per-tag copies — without
-          # this the picker 404s and never renders (#133). The per-tag copies are
-          # kept (harmless) so a versioned page also resolves it relatively.
+          # this the picker 404s and never renders (#133). The per-tag copies
+          # above are the workflow's existing behavior, left as-is — harmless, but
+          # the picker never reads them (it only ever fetches the root copy).
           $versionsJson | Set-Content -Path (Join-Path $outDir 'versions.json') -Encoding utf8NoBOM
           Write-Host "Wrote versions.json to site root"
 
