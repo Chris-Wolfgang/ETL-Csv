@@ -1,1 +1,5 @@
 #nullable enable
+Wolfgang.Etl.Csv.CsvSchemaBuilder<T>
+Wolfgang.Etl.Csv.CsvSchemaBuilder<T>.CsvSchemaBuilder() -> void
+Wolfgang.Etl.Csv.CsvSchemaBuilder<T>.Build() -> System.Collections.Generic.IReadOnlyList<Wolfgang.Etl.Csv.CsvColumnMap!>!
+Wolfgang.Etl.Csv.CsvSchemaBuilder<T>.Column<TProperty>(System.Linq.Expressions.Expression<System.Func<T, TProperty>!>! selector, string? name = null, int index = -1, string? format = null, bool optional = false, string? default = null) -> Wolfgang.Etl.Csv.CsvSchemaBuilder<T>!

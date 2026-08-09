@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `CsvSchemaBuilder<T>` — a fluent, type-safe, code-first column-mapping builder as an
+  alternative to `[CsvColumn]`, for record types you cannot decorate (third-party / generated
+  POCOs) or layouts assembled at runtime (#167). Property selectors (`x => x.Name`) are
+  compile-time checked; `.Column(selector, name, index, format, optional, default)` mirrors every
+  `CsvColumnAttribute` / `CsvColumnMap` field, and `.Build()` produces the same `CsvColumnMap`
+  list the attribute path resolves to — assign it to the extractor's / loader's `ColumnMaps`
+  (a code-built schema is behaviorally identical to the equivalent attributed record; the
+  attribute path is unchanged). Runnable example under
+  `examples/Wolfgang.Etl.Csv.Examples.SchemaBuilder/`.
+
 ## [0.3.0] - 2026-08-07
 
 ### Added
