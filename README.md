@@ -34,6 +34,7 @@ This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) f
 - **API Documentation:** https://Chris-Wolfgang.github.io/ETL-Csv/
 - **Formatting Guide:** [README-FORMATTING.md](README-FORMATTING.md)
 - **Contributing Guide:** [CONTRIBUTING.md](CONTRIBUTING.md)
+- **Cookbook — resumable extraction:** [docs/cookbook/resumable-extraction.md](docs/cookbook/resumable-extraction.md)
 
 ---
 
