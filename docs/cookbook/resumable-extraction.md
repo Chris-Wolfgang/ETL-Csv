@@ -45,7 +45,7 @@ await foreach (var order in extractor.ExtractAsync(ct))
 }
 ```
 
-Checkpointing after every record is simplest and safest. If the per-record checkpoint write is a measurable cost, batch it (`if (processed % 1000 == 0) …`) plus a final write after the loop — but understand the trade-off in §8.
+Checkpointing after every record is simplest and safest. If the per-record checkpoint write is a measurable cost, batch it (`if (processed % 1000 == 0) …`) plus a final write after the loop — but the trade-off is direct: with a batch of N, the checkpoint lags the commits by up to N, so a crash re-processes up to N **already-committed** records on resume. That's harmless *only* if the downstream is idempotent (the same at-least-once caveat as §8); the larger the batch, the more re-work a crash costs.
 
 ## 4. Atomic write (why the temp-file dance)
 
