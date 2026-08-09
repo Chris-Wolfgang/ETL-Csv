@@ -59,6 +59,38 @@ public class CsvSchemaBuilderTests
     }
 
 
+    [Fact]
+    public void Column_when_index_is_below_negative_one_throws_ArgumentOutOfRangeException()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>
+        (
+            () => new CsvSchemaBuilder<PersonRecord>().Column(p => p.FirstName, index: -2)
+        );
+    }
+
+
+    [Fact]
+    public void Column_accepts_an_inherited_property()
+    {
+        var maps = new CsvSchemaBuilder<DerivedRecord>()
+            .Column(d => d.BaseName, name: "base_name")
+            .Build();
+
+        Assert.Equal("BaseName", maps[0].PropertyName);
+    }
+
+
+    [Fact]
+    public void Build_returns_a_list_that_cannot_be_cast_back_to_a_mutable_array()
+    {
+        var maps = new CsvSchemaBuilder<PersonRecord>()
+            .Column(p => p.FirstName, name: "first_name")
+            .Build();
+
+        Assert.IsNotType<CsvColumnMap[]>(maps);
+    }
+
+
     [Theory]
     [MemberData(nameof(InvalidSelectors))]
     public void Column_when_selector_is_not_a_direct_property_throws_ArgumentException(Action act)
@@ -181,5 +213,19 @@ public class CsvSchemaBuilderTests
     private sealed class WithField
     {
         public string Tag = string.Empty;
+    }
+
+
+    [ExcludeFromCodeCoverage]
+    private record BaseRecord
+    {
+        public string BaseName { get; set; } = string.Empty;
+    }
+
+
+    [ExcludeFromCodeCoverage]
+    private sealed record DerivedRecord : BaseRecord
+    {
+        public int Id { get; set; }
     }
 }

@@ -47,9 +47,9 @@ public sealed class CsvSchemaBuilder<T>
     /// </summary>
     /// <typeparam name="TProperty">The selected property's type.</typeparam>
     /// <param name="selector">
-    /// A property selector, e.g. <c>x =&gt; x.Name</c>. Must reference a public property
-    /// declared directly on <typeparamref name="T"/> — not a field, method, nested member,
-    /// or computed expression.
+    /// A property selector, e.g. <c>x =&gt; x.Name</c>. Must be a direct access of a public
+    /// property of <typeparamref name="T"/> (an inherited property is fine) — not a field,
+    /// method, nested/chained member, or computed expression.
     /// </param>
     /// <param name="name">
     /// The CSV column name to bind to. Ignored when <paramref name="index"/> is non-negative.
@@ -61,6 +61,7 @@ public sealed class CsvSchemaBuilder<T>
     /// <returns>The same builder instance, for chaining.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="selector"/> is <c>null</c>.</exception>
     /// <exception cref="ArgumentException"><paramref name="selector"/> does not reference a public property of <typeparamref name="T"/>.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> is less than <c>-1</c>.</exception>
     public CsvSchemaBuilder<T> Column<TProperty>
     (
         Expression<Func<T, TProperty>> selector,
@@ -72,6 +73,16 @@ public sealed class CsvSchemaBuilder<T>
     )
     {
         var propertyName = ResolvePropertyName(selector);
+
+        if (index < -1)
+        {
+            throw new ArgumentOutOfRangeException
+            (
+                nameof(index),
+                index,
+                "Index must be -1 (bind by name) or a non-negative column index."
+            );
+        }
 
         _columns.Add
         (
@@ -94,7 +105,7 @@ public sealed class CsvSchemaBuilder<T>
     /// <c>ColumnMaps</c> property.
     /// </summary>
     /// <returns>The mapped columns, in the order they were added.</returns>
-    public IReadOnlyList<CsvColumnMap> Build() => _columns.ToArray();
+    public IReadOnlyList<CsvColumnMap> Build() => Array.AsReadOnly(_columns.ToArray());
 
 
     // The one genuinely shared primitive across the ETL family (lambda -> PropertyInfo).
@@ -121,7 +132,7 @@ public sealed class CsvSchemaBuilder<T>
         {
             throw new ArgumentException
             (
-                $"Selector must reference a public property declared directly on {typeof(T).Name} (e.g. x => x.Name).",
+                $"Selector must be a direct access of a public property of {typeof(T).Name} (e.g. x => x.Name).",
                 nameof(selector)
             );
         }
