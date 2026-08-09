@@ -26,6 +26,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Wolfgang.Etl.Csv.CsvCheckpointExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wolfgang.Etl.Csv.CsvCheckpointExtensions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Wolfgang.Etl.Csv.CsvCheckpointExtensions",
+      "Summary": "<p sourcefile=\"api/Wolfgang.Etl.Csv.CsvCheckpointExtensions.yml\" sourcestartlinenumber=\"1\">Syntactic sugar for the resumable-extraction pattern: atomically persist and read back a\nrecord counter, and resume a <xref href=\"Wolfgang.Etl.Csv.CsvExtractor%601\" data-throw-if-not-resolved=\"false\"></xref> from it via\n<xref href=\"Wolfgang.Etl.Csv.CsvExtractor%601.SkipRecordCount\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Wolfgang.Etl.Csv.CsvColumnAttribute.yml",
       "output": {
         ".html": {

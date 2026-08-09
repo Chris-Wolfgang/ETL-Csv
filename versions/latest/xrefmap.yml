@@ -84,6 +84,60 @@ references:
   isSpec: "True"
   fullName: Wolfgang.Etl.Csv.CsvBadDataInfo.RawRecord
   nameWithType: CsvBadDataInfo.RawRecord
+- uid: Wolfgang.Etl.Csv.CsvCheckpointExtensions
+  name: CsvCheckpointExtensions
+  href: api/Wolfgang.Etl.Csv.CsvCheckpointExtensions.html
+  commentId: T:Wolfgang.Etl.Csv.CsvCheckpointExtensions
+  fullName: Wolfgang.Etl.Csv.CsvCheckpointExtensions
+  nameWithType: CsvCheckpointExtensions
+- uid: Wolfgang.Etl.Csv.CsvCheckpointExtensions.ReadCheckpointAsync(System.String,System.Threading.CancellationToken)
+  name: ReadCheckpointAsync(string, CancellationToken)
+  href: api/Wolfgang.Etl.Csv.CsvCheckpointExtensions.html#Wolfgang_Etl_Csv_CsvCheckpointExtensions_ReadCheckpointAsync_System_String_System_Threading_CancellationToken_
+  commentId: M:Wolfgang.Etl.Csv.CsvCheckpointExtensions.ReadCheckpointAsync(System.String,System.Threading.CancellationToken)
+  name.vb: ReadCheckpointAsync(String, CancellationToken)
+  fullName: Wolfgang.Etl.Csv.CsvCheckpointExtensions.ReadCheckpointAsync(string, System.Threading.CancellationToken)
+  fullName.vb: Wolfgang.Etl.Csv.CsvCheckpointExtensions.ReadCheckpointAsync(String, System.Threading.CancellationToken)
+  nameWithType: CsvCheckpointExtensions.ReadCheckpointAsync(string, CancellationToken)
+  nameWithType.vb: CsvCheckpointExtensions.ReadCheckpointAsync(String, CancellationToken)
+- uid: Wolfgang.Etl.Csv.CsvCheckpointExtensions.ReadCheckpointAsync*
+  name: ReadCheckpointAsync
+  href: api/Wolfgang.Etl.Csv.CsvCheckpointExtensions.html#Wolfgang_Etl_Csv_CsvCheckpointExtensions_ReadCheckpointAsync_
+  commentId: Overload:Wolfgang.Etl.Csv.CsvCheckpointExtensions.ReadCheckpointAsync
+  isSpec: "True"
+  fullName: Wolfgang.Etl.Csv.CsvCheckpointExtensions.ReadCheckpointAsync
+  nameWithType: CsvCheckpointExtensions.ReadCheckpointAsync
+- uid: Wolfgang.Etl.Csv.CsvCheckpointExtensions.ResumeFromCheckpointAsync*
+  name: ResumeFromCheckpointAsync
+  href: api/Wolfgang.Etl.Csv.CsvCheckpointExtensions.html#Wolfgang_Etl_Csv_CsvCheckpointExtensions_ResumeFromCheckpointAsync_
+  commentId: Overload:Wolfgang.Etl.Csv.CsvCheckpointExtensions.ResumeFromCheckpointAsync
+  isSpec: "True"
+  fullName: Wolfgang.Etl.Csv.CsvCheckpointExtensions.ResumeFromCheckpointAsync
+  nameWithType: CsvCheckpointExtensions.ResumeFromCheckpointAsync
+- uid: Wolfgang.Etl.Csv.CsvCheckpointExtensions.ResumeFromCheckpointAsync``1(Wolfgang.Etl.Csv.CsvExtractor{``0},System.String,System.Threading.CancellationToken)
+  name: ResumeFromCheckpointAsync<TRecord>(CsvExtractor<TRecord>, string, CancellationToken)
+  href: api/Wolfgang.Etl.Csv.CsvCheckpointExtensions.html#Wolfgang_Etl_Csv_CsvCheckpointExtensions_ResumeFromCheckpointAsync__1_Wolfgang_Etl_Csv_CsvExtractor___0__System_String_System_Threading_CancellationToken_
+  commentId: M:Wolfgang.Etl.Csv.CsvCheckpointExtensions.ResumeFromCheckpointAsync``1(Wolfgang.Etl.Csv.CsvExtractor{``0},System.String,System.Threading.CancellationToken)
+  name.vb: ResumeFromCheckpointAsync(Of TRecord)(CsvExtractor(Of TRecord), String, CancellationToken)
+  fullName: Wolfgang.Etl.Csv.CsvCheckpointExtensions.ResumeFromCheckpointAsync<TRecord>(Wolfgang.Etl.Csv.CsvExtractor<TRecord>, string, System.Threading.CancellationToken)
+  fullName.vb: Wolfgang.Etl.Csv.CsvCheckpointExtensions.ResumeFromCheckpointAsync(Of TRecord)(Wolfgang.Etl.Csv.CsvExtractor(Of TRecord), String, System.Threading.CancellationToken)
+  nameWithType: CsvCheckpointExtensions.ResumeFromCheckpointAsync<TRecord>(CsvExtractor<TRecord>, string, CancellationToken)
+  nameWithType.vb: CsvCheckpointExtensions.ResumeFromCheckpointAsync(Of TRecord)(CsvExtractor(Of TRecord), String, CancellationToken)
+- uid: Wolfgang.Etl.Csv.CsvCheckpointExtensions.WriteCheckpointAsync(System.String,System.Int32,System.Threading.CancellationToken)
+  name: WriteCheckpointAsync(string, int, CancellationToken)
+  href: api/Wolfgang.Etl.Csv.CsvCheckpointExtensions.html#Wolfgang_Etl_Csv_CsvCheckpointExtensions_WriteCheckpointAsync_System_String_System_Int32_System_Threading_CancellationToken_
+  commentId: M:Wolfgang.Etl.Csv.CsvCheckpointExtensions.WriteCheckpointAsync(System.String,System.Int32,System.Threading.CancellationToken)
+  name.vb: WriteCheckpointAsync(String, Integer, CancellationToken)
+  fullName: Wolfgang.Etl.Csv.CsvCheckpointExtensions.WriteCheckpointAsync(string, int, System.Threading.CancellationToken)
+  fullName.vb: Wolfgang.Etl.Csv.CsvCheckpointExtensions.WriteCheckpointAsync(String, Integer, System.Threading.CancellationToken)
+  nameWithType: CsvCheckpointExtensions.WriteCheckpointAsync(string, int, CancellationToken)
+  nameWithType.vb: CsvCheckpointExtensions.WriteCheckpointAsync(String, Integer, CancellationToken)
+- uid: Wolfgang.Etl.Csv.CsvCheckpointExtensions.WriteCheckpointAsync*
+  name: WriteCheckpointAsync
+  href: api/Wolfgang.Etl.Csv.CsvCheckpointExtensions.html#Wolfgang_Etl_Csv_CsvCheckpointExtensions_WriteCheckpointAsync_
+  commentId: Overload:Wolfgang.Etl.Csv.CsvCheckpointExtensions.WriteCheckpointAsync
+  isSpec: "True"
+  fullName: Wolfgang.Etl.Csv.CsvCheckpointExtensions.WriteCheckpointAsync
+  nameWithType: CsvCheckpointExtensions.WriteCheckpointAsync
 - uid: Wolfgang.Etl.Csv.CsvColumnAttribute
   name: CsvColumnAttribute
   href: api/Wolfgang.Etl.Csv.CsvColumnAttribute.html
@@ -947,6 +1001,23 @@ references:
   fullName.vb: Wolfgang.Etl.Csv.CsvLoader(Of TRecord).HasHeaderRecord
   nameWithType: CsvLoader<TRecord>.HasHeaderRecord
   nameWithType.vb: CsvLoader(Of TRecord).HasHeaderRecord
+- uid: Wolfgang.Etl.Csv.CsvLoader`1.IsDryRun
+  name: IsDryRun
+  href: api/Wolfgang.Etl.Csv.CsvLoader-1.html#Wolfgang_Etl_Csv_CsvLoader_1_IsDryRun
+  commentId: P:Wolfgang.Etl.Csv.CsvLoader`1.IsDryRun
+  fullName: Wolfgang.Etl.Csv.CsvLoader<TRecord>.IsDryRun
+  fullName.vb: Wolfgang.Etl.Csv.CsvLoader(Of TRecord).IsDryRun
+  nameWithType: CsvLoader<TRecord>.IsDryRun
+  nameWithType.vb: CsvLoader(Of TRecord).IsDryRun
+- uid: Wolfgang.Etl.Csv.CsvLoader`1.IsDryRun*
+  name: IsDryRun
+  href: api/Wolfgang.Etl.Csv.CsvLoader-1.html#Wolfgang_Etl_Csv_CsvLoader_1_IsDryRun_
+  commentId: Overload:Wolfgang.Etl.Csv.CsvLoader`1.IsDryRun
+  isSpec: "True"
+  fullName: Wolfgang.Etl.Csv.CsvLoader<TRecord>.IsDryRun
+  fullName.vb: Wolfgang.Etl.Csv.CsvLoader(Of TRecord).IsDryRun
+  nameWithType: CsvLoader<TRecord>.IsDryRun
+  nameWithType.vb: CsvLoader(Of TRecord).IsDryRun
 - uid: Wolfgang.Etl.Csv.CsvLoader`1.LeaveOpen
   name: LeaveOpen
   href: api/Wolfgang.Etl.Csv.CsvLoader-1.html#Wolfgang_Etl_Csv_CsvLoader_1_LeaveOpen

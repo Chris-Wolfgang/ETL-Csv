@@ -1,33 +1,34 @@
 Summary
-  Generated on: 8/8/2026 - 12:32:15 PM
-  Coverage date: 8/8/2026 - 12:32:11 PM
+  Generated on: 8/9/2026 - 11:45:58 PM
+  Coverage date: 8/9/2026 - 11:45:53 PM
   Parser: Cobertura
   Assemblies: 1
-  Classes: 15
-  Files: 15
-  Line coverage: 97.2%
-  Covered lines: 566
-  Uncovered lines: 16
-  Coverable lines: 582
-  Total lines: 2270
-  Branch coverage: 84% (210 of 250)
-  Covered branches: 210
-  Total branches: 250
-  Method coverage: 98.1% (156 of 159)
-  Full method coverage: 96.2% (153 of 159)
-  Covered methods: 156
-  Fully covered methods: 153
-  Total methods: 159
+  Classes: 16
+  Files: 16
+  Line coverage: 96.8%
+  Covered lines: 621
+  Uncovered lines: 20
+  Coverable lines: 641
+  Total lines: 2497
+  Branch coverage: 84.6% (232 of 274)
+  Covered branches: 232
+  Total branches: 274
+  Method coverage: 98.1% (162 of 165)
+  Full method coverage: 95.1% (157 of 165)
+  Covered methods: 162
+  Fully covered methods: 157
+  Total methods: 165
 
-Wolfgang.Etl.Csv                              97.2%
+Wolfgang.Etl.Csv                              96.8%
   Wolfgang.Etl.Csv.CsvBadDataInfo              100%
+  Wolfgang.Etl.Csv.CsvCheckpointExtensions    92.5%
   Wolfgang.Etl.Csv.CsvClassMapFactory           99%
   Wolfgang.Etl.Csv.CsvColumnAttribute          100%
   Wolfgang.Etl.Csv.CsvColumnMap                100%
   Wolfgang.Etl.Csv.CsvExtractor<T>            93.9%
   Wolfgang.Etl.Csv.CsvExtractorBuilder<T>     96.6%
   Wolfgang.Etl.Csv.CsvExtractorProgress        100%
-  Wolfgang.Etl.Csv.CsvLoader<T>                 97%
+  Wolfgang.Etl.Csv.CsvLoader<T>               97.1%
   Wolfgang.Etl.Csv.CsvLoaderBuilder<T>         100%
   Wolfgang.Etl.Csv.CsvLoaderProgress           100%
   Wolfgang.Etl.Csv.CsvLogMessages              100%
