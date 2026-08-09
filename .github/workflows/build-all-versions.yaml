@@ -310,6 +310,14 @@ jobs:
             Write-Host "Wrote versions.json to $($_.Name)/"
           }
 
+          # version-picker.js fetches versions.json from the SITE ROOT
+          # (https://.../ETL-Csv/versions.json), not the per-tag copies — without
+          # this the picker 404s and never renders (#133). The per-tag copies
+          # above are the workflow's existing behavior, left as-is — harmless, but
+          # the picker never reads them (it only ever fetches the root copy).
+          $versionsJson | Set-Content -Path (Join-Path $outDir 'versions.json') -Encoding utf8NoBOM
+          Write-Host "Wrote versions.json to site root"
+
           Write-Host "Generated versions.json with $($versions.Count) entries: $($versions | ForEach-Object { $_.version })"
 
       - name: Generate root index.html (meta-refresh → versions/latest/)
