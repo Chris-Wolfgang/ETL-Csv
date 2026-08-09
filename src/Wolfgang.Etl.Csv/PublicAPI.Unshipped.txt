@@ -1,1 +1,3 @@
 #nullable enable
+Wolfgang.Etl.Csv.CsvLoader<TRecord>.IsDryRun.get -> bool
+Wolfgang.Etl.Csv.CsvLoader<TRecord>.IsDryRun.set -> void
