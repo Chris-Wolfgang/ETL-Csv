@@ -57,7 +57,8 @@ public class CsvLoaderDryRunTests
     public async Task LoadAsync_when_IsDryRun_still_enumerates_and_counts_every_item()
     {
         using var stream = new MemoryStream();
-        var loader = new CsvLoader<PersonRecord>(new StreamWriter(stream, Utf8NoBom, 1024, leaveOpen: true))
+        using var writer = new StreamWriter(stream, Utf8NoBom, 1024, leaveOpen: true);
+        var loader = new CsvLoader<PersonRecord>(writer)
         {
             LeaveOpen = true,
             IsDryRun = true,
@@ -74,7 +75,8 @@ public class CsvLoaderDryRunTests
     public async Task LoadAsync_when_IsDryRun_still_honors_SkipRecordCount()
     {
         using var stream = new MemoryStream();
-        var loader = new CsvLoader<PersonRecord>(new StreamWriter(stream, Utf8NoBom, 1024, leaveOpen: true))
+        using var writer = new StreamWriter(stream, Utf8NoBom, 1024, leaveOpen: true);
+        var loader = new CsvLoader<PersonRecord>(writer)
         {
             LeaveOpen = true,
             IsDryRun = true,
