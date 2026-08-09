@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `CsvCheckpointExtensions` — atomic-write sugar for the resumable-extraction pattern (#11):
+  `ReadCheckpointAsync` (returns `0` for a missing file; throws `FormatException` on non-integer
+  content — corruption is loud), `WriteCheckpointAsync` (atomic: writes `path + ".tmp"` then
+  renames over the target), and `extractor.ResumeFromCheckpointAsync(path)` (sets
+  `SkipRecordCount` from the checkpoint and returns the count). Thin sugar over `SkipRecordCount`
+  — checkpoint policy (when/where to acknowledge) stays the caller's. Runnable example under
+  `examples/Wolfgang.Etl.Csv.Examples.ResumableExtraction/`.
+
 ## [0.3.0] - 2026-08-07
 
 ### Added
