@@ -295,18 +295,20 @@ if (-not $SkipSecurity) {
             $env:PATH = "$dest;$env:PATH"
         }
         else {
-            # gitleaks ships separate darwin / linux builds, and on macOS we
-            # also have to pick between x64 (Intel) and arm64 (Apple Silicon).
-            # Without this branch the macOS path would download the Linux
-            # tarball and either fail to install or install an incompatible
-            # binary.
-            if ($IsMacOS) {
-                $arch = if ([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture -eq 'Arm64') { 'arm64' } else { 'x64' }
-                $archive = "gitleaks_${version}_darwin_${arch}.tar.gz"
+            # gitleaks ships separate builds per OS and architecture. Resolve
+            # linux/darwin × x64/arm64 so ARM64 hosts (Apple Silicon, AWS Graviton,
+            # ARM Linux CI) get the matching binary instead of the x64 default,
+            # which would fail to run (#140). Map only the architectures/OSes
+            # gitleaks actually publishes and error clearly on anything else,
+            # rather than silently downloading an incompatible archive.
+            $osArch = [System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture
+            $arch = switch ($osArch) {
+                'X64'   { 'x64' }
+                'Arm64' { 'arm64' }
+                default { throw "gitleaks install: unsupported CPU architecture '$osArch' (need X64 or Arm64)." }
             }
-            else {
-                $archive = "gitleaks_${version}_linux_x64.tar.gz"
-            }
+            $os = if ($IsMacOS) { 'darwin' } elseif ($IsLinux) { 'linux' } else { throw "gitleaks install: unsupported OS (need macOS or Linux)." }
+            $archive = "gitleaks_${version}_${os}_${arch}.tar.gz"
             $url = "https://github.com/gitleaks/gitleaks/releases/download/v${version}/$archive"
             # Install to a user-writable location instead of /usr/local/bin
             # (which would require sudo for most local dev shells). $HOME/.local/bin
