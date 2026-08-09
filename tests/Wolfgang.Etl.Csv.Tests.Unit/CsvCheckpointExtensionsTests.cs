@@ -107,6 +107,38 @@ public class CsvCheckpointExtensionsTests
     }
 
 
+    [Theory]
+    [InlineData("")]
+    [InlineData("   ")]
+    public async Task ReadCheckpointAsync_when_path_is_empty_or_whitespace_throws_ArgumentException(string path)
+    {
+        await Assert.ThrowsAsync<ArgumentException>
+        (
+            async () => await CsvCheckpointExtensions.ReadCheckpointAsync(path)
+        );
+    }
+
+
+    [Fact]
+    public async Task ReadCheckpointAsync_when_the_file_is_too_large_throws_FormatException()
+    {
+        var path = NewTempPath();
+        try
+        {
+            await WriteRawAsync(path, new string('9', 200));
+
+            await Assert.ThrowsAsync<FormatException>
+            (
+                async () => await CsvCheckpointExtensions.ReadCheckpointAsync(path)
+            );
+        }
+        finally
+        {
+            Cleanup(path);
+        }
+    }
+
+
     [Fact]
     public async Task ResumeFromCheckpointAsync_when_extractor_is_null_throws_ArgumentNullException()
     {
