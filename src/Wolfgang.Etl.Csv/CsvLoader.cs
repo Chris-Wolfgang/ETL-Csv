@@ -27,7 +27,7 @@ namespace Wolfgang.Etl.Csv;
 /// </code>
 /// </example>
 public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TRecord>
-    : LoaderBase<TRecord, CsvLoaderProgress>
+    : LoaderBase<TRecord, CsvLoaderProgress>, ISupportDryRun
     where TRecord : notnull
 {
     private static readonly string OperationName = $"CSV loading of {typeof(TRecord).Name}";
@@ -181,6 +181,18 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
 
 
     /// <summary>
+    /// Gets or sets a value indicating whether the load runs as a dry run. When <c>true</c>,
+    /// the loader enumerates the source and honors <see cref="SkipRecordCount"/> /
+    /// <see cref="MaxRecordCount"/>, increments progress counters, fires progress reports, and
+    /// logs exactly as a real load would — but writes nothing to the underlying writer (neither
+    /// the header nor any records). Use it to validate a pipeline against real data without
+    /// producing output. Defaults to <c>false</c>.
+    /// </summary>
+    public bool IsDryRun { get; set; }
+
+
+
+    /// <summary>
     /// Gets or sets the number of records to skip before writing.
     /// This is an alias for <see cref="LoaderBase{TDestination,TProgress}.SkipItemCount"/>.
     /// </summary>
@@ -253,12 +265,7 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
 
         RegisterRecordMap(csvWriter.Context);
 
-        if (HasHeaderRecord)
-        {
-            csvWriter.WriteHeader<TRecord>();
-            await csvWriter.NextRecordAsync().ConfigureAwait(false);
-            UpdateLineNumber(csvWriter);
-        }
+        await WriteHeaderIfNeededAsync(csvWriter).ConfigureAwait(false);
 
         // Honor a token that is already cancelled before we pull the first record
         // from the source — mirrors CsvExtractor's top-of-loop check so a
@@ -282,17 +289,36 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
                 break;
             }
 
-            csvWriter.WriteRecord(item);
-            await csvWriter.NextRecordAsync().ConfigureAwait(false);
+            // Dry run: skip the physical write; counters, progress, and logging still fire.
+            if (!IsDryRun)
+            {
+                csvWriter.WriteRecord(item);
+                await csvWriter.NextRecordAsync().ConfigureAwait(false);
+                UpdateLineNumber(csvWriter);
+            }
 
             IncrementCurrentItemCount();
-            UpdateLineNumber(csvWriter);
             CsvLogMessages.LoadedItem(_logger, CurrentItemCount, null);
         }
 
         await csvWriter.FlushAsync().ConfigureAwait(false);
 
         CsvLogMessages.LoadingCompleted(_logger, CurrentItemCount, CurrentSkippedItemCount, null);
+    }
+
+
+
+    private async Task WriteHeaderIfNeededAsync(CsvWriter csvWriter)
+    {
+        // A dry run writes nothing to the output — not even the header.
+        if (!HasHeaderRecord || IsDryRun)
+        {
+            return;
+        }
+
+        csvWriter.WriteHeader<TRecord>();
+        await csvWriter.NextRecordAsync().ConfigureAwait(false);
+        UpdateLineNumber(csvWriter);
     }
 
 
