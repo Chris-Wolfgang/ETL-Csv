@@ -51,7 +51,10 @@ public static class CsvCheckpointExtensions
         }
 
         string text;
-        using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, useAsync: true))
+        // FileShare.Delete as well as Read: on Windows the atomic replace in WriteCheckpointAsync
+        // renames/replaces the target, which fails with a sharing violation if a concurrent reader
+        // holds it without delete-sharing. The reader keeps its snapshot, so no torn read.
+        using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read | FileShare.Delete, 4096, useAsync: true))
         {
             // A checkpoint holds a single small integer. Cap the size before allocating so a
             // corrupt or accidentally-huge file surfaces as a clean FormatException instead of an
