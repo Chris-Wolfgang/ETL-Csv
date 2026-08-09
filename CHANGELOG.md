@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-08-09
+
+### Added
+
+- `CsvLoader<TRecord>` now implements `ISupportDryRun` (#127). Set `IsDryRun = true` to run the
+  full load pipeline against real data — enumerate the source, honor `SkipRecordCount` /
+  `MaxRecordCount`, increment progress counters, fire progress reports, and log — but write
+  **nothing** to the output (neither the header nor any records). Use it to validate a pipeline
+  without producing output. Defaults to `false`.
+- `CsvCheckpointExtensions` — atomic-write sugar for the resumable-extraction pattern (#11):
+  `ReadCheckpointAsync` (returns `0` for a missing file; throws `FormatException` on non-integer
+  content — corruption is loud), `WriteCheckpointAsync` (atomic: writes `path + ".tmp"` then
+  renames over the target), and `extractor.ResumeFromCheckpointAsync(path)` (sets
+  `SkipRecordCount` from the checkpoint and returns the count). Thin sugar over `SkipRecordCount`
+  — checkpoint policy (when/where to acknowledge) stays the caller's. Runnable example under
+  `examples/Wolfgang.Etl.Csv.Examples.ResumableExtraction/`.
+
 ## [0.3.0] - 2026-08-07
 
 ### Added
