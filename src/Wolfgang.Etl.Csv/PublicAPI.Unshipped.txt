@@ -1,5 +1,7 @@
 #nullable enable
 Wolfgang.Etl.Csv.CsvCheckpointExtensions
+Wolfgang.Etl.Csv.CsvLoader<TRecord>.IsDryRun.get -> bool
+Wolfgang.Etl.Csv.CsvLoader<TRecord>.IsDryRun.set -> void
 static Wolfgang.Etl.Csv.CsvCheckpointExtensions.ReadCheckpointAsync(string! path, System.Threading.CancellationToken token = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<int>
 static Wolfgang.Etl.Csv.CsvCheckpointExtensions.ResumeFromCheckpointAsync<TRecord>(this Wolfgang.Etl.Csv.CsvExtractor<TRecord>! extractor, string! path, System.Threading.CancellationToken token = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<int>
 static Wolfgang.Etl.Csv.CsvCheckpointExtensions.WriteCheckpointAsync(string! path, int count, System.Threading.CancellationToken token = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask
