@@ -103,6 +103,7 @@ That's the full surface for the simplest case. The library auto-maps record prop
 | Limit how many records get processed | `MaxRecordCount`, `SkipRecordCount` |
 | Compile-time column mapping (declarative) | `[CsvColumn]`, `[CsvIgnore]` |
 | Runtime column mapping (configuration / DB-driven layouts) | `CsvColumnMap`, `ColumnMaps` property |
+| Type-safe code-first schema (undecorated / generated types) | `CsvSchemaBuilder<T>` |
 | Parser-agnostic public surface (no `CsvHelper` types leaked) | `CsvTrimOptions`, `CsvBadDataInfo`, `CsvShouldQuoteContext` |
 | Custom delimiter, quote, escape, comment character | `Delimiter`, `Quote`, `Escape`, `Comment`, `AllowComments` |
 | Encoding control | `Encoding` |
@@ -154,6 +155,23 @@ var extractor = new CsvExtractor<ProductRecord>(reader)
 ```
 
 When `ColumnMaps` is non-null and non-empty, runtime maps override any attribute-based mapping for that instance. See the runnable example under [`examples/Wolfgang.Etl.Csv.Examples.DynamicTemplates/`](examples/Wolfgang.Etl.Csv.Examples.DynamicTemplates/).
+
+### Example: Type-safe schema builder (for records you can't decorate)
+
+When the record is a third-party or generated type you can't put `[CsvColumn]` on — or you'd rather keep the layout in code — build the mapping fluently with `CsvSchemaBuilder<T>`. Property selectors are compile-time checked and survive a rename, and the result is the *same* `CsvColumnMap` the attribute path produces, so a code-built schema behaves identically to an attributed record:
+
+```csharp
+var schema = new CsvSchemaBuilder<Order>()
+    .Column(o => o.Id,       name: "order_id")
+    .Column(o => o.PlacedOn, name: "placed_at", format: "yyyy-MM-dd")
+    .Column(o => o.Total,    name: "amount",    format: "0.00")
+    .Build();
+
+var extractor = new CsvExtractor<Order>(reader) { ColumnMaps = schema };
+var loader    = new CsvLoader<Order>(writer)   { ColumnMaps = schema };
+```
+
+`.Column(selector, name, index, format, optional, default)` mirrors every `[CsvColumn]` / `CsvColumnMap` field. Assign the built list to the `ColumnMaps` property (it overrides attribute resolution; leaving it unset keeps attribute behavior). See the runnable example under [`examples/Wolfgang.Etl.Csv.Examples.SchemaBuilder/`](examples/Wolfgang.Etl.Csv.Examples.SchemaBuilder/).
 
 ### Example: Progress reporting
 
