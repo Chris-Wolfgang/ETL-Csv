@@ -146,13 +146,9 @@ public static class CsvCheckpointExtensions
             }
 #endif
         }
-        catch (IOException)
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
         {
-            TryDeleteTemporaryFile(temporaryPath);
-            throw;
-        }
-        catch (UnauthorizedAccessException)
-        {
+            // Best effort: don't leave the temp file behind if the atomic replace fails.
             TryDeleteTemporaryFile(temporaryPath);
             throw;
         }
@@ -165,11 +161,7 @@ public static class CsvCheckpointExtensions
         {
             File.Delete(temporaryPath);
         }
-        catch (IOException)
-        {
-            // Best effort — leave any residue for the OS / the next write to reclaim.
-        }
-        catch (UnauthorizedAccessException)
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
         {
             // Best effort — leave any residue for the OS / the next write to reclaim.
         }

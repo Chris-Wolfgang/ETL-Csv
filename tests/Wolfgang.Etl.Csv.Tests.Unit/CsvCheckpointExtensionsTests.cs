@@ -149,6 +149,39 @@ public class CsvCheckpointExtensionsTests
     }
 
 
+    [Fact]
+    public async Task WriteCheckpointAsync_when_the_atomic_replace_fails_cleans_up_the_temp_file()
+    {
+        // A directory at the target path makes the atomic replace throw, exercising the
+        // best-effort temp-file cleanup on the failure path.
+        var path = NewTempPath();
+        Directory.CreateDirectory(path);
+        try
+        {
+            // The atomic replace throws IOException (Linux) or UnauthorizedAccessException (Windows) —
+            // WriteCheckpointAsync catches both. The temp file being gone proves the cleanup ran.
+            await Assert.ThrowsAnyAsync<Exception>
+            (
+                async () => await CsvCheckpointExtensions.WriteCheckpointAsync(path, 1)
+            );
+
+            Assert.False(File.Exists(path + ".tmp"), "the temp file should be cleaned up when the replace fails");
+        }
+        finally
+        {
+            if (Directory.Exists(path))
+            {
+                Directory.Delete(path, recursive: true);
+            }
+
+            if (File.Exists(path + ".tmp"))
+            {
+                File.Delete(path + ".tmp");
+            }
+        }
+    }
+
+
     private static string NewTempPath() =>
         Path.Combine(Path.GetTempPath(), "csvchk-" + Guid.NewGuid().ToString("N") + ".txt");
 
