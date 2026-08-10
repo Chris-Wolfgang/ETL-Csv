@@ -70,6 +70,25 @@ public class CsvLoaderValidationTests
 
 
     [Fact]
+    public async Task LoadAsync_reports_the_input_record_ordinal_as_the_invalid_LineNumber()
+    {
+        // A2 (Quantity 0) is the 2nd record in the input; its LineNumber should be 2, not the
+        // last-written line (which would be 1 for the header, or 0 in dry-run).
+        using var stream = new MemoryStream();
+        var loader = CreateLoader(stream, out var writer);
+        loader.OnValidationFailure = CsvValidationFailureAction.Skip;
+        CsvInvalidRecord<Order>? captured = null;
+        loader.InvalidRecordHandler = invalid => captured = invalid;
+
+        await LoadAndReadAsync(loader, stream, writer, Orders);
+        writer.Dispose();
+
+        Assert.Equal(2, captured!.LineNumber);
+    }
+
+
+
+    [Fact]
     public async Task LoadAsync_when_OnValidationFailure_is_Continue_writes_invalid_records_too()
     {
         using var stream = new MemoryStream();

@@ -39,6 +39,7 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
 
     private int _currentLineNumber;
     private int _currentInvalidItemCount;
+    private int _currentRecordNumber;
 
 
 
@@ -302,6 +303,10 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
         {
             token.ThrowIfCancellationRequested();
 
+            // 1-based ordinal of the record in the input sequence — the loader writes rather than reads,
+            // so this is the meaningful "where did this record come from" for an invalid record.
+            var recordNumber = ++_currentRecordNumber;
+
             if (CurrentSkippedItemCount < SkipItemCount)
             {
                 IncrementCurrentSkippedItemCount();
@@ -315,7 +320,7 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
                 break;
             }
 
-            if (!PassesValidationGate(item))
+            if (!PassesValidationGate(item, recordNumber))
             {
                 continue;
             }
@@ -336,9 +341,9 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     // Applies the validators to a record. Returns true to write it (valid, or invalid under Continue);
     // false to skip it (invalid under Skip). Throws under Stop. Invalid records are always counted and
     // routed to InvalidRecordHandler first.
-    private bool PassesValidationGate(TRecord item)
+    private bool PassesValidationGate(TRecord item, int recordNumber)
     {
-        if (TryValidate(item, out var invalid))
+        if (TryValidate(item, recordNumber, out var invalid))
         {
             return true;
         }
@@ -378,7 +383,7 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
 
     // Runs every configured validator against the record, aggregating failures. Returns true when
     // the record is valid (or no validators are configured); otherwise false with the failure detail.
-    private bool TryValidate(TRecord item, out CsvInvalidRecord<TRecord>? invalid)
+    private bool TryValidate(TRecord item, int recordNumber, out CsvInvalidRecord<TRecord>? invalid)
     {
         invalid = null;
 
@@ -395,7 +400,10 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
             if (!result.IsValid)
             {
                 failures ??= new List<string>();
-                failures.AddRange(result.Failures);
+                if (result.Failures is not null)
+                {
+                    failures.AddRange(result.Failures);
+                }
             }
         }
 
@@ -404,7 +412,9 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
             return true;
         }
 
-        invalid = new CsvInvalidRecord<TRecord>(item, Volatile.Read(ref _currentLineNumber), failures);
+        // Validation runs before the write, so report the input record's ordinal (not the last-written
+        // line), and hand over a snapshot the handler / CsvValidationException observer can't mutate.
+        invalid = new CsvInvalidRecord<TRecord>(item, recordNumber, failures.ToArray());
         return false;
     }
 
