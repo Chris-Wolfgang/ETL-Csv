@@ -43,6 +43,7 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
 
     private int _currentLineNumber;
     private int _currentBadDataCount;
+    private int _currentInvalidItemCount;
 
 
 
@@ -260,6 +261,31 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
 
 
     /// <summary>
+    /// Optional per-record validators run after each row is bound. A record that fails one or more of
+    /// them is counted in <see cref="CsvExtractorProgress.CurrentInvalidItemCount"/>, passed to
+    /// <see cref="InvalidRecordHandler"/>, and then handled per <see cref="OnValidationFailure"/>.
+    /// </summary>
+    public IReadOnlyList<CsvValidator<TRecord>>? Validators { get; set; }
+
+
+
+    /// <summary>
+    /// How a record that fails validation is handled. Defaults to <see cref="CsvValidationFailureAction.Stop"/>
+    /// (the first invalid record raises a <see cref="CsvValidationException"/>).
+    /// </summary>
+    public CsvValidationFailureAction OnValidationFailure { get; set; } = CsvValidationFailureAction.Stop;
+
+
+
+    /// <summary>
+    /// Optional callback invoked for each record that fails validation, before <see cref="OnValidationFailure"/>
+    /// is applied. Use it to log or quarantine invalid rows.
+    /// </summary>
+    public Action<CsvInvalidRecord<TRecord>>? InvalidRecordHandler { get; set; }
+
+
+
+    /// <summary>
     /// Gets or sets the number of records to skip before yielding results.
     /// This is an alias for <see cref="ExtractorBase{TSource,TProgress}.SkipItemCount"/>.
     /// </summary>
@@ -463,6 +489,24 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
                 continue;
             }
 
+            if (!TryValidate(record, out var invalid))
+            {
+                _ = Interlocked.Increment(ref _currentInvalidItemCount);
+                InvalidRecordHandler?.Invoke(invalid!);
+
+                if (OnValidationFailure == CsvValidationFailureAction.Skip)
+                {
+                    continue;
+                }
+
+                if (OnValidationFailure == CsvValidationFailureAction.Stop)
+                {
+                    throw new CsvValidationException(invalid!.LineNumber, invalid.Failures);
+                }
+
+                // Continue: fall through and yield the invalid record anyway.
+            }
+
             IncrementCurrentItemCount();
             CsvLogMessages.ExtractedItem(_logger, CurrentItemCount, null);
 
@@ -548,8 +592,44 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
             CurrentSkippedItemCount,
             Volatile.Read(ref _currentLineNumber),
             Volatile.Read(ref _currentBadDataCount),
-            CurrentErrorItemCount
+            CurrentErrorItemCount,
+            Volatile.Read(ref _currentInvalidItemCount)
         );
+
+
+
+    // Runs every configured validator against the bound record, aggregating failures. Returns true
+    // when the record is valid (or no validators are configured); otherwise false with the failure
+    // detail. The line number is the source row the record was read from.
+    private bool TryValidate(TRecord record, out CsvInvalidRecord<TRecord>? invalid)
+    {
+        invalid = null;
+
+        var validators = Validators;
+        if (validators is null || validators.Count == 0)
+        {
+            return true;
+        }
+
+        List<string>? failures = null;
+        foreach (var validator in validators)
+        {
+            var result = validator(record);
+            if (!result.IsValid)
+            {
+                failures ??= new List<string>();
+                failures.AddRange(result.Failures);
+            }
+        }
+
+        if (failures is null)
+        {
+            return true;
+        }
+
+        invalid = new CsvInvalidRecord<TRecord>(record, Volatile.Read(ref _currentLineNumber), failures);
+        return false;
+    }
 
 
 
