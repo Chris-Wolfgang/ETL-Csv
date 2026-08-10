@@ -86,6 +86,20 @@ internal static class CsvClassMapFactory
     }
 
 
+    // Non-generic bridge for the polymorphic direct-init path (a CsvDiscriminator built without the
+    // builder). Reflects the runtime type into the generic GetMap<T>, so it is RUC — the trim/AOT-safe
+    // path is CsvDiscriminatorBuilder.Map<T>, which calls the generic method directly.
+    [RequiresUnreferencedCode("Reflects over the runtime type's public properties to build a CsvHelper ClassMap. Prefer CsvDiscriminatorBuilder for a trim/AOT-safe path.")]
+    public static ClassMap? GetMap([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] Type type)
+    {
+        var method = typeof(CsvClassMapFactory)
+            .GetMethod(nameof(GetMap), BindingFlags.Public | BindingFlags.Static, binder: null, types: Type.EmptyTypes, modifiers: null)!
+            .MakeGenericMethod(type);
+
+        return (ClassMap?)method.Invoke(null, parameters: null);
+    }
+
+
 
     [RequiresUnreferencedCode("Reflects over the public properties of T to build a CsvHelper ClassMap.")]
     private static ClassMap<T>? BuildMap<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>()
@@ -169,6 +183,18 @@ internal static class CsvClassMapFactory
 
         var built = BuildClassMapFromColumnMaps<T>(columnMaps);
         return (ClassMap<T>)RuntimeMapCache.GetOrAdd(key, built);
+    }
+
+
+    // Non-generic bridge for the polymorphic direct-init path — see GetMap(Type).
+    [RequiresUnreferencedCode("Reflects over the runtime type's public properties to build a CsvHelper ClassMap. Prefer CsvDiscriminatorBuilder for a trim/AOT-safe path.")]
+    public static ClassMap BuildFromColumnMaps([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] Type type, IReadOnlyList<CsvColumnMap> columnMaps)
+    {
+        var method = typeof(CsvClassMapFactory)
+            .GetMethod(nameof(BuildFromColumnMaps), BindingFlags.Public | BindingFlags.Static, binder: null, types: new[] { typeof(IReadOnlyList<CsvColumnMap>) }, modifiers: null)!
+            .MakeGenericMethod(type);
+
+        return (ClassMap)method.Invoke(null, new object[] { columnMaps })!;
     }
 
 
