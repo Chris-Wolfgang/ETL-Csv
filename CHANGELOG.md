@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   per-type `CsvColumnMap`s. The discriminator is read by column index or header name; an unmapped
   value is handled per `CsvDiscriminatorAction` (`Throw`, `Skip`, or `YieldAsBase`). While a
   discriminator is set, missing trailing fields are tolerated so narrower row shapes bind cleanly.
+- Polymorphic loading — `CsvLoader<TRecord>` now accepts the same `Discriminator` and writes each
+  record using the per-type mapping chosen by its runtime type, so a mixed file round-trips through
+  the extractor (#13). No header row is written while a discriminator is set (the shapes share no
+  common header); a record whose runtime type is unmapped is handled per `CsvDiscriminatorAction`.
 
 ## [0.4.0] - 2026-08-09
 

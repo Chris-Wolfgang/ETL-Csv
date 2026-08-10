@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
+using System.Reflection;
+using System.Runtime.ExceptionServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -181,6 +183,18 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
 
 
     /// <summary>
+    /// When set, each record is written using a per-type mapping chosen by its runtime type, so a
+    /// single file can mix multiple <typeparamref name="TRecord"/> shapes — the write-side mirror of
+    /// <see cref="CsvExtractor{TRecord}.Discriminator"/>. Build one with
+    /// <see cref="CsvDiscriminatorBuilder{TBase}"/> (trim/AOT-safe). No header row is written while a
+    /// discriminator is set (the shapes have no common header); a record whose runtime type is not
+    /// mapped is handled per <see cref="CsvDiscriminator{TBase}.UnknownDiscriminator"/>.
+    /// </summary>
+    public CsvDiscriminator<TRecord>? Discriminator { get; set; }
+
+
+
+    /// <summary>
     /// Gets or sets a value indicating whether the load runs as a dry run. When <c>true</c>,
     /// the loader enumerates the source and honors <see cref="SkipRecordCount"/> /
     /// <see cref="MaxRecordCount"/>, increments progress counters, fires progress reports, and
@@ -289,13 +303,16 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
                 break;
             }
 
-            // Dry run: skip the physical write; counters, progress, and logging still fire.
-            if (!IsDryRun)
+            // A discriminator writes each record by its runtime type; an unmapped type is skipped,
+            // written as the base shape, or raises, per UnknownDiscriminator.
+            if (!TryResolveWriteMode(item, out var writeAsBase))
             {
-                csvWriter.WriteRecord(item);
-                await csvWriter.NextRecordAsync().ConfigureAwait(false);
-                UpdateLineNumber(csvWriter);
+                IncrementCurrentSkippedItemCount();
+                CsvLogMessages.SkippedItem(_logger, CurrentSkippedItemCount, SkipItemCount, null);
+                continue;
             }
+
+            await WriteRecordAsync(csvWriter, item, writeAsBase).ConfigureAwait(false);
 
             IncrementCurrentItemCount();
             CsvLogMessages.LoadedItem(_logger, CurrentItemCount, null);
@@ -308,10 +325,34 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
 
 
 
+    private async Task WriteRecordAsync(CsvWriter csvWriter, TRecord item, bool writeAsBase)
+    {
+        // Dry run: skip the physical write; counters, progress, and logging still fire.
+        if (IsDryRun)
+        {
+            return;
+        }
+
+        if (writeAsBase)
+        {
+            csvWriter.WriteRecord(item);
+        }
+        else
+        {
+            WriteRecordByRuntimeType(csvWriter, item);
+        }
+
+        await csvWriter.NextRecordAsync().ConfigureAwait(false);
+        UpdateLineNumber(csvWriter);
+    }
+
+
+
     private async Task WriteHeaderIfNeededAsync(CsvWriter csvWriter)
     {
-        // A dry run writes nothing to the output — not even the header.
-        if (!HasHeaderRecord || IsDryRun)
+        // A dry run writes nothing to the output — not even the header. A polymorphic write has no
+        // single header shared by every record type, so it is headerless as well.
+        if (!HasHeaderRecord || IsDryRun || Discriminator is not null)
         {
             return;
         }
@@ -336,6 +377,12 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     [UnconditionalSuppressMessage("AOT", "IL3050", Justification = "TRecord is annotated with PublicProperties; CsvClassMapFactory reflects only public properties of TRecord.")]
     private void RegisterRecordMap(CsvContext context)
     {
+        if (Discriminator is not null)
+        {
+            Discriminator.RegisterClassMaps(context);
+            return;
+        }
+
         var map = ColumnMaps is { Count: > 0 }
             ? CsvClassMapFactory.BuildFromColumnMaps<TRecord>(ColumnMaps)
             : CsvClassMapFactory.GetMap<TRecord>();
@@ -343,6 +390,70 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
         if (map is not null)
         {
             context.RegisterClassMap(map);
+        }
+    }
+
+
+
+    // Decides how a record is written under the active discriminator. Returns false when the
+    // record's runtime type is unmapped and the policy is Skip (the caller skips it). Otherwise
+    // returns true, with writeAsBase set when the plain WriteRecord<TRecord> path applies — either
+    // there is no discriminator, or the type is unmapped under YieldAsBase. Throws under Throw.
+    private bool TryResolveWriteMode(TRecord item, out bool writeAsBase)
+    {
+        if (Discriminator is null)
+        {
+            writeAsBase = true;
+            return true;
+        }
+
+        if (Discriminator.TryResolveValue(item.GetType(), out _))
+        {
+            writeAsBase = false;
+            return true;
+        }
+
+        switch (Discriminator.UnknownDiscriminator)
+        {
+            case CsvDiscriminatorAction.Skip:
+                writeAsBase = false;
+                return false;
+
+            case CsvDiscriminatorAction.YieldAsBase:
+                writeAsBase = true;
+                return true;
+
+            default:
+                throw new InvalidOperationException
+                (
+                    $"No discriminator value is mapped for record type '{item.GetType()}'."
+                );
+        }
+    }
+
+
+
+    // CsvWriter.WriteRecord<T> binds the map from the static T, so writing a mixed file requires
+    // dispatching to the record's runtime type. Cache the open generic method once.
+    private static readonly MethodInfo WriteRecordMethod =
+        typeof(CsvWriter).GetMethod(nameof(CsvWriter.WriteRecord))!;
+
+
+
+    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "The concrete type came from the discriminator mapping, whose types are annotated with PublicProperties where they enter the API.")]
+    [UnconditionalSuppressMessage("AOT", "IL3050", Justification = "The concrete type came from the discriminator mapping, whose types are annotated with PublicProperties where they enter the API.")]
+    private static void WriteRecordByRuntimeType(CsvWriter csvWriter, TRecord item)
+    {
+        var method = WriteRecordMethod.MakeGenericMethod(item.GetType());
+
+        try
+        {
+            _ = method.Invoke(csvWriter, new object[] { item });
+        }
+        catch (TargetInvocationException ex) when (ex.InnerException is not null)
+        {
+            // Surface the CsvHelper exception, not the reflection wrapper, preserving its stack.
+            ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
         }
     }
 
