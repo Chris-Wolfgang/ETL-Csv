@@ -118,6 +118,30 @@ public class CsvValidatorTests
 
 
     [Fact]
+    public void GreaterThan_treats_incompatible_comparand_types_as_a_failure_not_a_crash()
+    {
+        var validator = CsvValidator.GreaterThan<Order>(o => o.Quantity, 0L);   // int selector vs long threshold
+
+        var result = validator(new Order { Quantity = 5 });
+
+        Assert.False(result.IsValid);
+    }
+
+
+
+    [Fact]
+    public void InRange_treats_incompatible_comparand_types_as_a_failure_not_a_crash()
+    {
+        var validator = CsvValidator.InRange<Order>(o => o.Quantity, 0L, 10L);   // int selector vs long bounds
+
+        var result = validator(new Order { Quantity = 5 });
+
+        Assert.False(result.IsValid);
+    }
+
+
+
+    [Fact]
     public void MaxLength_rejects_a_negative_limit()
     {
         Assert.Throws<ArgumentOutOfRangeException>(() => CsvValidator.MaxLength<Order>(o => o.Notes, -1));

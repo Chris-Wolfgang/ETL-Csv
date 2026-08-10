@@ -618,7 +618,10 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
             if (!result.IsValid)
             {
                 failures ??= new List<string>();
-                failures.AddRange(result.Failures);
+                if (result.Failures is not null)
+                {
+                    failures.AddRange(result.Failures);
+                }
             }
         }
 
@@ -627,7 +630,9 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
             return true;
         }
 
-        invalid = new CsvInvalidRecord<TRecord>(record, Volatile.Read(ref _currentLineNumber), failures);
+        // Hand the record a snapshot, not the live list, so a handler can't mutate what a later
+        // observer (or the CsvValidationException) sees.
+        invalid = new CsvInvalidRecord<TRecord>(record, Volatile.Read(ref _currentLineNumber), failures.ToArray());
         return false;
     }
 
