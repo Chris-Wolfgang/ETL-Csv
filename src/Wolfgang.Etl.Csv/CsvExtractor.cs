@@ -260,6 +260,17 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
 
 
     /// <summary>
+    /// When set, each row is bound to a concrete record type chosen by a discriminator column, so a
+    /// single file can mix multiple <typeparamref name="TRecord"/> shapes. Build one with
+    /// <see cref="CsvDiscriminatorBuilder{TBase}"/> (trim/AOT-safe). When set, missing trailing fields
+    /// are tolerated so narrower row shapes bind cleanly, and an unmapped discriminator value is handled
+    /// per <see cref="CsvDiscriminator{TBase}.UnknownDiscriminator"/>.
+    /// </summary>
+    public CsvDiscriminator<TRecord>? Discriminator { get; set; }
+
+
+
+    /// <summary>
     /// Gets or sets the number of records to skip before yielding results.
     /// This is an alias for <see cref="ExtractorBase{TSource,TProgress}.SkipItemCount"/>.
     /// </summary>
@@ -303,6 +314,9 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
             Encoding = Encoding,
             HasHeaderRecord = HasHeaderRecord,
             IgnoreBlankLines = IgnoreBlankLines,
+            // A polymorphic file mixes row shapes of differing widths; tolerate missing trailing
+            // fields so a narrower concrete type binds without tripping CsvHelper's default throw.
+            MissingFieldFound = Discriminator is not null ? null : ConfigurationFunctions.MissingFieldFound,
             Quote = Quote,
             ReadingExceptionOccurred = OnReadingExceptionOccurred,
             TrimOptions = TrimOptions.ToCsvHelper(),
@@ -434,9 +448,18 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
             UpdateLineNumber(csvReader);
 
             TRecord? record;
+            bool unknownSkip;
             try
             {
-                record = csvReader.GetRecord<TRecord>();
+                if (Discriminator is not null)
+                {
+                    record = GetDiscriminatedRecord(csvReader, out unknownSkip);
+                }
+                else
+                {
+                    record = csvReader.GetRecord<TRecord>();
+                    unknownSkip = false;
+                }
             }
             catch (CsvHelperException ex)
             {
@@ -449,6 +472,16 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
                     throw;
                 }
 
+                continue;
+            }
+
+            if (unknownSkip)
+            {
+                // An unmapped discriminator value under CsvDiscriminatorAction.Skip: count as
+                // skipped so totals reconcile, then move on. (Throw surfaces as an exception
+                // from GetDiscriminatedRecord; YieldAsBase returns a bound base record.)
+                IncrementCurrentSkippedItemCount();
+                CsvLogMessages.SkippedItem(_logger, CurrentSkippedItemCount, SkipItemCount, null);
                 continue;
             }
 
@@ -526,16 +559,59 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
 
     [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "TRecord is annotated with PublicProperties; CsvClassMapFactory reflects only public properties of TRecord.")]
     [UnconditionalSuppressMessage("AOT", "IL3050", Justification = "TRecord is annotated with PublicProperties; CsvClassMapFactory reflects only public properties of TRecord.")]
+    // Reads the discriminator field for the current row, resolves the concrete type, and binds the
+    // record to it. Type-conversion failures surface as CsvHelperException (routed through ErrorPolicy
+    // by the caller). An unmapped value follows Discriminator.UnknownDiscriminator: Skip returns
+    // (default, true); YieldAsBase binds to TRecord; Throw raises a hard error that bypasses ErrorPolicy.
+    private TRecord? GetDiscriminatedRecord(CsvReader csvReader, out bool skip)
+    {
+        skip = false;
+        var discriminator = Discriminator!;
+
+        var value = discriminator.ColumnName is not null
+            ? csvReader.GetField(discriminator.ColumnName)
+            : csvReader.GetField(discriminator.ColumnIndex);
+
+        if (value is not null && discriminator.TryResolveType(value, out var type))
+        {
+            return (TRecord?)csvReader.GetRecord(type);
+        }
+
+        switch (discriminator.UnknownDiscriminator)
+        {
+            case CsvDiscriminatorAction.Skip:
+                skip = true;
+                return default;
+
+            case CsvDiscriminatorAction.YieldAsBase:
+                return csvReader.GetRecord<TRecord>();
+
+            default:
+                throw new InvalidOperationException
+                (
+                    $"No record type is mapped for discriminator value '{value}'."
+                );
+        }
+    }
+
+
+
     private void RegisterRecordMap(CsvContext context)
     {
-        var map = ColumnMaps is { Count: > 0 }
+        // Always register the base TRecord map (from ColumnMaps or attributes). When a discriminator
+        // is set this backs CsvDiscriminatorAction.YieldAsBase — GetRecord<TRecord>() then binds
+        // through the intended base mapping instead of CsvHelper's default conventions. The map is
+        // null for an attribute-less type with no ColumnMaps, in which case CsvHelper auto-maps.
+        var baseMap = ColumnMaps is { Count: > 0 }
             ? CsvClassMapFactory.BuildFromColumnMaps<TRecord>(ColumnMaps)
             : CsvClassMapFactory.GetMap<TRecord>();
 
-        if (map is not null)
+        if (baseMap is not null)
         {
-            context.RegisterClassMap(map);
+            context.RegisterClassMap(baseMap);
         }
+
+        Discriminator?.RegisterClassMaps(context);
     }
 
 
