@@ -17,6 +17,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `NotNullOrEmpty`, `GreaterThan`, `InRange`, `MaxLength`, `Matches`, and `Custom`; multiple rules'
   failures aggregate into a single `CsvInvalidRecord<TRecord>`. Async validators and unifying
   type-conversion errors into the same stream are tracked as follow-ups.
+- The same validation trio (`Validators`, `OnValidationFailure`, `InvalidRecordHandler`) and
+  `CsvLoaderProgress.CurrentInvalidItemCount` on `CsvLoader<TRecord>`, validating each record before
+  it is written (#8).
 
 ## [0.4.0] - 2026-08-09
 

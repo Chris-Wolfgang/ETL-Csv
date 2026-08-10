@@ -38,6 +38,7 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     private int _progressTimerWired;
 
     private int _currentLineNumber;
+    private int _currentInvalidItemCount;
 
 
 
@@ -181,6 +182,31 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
 
 
     /// <summary>
+    /// Optional per-record validators run before each record is written. A record that fails one or
+    /// more of them is counted in <see cref="CsvLoaderProgress.CurrentInvalidItemCount"/>, passed to
+    /// <see cref="InvalidRecordHandler"/>, and then handled per <see cref="OnValidationFailure"/>.
+    /// </summary>
+    public IReadOnlyList<CsvValidator<TRecord>>? Validators { get; set; }
+
+
+
+    /// <summary>
+    /// How a record that fails validation is handled. Defaults to <see cref="CsvValidationFailureAction.Stop"/>
+    /// (the first invalid record raises a <see cref="CsvValidationException"/>).
+    /// </summary>
+    public CsvValidationFailureAction OnValidationFailure { get; set; } = CsvValidationFailureAction.Stop;
+
+
+
+    /// <summary>
+    /// Optional callback invoked for each record that fails validation, before <see cref="OnValidationFailure"/>
+    /// is applied. Use it to log or quarantine invalid rows.
+    /// </summary>
+    public Action<CsvInvalidRecord<TRecord>>? InvalidRecordHandler { get; set; }
+
+
+
+    /// <summary>
     /// Gets or sets a value indicating whether the load runs as a dry run. When <c>true</c>,
     /// the loader enumerates the source and honors <see cref="SkipRecordCount"/> /
     /// <see cref="MaxRecordCount"/>, increments progress counters, fires progress reports, and
@@ -289,13 +315,12 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
                 break;
             }
 
-            // Dry run: skip the physical write; counters, progress, and logging still fire.
-            if (!IsDryRun)
+            if (!PassesValidationGate(item))
             {
-                csvWriter.WriteRecord(item);
-                await csvWriter.NextRecordAsync().ConfigureAwait(false);
-                UpdateLineNumber(csvWriter);
+                continue;
             }
+
+            await WriteRecordAsync(csvWriter, item).ConfigureAwait(false);
 
             IncrementCurrentItemCount();
             CsvLogMessages.LoadedItem(_logger, CurrentItemCount, null);
@@ -304,6 +329,83 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
         await csvWriter.FlushAsync().ConfigureAwait(false);
 
         CsvLogMessages.LoadingCompleted(_logger, CurrentItemCount, CurrentSkippedItemCount, null);
+    }
+
+
+
+    // Applies the validators to a record. Returns true to write it (valid, or invalid under Continue);
+    // false to skip it (invalid under Skip). Throws under Stop. Invalid records are always counted and
+    // routed to InvalidRecordHandler first.
+    private bool PassesValidationGate(TRecord item)
+    {
+        if (TryValidate(item, out var invalid))
+        {
+            return true;
+        }
+
+        _ = Interlocked.Increment(ref _currentInvalidItemCount);
+        InvalidRecordHandler?.Invoke(invalid!);
+
+        switch (OnValidationFailure)
+        {
+            case CsvValidationFailureAction.Skip:
+                return false;
+
+            case CsvValidationFailureAction.Stop:
+                throw new CsvValidationException(invalid!.LineNumber, invalid.Failures);
+
+            default:
+                return true;
+        }
+    }
+
+
+
+    private async Task WriteRecordAsync(CsvWriter csvWriter, TRecord item)
+    {
+        // Dry run: skip the physical write; counters, progress, and logging still fire.
+        if (IsDryRun)
+        {
+            return;
+        }
+
+        csvWriter.WriteRecord(item);
+        await csvWriter.NextRecordAsync().ConfigureAwait(false);
+        UpdateLineNumber(csvWriter);
+    }
+
+
+
+    // Runs every configured validator against the record, aggregating failures. Returns true when
+    // the record is valid (or no validators are configured); otherwise false with the failure detail.
+    private bool TryValidate(TRecord item, out CsvInvalidRecord<TRecord>? invalid)
+    {
+        invalid = null;
+
+        var validators = Validators;
+        if (validators is null || validators.Count == 0)
+        {
+            return true;
+        }
+
+        List<string>? failures = null;
+        foreach (var validator in validators)
+        {
+            var result = validator(item);
+            if (!result.IsValid)
+            {
+                failures ??= new List<string>();
+                failures.AddRange(result.Failures);
+            }
+        }
+
+        if (failures is null)
+        {
+            return true;
+        }
+
+        invalid = new CsvInvalidRecord<TRecord>(item, Volatile.Read(ref _currentLineNumber), failures);
+        return false;
     }
 
 
@@ -354,7 +456,8 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
         (
             CurrentItemCount,
             CurrentSkippedItemCount,
-            Volatile.Read(ref _currentLineNumber)
+            Volatile.Read(ref _currentLineNumber),
+            Volatile.Read(ref _currentInvalidItemCount)
         );
 
 

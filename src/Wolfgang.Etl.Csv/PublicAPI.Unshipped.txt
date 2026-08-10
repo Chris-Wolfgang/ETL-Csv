@@ -18,6 +18,14 @@ Wolfgang.Etl.Csv.CsvInvalidRecord<T>.LineNumber.get -> int
 Wolfgang.Etl.Csv.CsvInvalidRecord<T>.LineNumber.init -> void
 Wolfgang.Etl.Csv.CsvInvalidRecord<T>.Record.get -> T
 Wolfgang.Etl.Csv.CsvInvalidRecord<T>.Record.init -> void
+Wolfgang.Etl.Csv.CsvLoader<TRecord>.InvalidRecordHandler.get -> System.Action<Wolfgang.Etl.Csv.CsvInvalidRecord<TRecord>!>?
+Wolfgang.Etl.Csv.CsvLoader<TRecord>.InvalidRecordHandler.set -> void
+Wolfgang.Etl.Csv.CsvLoader<TRecord>.OnValidationFailure.get -> Wolfgang.Etl.Csv.CsvValidationFailureAction
+Wolfgang.Etl.Csv.CsvLoader<TRecord>.OnValidationFailure.set -> void
+Wolfgang.Etl.Csv.CsvLoader<TRecord>.Validators.get -> System.Collections.Generic.IReadOnlyList<Wolfgang.Etl.Csv.CsvValidator<TRecord>!>?
+Wolfgang.Etl.Csv.CsvLoader<TRecord>.Validators.set -> void
+Wolfgang.Etl.Csv.CsvLoaderProgress.CsvLoaderProgress(int currentItemCount, int currentSkippedItemCount, int currentLineNumber, int currentInvalidItemCount) -> void
+Wolfgang.Etl.Csv.CsvLoaderProgress.CurrentInvalidItemCount.get -> int
 Wolfgang.Etl.Csv.CsvValidationException
 Wolfgang.Etl.Csv.CsvValidationException.CsvValidationException(int lineNumber, System.Collections.Generic.IReadOnlyList<string!>! failures) -> void
 Wolfgang.Etl.Csv.CsvValidationException.Failures.get -> System.Collections.Generic.IReadOnlyList<string!>!
