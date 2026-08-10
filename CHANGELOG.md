@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Polymorphic extraction — a `CsvExtractor<TRecord>` can now bind each row to a different concrete
+  type chosen by a discriminator column, so a single file can mix record shapes (#12). Set
+  `Discriminator` to a `CsvDiscriminator<TBase>` built with `CsvDiscriminatorBuilder<TBase>` — a
+  fluent, trim/AOT-safe builder that names each concrete type generically and optionally applies
+  per-type `CsvColumnMap`s. The discriminator is read by column index or header name; an unmapped
+  value is handled per `CsvDiscriminatorAction` (`Throw`, `Skip`, or `YieldAsBase`). While a
+  discriminator is set, missing trailing fields are tolerated so narrower row shapes bind cleanly.
+
 ## [0.4.0] - 2026-08-09
 
 ### Added
