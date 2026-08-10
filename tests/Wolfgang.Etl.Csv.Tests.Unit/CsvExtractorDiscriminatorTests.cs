@@ -200,6 +200,26 @@ public class CsvExtractorDiscriminatorTests
 
 
     [Fact]
+    public async Task ExtractAsync_when_YieldAsBase_binds_the_base_row_through_the_extractor_ColumnMaps()
+    {
+        // The base LedgerRow's RecordType lives at index 1 here; without the base map being registered
+        // the fallback would auto-map it to index 0. This locks in that YieldAsBase honors ColumnMaps.
+        var sut = CreateExtractor("foo,XXX,bar\n", BuildByIndex(CsvDiscriminatorAction.YieldAsBase), hasHeader: false);
+        sut.ColumnMaps = new[]
+        {
+            new CsvColumnMap(nameof(LedgerRow.RecordType)) { Index = 1 },
+        };
+
+        var rows = await ReadAllAsync(sut);
+
+        var fallback = Assert.Single(rows);
+        Assert.Equal(typeof(LedgerRow), fallback.GetType());
+        Assert.Equal("XXX", fallback.RecordType);
+    }
+
+
+
+    [Fact]
     public async Task ExtractAsync_when_custom_comparer_is_case_sensitive_a_mismatched_case_is_unknown()
     {
         const string csv =

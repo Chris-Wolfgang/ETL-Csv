@@ -18,8 +18,6 @@ namespace Wolfgang.Etl.Csv;
 public sealed class CsvDiscriminator<TBase>
     where TBase : notnull
 {
-    private static readonly IReadOnlyDictionary<string, Type> EmptyMapping = new Dictionary<string, Type>();
-
     private Dictionary<string, Type>? _typeByValue;
     private Dictionary<Type, string>? _valueByType;
 
@@ -33,7 +31,7 @@ public sealed class CsvDiscriminator<TBase>
 
 
     /// <summary>Maps each discriminator value to the concrete record type. Every value type must derive from / implement <typeparamref name="TBase"/>.</summary>
-    public IReadOnlyDictionary<string, Type> Mapping { get; init; } = EmptyMapping;
+    public IReadOnlyDictionary<string, Type> Mapping { get; init; } = new Dictionary<string, Type>();
 
 
     /// <summary>How to handle a discriminator value (read) or record type (write) that isn't in <see cref="Mapping"/>. Defaults to <see cref="CsvDiscriminatorAction.Throw"/>.</summary>
