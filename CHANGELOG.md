@@ -9,6 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Polymorphic extraction — a `CsvExtractor<TRecord>` can now bind each row to a different concrete
+  type chosen by a discriminator column, so a single file can mix record shapes (#12). Set
+  `Discriminator` to a `CsvDiscriminator<TBase>` built with `CsvDiscriminatorBuilder<TBase>` — a
+  fluent, trim/AOT-safe builder that names each concrete type generically and optionally applies
+  per-type `CsvColumnMap`s. The discriminator is read by column index or header name; an unmapped
+  value is handled per `CsvDiscriminatorAction` (`Throw`, `Skip`, or `YieldAsBase`). While a
+  discriminator is set, missing trailing fields are tolerated so narrower row shapes bind cleanly.
+- Polymorphic loading — `CsvLoader<TRecord>` now accepts the same `Discriminator` and writes each
+  record using the per-type mapping chosen by its runtime type, so a mixed file round-trips through
+  the extractor (#13). No header row is written while a discriminator is set (the shapes share no
+  common header); a record whose runtime type is unmapped is handled per `CsvDiscriminatorAction`.
 - Streaming per-record validation for `CsvExtractor<TRecord>` (#8). Set `Validators` to a list of
   `CsvValidator<TRecord>` rules run after each row binds; a failing record is counted
   (`CsvExtractorProgress.CurrentInvalidItemCount`), passed to `InvalidRecordHandler`, then handled per

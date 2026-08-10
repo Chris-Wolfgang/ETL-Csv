@@ -1,4 +1,31 @@
 #nullable enable
+Wolfgang.Etl.Csv.CsvDiscriminator<TBase>
+Wolfgang.Etl.Csv.CsvDiscriminator<TBase>.ColumnIndex.get -> int
+Wolfgang.Etl.Csv.CsvDiscriminator<TBase>.ColumnIndex.init -> void
+Wolfgang.Etl.Csv.CsvDiscriminator<TBase>.ColumnName.get -> string?
+Wolfgang.Etl.Csv.CsvDiscriminator<TBase>.ColumnName.init -> void
+Wolfgang.Etl.Csv.CsvDiscriminator<TBase>.Comparer.get -> System.StringComparer!
+Wolfgang.Etl.Csv.CsvDiscriminator<TBase>.Comparer.init -> void
+Wolfgang.Etl.Csv.CsvDiscriminator<TBase>.CsvDiscriminator() -> void
+Wolfgang.Etl.Csv.CsvDiscriminator<TBase>.Mapping.get -> System.Collections.Generic.IReadOnlyDictionary<string!, System.Type!>!
+Wolfgang.Etl.Csv.CsvDiscriminator<TBase>.Mapping.init -> void
+Wolfgang.Etl.Csv.CsvDiscriminator<TBase>.PerTypeColumnMaps.get -> System.Collections.Generic.IReadOnlyDictionary<System.Type!, System.Collections.Generic.IReadOnlyList<Wolfgang.Etl.Csv.CsvColumnMap!>!>?
+Wolfgang.Etl.Csv.CsvDiscriminator<TBase>.PerTypeColumnMaps.init -> void
+Wolfgang.Etl.Csv.CsvDiscriminator<TBase>.UnknownDiscriminator.get -> Wolfgang.Etl.Csv.CsvDiscriminatorAction
+Wolfgang.Etl.Csv.CsvDiscriminator<TBase>.UnknownDiscriminator.init -> void
+Wolfgang.Etl.Csv.CsvDiscriminatorAction
+Wolfgang.Etl.Csv.CsvDiscriminatorAction.Skip = 1 -> Wolfgang.Etl.Csv.CsvDiscriminatorAction
+Wolfgang.Etl.Csv.CsvDiscriminatorAction.Throw = 0 -> Wolfgang.Etl.Csv.CsvDiscriminatorAction
+Wolfgang.Etl.Csv.CsvDiscriminatorAction.YieldAsBase = 2 -> Wolfgang.Etl.Csv.CsvDiscriminatorAction
+Wolfgang.Etl.Csv.CsvDiscriminatorBuilder<TBase>
+Wolfgang.Etl.Csv.CsvDiscriminatorBuilder<TBase>.Build() -> Wolfgang.Etl.Csv.CsvDiscriminator<TBase>!
+Wolfgang.Etl.Csv.CsvDiscriminatorBuilder<TBase>.CsvDiscriminatorBuilder(int columnIndex) -> void
+Wolfgang.Etl.Csv.CsvDiscriminatorBuilder<TBase>.CsvDiscriminatorBuilder(string! columnName) -> void
+Wolfgang.Etl.Csv.CsvDiscriminatorBuilder<TBase>.Map<T>(string! discriminatorValue, System.Collections.Generic.IReadOnlyList<Wolfgang.Etl.Csv.CsvColumnMap!>? columnMaps = null) -> Wolfgang.Etl.Csv.CsvDiscriminatorBuilder<TBase>!
+Wolfgang.Etl.Csv.CsvDiscriminatorBuilder<TBase>.OnUnknown(Wolfgang.Etl.Csv.CsvDiscriminatorAction action) -> Wolfgang.Etl.Csv.CsvDiscriminatorBuilder<TBase>!
+Wolfgang.Etl.Csv.CsvDiscriminatorBuilder<TBase>.WithComparer(System.StringComparer! comparer) -> Wolfgang.Etl.Csv.CsvDiscriminatorBuilder<TBase>!
+Wolfgang.Etl.Csv.CsvExtractor<TRecord>.Discriminator.get -> Wolfgang.Etl.Csv.CsvDiscriminator<TRecord>?
+Wolfgang.Etl.Csv.CsvExtractor<TRecord>.Discriminator.set -> void
 Wolfgang.Etl.Csv.CsvExtractor<TRecord>.InvalidRecordHandler.get -> System.Action<Wolfgang.Etl.Csv.CsvInvalidRecord<TRecord>!>?
 Wolfgang.Etl.Csv.CsvExtractor<TRecord>.InvalidRecordHandler.set -> void
 Wolfgang.Etl.Csv.CsvExtractor<TRecord>.OnValidationFailure.get -> Wolfgang.Etl.Csv.CsvValidationFailureAction
@@ -18,6 +45,8 @@ Wolfgang.Etl.Csv.CsvInvalidRecord<T>.LineNumber.get -> int
 Wolfgang.Etl.Csv.CsvInvalidRecord<T>.LineNumber.init -> void
 Wolfgang.Etl.Csv.CsvInvalidRecord<T>.Record.get -> T
 Wolfgang.Etl.Csv.CsvInvalidRecord<T>.Record.init -> void
+Wolfgang.Etl.Csv.CsvLoader<TRecord>.Discriminator.get -> Wolfgang.Etl.Csv.CsvDiscriminator<TRecord>?
+Wolfgang.Etl.Csv.CsvLoader<TRecord>.Discriminator.set -> void
 Wolfgang.Etl.Csv.CsvLoader<TRecord>.InvalidRecordHandler.get -> System.Action<Wolfgang.Etl.Csv.CsvInvalidRecord<TRecord>!>?
 Wolfgang.Etl.Csv.CsvLoader<TRecord>.InvalidRecordHandler.set -> void
 Wolfgang.Etl.Csv.CsvLoader<TRecord>.OnValidationFailure.get -> Wolfgang.Etl.Csv.CsvValidationFailureAction
