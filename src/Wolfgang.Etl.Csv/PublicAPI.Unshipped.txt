@@ -26,3 +26,5 @@ Wolfgang.Etl.Csv.CsvDiscriminatorBuilder<TBase>.OnUnknown(Wolfgang.Etl.Csv.CsvDi
 Wolfgang.Etl.Csv.CsvDiscriminatorBuilder<TBase>.WithComparer(System.StringComparer! comparer) -> Wolfgang.Etl.Csv.CsvDiscriminatorBuilder<TBase>!
 Wolfgang.Etl.Csv.CsvExtractor<TRecord>.Discriminator.get -> Wolfgang.Etl.Csv.CsvDiscriminator<TRecord>?
 Wolfgang.Etl.Csv.CsvExtractor<TRecord>.Discriminator.set -> void
+Wolfgang.Etl.Csv.CsvLoader<TRecord>.Discriminator.get -> Wolfgang.Etl.Csv.CsvDiscriminator<TRecord>?
+Wolfgang.Etl.Csv.CsvLoader<TRecord>.Discriminator.set -> void
