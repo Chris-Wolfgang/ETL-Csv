@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Schema inference (#7). `CsvSchema.InferAsync(reader, options, ct)` samples a CSV and returns a
+  `CsvSchema` of `CsvColumnInfo` (name, index, inferred CLR type, nullability, and a date format when
+  one matches). Types are classified down a ladder — `bool → int → long → decimal → DateTime → Guid →
+  string` (most-restrictive that fits every sampled value; mixed columns fall through to `string`). The
+  delimiter is auto-detected (comma/tab/pipe/semicolon) when not supplied, and the encoding comes from
+  the reader (BOM-aware). `schema.ToColumnMaps()` seeds a `CsvExtractor<TRecord>`; `schema.ToJson()` /
+  `CsvSchema.FromJson(json)` persist and restore it. Inference is reflection-free; only the JSON helpers
+  carry a trim/AOT warning.
+
 ## [0.4.0] - 2026-08-09
 
 ### Added
