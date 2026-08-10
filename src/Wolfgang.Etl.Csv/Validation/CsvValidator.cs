@@ -62,7 +62,7 @@ public static class CsvValidator
         return record =>
         {
             var value = selector(record);
-            return value is not null && value.CompareTo(threshold) > 0
+            return value is not null && TryCompareTo(value, threshold, out var comparison) && comparison > 0
                 ? CsvValidationResult.Pass
                 : CsvValidationResult.Fail($"{Label(memberName)} must be greater than {threshold}.");
         };
@@ -97,7 +97,9 @@ public static class CsvValidator
         return record =>
         {
             var value = selector(record);
-            return value is not null && value.CompareTo(min) >= 0 && value.CompareTo(max) <= 0
+            return value is not null
+                && TryCompareTo(value, min, out var low) && low >= 0
+                && TryCompareTo(value, max, out var high) && high <= 0
                 ? CsvValidationResult.Pass
                 : CsvValidationResult.Fail($"{Label(memberName)} must be between {min} and {max} inclusive.");
         };
@@ -176,6 +178,25 @@ public static class CsvValidator
         }
 
         return record => predicate(record) ? CsvValidationResult.Pass : CsvValidationResult.Fail(failureMessage);
+    }
+
+
+
+    // IComparable.CompareTo throws ArgumentException when the runtime types are incompatible (e.g. an
+    // int selector against a long threshold). Treat that as "did not satisfy the rule" — a validation
+    // failure — rather than letting it abort the whole extraction/load.
+    private static bool TryCompareTo(IComparable value, IComparable other, out int comparison)
+    {
+        try
+        {
+            comparison = value.CompareTo(other);
+            return true;
+        }
+        catch (ArgumentException)
+        {
+            comparison = 0;
+            return false;
+        }
     }
 
 
