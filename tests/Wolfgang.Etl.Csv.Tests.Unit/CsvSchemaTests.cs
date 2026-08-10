@@ -199,6 +199,40 @@ public class CsvSchemaTests
 
 
     [Fact]
+    public void FromJson_wraps_malformed_json_in_a_FormatException()
+    {
+        Assert.Throws<FormatException>(() => CsvSchema.FromJson("{ not valid json"));
+    }
+
+
+
+    [Fact]
+    public async Task InferAsync_falls_back_to_a_positional_name_for_a_blank_header_cell()
+    {
+        using var reader = Reader("a,,c\n1,2,3\n");
+
+        var schema = await CsvSchema.InferAsync(reader);
+
+        Assert.Equal(new[] { "a", "Column2", "c" }, schema.Columns.Select(c => c.Name));
+    }
+
+
+
+    [Fact]
+    public async Task InferAsync_ignores_blank_lines_between_records()
+    {
+        using var reader = Reader("n\n1\n\n2\n\n3\n");
+
+        var schema = await CsvSchema.InferAsync(reader);
+
+        var column = Assert.Single(schema.Columns);
+        Assert.Equal(typeof(int), column.InferredType);
+        Assert.False(column.Nullable);   // the blank lines were skipped, not treated as empty values
+    }
+
+
+
+    [Fact]
     public async Task Schema_round_trips_through_json()
     {
         using var reader = Reader(TypedCsv);

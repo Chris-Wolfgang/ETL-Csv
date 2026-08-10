@@ -124,8 +124,16 @@ public sealed record CsvSchema
             throw new ArgumentNullException(nameof(json));
         }
 
-        return JsonSerializer.Deserialize<CsvSchema>(json, JsonOptions)
-            ?? throw new FormatException("The JSON did not represent a CsvSchema.");
+        try
+        {
+            return JsonSerializer.Deserialize<CsvSchema>(json, JsonOptions)
+                ?? throw new FormatException("The JSON did not represent a CsvSchema.");
+        }
+        catch (JsonException ex)
+        {
+            // Normalize malformed-JSON failures to the documented FormatException contract.
+            throw new FormatException("The JSON did not represent a CsvSchema.", ex);
+        }
     }
 
 
@@ -163,7 +171,12 @@ public sealed record CsvSchema
                 break;
             }
 
-            lines.Add(line);
+            // Skip blank lines so they don't consume the sample budget or skew inference — the extractor
+            // defaults to IgnoreBlankLines = true, so aligning keeps the inferred schema consistent.
+            if (!string.IsNullOrWhiteSpace(line))
+            {
+                lines.Add(line);
+            }
         }
 
         return lines;
@@ -223,7 +236,9 @@ public sealed record CsvSchema
             var type = ClassifyColumn(nonEmpty, options.Culture);
             columns.Add(new CsvColumnInfo
             {
-                Name = header is not null && c < header.Length ? header[c] : $"Column{c + 1}",
+                Name = header is not null && c < header.Length && !string.IsNullOrWhiteSpace(header[c])
+                    ? header[c]
+                    : $"Column{c + 1}",
                 Index = c,
                 InferredType = type,
                 Nullable = nullable,
