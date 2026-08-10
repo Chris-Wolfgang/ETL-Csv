@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -434,9 +435,12 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
 
 
     // CsvWriter.WriteRecord<T> binds the map from the static T, so writing a mixed file requires
-    // dispatching to the record's runtime type. Cache the open generic method once.
+    // dispatching to the record's runtime type. Cache the open generic method once, and each closed
+    // generic per runtime type so high-volume loads don't re-pay MakeGenericMethod per row.
     private static readonly MethodInfo WriteRecordMethod =
         typeof(CsvWriter).GetMethod(nameof(CsvWriter.WriteRecord))!;
+
+    private static readonly ConcurrentDictionary<Type, MethodInfo> WriteRecordByType = new();
 
 
 
@@ -444,7 +448,7 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     [UnconditionalSuppressMessage("AOT", "IL3050", Justification = "The concrete type came from the discriminator mapping, whose types are annotated with PublicProperties where they enter the API.")]
     private static void WriteRecordByRuntimeType(CsvWriter csvWriter, TRecord item)
     {
-        var method = WriteRecordMethod.MakeGenericMethod(item.GetType());
+        var method = WriteRecordByType.GetOrAdd(item.GetType(), static t => WriteRecordMethod.MakeGenericMethod(t));
 
         try
         {
