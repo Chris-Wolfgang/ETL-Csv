@@ -35,6 +35,8 @@ This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) f
 - **Formatting Guide:** [README-FORMATTING.md](README-FORMATTING.md)
 - **Contributing Guide:** [CONTRIBUTING.md](CONTRIBUTING.md)
 - **Cookbook — resumable extraction:** [docs/cookbook/resumable-extraction.md](docs/cookbook/resumable-extraction.md)
+- **Cookbook — polymorphic rows (mixed shapes):** [docs/cookbook/polymorphic-rows.md](docs/cookbook/polymorphic-rows.md)
+- **Cookbook — streaming record validation:** [docs/cookbook/record-validation.md](docs/cookbook/record-validation.md)
 
 ---
 
@@ -190,6 +192,42 @@ extractor.ReadingExceptionOccurred = info =>
 
 Both callbacks are observation-only — `ReadingExceptionOccurred` does not suppress
 the underlying exception, which still propagates out of `ExtractAsync`.
+
+### Example: Polymorphic rows (mixed shapes in one file)
+
+Bind each row to a different concrete type chosen by a discriminator column — a header/detail/trailer
+file, for instance. Build a `CsvDiscriminator<TBase>` and set it on the extractor (and the loader, to
+write the shapes back). Full walkthrough: [docs/cookbook/polymorphic-rows.md](docs/cookbook/polymorphic-rows.md).
+
+```csharp
+var discriminator = new CsvDiscriminatorBuilder<LedgerRow>(columnIndex: 0)
+    .Map<HeaderRow>("HDR", headerColumns)
+    .Map<PaymentRow>("PMT", paymentColumns)
+    .Map<TrailerRow>("TRL", trailerColumns)
+    .Build();
+
+var extractor = new CsvExtractor<LedgerRow>(reader) { HasHeaderRecord = false, Discriminator = discriminator };
+// each yielded row is a HeaderRow / PaymentRow / TrailerRow
+```
+
+### Example: Streaming record validation
+
+Run per-record validators after each row binds and choose a failure policy — `Skip` drops dirty rows,
+counts them, and reports each, instead of aborting the batch. The same trio works on `CsvLoader<TRecord>`.
+Full walkthrough: [docs/cookbook/record-validation.md](docs/cookbook/record-validation.md).
+
+```csharp
+var extractor = new CsvExtractor<Order>(reader)
+{
+    Validators =
+    [
+        CsvValidator.NotNullOrEmpty<Order>(o => o.OrderNumber, nameof(Order.OrderNumber)),
+        CsvValidator.GreaterThan<Order>(o => o.Quantity, 0, nameof(Order.Quantity)),
+    ],
+    OnValidationFailure = CsvValidationFailureAction.Skip,
+    InvalidRecordHandler = bad => _logger.LogWarning("Row {Line}: {Why}", bad.LineNumber, string.Join("; ", bad.Failures)),
+};
+```
 
 ---
 
