@@ -494,20 +494,20 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     [UnconditionalSuppressMessage("AOT", "IL3050", Justification = "TRecord is annotated with PublicProperties; CsvClassMapFactory reflects only public properties of TRecord.")]
     private void RegisterRecordMap(CsvContext context)
     {
-        if (Discriminator is not null)
-        {
-            Discriminator.RegisterClassMaps(context);
-            return;
-        }
-
-        var map = ColumnMaps is { Count: > 0 }
+        // Always register the base TRecord map (from ColumnMaps or attributes). When a discriminator is
+        // set this backs CsvDiscriminatorAction.YieldAsBase — writing an unmapped record as TRecord then
+        // uses the intended base mapping instead of CsvHelper's default conventions. The map is null for
+        // an attribute-less type with no ColumnMaps, in which case CsvHelper auto-maps.
+        var baseMap = ColumnMaps is { Count: > 0 }
             ? CsvClassMapFactory.BuildFromColumnMaps<TRecord>(ColumnMaps)
             : CsvClassMapFactory.GetMap<TRecord>();
 
-        if (map is not null)
+        if (baseMap is not null)
         {
-            context.RegisterClassMap(map);
+            context.RegisterClassMap(baseMap);
         }
+
+        Discriminator?.RegisterClassMaps(context);
     }
 
 

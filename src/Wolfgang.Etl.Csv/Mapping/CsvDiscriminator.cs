@@ -81,6 +81,14 @@ public sealed class CsvDiscriminator<TBase>
 
         foreach (var type in Mapping.Values.Distinct())
         {
+            // The builder path guarantees this via a generic constraint; the direct-init Mapping does not,
+            // so validate here for a clear failure instead of a later InvalidCastException while reading.
+            if (!typeof(TBase).IsAssignableFrom(type))
+            {
+                throw new InvalidOperationException(
+                    $"Mapped type '{type}' is not assignable to the discriminator base type '{typeof(TBase)}'.");
+            }
+
             var columns = PerTypeColumnMaps is not null && PerTypeColumnMaps.TryGetValue(type, out var maps)
                 ? maps
                 : null;

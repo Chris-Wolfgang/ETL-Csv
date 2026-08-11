@@ -96,14 +96,30 @@ public sealed class CsvDiscriminatorBuilder<TBase>
 
 
     /// <summary>Builds the immutable <see cref="CsvDiscriminator{TBase}"/>.</summary>
+    /// <exception cref="InvalidOperationException">
+    /// The same discriminator value, or the same concrete type, was mapped more than once.
+    /// </exception>
     public CsvDiscriminator<TBase> Build()
     {
         var mapping = new Dictionary<string, Type>(_comparer);
         var perTypeColumnMaps = new Dictionary<Type, IReadOnlyList<CsvColumnMap>>();
         var classMaps = new List<ClassMap>();
+        var seenTypes = new HashSet<Type>();
 
         foreach (var entry in _entries)
         {
+            // Reject ambiguous mappings up front: a value mapped twice, or a type mapped to two values
+            // (which would make the loader's reverse type -> value lookup non-deterministic).
+            if (mapping.ContainsKey(entry.Value))
+            {
+                throw new InvalidOperationException($"Discriminator value '{entry.Value}' is mapped more than once.");
+            }
+
+            if (!seenTypes.Add(entry.Type))
+            {
+                throw new InvalidOperationException($"Type '{entry.Type}' is mapped to more than one discriminator value.");
+            }
+
             mapping[entry.Value] = entry.Type;
 
             if (entry.Columns is { Count: > 0 })

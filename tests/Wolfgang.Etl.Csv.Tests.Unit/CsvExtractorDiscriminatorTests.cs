@@ -369,6 +369,49 @@ public class CsvExtractorDiscriminatorTests
 
 
 
+    [Fact]
+    public void CsvDiscriminatorBuilder_Build_rejects_a_duplicate_discriminator_value()
+    {
+        var builder = new CsvDiscriminatorBuilder<LedgerRow>(0)
+            .Map<PaymentRow>("X")
+            .Map<TrailerRow>("X");
+
+        Assert.Throws<InvalidOperationException>(() => builder.Build());
+    }
+
+
+
+    [Fact]
+    public void CsvDiscriminatorBuilder_Build_rejects_the_same_type_mapped_twice()
+    {
+        var builder = new CsvDiscriminatorBuilder<LedgerRow>(0)
+            .Map<PaymentRow>("A")
+            .Map<PaymentRow>("B");
+
+        Assert.Throws<InvalidOperationException>(() => builder.Build());
+    }
+
+
+
+    [Fact]
+    public async Task ExtractAsync_when_direct_init_maps_a_non_base_type_throws_a_clear_error()
+    {
+        var discriminator = new CsvDiscriminator<LedgerRow>
+        {
+            ColumnIndex = 0,
+            Mapping = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase)
+            {
+                ["X"] = typeof(string),   // not assignable to LedgerRow
+            },
+        };
+
+        var sut = CreateExtractor("X,foo\n", discriminator, hasHeader: false);
+
+        await Assert.ThrowsAsync<InvalidOperationException>(async () => await ReadAllAsync(sut));
+    }
+
+
+
     [ExcludeFromCodeCoverage]
     public record LedgerRow
     {
