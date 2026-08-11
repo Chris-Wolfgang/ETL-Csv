@@ -20,6 +20,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   record using the per-type mapping chosen by its runtime type, so a mixed file round-trips through
   the extractor (#13). No header row is written while a discriminator is set (the shapes share no
   common header); a record whose runtime type is unmapped is handled per `CsvDiscriminatorAction`.
+- Streaming per-record validation for `CsvExtractor<TRecord>` (#8). Set `Validators` to a list of
+  `CsvValidator<TRecord>` rules run after each row binds; a failing record is counted
+  (`CsvExtractorProgress.CurrentInvalidItemCount`), passed to `InvalidRecordHandler`, then handled per
+  `OnValidationFailure` — `Continue` (yield anyway), `Skip` (drop it), or `Stop` (raise
+  `CsvValidationException`, the default). Built-in validators via the `CsvValidator` factory:
+  `NotNullOrEmpty`, `GreaterThan`, `InRange`, `MaxLength`, `Matches`, and `Custom`; multiple rules'
+  failures aggregate into a single `CsvInvalidRecord<TRecord>`. Async validators and unifying
+  type-conversion errors into the same stream are tracked as follow-ups.
 
 ## [0.4.0] - 2026-08-09
 

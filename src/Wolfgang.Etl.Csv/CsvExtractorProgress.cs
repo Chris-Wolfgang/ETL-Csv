@@ -56,12 +56,38 @@ public record CsvExtractorProgress : Report
         int currentBadDataCount,
         int currentErrorItemCount
     )
+        : this(currentItemCount, currentSkippedItemCount, currentLineNumber, currentBadDataCount, currentErrorItemCount, 0)
+    {
+    }
+
+
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CsvExtractorProgress"/> class,
+    /// including the count of records rejected by a validator.
+    /// </summary>
+    /// <param name="currentItemCount">The number of items extracted so far.</param>
+    /// <param name="currentSkippedItemCount">The number of items skipped so far.</param>
+    /// <param name="currentLineNumber">The 1-based line number most recently read, or <c>0</c>.</param>
+    /// <param name="currentBadDataCount">The number of bad-data events observed so far.</param>
+    /// <param name="currentErrorItemCount">The number of rows skipped by the <c>ErrorPolicy</c>.</param>
+    /// <param name="currentInvalidItemCount">The number of records that failed validation so far.</param>
+    public CsvExtractorProgress
+    (
+        int currentItemCount,
+        int currentSkippedItemCount,
+        int currentLineNumber,
+        int currentBadDataCount,
+        int currentErrorItemCount,
+        int currentInvalidItemCount
+    )
         : base(currentItemCount)
     {
         CurrentSkippedItemCount = currentSkippedItemCount;
         CurrentLineNumber = currentLineNumber;
         CurrentBadDataCount = currentBadDataCount;
         CurrentErrorItemCount = currentErrorItemCount;
+        CurrentInvalidItemCount = currentInvalidItemCount;
     }
 
 
@@ -93,4 +119,12 @@ public record CsvExtractorProgress : Report
     /// <c>ErrorPolicy</c>. Zero under the default fail-fast policy.
     /// </summary>
     public int CurrentErrorItemCount { get; }
+
+
+
+    /// <summary>
+    /// Gets the number of records that failed one or more validators so far, across every
+    /// <c>OnValidationFailure</c> policy (a <c>Continue</c>d record is still counted).
+    /// </summary>
+    public int CurrentInvalidItemCount { get; }
 }
