@@ -51,10 +51,29 @@ public sealed class CsvDiscriminator<TBase>
     internal IReadOnlyList<ClassMap>? PrebuiltClassMaps { get; init; }
 
 
+    // Per-type write delegates captured AOT-safely by the builder (CsvWriter.WriteRecord<T> rooted at a
+    // compile-time T). Null for the direct init-form, where the loader falls back to reflective dispatch.
+    internal IReadOnlyDictionary<Type, Action<CsvWriter, object>>? PrebuiltWriters { get; init; }
+
+
     internal bool TryResolveType(string value, out Type type)
     {
         _typeByValue ??= BuildTypeByValue();
         return _typeByValue.TryGetValue(value, out type!);
+    }
+
+
+    // A builder-captured writer for the runtime type, if any. The direct-init form has none and the
+    // loader falls back to reflective WriteRecord dispatch.
+    internal bool TryGetWriter(Type type, out Action<CsvWriter, object> writer)
+    {
+        if (PrebuiltWriters is not null)
+        {
+            return PrebuiltWriters.TryGetValue(type, out writer!);
+        }
+
+        writer = null!;
+        return false;
     }
 
 

@@ -560,15 +560,33 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
 
 
 
-    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "The concrete type came from the discriminator mapping, whose types are annotated with PublicProperties where they enter the API.")]
-    [UnconditionalSuppressMessage("AOT", "IL3050", Justification = "The concrete type came from the discriminator mapping, whose types are annotated with PublicProperties where they enter the API.")]
-    private static void WriteRecordByRuntimeType(CsvWriter csvWriter, TRecord item)
+    private void WriteRecordByRuntimeType(CsvWriter csvWriter, TRecord item)
     {
-        var method = WriteRecordByType.GetOrAdd(item.GetType(), static t => WriteRecordMethod.MakeGenericMethod(t));
+        var type = item.GetType();
+
+        // Prefer the builder-captured write delegate — CsvWriter.WriteRecord<T> rooted at a compile-time
+        // T, so this path is trim/AOT-safe. Only the direct-init discriminator (no captured writers) needs
+        // the reflective fallback below.
+        if (Discriminator is not null && Discriminator.TryGetWriter(type, out var writer))
+        {
+            writer(csvWriter, item);
+            return;
+        }
+
+        WriteRecordByRuntimeTypeReflective(csvWriter, item, type);
+    }
+
+
+
+    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Only reached for a direct-init CsvDiscriminator (no builder-captured writer); CsvLoader is already [RequiresUnreferencedCode].")]
+    [UnconditionalSuppressMessage("AOT", "IL3050", Justification = "Only reached for a direct-init CsvDiscriminator; the builder path uses a statically-rooted write delegate and does not hit MakeGenericMethod.")]
+    private static void WriteRecordByRuntimeTypeReflective(CsvWriter csvWriter, object item, Type type)
+    {
+        var method = WriteRecordByType.GetOrAdd(type, static t => WriteRecordMethod.MakeGenericMethod(t));
 
         try
         {
-            _ = method.Invoke(csvWriter, new object[] { item });
+            _ = method.Invoke(csvWriter, new[] { item });
         }
         catch (TargetInvocationException ex) when (ex.InnerException is not null)
         {

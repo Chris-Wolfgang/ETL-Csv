@@ -339,6 +339,9 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
             Escape = Escape,
             Encoding = Encoding,
             HasHeaderRecord = HasHeaderRecord,
+            // A polymorphic file's header describes the discriminator column, not the base type's members,
+            // and each row is bound per concrete type — so don't validate the header against TRecord.
+            HeaderValidated = Discriminator is not null ? null : ConfigurationFunctions.HeaderValidated,
             IgnoreBlankLines = IgnoreBlankLines,
             // A polymorphic file mixes row shapes of differing widths; tolerate missing trailing
             // fields so a narrower concrete type binds without tripping CsvHelper's default throw.

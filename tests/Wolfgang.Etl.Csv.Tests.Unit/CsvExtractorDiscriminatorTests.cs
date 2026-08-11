@@ -370,6 +370,31 @@ public class CsvExtractorDiscriminatorTests
 
 
     [Fact]
+    public async Task ExtractAsync_by_name_discriminator_does_not_validate_the_header_against_the_base_type()
+    {
+        // The base LedgerRow has a RecordType property that is not in this header; validating the header
+        // against the base type would throw a HeaderValidationException. Discriminator mode must skip it.
+        const string csv = "Kind,Account,Amount\nPMT,ACC1,100\n";
+        var discriminator = new CsvDiscriminatorBuilder<LedgerRow>("Kind")
+            .Map<PaymentRow>
+            (
+                "PMT",
+                new[]
+                {
+                    new CsvColumnMap(nameof(PaymentRow.Account)) { Name = "Account" },
+                    new CsvColumnMap(nameof(PaymentRow.Amount)) { Name = "Amount" },
+                }
+            )
+            .Build();
+
+        var rows = await ReadAllAsync(CreateExtractor(csv, discriminator, hasHeader: true));
+
+        Assert.Equal("ACC1", Assert.IsType<PaymentRow>(Assert.Single(rows)).Account);
+    }
+
+
+
+    [Fact]
     public void CsvDiscriminatorBuilder_Build_rejects_a_duplicate_discriminator_value()
     {
         var builder = new CsvDiscriminatorBuilder<LedgerRow>(0)
