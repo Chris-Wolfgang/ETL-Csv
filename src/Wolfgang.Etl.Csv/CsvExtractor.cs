@@ -43,6 +43,7 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
 
     private int _currentLineNumber;
     private int _currentBadDataCount;
+    private int _currentInvalidItemCount;
 
 
 
@@ -260,6 +261,42 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
 
 
     /// <summary>
+    /// When set, each row is bound to a concrete record type chosen by a discriminator column, so a
+    /// single file can mix multiple <typeparamref name="TRecord"/> shapes. Build one with
+    /// <see cref="CsvDiscriminatorBuilder{TBase}"/> (trim/AOT-safe). When set, missing trailing fields
+    /// are tolerated so narrower row shapes bind cleanly, and an unmapped discriminator value is handled
+    /// per <see cref="CsvDiscriminator{TBase}.UnknownDiscriminator"/>.
+    /// </summary>
+    public CsvDiscriminator<TRecord>? Discriminator { get; set; }
+
+
+
+    /// <summary>
+    /// Optional per-record validators run after each row is bound. A record that fails one or more of
+    /// them is counted in <see cref="CsvExtractorProgress.CurrentInvalidItemCount"/>, passed to
+    /// <see cref="InvalidRecordHandler"/>, and then handled per <see cref="OnValidationFailure"/>.
+    /// </summary>
+    public IReadOnlyList<CsvValidator<TRecord>>? Validators { get; set; }
+
+
+
+    /// <summary>
+    /// How a record that fails validation is handled. Defaults to <see cref="CsvValidationFailureAction.Stop"/>
+    /// (the first invalid record raises a <see cref="CsvValidationException"/>).
+    /// </summary>
+    public CsvValidationFailureAction OnValidationFailure { get; set; } = CsvValidationFailureAction.Stop;
+
+
+
+    /// <summary>
+    /// Optional callback invoked for each record that fails validation, before <see cref="OnValidationFailure"/>
+    /// is applied. Use it to log or quarantine invalid rows.
+    /// </summary>
+    public Action<CsvInvalidRecord<TRecord>>? InvalidRecordHandler { get; set; }
+
+
+
+    /// <summary>
     /// Gets or sets the number of records to skip before yielding results.
     /// This is an alias for <see cref="ExtractorBase{TSource,TProgress}.SkipItemCount"/>.
     /// </summary>
@@ -302,7 +339,13 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
             Escape = Escape,
             Encoding = Encoding,
             HasHeaderRecord = HasHeaderRecord,
+            // A polymorphic file's header describes the discriminator column, not the base type's members,
+            // and each row is bound per concrete type — so don't validate the header against TRecord.
+            HeaderValidated = Discriminator is not null ? null : ConfigurationFunctions.HeaderValidated,
             IgnoreBlankLines = IgnoreBlankLines,
+            // A polymorphic file mixes row shapes of differing widths; tolerate missing trailing
+            // fields so a narrower concrete type binds without tripping CsvHelper's default throw.
+            MissingFieldFound = Discriminator is not null ? null : ConfigurationFunctions.MissingFieldFound,
             Quote = Quote,
             ReadingExceptionOccurred = OnReadingExceptionOccurred,
             TrimOptions = TrimOptions.ToCsvHelper(),
@@ -434,9 +477,18 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
             UpdateLineNumber(csvReader);
 
             TRecord? record;
+            bool unknownSkip;
             try
             {
-                record = csvReader.GetRecord<TRecord>();
+                if (Discriminator is not null)
+                {
+                    record = GetDiscriminatedRecord(csvReader, out unknownSkip);
+                }
+                else
+                {
+                    record = csvReader.GetRecord<TRecord>();
+                    unknownSkip = false;
+                }
             }
             catch (CsvHelperException ex)
             {
@@ -452,6 +504,16 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
                 continue;
             }
 
+            if (unknownSkip)
+            {
+                // An unmapped discriminator value under CsvDiscriminatorAction.Skip: count as
+                // skipped so totals reconcile, then move on. (Throw surfaces as an exception
+                // from GetDiscriminatedRecord; YieldAsBase returns a bound base record.)
+                IncrementCurrentSkippedItemCount();
+                CsvLogMessages.SkippedItem(_logger, CurrentSkippedItemCount, SkipItemCount, null);
+                continue;
+            }
+
             if (record is null)
             {
                 // CsvHelper can produce null for reference-typed TRecord when its
@@ -461,6 +523,24 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
                 IncrementCurrentSkippedItemCount();
                 CsvLogMessages.SkippedItem(_logger, CurrentSkippedItemCount, SkipItemCount, null);
                 continue;
+            }
+
+            if (!TryValidate(record, out var invalid))
+            {
+                _ = Interlocked.Increment(ref _currentInvalidItemCount);
+                InvalidRecordHandler?.Invoke(invalid!);
+
+                if (OnValidationFailure == CsvValidationFailureAction.Skip)
+                {
+                    continue;
+                }
+
+                if (OnValidationFailure == CsvValidationFailureAction.Stop)
+                {
+                    throw new CsvValidationException(invalid!.LineNumber, invalid.Failures);
+                }
+
+                // Continue: fall through and yield the invalid record anyway.
             }
 
             IncrementCurrentItemCount();
@@ -526,16 +606,59 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
 
     [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "TRecord is annotated with PublicProperties; CsvClassMapFactory reflects only public properties of TRecord.")]
     [UnconditionalSuppressMessage("AOT", "IL3050", Justification = "TRecord is annotated with PublicProperties; CsvClassMapFactory reflects only public properties of TRecord.")]
+    // Reads the discriminator field for the current row, resolves the concrete type, and binds the
+    // record to it. Type-conversion failures surface as CsvHelperException (routed through ErrorPolicy
+    // by the caller). An unmapped value follows Discriminator.UnknownDiscriminator: Skip returns
+    // (default, true); YieldAsBase binds to TRecord; Throw raises a hard error that bypasses ErrorPolicy.
+    private TRecord? GetDiscriminatedRecord(CsvReader csvReader, out bool skip)
+    {
+        skip = false;
+        var discriminator = Discriminator!;
+
+        var value = discriminator.ColumnName is not null
+            ? csvReader.GetField(discriminator.ColumnName)
+            : csvReader.GetField(discriminator.ColumnIndex);
+
+        if (value is not null && discriminator.TryResolveType(value, out var type))
+        {
+            return (TRecord?)csvReader.GetRecord(type);
+        }
+
+        switch (discriminator.UnknownDiscriminator)
+        {
+            case CsvDiscriminatorAction.Skip:
+                skip = true;
+                return default;
+
+            case CsvDiscriminatorAction.YieldAsBase:
+                return csvReader.GetRecord<TRecord>();
+
+            default:
+                throw new InvalidOperationException
+                (
+                    $"No record type is mapped for discriminator value '{value}'."
+                );
+        }
+    }
+
+
+
     private void RegisterRecordMap(CsvContext context)
     {
-        var map = ColumnMaps is { Count: > 0 }
+        // Always register the base TRecord map (from ColumnMaps or attributes). When a discriminator
+        // is set this backs CsvDiscriminatorAction.YieldAsBase — GetRecord<TRecord>() then binds
+        // through the intended base mapping instead of CsvHelper's default conventions. The map is
+        // null for an attribute-less type with no ColumnMaps, in which case CsvHelper auto-maps.
+        var baseMap = ColumnMaps is { Count: > 0 }
             ? CsvClassMapFactory.BuildFromColumnMaps<TRecord>(ColumnMaps)
             : CsvClassMapFactory.GetMap<TRecord>();
 
-        if (map is not null)
+        if (baseMap is not null)
         {
-            context.RegisterClassMap(map);
+            context.RegisterClassMap(baseMap);
         }
+
+        Discriminator?.RegisterClassMaps(context);
     }
 
 
@@ -548,8 +671,49 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
             CurrentSkippedItemCount,
             Volatile.Read(ref _currentLineNumber),
             Volatile.Read(ref _currentBadDataCount),
-            CurrentErrorItemCount
+            CurrentErrorItemCount,
+            Volatile.Read(ref _currentInvalidItemCount)
         );
+
+
+
+    // Runs every configured validator against the bound record, aggregating failures. Returns true
+    // when the record is valid (or no validators are configured); otherwise false with the failure
+    // detail. The line number is the source row the record was read from.
+    private bool TryValidate(TRecord record, out CsvInvalidRecord<TRecord>? invalid)
+    {
+        invalid = null;
+
+        var validators = Validators;
+        if (validators is null || validators.Count == 0)
+        {
+            return true;
+        }
+
+        List<string>? failures = null;
+        foreach (var validator in validators)
+        {
+            var result = validator(record);
+            if (!result.IsValid)
+            {
+                failures ??= new List<string>();
+                if (result.Failures is not null)
+                {
+                    failures.AddRange(result.Failures);
+                }
+            }
+        }
+
+        if (failures is null)
+        {
+            return true;
+        }
+
+        // Hand the record a snapshot, not the live list, so a handler can't mutate what a later
+        // observer (or the CsvValidationException) sees.
+        invalid = new CsvInvalidRecord<TRecord>(record, Volatile.Read(ref _currentLineNumber), failures.ToArray());
+        return false;
+    }
 
 
 

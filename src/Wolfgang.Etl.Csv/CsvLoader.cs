@@ -1,8 +1,11 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
+using System.Reflection;
+using System.Runtime.ExceptionServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -38,6 +41,8 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     private int _progressTimerWired;
 
     private int _currentLineNumber;
+    private int _currentInvalidItemCount;
+    private int _currentRecordNumber;
 
 
 
@@ -181,6 +186,43 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
 
 
     /// <summary>
+    /// When set, each record is written using a per-type mapping chosen by its runtime type, so a
+    /// single file can mix multiple <typeparamref name="TRecord"/> shapes — the write-side mirror of
+    /// <see cref="CsvExtractor{TRecord}.Discriminator"/>. Build one with
+    /// <see cref="CsvDiscriminatorBuilder{TBase}"/> (trim/AOT-safe). No header row is written while a
+    /// discriminator is set (the shapes have no common header); a record whose runtime type is not
+    /// mapped is handled per <see cref="CsvDiscriminator{TBase}.UnknownDiscriminator"/>.
+    /// </summary>
+    public CsvDiscriminator<TRecord>? Discriminator { get; set; }
+
+
+
+    /// <summary>
+    /// Optional per-record validators run before each record is written. A record that fails one or
+    /// more of them is counted in <see cref="CsvLoaderProgress.CurrentInvalidItemCount"/>, passed to
+    /// <see cref="InvalidRecordHandler"/>, and then handled per <see cref="OnValidationFailure"/>.
+    /// </summary>
+    public IReadOnlyList<CsvValidator<TRecord>>? Validators { get; set; }
+
+
+
+    /// <summary>
+    /// How a record that fails validation is handled. Defaults to <see cref="CsvValidationFailureAction.Stop"/>
+    /// (the first invalid record raises a <see cref="CsvValidationException"/>).
+    /// </summary>
+    public CsvValidationFailureAction OnValidationFailure { get; set; } = CsvValidationFailureAction.Stop;
+
+
+
+    /// <summary>
+    /// Optional callback invoked for each record that fails validation, before <see cref="OnValidationFailure"/>
+    /// is applied. Use it to log or quarantine invalid rows.
+    /// </summary>
+    public Action<CsvInvalidRecord<TRecord>>? InvalidRecordHandler { get; set; }
+
+
+
+    /// <summary>
     /// Gets or sets a value indicating whether the load runs as a dry run. When <c>true</c>,
     /// the loader enumerates the source and honors <see cref="SkipRecordCount"/> /
     /// <see cref="MaxRecordCount"/>, increments progress counters, fires progress reports, and
@@ -276,6 +318,10 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
         {
             token.ThrowIfCancellationRequested();
 
+            // 1-based ordinal of the record in the input sequence — the loader writes rather than reads,
+            // so this is the meaningful "where did this record come from" for an invalid record.
+            var recordNumber = ++_currentRecordNumber;
+
             if (CurrentSkippedItemCount < SkipItemCount)
             {
                 IncrementCurrentSkippedItemCount();
@@ -289,12 +335,9 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
                 break;
             }
 
-            // Dry run: skip the physical write; counters, progress, and logging still fire.
-            if (!IsDryRun)
+            if (!await TryWriteRecordAsync(csvWriter, item, recordNumber).ConfigureAwait(false))
             {
-                csvWriter.WriteRecord(item);
-                await csvWriter.NextRecordAsync().ConfigureAwait(false);
-                UpdateLineNumber(csvWriter);
+                continue;
             }
 
             IncrementCurrentItemCount();
@@ -308,10 +351,125 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
 
 
 
+    // Validates, then writes a record. Returns false (the caller skips it, not counting it as loaded)
+    // when validation drops it under Skip, or when a discriminator can't map its runtime type under Skip.
+    private async Task<bool> TryWriteRecordAsync(CsvWriter csvWriter, TRecord item, int recordNumber)
+    {
+        if (!PassesValidationGate(item, recordNumber))
+        {
+            return false;
+        }
+
+        // A discriminator writes each record by its runtime type; an unmapped type is skipped,
+        // written as the base shape, or raises, per UnknownDiscriminator.
+        if (!TryResolveWriteMode(item, out var writeAsBase))
+        {
+            IncrementCurrentSkippedItemCount();
+            CsvLogMessages.SkippedItem(_logger, CurrentSkippedItemCount, SkipItemCount, null);
+            return false;
+        }
+
+        await WriteRecordAsync(csvWriter, item, writeAsBase).ConfigureAwait(false);
+        return true;
+    }
+
+
+
+    // Applies the validators to a record. Returns true to write it (valid, or invalid under Continue);
+    // false to skip it (invalid under Skip). Throws under Stop. Invalid records are always counted and
+    // routed to InvalidRecordHandler first.
+    private bool PassesValidationGate(TRecord item, int recordNumber)
+    {
+        if (TryValidate(item, recordNumber, out var invalid))
+        {
+            return true;
+        }
+
+        _ = Interlocked.Increment(ref _currentInvalidItemCount);
+        InvalidRecordHandler?.Invoke(invalid!);
+
+        switch (OnValidationFailure)
+        {
+            case CsvValidationFailureAction.Skip:
+                return false;
+
+            case CsvValidationFailureAction.Stop:
+                throw new CsvValidationException(invalid!.LineNumber, invalid.Failures);
+
+            default:
+                return true;
+        }
+    }
+
+
+
+    private async Task WriteRecordAsync(CsvWriter csvWriter, TRecord item, bool writeAsBase)
+    {
+        // Dry run: skip the physical write; counters, progress, and logging still fire.
+        if (IsDryRun)
+        {
+            return;
+        }
+
+        if (writeAsBase)
+        {
+            csvWriter.WriteRecord(item);
+        }
+        else
+        {
+            WriteRecordByRuntimeType(csvWriter, item);
+        }
+
+        await csvWriter.NextRecordAsync().ConfigureAwait(false);
+        UpdateLineNumber(csvWriter);
+    }
+
+
+
+    // Runs every configured validator against the record, aggregating failures. Returns true when
+    // the record is valid (or no validators are configured); otherwise false with the failure detail.
+    private bool TryValidate(TRecord item, int recordNumber, out CsvInvalidRecord<TRecord>? invalid)
+    {
+        invalid = null;
+
+        var validators = Validators;
+        if (validators is null || validators.Count == 0)
+        {
+            return true;
+        }
+
+        List<string>? failures = null;
+        foreach (var validator in validators)
+        {
+            var result = validator(item);
+            if (!result.IsValid)
+            {
+                failures ??= new List<string>();
+                if (result.Failures is not null)
+                {
+                    failures.AddRange(result.Failures);
+                }
+            }
+        }
+
+        if (failures is null)
+        {
+            return true;
+        }
+
+        // Validation runs before the write, so report the input record's ordinal (not the last-written
+        // line), and hand over a snapshot the handler / CsvValidationException observer can't mutate.
+        invalid = new CsvInvalidRecord<TRecord>(item, recordNumber, failures.ToArray());
+        return false;
+    }
+
+
+
     private async Task WriteHeaderIfNeededAsync(CsvWriter csvWriter)
     {
-        // A dry run writes nothing to the output — not even the header.
-        if (!HasHeaderRecord || IsDryRun)
+        // A dry run writes nothing to the output — not even the header. A polymorphic write has no
+        // single header shared by every record type, so it is headerless as well.
+        if (!HasHeaderRecord || IsDryRun || Discriminator is not null)
         {
             return;
         }
@@ -336,13 +494,104 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     [UnconditionalSuppressMessage("AOT", "IL3050", Justification = "TRecord is annotated with PublicProperties; CsvClassMapFactory reflects only public properties of TRecord.")]
     private void RegisterRecordMap(CsvContext context)
     {
-        var map = ColumnMaps is { Count: > 0 }
+        // Always register the base TRecord map (from ColumnMaps or attributes). When a discriminator is
+        // set this backs CsvDiscriminatorAction.YieldAsBase — writing an unmapped record as TRecord then
+        // uses the intended base mapping instead of CsvHelper's default conventions. The map is null for
+        // an attribute-less type with no ColumnMaps, in which case CsvHelper auto-maps.
+        var baseMap = ColumnMaps is { Count: > 0 }
             ? CsvClassMapFactory.BuildFromColumnMaps<TRecord>(ColumnMaps)
             : CsvClassMapFactory.GetMap<TRecord>();
 
-        if (map is not null)
+        if (baseMap is not null)
         {
-            context.RegisterClassMap(map);
+            context.RegisterClassMap(baseMap);
+        }
+
+        Discriminator?.RegisterClassMaps(context);
+    }
+
+
+
+    // Decides how a record is written under the active discriminator. Returns false when the
+    // record's runtime type is unmapped and the policy is Skip (the caller skips it). Otherwise
+    // returns true, with writeAsBase set when the plain WriteRecord<TRecord> path applies — either
+    // there is no discriminator, or the type is unmapped under YieldAsBase. Throws under Throw.
+    private bool TryResolveWriteMode(TRecord item, out bool writeAsBase)
+    {
+        if (Discriminator is null)
+        {
+            writeAsBase = true;
+            return true;
+        }
+
+        if (Discriminator.TryResolveValue(item.GetType(), out _))
+        {
+            writeAsBase = false;
+            return true;
+        }
+
+        switch (Discriminator.UnknownDiscriminator)
+        {
+            case CsvDiscriminatorAction.Skip:
+                writeAsBase = false;
+                return false;
+
+            case CsvDiscriminatorAction.YieldAsBase:
+                writeAsBase = true;
+                return true;
+
+            default:
+                throw new InvalidOperationException
+                (
+                    $"No discriminator value is mapped for record type '{item.GetType()}'."
+                );
+        }
+    }
+
+
+
+    // CsvWriter.WriteRecord<T> binds the map from the static T, so writing a mixed file requires
+    // dispatching to the record's runtime type. Cache the open generic method once, and each closed
+    // generic per runtime type so high-volume loads don't re-pay MakeGenericMethod per row.
+    private static readonly MethodInfo WriteRecordMethod =
+        typeof(CsvWriter).GetMethod(nameof(CsvWriter.WriteRecord))!;
+
+    private static readonly ConcurrentDictionary<Type, MethodInfo> WriteRecordByType = new();
+
+
+
+    private void WriteRecordByRuntimeType(CsvWriter csvWriter, TRecord item)
+    {
+        var type = item.GetType();
+
+        // Prefer the builder-captured write delegate — CsvWriter.WriteRecord<T> rooted at a compile-time
+        // T, so this path is trim/AOT-safe. Only the direct-init discriminator (no captured writers) needs
+        // the reflective fallback below.
+        if (Discriminator is not null && Discriminator.TryGetWriter(type, out var writer))
+        {
+            writer(csvWriter, item);
+            return;
+        }
+
+        WriteRecordByRuntimeTypeReflective(csvWriter, item, type);
+    }
+
+
+
+    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Only reached for a direct-init CsvDiscriminator (no builder-captured writer); CsvLoader is already [RequiresUnreferencedCode].")]
+    [UnconditionalSuppressMessage("AOT", "IL3050", Justification = "Only reached for a direct-init CsvDiscriminator; the builder path uses a statically-rooted write delegate and does not hit MakeGenericMethod.")]
+    private static void WriteRecordByRuntimeTypeReflective(CsvWriter csvWriter, object item, Type type)
+    {
+        var method = WriteRecordByType.GetOrAdd(type, static t => WriteRecordMethod.MakeGenericMethod(t));
+
+        try
+        {
+            _ = method.Invoke(csvWriter, new[] { item });
+        }
+        catch (TargetInvocationException ex) when (ex.InnerException is not null)
+        {
+            // Surface the CsvHelper exception, not the reflection wrapper, preserving its stack.
+            ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
         }
     }
 
@@ -354,7 +603,8 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
         (
             CurrentItemCount,
             CurrentSkippedItemCount,
-            Volatile.Read(ref _currentLineNumber)
+            Volatile.Read(ref _currentLineNumber),
+            Volatile.Read(ref _currentInvalidItemCount)
         );
 
 
