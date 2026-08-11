@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class CsvDiscriminator&lt;TBase&gt; | Wolfgang.Etl.Csv Documentation </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class CsvDiscriminator&lt;TBase&gt; | Wolfgang.Etl.Csv Documentation ">
+      
+      <meta name="description" content="Describes how a single CSV file mixes multiple record shapes, keyed by a discriminator column, so a  binds each row to the right concrete type and a  writes each record&#39;s type and columns. Build one with  — that path is trim/AOT-safe. Constructing it directly from a  dictionary is supported but reflects over the mapped types at run time.">
+      <link rel="icon" href="../favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Chris-Wolfgang/ETL-Csv/new/v0.5.0/apiSpec/new?filename=Wolfgang_Etl_Csv_CsvDiscriminator_1.md&amp;value=---%0Auid%3A%20Wolfgang.Etl.Csv.CsvDiscriminator%601%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="Wolfgang.Etl.Csv">
+            Wolfgang.Etl.Csv
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Wolfgang.Etl.Csv.CsvDiscriminator`1">
+
+
+
+  <h1 id="Wolfgang_Etl_Csv_CsvDiscriminator_1" data-uid="Wolfgang.Etl.Csv.CsvDiscriminator`1" class="text-break">
+Class CsvDiscriminator&lt;TBase&gt;  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.5.0/src/Wolfgang.Etl.Csv/Mapping/CsvDiscriminator.cs/#L18"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Wolfgang.html">Wolfgang</a>.<a class="xref" href="Wolfgang.Etl.html">Etl</a>.<a class="xref" href="Wolfgang.Etl.Csv.html">Csv</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Wolfgang.Etl.Csv.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Describes how a single CSV file mixes multiple record shapes, keyed by a discriminator column, so a
+<a class="xref" href="Wolfgang.Etl.Csv.CsvExtractor-1.html">CsvExtractor&lt;TRecord&gt;</a> binds each row to the right concrete type and a
+<a class="xref" href="Wolfgang.Etl.Csv.CsvLoader-1.html">CsvLoader&lt;TRecord&gt;</a> writes each record's type and columns. Build one with
+<a class="xref" href="Wolfgang.Etl.Csv.CsvDiscriminatorBuilder-1.html">CsvDiscriminatorBuilder&lt;TBase&gt;</a> — that path is trim/AOT-safe. Constructing it directly
+from a <a class="xref" href="Wolfgang.Etl.Csv.CsvDiscriminator-1.html#Wolfgang_Etl_Csv_CsvDiscriminator_1_Mapping">Mapping</a> dictionary is supported but reflects over the mapped types at run time.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class CsvDiscriminator&lt;TBase&gt; where TBase : notnull</code></pre>
+  </div>
+
+
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TBase</code></dt>
+    <dd><p>The common base type / interface the concrete row types derive from.</p>
+</dd>
+  </dl>
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">CsvDiscriminator&lt;TBase&gt;</span></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Wolfgang_Etl_Csv_CsvDiscriminator_1_ColumnIndex_" data-uid="Wolfgang.Etl.Csv.CsvDiscriminator`1.ColumnIndex*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvDiscriminator_1_ColumnIndex" data-uid="Wolfgang.Etl.Csv.CsvDiscriminator`1.ColumnIndex">
+  ColumnIndex
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.5.0/src/Wolfgang.Etl.Csv/Mapping/CsvDiscriminator.cs/#L26"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The 0-based index of the discriminator column. Ignored when <a class="xref" href="Wolfgang.Etl.Csv.CsvDiscriminator-1.html#Wolfgang_Etl_Csv_CsvDiscriminator_1_ColumnName">ColumnName</a> is set.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int ColumnIndex { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_CsvDiscriminator_1_ColumnName_" data-uid="Wolfgang.Etl.Csv.CsvDiscriminator`1.ColumnName*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvDiscriminator_1_ColumnName" data-uid="Wolfgang.Etl.Csv.CsvDiscriminator`1.ColumnName">
+  ColumnName
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.5.0/src/Wolfgang.Etl.Csv/Mapping/CsvDiscriminator.cs/#L30"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The header name of the discriminator column. When set, it takes precedence over <a class="xref" href="Wolfgang.Etl.Csv.CsvDiscriminator-1.html#Wolfgang_Etl_Csv_CsvDiscriminator_1_ColumnIndex">ColumnIndex</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string? ColumnName { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_CsvDiscriminator_1_Comparer_" data-uid="Wolfgang.Etl.Csv.CsvDiscriminator`1.Comparer*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvDiscriminator_1_Comparer" data-uid="Wolfgang.Etl.Csv.CsvDiscriminator`1.Comparer">
+  Comparer
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.5.0/src/Wolfgang.Etl.Csv/Mapping/CsvDiscriminator.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The comparer used to match discriminator values. Defaults to <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.stringcomparer.ordinalignorecase">OrdinalIgnoreCase</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public StringComparer Comparer { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.stringcomparer">StringComparer</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_CsvDiscriminator_1_Mapping_" data-uid="Wolfgang.Etl.Csv.CsvDiscriminator`1.Mapping*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvDiscriminator_1_Mapping" data-uid="Wolfgang.Etl.Csv.CsvDiscriminator`1.Mapping">
+  Mapping
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.5.0/src/Wolfgang.Etl.Csv/Mapping/CsvDiscriminator.cs/#L34"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Maps each discriminator value to the concrete record type. Every value type must derive from / implement <code class="typeparamref">TBase</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyDictionary&lt;string, Type&gt; Mapping { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlydictionary-2">IReadOnlyDictionary</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.type">Type</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_CsvDiscriminator_1_PerTypeColumnMaps_" data-uid="Wolfgang.Etl.Csv.CsvDiscriminator`1.PerTypeColumnMaps*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvDiscriminator_1_PerTypeColumnMaps" data-uid="Wolfgang.Etl.Csv.CsvDiscriminator`1.PerTypeColumnMaps">
+  PerTypeColumnMaps
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.5.0/src/Wolfgang.Etl.Csv/Mapping/CsvDiscriminator.cs/#L42"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Optional per-type runtime column maps, applied instead of the concrete type's attributes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyDictionary&lt;Type, IReadOnlyList&lt;CsvColumnMap&gt;&gt;? PerTypeColumnMaps { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlydictionary-2">IReadOnlyDictionary</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.type">Type</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Wolfgang.Etl.Csv.CsvColumnMap.html">CsvColumnMap</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_CsvDiscriminator_1_UnknownDiscriminator_" data-uid="Wolfgang.Etl.Csv.CsvDiscriminator`1.UnknownDiscriminator*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvDiscriminator_1_UnknownDiscriminator" data-uid="Wolfgang.Etl.Csv.CsvDiscriminator`1.UnknownDiscriminator">
+  UnknownDiscriminator
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.5.0/src/Wolfgang.Etl.Csv/Mapping/CsvDiscriminator.cs/#L38"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>How to handle a discriminator value (read) or record type (write) that isn't in <a class="xref" href="Wolfgang.Etl.Csv.CsvDiscriminator-1.html#Wolfgang_Etl_Csv_CsvDiscriminator_1_Mapping">Mapping</a>. Defaults to <a class="xref" href="Wolfgang.Etl.Csv.CsvDiscriminatorAction.html#Wolfgang_Etl_Csv_CsvDiscriminatorAction_Throw">Throw</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CsvDiscriminatorAction UnknownDiscriminator { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Wolfgang.Etl.Csv.CsvDiscriminatorAction.html">CsvDiscriminatorAction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.5.0/src/Wolfgang.Etl.Csv/Mapping/CsvDiscriminator.cs/#L18" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Made with DocFX <script>(function(){var r='/';if(window.location.hostname.endsWith('.github.io')){var s=window.location.pathname.split('/').filter(Boolean);if(s.length)r='/'+s[0]+'/';}var t=document.createElement('script');t.src=r+'public/version-picker.js';t.async=true;document.head.appendChild(t);})();</script>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

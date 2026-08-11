@@ -105,6 +105,23 @@ known until runtime (for example, layout selected from configuration or a databa
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="Wolfgang.Etl.Csv.CsvDiscriminatorBuilder-1.html">CsvDiscriminatorBuilder&lt;TBase&gt;</a></dt>
+      <dd><p>Fluent, trim/AOT-safe builder for a <a class="xref" href="Wolfgang.Etl.Csv.CsvDiscriminator-1.html">CsvDiscriminator&lt;TBase&gt;</a>. Each
+<a class="xref" href="Wolfgang.Etl.Csv.CsvDiscriminatorBuilder-1.html#Wolfgang_Etl_Csv_CsvDiscriminatorBuilder_1_Map__1_System_String_System_Collections_Generic_IReadOnlyList_Wolfgang_Etl_Csv_CsvColumnMap__">Map&lt;T&gt;(string, IReadOnlyList&lt;CsvColumnMap&gt;?)</a> call names a concrete type generically,
+so the mapping and its per-type <a class="xref" href="Wolfgang.Etl.Csv.CsvColumnMap.html">CsvColumnMap</a>s are resolved with the property metadata
+trimming/AOT needs preserved.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Wolfgang.Etl.Csv.CsvDiscriminator-1.html">CsvDiscriminator&lt;TBase&gt;</a></dt>
+      <dd><p>Describes how a single CSV file mixes multiple record shapes, keyed by a discriminator column, so a
+<a class="xref" href="Wolfgang.Etl.Csv.CsvExtractor-1.html">CsvExtractor&lt;TRecord&gt;</a> binds each row to the right concrete type and a
+<a class="xref" href="Wolfgang.Etl.Csv.CsvLoader-1.html">CsvLoader&lt;TRecord&gt;</a> writes each record's type and columns. Build one with
+<a class="xref" href="Wolfgang.Etl.Csv.CsvDiscriminatorBuilder-1.html">CsvDiscriminatorBuilder&lt;TBase&gt;</a> — that path is trim/AOT-safe. Constructing it directly
+from a <a class="xref" href="Wolfgang.Etl.Csv.CsvDiscriminator-1.html#Wolfgang_Etl_Csv_CsvDiscriminator_1_Mapping">Mapping</a> dictionary is supported but reflects over the mapped types at run time.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="Wolfgang.Etl.Csv.CsvExtractorProgress.html">CsvExtractorProgress</a></dt>
       <dd><p>Progress report for CSV extraction operations.</p>
 </dd>
@@ -118,6 +135,12 @@ using <a href="https://joshclose.github.io/CsvHelper/">CsvHelper</a>.</p>
     <dl class="jumplist">
       <dt><a class="xref" href="Wolfgang.Etl.Csv.CsvIgnoreAttribute.html">CsvIgnoreAttribute</a></dt>
       <dd><p>Marks a property to be excluded from CSV mapping.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Wolfgang.Etl.Csv.CsvInvalidRecord-1.html">CsvInvalidRecord&lt;T&gt;</a></dt>
+      <dd><p>A record that failed validation, together with where it came from and why. Passed to the
+<code>InvalidRecordHandler</code> on the extractor / loader.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -142,6 +165,25 @@ making logging decisions on the caller's behalf.</p>
     <dl class="jumplist">
       <dt><a class="xref" href="Wolfgang.Etl.Csv.CsvShouldQuoteContext.html">CsvShouldQuoteContext</a></dt>
       <dd><p>Provides per-field context to a <code>ShouldQuote</code> callback while writing a CSV stream.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Wolfgang.Etl.Csv.CsvValidationException.html">CsvValidationException</a></dt>
+      <dd><p>Thrown when a record fails validation and <code>OnValidationFailure</code> is
+<a class="xref" href="Wolfgang.Etl.Csv.CsvValidationFailureAction.html#Wolfgang_Etl_Csv_CsvValidationFailureAction_Stop">Stop</a>. Carries the source line and the aggregated
+failure reasons.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Wolfgang.Etl.Csv.CsvValidationResult.html">CsvValidationResult</a></dt>
+      <dd><p>The outcome of running a <a class="xref" href="Wolfgang.Etl.Csv.CsvValidator-1.html">CsvValidator&lt;T&gt;</a> against a record: whether it passed and, if
+not, the human-readable reasons it failed.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Wolfgang.Etl.Csv.CsvValidator.html">CsvValidator</a></dt>
+      <dd><p>Factory methods for the common built-in <a class="xref" href="Wolfgang.Etl.Csv.CsvValidator-1.html">CsvValidator&lt;T&gt;</a> rules. Each takes a selector
+that reads the member under test, so the rules stay strongly typed without reflection.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -178,8 +220,32 @@ materializes and runs it.</p>
 Enums
 </h3>
     <dl class="jumplist">
+      <dt><a class="xref" href="Wolfgang.Etl.Csv.CsvDiscriminatorAction.html">CsvDiscriminatorAction</a></dt>
+      <dd><p>How a polymorphic <a class="xref" href="Wolfgang.Etl.Csv.CsvExtractor-1.html">CsvExtractor&lt;TRecord&gt;</a> (read) or <a class="xref" href="Wolfgang.Etl.Csv.CsvLoader-1.html">CsvLoader&lt;TRecord&gt;</a>
+(write) handles a row whose discriminator value — or, on write, whose runtime type — is not in
+the <a class="xref" href="Wolfgang.Etl.Csv.CsvDiscriminator-1.html">CsvDiscriminator&lt;TBase&gt;</a> mapping.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="Wolfgang.Etl.Csv.CsvTrimOptions.html">CsvTrimOptions</a></dt>
       <dd><p>Specifies how whitespace should be trimmed when reading or writing CSV fields.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Wolfgang.Etl.Csv.CsvValidationFailureAction.html">CsvValidationFailureAction</a></dt>
+      <dd><p>Chooses what a <a class="xref" href="Wolfgang.Etl.Csv.CsvExtractor-1.html">CsvExtractor&lt;TRecord&gt;</a> (or <a class="xref" href="Wolfgang.Etl.Csv.CsvLoader-1.html">CsvLoader&lt;TRecord&gt;</a>) does with a
+record that fails one or more <a class="xref" href="Wolfgang.Etl.Csv.CsvValidator-1.html">CsvValidator&lt;T&gt;</a>s. In every case the invalid record is
+counted (<code>CurrentInvalidItemCount</code>) and the <code>InvalidRecordHandler</code>, if any, is invoked first.</p>
+</dd>
+    </dl>
+    <h3 id="delegates">
+Delegates
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Wolfgang.Etl.Csv.CsvValidator-1.html">CsvValidator&lt;T&gt;</a></dt>
+      <dd><p>A synchronous, per-record validation rule. Runs after a record is bound and returns a
+<a class="xref" href="Wolfgang.Etl.Csv.CsvValidationResult.html">CsvValidationResult</a>. Combine several on the extractor's (or loader's) <code>Validators</code>
+collection; their failures aggregate.</p>
 </dd>
     </dl>
 

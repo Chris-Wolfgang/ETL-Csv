@@ -68,6 +68,48 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Wolfgang.Etl.Csv.CsvDiscriminator-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wolfgang.Etl.Csv.CsvDiscriminator-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Wolfgang.Etl.Csv.CsvDiscriminator<TBase>",
+      "Summary": "<p sourcefile=\"api/Wolfgang.Etl.Csv.CsvDiscriminator-1.yml\" sourcestartlinenumber=\"1\">Describes how a single CSV file mixes multiple record shapes, keyed by a discriminator column, so a\n<xref href=\"Wolfgang.Etl.Csv.CsvExtractor%601\" data-throw-if-not-resolved=\"false\"></xref> binds each row to the right concrete type and a\n<xref href=\"Wolfgang.Etl.Csv.CsvLoader%601\" data-throw-if-not-resolved=\"false\"></xref> writes each record's type and columns. Build one with\n<xref href=\"Wolfgang.Etl.Csv.CsvDiscriminatorBuilder%601\" data-throw-if-not-resolved=\"false\"></xref> — that path is trim/AOT-safe. Constructing it directly\nfrom a <xref href=\"Wolfgang.Etl.Csv.CsvDiscriminator%601.Mapping\" data-throw-if-not-resolved=\"false\"></xref> dictionary is supported but reflects over the mapped types at run time.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wolfgang.Etl.Csv.CsvDiscriminatorAction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wolfgang.Etl.Csv.CsvDiscriminatorAction.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Wolfgang.Etl.Csv.CsvDiscriminatorAction",
+      "Summary": "<p sourcefile=\"api/Wolfgang.Etl.Csv.CsvDiscriminatorAction.yml\" sourcestartlinenumber=\"1\">How a polymorphic <xref href=\"Wolfgang.Etl.Csv.CsvExtractor%601\" data-throw-if-not-resolved=\"false\"></xref> (read) or <xref href=\"Wolfgang.Etl.Csv.CsvLoader%601\" data-throw-if-not-resolved=\"false\"></xref>\n(write) handles a row whose discriminator value — or, on write, whose runtime type — is not in\nthe <xref href=\"Wolfgang.Etl.Csv.CsvDiscriminator%601\" data-throw-if-not-resolved=\"false\"></xref> mapping.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wolfgang.Etl.Csv.CsvDiscriminatorBuilder-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wolfgang.Etl.Csv.CsvDiscriminatorBuilder-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Wolfgang.Etl.Csv.CsvDiscriminatorBuilder<TBase>",
+      "Summary": "<p sourcefile=\"api/Wolfgang.Etl.Csv.CsvDiscriminatorBuilder-1.yml\" sourcestartlinenumber=\"1\">Fluent, trim/AOT-safe builder for a <xref href=\"Wolfgang.Etl.Csv.CsvDiscriminator%601\" data-throw-if-not-resolved=\"false\"></xref>. Each\n<xref href=\"Wolfgang.Etl.Csv.CsvDiscriminatorBuilder%601.Map%60%601(System.String%2cSystem.Collections.Generic.IReadOnlyList%7bWolfgang.Etl.Csv.CsvColumnMap%7d)\" data-throw-if-not-resolved=\"false\"></xref> call names a concrete type generically,\nso the mapping and its per-type <xref href=\"Wolfgang.Etl.Csv.CsvColumnMap\" data-throw-if-not-resolved=\"false\"></xref>s are resolved with the property metadata\ntrimming/AOT needs preserved.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Wolfgang.Etl.Csv.CsvExtractor-1.yml",
       "output": {
         ".html": {
@@ -107,6 +149,20 @@
       "IsMRef": true,
       "Title": "Wolfgang.Etl.Csv.CsvIgnoreAttribute",
       "Summary": "<p sourcefile=\"api/Wolfgang.Etl.Csv.CsvIgnoreAttribute.yml\" sourcestartlinenumber=\"1\">Marks a property to be excluded from CSV mapping.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wolfgang.Etl.Csv.CsvInvalidRecord-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wolfgang.Etl.Csv.CsvInvalidRecord-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Wolfgang.Etl.Csv.CsvInvalidRecord<T>",
+      "Summary": "<p sourcefile=\"api/Wolfgang.Etl.Csv.CsvInvalidRecord-1.yml\" sourcestartlinenumber=\"1\">A record that failed validation, together with where it came from and why. Passed to the\n<code>InvalidRecordHandler</code> on the extractor / loader.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -177,6 +233,76 @@
       "IsMRef": true,
       "Title": "Wolfgang.Etl.Csv.CsvTrimOptions",
       "Summary": "<p sourcefile=\"api/Wolfgang.Etl.Csv.CsvTrimOptions.yml\" sourcestartlinenumber=\"1\">Specifies how whitespace should be trimmed when reading or writing CSV fields.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wolfgang.Etl.Csv.CsvValidationException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wolfgang.Etl.Csv.CsvValidationException.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Wolfgang.Etl.Csv.CsvValidationException",
+      "Summary": "<p sourcefile=\"api/Wolfgang.Etl.Csv.CsvValidationException.yml\" sourcestartlinenumber=\"1\">Thrown when a record fails validation and <code>OnValidationFailure</code> is\n<xref href=\"Wolfgang.Etl.Csv.CsvValidationFailureAction.Stop\" data-throw-if-not-resolved=\"false\"></xref>. Carries the source line and the aggregated\nfailure reasons.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wolfgang.Etl.Csv.CsvValidationFailureAction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wolfgang.Etl.Csv.CsvValidationFailureAction.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Wolfgang.Etl.Csv.CsvValidationFailureAction",
+      "Summary": "<p sourcefile=\"api/Wolfgang.Etl.Csv.CsvValidationFailureAction.yml\" sourcestartlinenumber=\"1\">Chooses what a <xref href=\"Wolfgang.Etl.Csv.CsvExtractor%601\" data-throw-if-not-resolved=\"false\"></xref> (or <xref href=\"Wolfgang.Etl.Csv.CsvLoader%601\" data-throw-if-not-resolved=\"false\"></xref>) does with a\nrecord that fails one or more <xref href=\"Wolfgang.Etl.Csv.CsvValidator%601\" data-throw-if-not-resolved=\"false\"></xref>s. In every case the invalid record is\ncounted (<code>CurrentInvalidItemCount</code>) and the <code>InvalidRecordHandler</code>, if any, is invoked first.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wolfgang.Etl.Csv.CsvValidationResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wolfgang.Etl.Csv.CsvValidationResult.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Wolfgang.Etl.Csv.CsvValidationResult",
+      "Summary": "<p sourcefile=\"api/Wolfgang.Etl.Csv.CsvValidationResult.yml\" sourcestartlinenumber=\"1\">The outcome of running a <xref href=\"Wolfgang.Etl.Csv.CsvValidator%601\" data-throw-if-not-resolved=\"false\"></xref> against a record: whether it passed and, if\nnot, the human-readable reasons it failed.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wolfgang.Etl.Csv.CsvValidator-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wolfgang.Etl.Csv.CsvValidator-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Wolfgang.Etl.Csv.CsvValidator<T>",
+      "Summary": "<p sourcefile=\"api/Wolfgang.Etl.Csv.CsvValidator-1.yml\" sourcestartlinenumber=\"1\">A synchronous, per-record validation rule. Runs after a record is bound and returns a\n<xref href=\"Wolfgang.Etl.Csv.CsvValidationResult\" data-throw-if-not-resolved=\"false\"></xref>. Combine several on the extractor's (or loader's) <code>Validators</code>\ncollection; their failures aggregate.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wolfgang.Etl.Csv.CsvValidator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wolfgang.Etl.Csv.CsvValidator.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Wolfgang.Etl.Csv.CsvValidator",
+      "Summary": "<p sourcefile=\"api/Wolfgang.Etl.Csv.CsvValidator.yml\" sourcestartlinenumber=\"1\">Factory methods for the common built-in <xref href=\"Wolfgang.Etl.Csv.CsvValidator%601\" data-throw-if-not-resolved=\"false\"></xref> rules. Each takes a selector\nthat reads the member under test, so the rules stay strongly typed without reflection.</p>\n"
     },
     {
       "type": "ManagedReference",

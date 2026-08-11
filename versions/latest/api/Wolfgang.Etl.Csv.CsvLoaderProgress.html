@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/Chris-Wolfgang/ETL-Csv/new/v0.4.0/apiSpec/new?filename=Wolfgang_Etl_Csv_CsvLoaderProgress.md&amp;value=---%0Auid%3A%20Wolfgang.Etl.Csv.CsvLoaderProgress%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="docfx:docurl" content="https://github.com/Chris-Wolfgang/ETL-Csv/new/v0.5.0/apiSpec/new?filename=Wolfgang_Etl_Csv_CsvLoaderProgress.md&amp;value=---%0Auid%3A%20Wolfgang.Etl.Csv.CsvLoaderProgress%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -75,7 +75,7 @@
 
 
   <h1 id="Wolfgang_Etl_Csv_CsvLoaderProgress" data-uid="Wolfgang.Etl.Csv.CsvLoaderProgress" class="text-break">
-Class CsvLoaderProgress  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.4.0/src/Wolfgang.Etl.Csv/CsvLoaderProgress.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class CsvLoaderProgress  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.5.0/src/Wolfgang.Etl.Csv/CsvLoaderProgress.cs/#L12"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -188,7 +188,7 @@ and the 1-based line number most recently written.</p>
 
   <h3 id="Wolfgang_Etl_Csv_CsvLoaderProgress__ctor_System_Int32_System_Int32_System_Int32_" data-uid="Wolfgang.Etl.Csv.CsvLoaderProgress.#ctor(System.Int32,System.Int32,System.Int32)">
   CsvLoaderProgress(int, int, int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.4.0/src/Wolfgang.Etl.Csv/CsvLoaderProgress.cs/#L23"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.5.0/src/Wolfgang.Etl.Csv/CsvLoaderProgress.cs/#L23"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Wolfgang.Etl.Csv.CsvLoaderProgress.html">CsvLoaderProgress</a> class.</p>
@@ -224,15 +224,91 @@ before any line has been written.</p>
 
 
 
+  <a id="Wolfgang_Etl_Csv_CsvLoaderProgress__ctor_" data-uid="Wolfgang.Etl.Csv.CsvLoaderProgress.#ctor*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvLoaderProgress__ctor_System_Int32_System_Int32_System_Int32_System_Int32_" data-uid="Wolfgang.Etl.Csv.CsvLoaderProgress.#ctor(System.Int32,System.Int32,System.Int32,System.Int32)">
+  CsvLoaderProgress(int, int, int, int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.5.0/src/Wolfgang.Etl.Csv/CsvLoaderProgress.cs/#L43"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Wolfgang.Etl.Csv.CsvLoaderProgress.html">CsvLoaderProgress</a> class,
+including the count of records rejected by a validator.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CsvLoaderProgress(int currentItemCount, int currentSkippedItemCount, int currentLineNumber, int currentInvalidItemCount)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>currentItemCount</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of items loaded so far.</p>
+</dd>
+    <dt><code>currentSkippedItemCount</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of items skipped so far.</p>
+</dd>
+    <dt><code>currentLineNumber</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The 1-based line number most recently written, or <code>0</code>.</p>
+</dd>
+    <dt><code>currentInvalidItemCount</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of records that failed validation so far.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
   <h2 class="section" id="properties">Properties
 </h2>
+
+
+  <a id="Wolfgang_Etl_Csv_CsvLoaderProgress_CurrentInvalidItemCount_" data-uid="Wolfgang.Etl.Csv.CsvLoaderProgress.CurrentInvalidItemCount*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvLoaderProgress_CurrentInvalidItemCount" data-uid="Wolfgang.Etl.Csv.CsvLoaderProgress.CurrentInvalidItemCount">
+  CurrentInvalidItemCount
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.5.0/src/Wolfgang.Etl.Csv/CsvLoaderProgress.cs/#L78"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the number of records that failed one or more validators so far, across every
+<code>OnValidationFailure</code> policy (a <code>Continue</code>d record is still counted).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int CurrentInvalidItemCount { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
 
 
   <a id="Wolfgang_Etl_Csv_CsvLoaderProgress_CurrentLineNumber_" data-uid="Wolfgang.Etl.Csv.CsvLoaderProgress.CurrentLineNumber*"></a>
 
   <h3 id="Wolfgang_Etl_Csv_CsvLoaderProgress_CurrentLineNumber" data-uid="Wolfgang.Etl.Csv.CsvLoaderProgress.CurrentLineNumber">
   CurrentLineNumber
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.4.0/src/Wolfgang.Etl.Csv/CsvLoaderProgress.cs/#L48"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.5.0/src/Wolfgang.Etl.Csv/CsvLoaderProgress.cs/#L70"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the 1-based line number most recently written to the destination, or <code>0</code>
@@ -265,7 +341,7 @@ before any line has been written.</p>
 
   <h3 id="Wolfgang_Etl_Csv_CsvLoaderProgress_CurrentSkippedItemCount" data-uid="Wolfgang.Etl.Csv.CsvLoaderProgress.CurrentSkippedItemCount">
   CurrentSkippedItemCount
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.4.0/src/Wolfgang.Etl.Csv/CsvLoaderProgress.cs/#L40"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.5.0/src/Wolfgang.Etl.Csv/CsvLoaderProgress.cs/#L62"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the number of items skipped so far during loading.</p>
@@ -297,7 +373,7 @@ before any line has been written.</p>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.4.0/src/Wolfgang.Etl.Csv/CsvLoaderProgress.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.5.0/src/Wolfgang.Etl.Csv/CsvLoaderProgress.cs/#L12" class="edit-link">Edit this page</a>
         </div>
 
 
