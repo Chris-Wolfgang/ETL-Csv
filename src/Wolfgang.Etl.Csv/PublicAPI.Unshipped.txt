@@ -1,4 +1,18 @@
 #nullable enable
+Wolfgang.Etl.Csv.CsvColumnInfo
+Wolfgang.Etl.Csv.CsvColumnInfo.<Clone>$() -> Wolfgang.Etl.Csv.CsvColumnInfo!
+Wolfgang.Etl.Csv.CsvColumnInfo.CsvColumnInfo() -> void
+Wolfgang.Etl.Csv.CsvColumnInfo.Equals(Wolfgang.Etl.Csv.CsvColumnInfo? other) -> bool
+Wolfgang.Etl.Csv.CsvColumnInfo.Format.get -> string?
+Wolfgang.Etl.Csv.CsvColumnInfo.Format.init -> void
+Wolfgang.Etl.Csv.CsvColumnInfo.Index.get -> int
+Wolfgang.Etl.Csv.CsvColumnInfo.Index.init -> void
+Wolfgang.Etl.Csv.CsvColumnInfo.InferredType.get -> System.Type!
+Wolfgang.Etl.Csv.CsvColumnInfo.InferredType.init -> void
+Wolfgang.Etl.Csv.CsvColumnInfo.Name.get -> string!
+Wolfgang.Etl.Csv.CsvColumnInfo.Name.init -> void
+Wolfgang.Etl.Csv.CsvColumnInfo.Nullable.get -> bool
+Wolfgang.Etl.Csv.CsvColumnInfo.Nullable.init -> void
 Wolfgang.Etl.Csv.CsvDiscriminator<TBase>
 Wolfgang.Etl.Csv.CsvDiscriminator<TBase>.ColumnIndex.get -> int
 Wolfgang.Etl.Csv.CsvDiscriminator<TBase>.ColumnIndex.init -> void
@@ -55,6 +69,30 @@ Wolfgang.Etl.Csv.CsvLoader<TRecord>.Validators.get -> System.Collections.Generic
 Wolfgang.Etl.Csv.CsvLoader<TRecord>.Validators.set -> void
 Wolfgang.Etl.Csv.CsvLoaderProgress.CsvLoaderProgress(int currentItemCount, int currentSkippedItemCount, int currentLineNumber, int currentInvalidItemCount) -> void
 Wolfgang.Etl.Csv.CsvLoaderProgress.CurrentInvalidItemCount.get -> int
+Wolfgang.Etl.Csv.CsvSchema
+Wolfgang.Etl.Csv.CsvSchema.<Clone>$() -> Wolfgang.Etl.Csv.CsvSchema!
+Wolfgang.Etl.Csv.CsvSchema.Columns.get -> System.Collections.Generic.IReadOnlyList<Wolfgang.Etl.Csv.CsvColumnInfo!>!
+Wolfgang.Etl.Csv.CsvSchema.Columns.init -> void
+Wolfgang.Etl.Csv.CsvSchema.CsvSchema() -> void
+Wolfgang.Etl.Csv.CsvSchema.Delimiter.get -> string!
+Wolfgang.Etl.Csv.CsvSchema.Delimiter.init -> void
+Wolfgang.Etl.Csv.CsvSchema.Encoding.get -> System.Text.Encoding!
+Wolfgang.Etl.Csv.CsvSchema.Encoding.init -> void
+Wolfgang.Etl.Csv.CsvSchema.Equals(Wolfgang.Etl.Csv.CsvSchema? other) -> bool
+Wolfgang.Etl.Csv.CsvSchema.HasHeaderRecord.get -> bool
+Wolfgang.Etl.Csv.CsvSchema.HasHeaderRecord.init -> void
+Wolfgang.Etl.Csv.CsvSchema.ToColumnMaps() -> System.Collections.Generic.IReadOnlyList<Wolfgang.Etl.Csv.CsvColumnMap!>!
+Wolfgang.Etl.Csv.CsvSchema.ToJson() -> string!
+Wolfgang.Etl.Csv.CsvSchemaInferenceOptions
+Wolfgang.Etl.Csv.CsvSchemaInferenceOptions.CsvSchemaInferenceOptions() -> void
+Wolfgang.Etl.Csv.CsvSchemaInferenceOptions.Culture.get -> System.Globalization.CultureInfo!
+Wolfgang.Etl.Csv.CsvSchemaInferenceOptions.Culture.set -> void
+Wolfgang.Etl.Csv.CsvSchemaInferenceOptions.Delimiter.get -> string?
+Wolfgang.Etl.Csv.CsvSchemaInferenceOptions.Delimiter.set -> void
+Wolfgang.Etl.Csv.CsvSchemaInferenceOptions.HasHeaderRecord.get -> bool
+Wolfgang.Etl.Csv.CsvSchemaInferenceOptions.HasHeaderRecord.set -> void
+Wolfgang.Etl.Csv.CsvSchemaInferenceOptions.SampleRows.get -> int
+Wolfgang.Etl.Csv.CsvSchemaInferenceOptions.SampleRows.set -> void
 Wolfgang.Etl.Csv.CsvValidationException
 Wolfgang.Etl.Csv.CsvValidationException.CsvValidationException(int lineNumber, System.Collections.Generic.IReadOnlyList<string!>! failures) -> void
 Wolfgang.Etl.Csv.CsvValidationException.Failures.get -> System.Collections.Generic.IReadOnlyList<string!>!
@@ -74,14 +112,26 @@ Wolfgang.Etl.Csv.CsvValidationResult.IsValid.get -> bool
 Wolfgang.Etl.Csv.CsvValidationResult.IsValid.init -> void
 Wolfgang.Etl.Csv.CsvValidator
 Wolfgang.Etl.Csv.CsvValidator<T>
+override Wolfgang.Etl.Csv.CsvColumnInfo.Equals(object? obj) -> bool
+override Wolfgang.Etl.Csv.CsvColumnInfo.GetHashCode() -> int
+override Wolfgang.Etl.Csv.CsvColumnInfo.ToString() -> string!
 override Wolfgang.Etl.Csv.CsvInvalidRecord<T>.Equals(object? obj) -> bool
 override Wolfgang.Etl.Csv.CsvInvalidRecord<T>.GetHashCode() -> int
 override Wolfgang.Etl.Csv.CsvInvalidRecord<T>.ToString() -> string!
+override Wolfgang.Etl.Csv.CsvSchema.Equals(object? obj) -> bool
+override Wolfgang.Etl.Csv.CsvSchema.GetHashCode() -> int
+override Wolfgang.Etl.Csv.CsvSchema.ToString() -> string!
 override Wolfgang.Etl.Csv.CsvValidationResult.Equals(object? obj) -> bool
 override Wolfgang.Etl.Csv.CsvValidationResult.GetHashCode() -> int
 override Wolfgang.Etl.Csv.CsvValidationResult.ToString() -> string!
+static Wolfgang.Etl.Csv.CsvColumnInfo.operator !=(Wolfgang.Etl.Csv.CsvColumnInfo? left, Wolfgang.Etl.Csv.CsvColumnInfo? right) -> bool
+static Wolfgang.Etl.Csv.CsvColumnInfo.operator ==(Wolfgang.Etl.Csv.CsvColumnInfo? left, Wolfgang.Etl.Csv.CsvColumnInfo? right) -> bool
 static Wolfgang.Etl.Csv.CsvInvalidRecord<T>.operator !=(Wolfgang.Etl.Csv.CsvInvalidRecord<T>? left, Wolfgang.Etl.Csv.CsvInvalidRecord<T>? right) -> bool
 static Wolfgang.Etl.Csv.CsvInvalidRecord<T>.operator ==(Wolfgang.Etl.Csv.CsvInvalidRecord<T>? left, Wolfgang.Etl.Csv.CsvInvalidRecord<T>? right) -> bool
+static Wolfgang.Etl.Csv.CsvSchema.FromJson(string! json) -> Wolfgang.Etl.Csv.CsvSchema!
+static Wolfgang.Etl.Csv.CsvSchema.InferAsync(System.IO.TextReader! reader, Wolfgang.Etl.Csv.CsvSchemaInferenceOptions? options = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Wolfgang.Etl.Csv.CsvSchema!>!
+static Wolfgang.Etl.Csv.CsvSchema.operator !=(Wolfgang.Etl.Csv.CsvSchema? left, Wolfgang.Etl.Csv.CsvSchema? right) -> bool
+static Wolfgang.Etl.Csv.CsvSchema.operator ==(Wolfgang.Etl.Csv.CsvSchema? left, Wolfgang.Etl.Csv.CsvSchema? right) -> bool
 static Wolfgang.Etl.Csv.CsvValidationResult.Fail(params string![]! reasons) -> Wolfgang.Etl.Csv.CsvValidationResult!
 static Wolfgang.Etl.Csv.CsvValidationResult.Pass.get -> Wolfgang.Etl.Csv.CsvValidationResult!
 static Wolfgang.Etl.Csv.CsvValidationResult.operator !=(Wolfgang.Etl.Csv.CsvValidationResult? left, Wolfgang.Etl.Csv.CsvValidationResult? right) -> bool
