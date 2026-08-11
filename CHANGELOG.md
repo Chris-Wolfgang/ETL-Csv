@@ -31,6 +31,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The same validation trio (`Validators`, `OnValidationFailure`, `InvalidRecordHandler`) and
   `CsvLoaderProgress.CurrentInvalidItemCount` on `CsvLoader<TRecord>`, validating each record before
   it is written (#8).
+- Runnable examples and cookbook docs for the new features: `examples/…PolymorphicRows` and
+  `…RecordValidation`, with matching guides under `docs/cookbook/` (`polymorphic-rows.md`,
+  `record-validation.md`) linked from the README.
 
 ## [0.4.0] - 2026-08-09
 
