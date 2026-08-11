@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-08-11
+
 ### Added
 
 - Polymorphic extraction — a `CsvExtractor<TRecord>` can now bind each row to a different concrete
