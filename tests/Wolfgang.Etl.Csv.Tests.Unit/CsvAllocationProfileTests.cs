@@ -65,12 +65,12 @@ public class CsvAllocationProfileTests
         // Warm-up: JIT compilation, CsvHelper internal cache priming,
         // ClassMap construction. These happen exactly once per process
         // and should not count against per-record allocation budgets.
-        await ExtractOnce().ConfigureAwait(false);
+        await ExtractOnce();
 
         StabilizeBeforeMeasurement();
         var before = GC.GetAllocatedBytesForCurrentThread();
 
-        var count = await ExtractOnce().ConfigureAwait(false);
+        var count = await ExtractOnce();
 
         var after = GC.GetAllocatedBytesForCurrentThread();
         var delta = after - before;
@@ -96,12 +96,12 @@ public class CsvAllocationProfileTests
     public async Task LoadAsync_when_writing_5_record_stream_stays_under_allocation_ceiling()
     {
         // Same warmup + measurement pattern, but for the write path.
-        await LoadOnce().ConfigureAwait(false);
+        await LoadOnce();
 
         StabilizeBeforeMeasurement();
         var before = GC.GetAllocatedBytesForCurrentThread();
 
-        await LoadOnce().ConfigureAwait(false);
+        await LoadOnce();
 
         var after = GC.GetAllocatedBytesForCurrentThread();
         var delta = after - before;

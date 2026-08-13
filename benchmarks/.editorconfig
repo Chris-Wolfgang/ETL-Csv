@@ -19,3 +19,19 @@ dotnet_diagnostic.VSTHRD200.severity = none
 # being measured (MemoryDeltaBenchmarks.cs:58 pattern). Removing the
 # store would defeat the benchmark; the assignment is the benchmark.
 dotnet_diagnostic.NotAccessedVariable.severity = none
+
+# RS0016/RS0017/RS0037 — PublicApiAnalyzers is loaded fleet-wide via
+# Directory.Build.props but only meaningful for src/ projects that ship
+# a public API. Benchmark projects don't ship. Same rationale as the
+# tests/.editorconfig block. Belt-and-suspenders with the analyzer-load
+# gate in Directory.Build.props (Exists('PublicAPI.*.txt')) — keeps the
+# rule silenced if that gate ever regresses.
+dotnet_diagnostic.RS0016.severity = none
+dotnet_diagnostic.RS0017.severity = none
+dotnet_diagnostic.RS0037.severity = none
+
+# UnusedAutoPropertyAccessor.Global fires on BenchmarkDotNet [Params]
+# properties whose setters BDN invokes reflectively from the harness
+# rather than from user code. Not a real accessor "never called";
+# scoped to benchmarks/ where the pattern is universal.
+resharper_unused_auto_property_accessor_global_highlighting = none
