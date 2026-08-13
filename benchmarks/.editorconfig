@@ -13,3 +13,9 @@ dotnet_diagnostic.S1215.severity = none
 
 # VSTHRD200: Use Async suffix — benchmark methods follow BenchmarkDotNet naming conventions
 dotnet_diagnostic.VSTHRD200.severity = none
+
+# NotAccessedVariable fires on the dead-store `count` inside benchmark
+# hot loops that assigns a value to keep the JIT from eliding the work
+# being measured (MemoryDeltaBenchmarks.cs:58 pattern). Removing the
+# store would defeat the benchmark; the assignment is the benchmark.
+dotnet_diagnostic.NotAccessedVariable.severity = none
