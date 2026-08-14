@@ -795,7 +795,7 @@ jobs:
 
       - name: Upload Linux coverage results
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: coverage-linux
           path: |
@@ -803,7 +803,7 @@ jobs:
             CoverageReport/
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: build-output
           path: |
@@ -1114,7 +1114,7 @@ jobs:
 
       - name: Upload Windows coverage results
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: coverage-windows
           path: |
@@ -1470,7 +1470,7 @@ jobs:
 
       - name: Upload macOS coverage results
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: coverage-macos
           path: |
@@ -1626,7 +1626,7 @@ jobs:
 
       - name: Upload security scan results
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: devskim-results
           path: devskim-results.txt

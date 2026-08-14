@@ -77,7 +77,7 @@ jobs:
           Write-Host "Wrote $($lines.Count) results to manifest-${{ matrix.name }}.txt"
 
       - name: Upload manifest
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: manifest-${{ matrix.name }}
           path: manifest-${{ matrix.name }}.txt
