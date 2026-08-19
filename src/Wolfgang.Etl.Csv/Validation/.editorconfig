@@ -1,0 +1,40 @@
+# Per-file / per-folder analyzer suppressions for the Validation surface.
+# Every entry is documented: the warning is a genuine false positive
+# (or a design decision the analyzer can't see), and the suppression is
+# scoped to the smallest reasonable target — this folder, or a single
+# file within it. If the underlying code changes so the warning becomes
+# actionable, remove the entry rather than expanding its scope.
+
+# All Validation/ types (CsvValidator, CsvValidationResult,
+# CsvValidationFailureAction, CsvValidationException, CsvInvalidRecord)
+# live under this folder but ship under the flat Wolfgang.Etl.Csv
+# namespace (see PublicAPI.Shipped.txt — 0 entries under
+# `Wolfgang.Etl.Csv.Validation.*`). Renaming would be a breaking API
+# change for every consumer. CheckNamespace can't see PublicAPI, so it
+# fires per file. Silence at folder scope with the design rationale.
+[*.cs]
+resharper_check_namespace_highlighting = none
+
+# The validator surface defends against user selectors and validator
+# implementations that ignore the nullable annotations at the API
+# boundary (custom selectors returning null despite a non-null-annotated
+# T, custom validators returning a CsvValidationResult with null
+# Failures). Removing the runtime `is not null` / `??` checks to
+# satisfy the compile-time contract would introduce
+# NullReferenceException at exactly the boundary the checks exist to
+# prevent.
+[CsvValidator.cs]
+resharper_condition_is_always_true_or_false_according_to_nullable_api_contract_highlighting = none
+
+[CsvValidationResult.cs]
+resharper_null_coalescing_condition_is_always_not_null_according_to_api_contract_highlighting = none
+
+# CsvValidationException intentionally exposes only the
+# (int lineNumber, IReadOnlyList<string> failures) constructor because
+# both pieces of state are required to build a meaningful message.
+# Adding the standard `()`, `(string)`, `(string, Exception)` overloads
+# is a MINOR-bump surface add and is deferred to a fleet-wide decision
+# on the exception-constructor pattern (see #201 acceptance criteria).
+[CsvValidationException.cs]
+resharper_null_coalescing_condition_is_always_not_null_according_to_api_contract_highlighting = none
+dotnet_diagnostic.RCS1194.severity = none

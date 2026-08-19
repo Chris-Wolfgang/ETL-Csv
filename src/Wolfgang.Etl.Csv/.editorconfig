@@ -1,0 +1,33 @@
+# Per-file analyzer suppressions inside the main src/ project surface.
+# Every entry is documented and scoped to a single file; if the code
+# changes so the warning is no longer a false positive, remove the
+# entry rather than expanding its scope.
+
+# S1133 flags [Obsolete] members as "do not forget to remove someday".
+# The extractor's obsolete members are intentional deprecation markers
+# retained until the next MAJOR bump — the whole point of `[Obsolete]`
+# is that the deletion is scheduled for a future release, not for the
+# next commit. S125 flags multi-sentence rationale comments (leading
+# capital verb + code-shaped tokens) as commented-out code — every hit
+# in these files is a rationale comment sitting above the following
+# block, not source code left behind. Both are per-file false positives.
+[CsvExtractor.cs]
+dotnet_diagnostic.S1133.severity = none
+dotnet_diagnostic.S125.severity = none
+
+# The loader defends against user validator implementations that
+# ignore the nullable annotations (returning a CsvValidationResult
+# with null Failures despite the non-null contract) — see the matching
+# entry in Validation/.editorconfig. The reflective WriteRecord<T>
+# dispatch cache lives as `private static readonly` fields inside the
+# generic `CsvLoader<TRecord>`: per-closed-generic is exactly the
+# desired shape for the cache pattern, but StaticMemberInGenericType
+# warns about it as if it were an accident. S125 same story as
+# CsvExtractor.cs above.
+[CsvLoader.cs]
+resharper_condition_is_always_true_or_false_according_to_nullable_api_contract_highlighting = none
+resharper_static_member_in_generic_type_highlighting = none
+dotnet_diagnostic.S125.severity = none
+
+[CsvCheckpointExtensions.cs]
+dotnet_diagnostic.S125.severity = none
