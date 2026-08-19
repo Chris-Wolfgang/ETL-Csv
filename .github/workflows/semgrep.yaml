@@ -20,10 +20,11 @@ on:
     - cron: '0 4 * * 1'   # Mondays 04:00 UTC
   workflow_dispatch:
 
+# Workflow-level default is read-only; the one job that needs to upload SARIF
+# declares `security-events: write` at job level (zizmor / Scorecard prefer the
+# narrower scope so the token can't accidentally be reused by an unrelated job).
 permissions:
   contents: read
-  security-events: write   # upload-sarif → Code Scanning
-  actions: read            # upload-sarif needs it to associate the analysis
 
 concurrency:
   group: semgrep-${{ github.ref }}
@@ -34,6 +35,10 @@ jobs:
     name: Semgrep scan
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    permissions:
+      contents: read
+      security-events: write   # upload-sarif → Code Scanning
+      actions: read            # upload-sarif needs it to associate the analysis
     steps:
       - name: Checkout code
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
