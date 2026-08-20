@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -64,7 +63,7 @@ public class CsvLoaderValidationTests
         Assert.DoesNotContain("A2", output);
         Assert.Equal(2, loader.CurrentItemCount);
         Assert.NotNull(captured);
-        Assert.Equal("A2", captured!.Record.OrderNumber);
+        Assert.Equal("A2", captured.Record.OrderNumber);
     }
 
 

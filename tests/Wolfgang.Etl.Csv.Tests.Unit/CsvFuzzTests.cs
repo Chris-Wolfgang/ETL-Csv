@@ -74,6 +74,13 @@ public class CsvFuzzTests
     }
 
 
+    // VSTHRD002/S5034 suppressions: CsCheck's `Sample` predicate is synchronous
+    // (it takes a `Func<T, bool>`), and the round-trip test above calls these
+    // helpers from inside that predicate. Making them async would require
+    // switching to `SampleAsync` and rewriting the invariant check — deferred
+    // until CsCheck standardizes on async predicates. There's no synchronization
+    // context in the xunit test host, so the sync-over-async here can't deadlock.
+#pragma warning disable VSTHRD002, S5034
     private static string LoadToString(IReadOnlyList<PersonRecord> records)
     {
         using var stream = new MemoryStream();
@@ -110,6 +117,7 @@ public class CsvFuzzTests
 
         return results;
     }
+#pragma warning restore VSTHRD002, S5034
 
 
     private static async IAsyncEnumerable<PersonRecord> ToAsync(IEnumerable<PersonRecord> items)

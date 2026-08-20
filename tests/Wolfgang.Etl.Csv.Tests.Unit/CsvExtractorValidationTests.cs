@@ -88,7 +88,7 @@ public class CsvExtractorValidationTests
         Assert.Equal(new[] { "A1", "A3" }, rows.ConvertAll(o => o.OrderNumber));
         Assert.Equal(1, progress.LastValue!.CurrentInvalidItemCount);
         Assert.NotNull(captured);
-        Assert.Equal("A2", captured!.Record.OrderNumber);
+        Assert.Equal("A2", captured.Record.OrderNumber);
         Assert.Contains("Quantity", Assert.Single(captured.Failures));
     }
 
@@ -148,7 +148,7 @@ public class CsvExtractorValidationTests
 
         Assert.Empty(rows);
         Assert.NotNull(captured);
-        Assert.Equal(3, captured!.Failures.Count);
+        Assert.Equal(3, captured.Failures.Count);
     }
 
 

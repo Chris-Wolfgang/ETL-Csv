@@ -4,7 +4,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using Wolfgang.Etl.Csv.Tests.Unit.TestModels;
 using Xunit;
@@ -120,7 +119,7 @@ public class CsvCultureInvarianceTests
         var stream = new MemoryStream();
         var writer = new StreamWriter(stream, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false), 1024, leaveOpen: true);
 
-        await RunUnderCulture<int>("ja-JP", async () =>
+        await RunUnderCulture("ja-JP", async () =>
         {
             var sut = new CsvLoader<AttributedPersonRecord>(writer) { LeaveOpen = true };
             var items = new List<AttributedPersonRecord>

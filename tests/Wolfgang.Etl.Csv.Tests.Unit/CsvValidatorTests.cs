@@ -71,7 +71,7 @@ public class CsvValidatorTests
     [Fact]
     public void Matches_passes_matching_input_and_fails_non_matching()
     {
-        var validator = CsvValidator.Matches<Order>(o => o.OrderNumber, new Regex("^A[0-9]+$"));
+        var validator = CsvValidator.Matches<Order>(o => o.OrderNumber, new Regex("^A[0-9]+$", RegexOptions.None, TimeSpan.FromSeconds(1)));
 
         Assert.True(validator(new Order { OrderNumber = "A12" }).IsValid);
         Assert.False(validator(new Order { OrderNumber = "B12" }).IsValid);
@@ -109,7 +109,7 @@ public class CsvValidatorTests
         () => CsvValidator.InRange<Order>(o => o.Quantity, null!, 1),
         () => CsvValidator.InRange<Order>(o => o.Quantity, 0, null!),
         () => CsvValidator.MaxLength<Order>(null!, 1),
-        () => CsvValidator.Matches<Order>(null!, new Regex(".")),
+        () => CsvValidator.Matches<Order>(null!, new Regex(".", RegexOptions.None, TimeSpan.FromSeconds(1))),
         () => CsvValidator.Matches<Order>(o => o.OrderNumber, null!),
         () => CsvValidator.Custom<Order>(null!, "x"),
         () => CsvValidator.Custom<Order>(_ => true, null!),
