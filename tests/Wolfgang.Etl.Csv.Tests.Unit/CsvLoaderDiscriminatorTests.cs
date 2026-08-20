@@ -146,7 +146,7 @@ public class CsvLoaderDiscriminatorTests
     [Fact]
     public async Task LoadAsync_when_runtime_type_is_unmapped_and_action_is_Throw_raises()
     {
-        var (sut, stream) = CreateLoader(BuildByIndex(CsvDiscriminatorAction.Throw));
+        var (sut, stream) = CreateLoader(BuildByIndex());
         var items = new LedgerRow[] { new UnmappedRow { RecordType = "XXX" } };
 
         await Assert.ThrowsAsync<InvalidOperationException>(async () => await LoadAndReadAsync(sut, stream, items));
@@ -269,6 +269,9 @@ public class CsvLoaderDiscriminatorTests
     [ExcludeFromCodeCoverage]
     public record UnmappedRow : LedgerRow
     {
+        // ReSharper disable once UnusedAutoPropertyAccessor.Global
+        // Set by test data; the CSV writer serializes public members so the setter
+        // must exist even though no test reads Note back after construction.
         public string Note { get; set; } = string.Empty;
     }
 
@@ -277,6 +280,11 @@ public class CsvLoaderDiscriminatorTests
     [ExcludeFromCodeCoverage]
     public record ExplodingRow : LedgerRow
     {
+        // Instance property (not static): the test wires a bound ExplodingRow into
+        // the loader; reading Detonate then triggers the throw through the
+        // reflective writer. Static would break the test pattern.
+#pragma warning disable S2325
         public string Detonate => throw new InvalidOperationException("boom");
+#pragma warning restore S2325
     }
 }

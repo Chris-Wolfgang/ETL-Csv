@@ -111,6 +111,10 @@ public class CsvConcurrencyStressTests
                 var seen = 0;
                 await foreach (var record in extractor.ExtractAsync(cts.Token).ConfigureAwait(false))
                 {
+                    // Defensive `record is not null` check: the extractor's
+                    // nullable contract says non-null, but the concurrency stress
+                    // test exercises interleavings we want to keep resilient.
+                    // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
                     if (record is not null && ++seen == 5)
                     {
                         cts.Cancel();
