@@ -54,6 +54,33 @@ jobs:
           # published, never code.
           publish_results: true
 
+      - name: Filter accepted findings from SARIF
+        # Strip findings the maintainer has accepted-as-intentional before
+        # uploading to Code Scanning. Doing this in the SARIF (rather than
+        # via `gh api ... /alerts/N` dismissals) is durable across the
+        # weekly re-runs — Scorecard's SARIF fingerprints drift, so
+        # dismissed alerts silently re-open on the next scan. See
+        # reference_scorecard_dismissal_not_durable.
+        #
+        # Accepted findings:
+        # - DangerousWorkflowID on .github/workflows/pr.yaml — pr.yaml
+        #   deliberately uses `pull_request_target` with a trusted-config
+        #   re-fetch step so the workflow YAML that runs always comes
+        #   from `main`, while `refs/pull/N/head` is separately checked
+        #   out only for the actual test steps. See the SECURITY NOTE at
+        #   the top of pr.yaml. This is the same intent already documented
+        #   for zizmor in .zizmor.yml under `dangerous-triggers`. The
+        #   accepted-as-intentional set stays in ONE place per tool.
+        run: |
+          set -euo pipefail
+          jq '.runs[].results |= map(select(
+            (
+              (.ruleId == "DangerousWorkflowID")
+              and (.locations[0].physicalLocation.artifactLocation.uri == ".github/workflows/pr.yaml")
+            ) | not
+          ))' results.sarif > results.filtered.sarif
+          mv results.filtered.sarif results.sarif
+
       - name: Upload artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
