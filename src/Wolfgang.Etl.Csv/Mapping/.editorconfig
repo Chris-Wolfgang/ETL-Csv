@@ -11,13 +11,3 @@
 # for the code to build; S8969 misreads it as redundant.
 [CsvDiscriminator.cs]
 dotnet_diagnostic.S8969.severity = none
-
-# CsvClassMapFactory is an INTERNAL type. It lives under Mapping/ next
-# to the public mapping surface for logical grouping, but it declares
-# the flat public namespace `Wolfgang.Etl.Csv` on purpose — the public
-# mapping types (CsvColumnMap, CsvDiscriminator<>, CsvColumnAttribute,
-# etc.) already sit in the root namespace, so keeping this internal
-# helper in the same namespace avoids a fake public/internal namespace
-# split. CheckNamespace's folder-based convention doesn't apply.
-[CsvClassMapFactory.cs]
-resharper_check_namespace_highlighting = none

@@ -55,10 +55,10 @@ public class MemoryDeltaBenchmarks
         using var reader = new StreamReader(new MemoryStream(_dataBySize[0]), Encoding.UTF8);
         var extractor = new CsvExtractor<BenchmarkRecord>(reader);
 
-        var count = 0;
         await foreach (var _ in extractor.ExtractAsync())
         {
-            count++;
+            // Drain the enumerable to force all extraction allocations into the
+            // GC.GetTotalMemory measurement window; the row isn't otherwise consumed.
         }
 
         var after = GC.GetTotalMemory(forceFullCollection: true);
