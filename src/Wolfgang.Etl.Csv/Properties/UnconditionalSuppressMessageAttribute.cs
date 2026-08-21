@@ -2,6 +2,10 @@
 
 using System.ComponentModel;
 
+// ReSharper disable once CheckNamespace
+// Polyfills MUST declare the .NET runtime namespace so consumer code binds
+// [UnconditionalSuppressMessage] to our shim on old TFMs and to the real BCL
+// attribute on new ones. Folder location doesn't apply to polyfills.
 namespace System.Diagnostics.CodeAnalysis;
 
 /// <summary>
@@ -19,6 +23,10 @@ internal sealed class UnconditionalSuppressMessageAttribute : Attribute
         CheckId = checkId;
     }
 
+    // ReSharper disable UnusedAutoPropertyAccessor.Global
+    // The following accessors mirror the BCL attribute API — read reflectively
+    // by trimmer / analyzer tooling on newer TFMs. Our own code never reads
+    // them, but removing them breaks the polyfill contract.
     public string Category { get; }
 
     public string CheckId { get; }
@@ -30,6 +38,7 @@ internal sealed class UnconditionalSuppressMessageAttribute : Attribute
     public string? MessageId { get; set; }
 
     public string? Justification { get; set; }
+    // ReSharper restore UnusedAutoPropertyAccessor.Global
 }
 
 #endif
