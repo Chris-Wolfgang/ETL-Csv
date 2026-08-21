@@ -23,8 +23,21 @@ resharper_check_namespace_highlighting = none
 # satisfy the compile-time contract would introduce
 # NullReferenceException at exactly the boundary the checks exist to
 # prevent.
+#
+# Additionally, CsvValidator.Label uses
+# `string.IsNullOrWhiteSpace(memberName) ? "Value" : memberName!` — the
+# `!` is redundant only on TFMs where `string.IsNullOrWhiteSpace`
+# carries `[NotNullWhen(false)]` (net5.0+). On net462 / netstandard2.0
+# the attribute is unavailable, the compiler cannot flow-narrow, and
+# dropping the `!` produces CS8603 "Possible null reference return"
+# (verified locally by removing the bang and building net462). The file
+# already carries a `// ReSharper disable once
+# RedundantSuppressNullableWarningExpression` explaining this to
+# InspectCode, but S8969 (SonarAnalyzer) doesn't observe ReSharper
+# directives — it needs its own severity override.
 [CsvValidator.cs]
 resharper_condition_is_always_true_or_false_according_to_nullable_api_contract_highlighting = none
+dotnet_diagnostic.S8969.severity = none
 
 [CsvValidationResult.cs]
 resharper_null_coalescing_condition_is_always_not_null_according_to_api_contract_highlighting = none
