@@ -2,6 +2,12 @@
 override Wolfgang.Etl.Csv.CsvBadDataInfo.ToString() -> string!
 override Wolfgang.Etl.Csv.CsvColumnMap.ToString() -> string!
 override Wolfgang.Etl.Csv.CsvExtractorProgress.EqualityContract.get -> System.Type!
+override Wolfgang.Etl.Csv.CsvExtractorProgress.ToString() -> string!
 override Wolfgang.Etl.Csv.CsvLoaderProgress.EqualityContract.get -> System.Type!
+override Wolfgang.Etl.Csv.CsvLoaderProgress.ToString() -> string!
 override Wolfgang.Etl.Csv.CsvReadingExceptionInfo.ToString() -> string!
 override Wolfgang.Etl.Csv.CsvShouldQuoteContext.ToString() -> string!
+static Wolfgang.Etl.Csv.CsvBadDataInfo.operator !=(Wolfgang.Etl.Csv.CsvBadDataInfo? left, Wolfgang.Etl.Csv.CsvBadDataInfo? right) -> bool
+static Wolfgang.Etl.Csv.CsvColumnMap.operator !=(Wolfgang.Etl.Csv.CsvColumnMap? left, Wolfgang.Etl.Csv.CsvColumnMap? right) -> bool
+static Wolfgang.Etl.Csv.CsvReadingExceptionInfo.operator !=(Wolfgang.Etl.Csv.CsvReadingExceptionInfo? left, Wolfgang.Etl.Csv.CsvReadingExceptionInfo? right) -> bool
+static Wolfgang.Etl.Csv.CsvShouldQuoteContext.operator !=(Wolfgang.Etl.Csv.CsvShouldQuoteContext? left, Wolfgang.Etl.Csv.CsvShouldQuoteContext? right) -> bool
