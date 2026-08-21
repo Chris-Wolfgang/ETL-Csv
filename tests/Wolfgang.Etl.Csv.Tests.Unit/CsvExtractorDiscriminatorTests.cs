@@ -162,7 +162,7 @@ public class CsvExtractorDiscriminatorTests
     public async Task ExtractAsync_when_unknown_discriminator_and_action_is_Throw_raises()
     {
         const string csv = ByIndexCsv + "XXX,foo,bar\n";
-        var sut = CreateExtractor(csv, BuildByIndex(CsvDiscriminatorAction.Throw), hasHeader: false);
+        var sut = CreateExtractor(csv, BuildByIndex(), hasHeader: false);
 
         await Assert.ThrowsAsync<InvalidOperationException>(async () => await ReadAllAsync(sut));
     }

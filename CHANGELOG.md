@@ -7,6 +7,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.1] - 2026-08-19
+
+### Security
+
+- Adopted `Wolfgang.Etl.Abstractions` / `Wolfgang.Etl.TestKit` / `Wolfgang.Etl.TestKit.Xunit`
+  **0.23.2**, which carries the ETL-Abstractions fleet security fixes from ETL-Abstractions#361.
+  No behavioural or API change in ETL-Csv itself.
+- Retired ~700 Code Scanning alerts across `InspectCode` / `zizmor` / `Scorecard` via the
+  `#201` umbrella:
+  - `PublicApiAnalyzer` is now gated on `Exists('PublicAPI.*.txt')` at `Directory.Build.props`
+    so `RS0016 / RS0017 / RS0037` no longer flood `tests/` / `benchmarks/` / `examples/`.
+  - Every GitHub Actions `uses:` is SHA-pinned with a `# vMAJOR.MINOR.PATCH` note (retires
+    all `unpinned-uses` / `PinnedDependenciesID` findings).
+  - `codeql.yaml` reads step outputs from an `env:` block instead of interpolating into the
+    shell body (retires the `template-injection` findings).
+  - `semgrep.yaml` / `pr-benchmarks.yaml` / `scorecard.yaml` narrow `security-events: write`,
+    `pull-requests: write`, and `read-all` from workflow-level to job-level scope.
+  - Repo-root `.zizmor.yml` documents the one accepted `pull_request_target` finding on
+    `pr.yaml` with rationale.
+- **New**: pin `<AssemblyVersion>` to `0.6.0.0` for the whole 0.6.x line and derive
+  `<FileVersion>` from `<Version>` — so .NET Framework consumers no longer need a binding
+  redirect between PATCH bumps. Before this change, `AssemblyVersion` was SDK-derived from
+  `<Version>` and shifted on every release. Consumers who added a binding redirect after
+  upgrading from earlier 0.x versions can leave it in place; new consumers on 0.6.1+ will
+  not need one.
+
+### Changed
+
+- Adopted `Microsoft.Bcl.AsyncInterfaces` / `Microsoft.Extensions.Logging.Abstractions` 10.0.11.
+- Bumped test-side deps: `Microsoft.NET.Test.Sdk` 18.9.0 (modern-TFM branch), `Microsoft.CodeAnalysis.CSharp` 5.9.0, `CsCheck` 4.8.0, `Roslynator.Analyzers` 4.16.1, `Meziantou.Analyzer` 3.0.163, `SonarAnalyzer.CSharp` 10.32.0.713, `Microsoft.SourceLink.GitHub` 10.0.400.
+
 ## [0.6.0] - 2026-08-13
 
 ### Changed

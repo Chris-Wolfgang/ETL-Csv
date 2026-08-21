@@ -31,22 +31,21 @@ public class CsvLoaderTests
 
 
 
-    private static (CsvLoader<PersonRecord> sut, MemoryStream stream, StreamWriter writer) CreateLoader()
+    private static CsvLoader<PersonRecord> CreateLoader()
     {
         var stream = new MemoryStream();
         var writer = new StreamWriter(stream, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false), 1024, leaveOpen: true);
-        var sut = new CsvLoader<PersonRecord>(writer)
+        return new CsvLoader<PersonRecord>(writer)
         {
             LeaveOpen = true,
         };
-        return (sut, stream, writer);
     }
 
 
 
     protected override CsvLoader<PersonRecord> CreateSut(int itemCount)
     {
-        var (sut, _, _) = CreateLoader();
+        var sut = CreateLoader();
         return sut;
     }
 
@@ -314,7 +313,7 @@ public class CsvLoaderTests
     [Fact]
     public void SkipRecordCount_when_set_updates_SkipItemCount_alias()
     {
-        var (sut, _, _) = CreateLoader();
+        var sut = CreateLoader();
 
         sut.SkipRecordCount = 4;
 
@@ -327,7 +326,7 @@ public class CsvLoaderTests
     [Fact]
     public void MaxRecordCount_when_set_updates_MaximumItemCount_alias()
     {
-        var (sut, _, _) = CreateLoader();
+        var sut = CreateLoader();
 
         sut.MaxRecordCount = 9;
 

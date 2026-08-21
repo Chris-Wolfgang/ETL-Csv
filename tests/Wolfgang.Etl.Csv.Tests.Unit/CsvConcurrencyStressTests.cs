@@ -49,7 +49,7 @@ public class CsvConcurrencyStressTests
             return got;
         }));
 
-        var results = await Task.WhenAll(tasks).ConfigureAwait(false);
+        var results = await Task.WhenAll(tasks);
 
         foreach (var got in results)
         {
@@ -83,7 +83,7 @@ public class CsvConcurrencyStressTests
             return Utf8NoBom.GetString(stream.ToArray());
         }));
 
-        var outputs = await Task.WhenAll(tasks).ConfigureAwait(false);
+        var outputs = await Task.WhenAll(tasks);
 
         Assert.All(outputs, output => Assert.Equal(expected, output));
     }
@@ -111,6 +111,10 @@ public class CsvConcurrencyStressTests
                 var seen = 0;
                 await foreach (var record in extractor.ExtractAsync(cts.Token).ConfigureAwait(false))
                 {
+                    // Defensive `record is not null` check: the extractor's
+                    // nullable contract says non-null, but the concurrency stress
+                    // test exercises interleavings we want to keep resilient.
+                    // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
                     if (record is not null && ++seen == 5)
                     {
                         cts.Cancel();
@@ -120,10 +124,10 @@ public class CsvConcurrencyStressTests
         }));
 
         var all = Task.WhenAll(tasks);
-        var finished = await Task.WhenAny(all, Task.Delay(TimeSpan.FromSeconds(30))).ConfigureAwait(false);
+        var finished = await Task.WhenAny(all, Task.Delay(TimeSpan.FromSeconds(30)));
 
         Assert.Same(all, finished);
-        await all.ConfigureAwait(false);
+        await all;
     }
 
 

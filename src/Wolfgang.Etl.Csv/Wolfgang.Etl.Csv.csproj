@@ -5,7 +5,13 @@
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>disable</ImplicitUsings>
-    <Version>0.6.0</Version>
+    <Version>0.6.1</Version>
+    <!-- Pin AssemblyVersion to MAJOR.MINOR.0.0 so .NET Framework consumers on
+         the 0.6.x line don't need a binding redirect between PATCH bumps.
+         Fleet convention for pre-1.0 libraries is "0.{Minor}.0.0" — only
+         change on a MINOR bump (0.7.x -> 0.7.0.0) or MAJOR API change. -->
+    <AssemblyVersion>0.6.0.0</AssemblyVersion>
+    <FileVersion>$(Version).0</FileVersion>
     <!-- PackageValidation (#156): fail the pack if the public surface breaks binary/source
          compatibility against the last published release. Bump the baseline to each newly
          shipped version as part of release prep. -->
@@ -42,10 +48,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Wolfgang.Etl.Abstractions" Version="0.22.0" />
+    <PackageReference Include="Wolfgang.Etl.Abstractions" Version="0.23.2" />
     <PackageReference Include="CsvHelper" Version="33.1.0" />
-    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="10.0.10" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.10" />
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="10.0.11" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.11" />
   </ItemGroup>
 
   <!-- Analyzer PackageReferences are centralized in Directory.Build.props -->
