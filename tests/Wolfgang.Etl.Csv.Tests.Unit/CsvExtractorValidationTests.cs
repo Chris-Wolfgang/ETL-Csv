@@ -57,20 +57,10 @@ public class CsvExtractorValidationTests
 
 
 
-    [Fact]
-    public async Task ExtractAsync_tolerates_a_validator_that_returns_null_failures()
-    {
-        var stream = new MemoryStream(Encoding.UTF8.GetBytes("OrderNumber,Quantity,Notes\nA1,5,ok\n"));
-        var sut = new CsvExtractor<Order>(new StreamReader(stream, Encoding.UTF8))
-        {
-            OnValidationFailure = CsvValidationFailureAction.Skip,
-            Validators = new CsvValidator<Order>[] { _ => new CsvValidationResult(false, null!) },
-        };
-
-        var rows = await ReadAllAsync(sut);
-
-        Assert.Empty(rows);   // record failed (and was skipped) without an NRE from null Failures
-    }
+    // The prior "tolerates a validator that returns null failures" test is gone: as of the
+    // two-ctor redesign of CsvValidationResult, the illegal state (failed result with null or
+    // empty Failures) can no longer be constructed — the ctor throws. See CsvValidatorTests
+    // for the ctor-guard tests that took its place.
 
 
 

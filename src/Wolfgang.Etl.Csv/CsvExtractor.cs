@@ -697,17 +697,7 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
             if (!result.IsValid)
             {
                 failures ??= new List<string>();
-                // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
-                // CsvValidationResult.Failures is declared non-null, but the ctor takes it as a
-                // primary-record parameter and a caller can pass `null!` to bypass the check.
-                // ExtractAsync_tolerates_a_validator_that_returns_null_failures explicitly verifies
-                // this defensive branch — removing it produces an ArgumentNullException from
-                // List<string>.AddRange. Keep the runtime check even though the nullable contract
-                // says it's redundant.
-                if (result.Failures is not null)
-                {
-                    failures.AddRange(result.Failures);
-                }
+                failures.AddRange(result.Failures);
             }
         }
 

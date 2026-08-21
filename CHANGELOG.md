@@ -7,6 +7,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed (breaking — 0.7.0)
+
+- **`CsvValidationResult` redesign**: converted from a `public sealed record` to a
+  `public sealed class` with two explicit constructors. Illegal states
+  (successful-with-failures, failed-without-failures) are now unrepresentable —
+  the failure constructor throws `ArgumentException` on empty or
+  `ArgumentNullException` on null.
+
+  **Migration**:
+  - `new CsvValidationResult(true, someList)` → `CsvValidationResult.Pass` or `new CsvValidationResult()`
+  - `new CsvValidationResult(false, failuresList)` → `new CsvValidationResult(failuresList)`
+  - `CsvValidationResult.Fail("reason")` — unchanged, still the shortest failure factory
+
+  **Removed symbols** (record-synthesized): primary constructor
+  `(bool, IReadOnlyList<string>)`, `Deconstruct`, `Equals(CsvValidationResult?)`,
+  `override Equals(object?)`, `override GetHashCode()`, `override ToString()`,
+  `operator ==`, `operator !=`, `<Clone>$`, `IsValid.init`, `Failures.init`, and
+  the `IEquatable<CsvValidationResult>` interface. Consumers get a compile-time
+  error if they depended on any of these — loud, not silent.
+
+  **Behaviour change**: validators that returned
+  `new CsvValidationResult(false, null!)` used to be silently tolerated by the
+  extractor. Under the new design that call throws at construction, so the
+  extractor never sees the illegal state. The prior `ExtractAsync_tolerates_a_validator_that_returns_null_failures`
+  test is gone; new ctor-guard tests take its place.
+
+### Changed
+
+- Retired the remaining ~26 Code Scanning alerts left after the 0.6.1 `#201`
+  sweep. Two alerts became real code fixes (deleted dead `count` in
+  `MemoryDeltaBenchmarks.cs`; moved internal `CsvClassMapFactory.cs` to root
+  so folder matches the flat `Wolfgang.Etl.Csv` namespace). Remaining
+  suppressions on the `Properties/*.cs` polyfills are now per-line
+  `// ReSharper disable` comments at each site with rationale, replacing the
+  earlier folder-scoped `.editorconfig`. Nothing hidden in an `.editorconfig`
+  block.
+
 ## [0.6.1] - 2026-08-19
 
 ### Security
