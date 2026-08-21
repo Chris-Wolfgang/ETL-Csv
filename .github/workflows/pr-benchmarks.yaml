@@ -13,10 +13,11 @@ on:
     types: [opened, synchronize, reopened]
 
 # pull_request (not _target): the PR HEAD is trusted repo code and we never
-# expose secrets. pull-requests:write lets the job upsert its comment.
+# expose secrets. Workflow-level default is read-only; the delta job that
+# upserts the PR comment declares `pull-requests: write` at job level so the
+# narrower scope makes intent explicit (zizmor `excessive-permissions`).
 permissions:
   contents: read
-  pull-requests: write
 
 concurrency:
   group: pr-benchmarks-${{ github.event.pull_request.number }}
@@ -27,6 +28,9 @@ jobs:
     name: BDN delta vs base
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    permissions:
+      contents: read
+      pull-requests: write   # upsert the delta comment on the PR
     env:
       PROJECT: benchmarks/Wolfgang.Etl.Csv.Benchmarks/Wolfgang.Etl.Csv.Benchmarks.csproj
     steps:
