@@ -18,7 +18,9 @@ dotnet_diagnostic.VSTHRD200.severity = none
 # hot loops that assigns a value to keep the JIT from eliding the work
 # being measured (MemoryDeltaBenchmarks.cs:58 pattern). Removing the
 # store would defeat the benchmark; the assignment is the benchmark.
-dotnet_diagnostic.NotAccessedVariable.severity = none
+# NOTE: NotAccessedVariable is a ReSharper/InspectCode inspection, not
+# a Roslyn diagnostic — must use the `resharper_*_highlighting` key.
+resharper_not_accessed_variable_highlighting = none
 
 # RS0016/RS0017/RS0037 — PublicApiAnalyzers is loaded fleet-wide via
 # Directory.Build.props but only meaningful for src/ projects that ship
