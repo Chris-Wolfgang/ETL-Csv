@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 using Xunit;
@@ -165,6 +166,135 @@ public class CsvValidatorTests
 
         Assert.False(result.IsValid);
         Assert.Equal(new[] { "a", "b" }, result.Failures);
+    }
+
+
+
+    [Fact]
+    public void CsvValidationResult_default_ctor_creates_valid_result_with_empty_failures()
+    {
+        var result = new CsvValidationResult();
+
+        Assert.True(result.IsValid);
+        Assert.Empty(result.Failures);
+    }
+
+
+
+    [Fact]
+    public void CsvValidationResult_failed_ctor_stores_failures_and_is_invalid()
+    {
+        IReadOnlyList<string> reasons = new[] { "a", "b" };
+
+        var result = new CsvValidationResult(reasons);
+
+        Assert.False(result.IsValid);
+        Assert.Equal(reasons, result.Failures);
+    }
+
+
+
+    [Fact]
+    public void CsvValidationResult_failed_ctor_throws_on_null_failures()
+    {
+        Assert.Throws<ArgumentNullException>(() => new CsvValidationResult(failures: null!));
+    }
+
+
+
+    [Fact]
+    public void CsvValidationResult_failed_ctor_throws_on_empty_failures()
+    {
+        Assert.Throws<ArgumentException>(() => new CsvValidationResult(Array.Empty<string>()));
+    }
+
+
+
+    [Fact]
+    public void CsvValidationResult_Fail_throws_on_null_reasons()
+    {
+        Assert.Throws<ArgumentNullException>(() => CsvValidationResult.Fail(reasons: null!));
+    }
+
+
+
+    [Fact]
+    public void CsvValidationResult_Fail_throws_on_empty_reasons()
+    {
+        Assert.Throws<ArgumentException>(() => CsvValidationResult.Fail());
+    }
+
+
+
+    // Legacy positional-record constructor kept for source compat + marked [Obsolete].
+    // Verifies both that it still works and that the new validation catches the illegal
+    // states the two-ctor design was created to prevent.
+
+    [Fact]
+    public void CsvValidationResult_legacy_ctor_accepts_valid_success_shape()
+    {
+#pragma warning disable CS0618 // legacy ctor is [Obsolete] — deliberate call under test
+        var result = new CsvValidationResult(IsValid: true, Failures: Array.Empty<string>());
+#pragma warning restore CS0618
+
+        Assert.True(result.IsValid);
+        Assert.Empty(result.Failures);
+    }
+
+
+
+    [Fact]
+    public void CsvValidationResult_legacy_ctor_accepts_valid_failure_shape()
+    {
+#pragma warning disable CS0618 // legacy ctor is [Obsolete] — deliberate call under test
+        var result = new CsvValidationResult(IsValid: false, Failures: new[] { "reason" });
+#pragma warning restore CS0618
+
+        Assert.False(result.IsValid);
+        Assert.Equal("reason", Assert.Single(result.Failures));
+    }
+
+
+
+    [Fact]
+    public void CsvValidationResult_legacy_ctor_throws_on_null_failures()
+    {
+#pragma warning disable CS0618 // legacy ctor is [Obsolete] — deliberate call under test
+        Assert.Throws<ArgumentNullException>(() => new CsvValidationResult(IsValid: false, Failures: null!));
+#pragma warning restore CS0618
+    }
+
+
+
+    [Fact]
+    public void CsvValidationResult_legacy_ctor_throws_on_success_with_failures()
+    {
+#pragma warning disable CS0618 // legacy ctor is [Obsolete] — deliberate call under test
+        Assert.Throws<ArgumentException>(() => new CsvValidationResult(IsValid: true, Failures: new[] { "impossible" }));
+#pragma warning restore CS0618
+    }
+
+
+
+    [Fact]
+    public void CsvValidationResult_legacy_ctor_throws_on_failure_without_failures()
+    {
+#pragma warning disable CS0618 // legacy ctor is [Obsolete] — deliberate call under test
+        Assert.Throws<ArgumentException>(() => new CsvValidationResult(IsValid: false, Failures: Array.Empty<string>()));
+#pragma warning restore CS0618
+    }
+
+
+
+    [Fact]
+    public void CsvValidationResult_Deconstruct_still_works()
+    {
+        var result = CsvValidationResult.Fail("x", "y");
+
+        var (isValid, failures) = result;
+
+        Assert.False(isValid);
+        Assert.Equal(new[] { "x", "y" }, failures);
     }
 
 
