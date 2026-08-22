@@ -1,21 +1,21 @@
-# zizmor baseline configuration.
+# zizmor configuration — GitHub Actions workflow security audit.
+# https://docs.zizmor.sh/configuration/
 #
-# Suppress accepted-as-intentional findings here, with rule_id + path +
-# rationale. Every entry must document WHY the rule is silenced for that
-# path — a suppression without a rationale should not merge.
-#
-# Format: https://woodruffw.github.io/zizmor/configuration/
+# Each `ignore:` entry below is an accepted, documented suppression — a
+# pre-existing finding that is deliberate design rather than a defect. A
+# NEW finding of any of these audit types anywhere else still fails.
 
 rules:
   dangerous-triggers:
     ignore:
-      - path: .github/workflows/pr.yaml
-        comment: |
-          pull_request_target is the trigger the PR workflow deliberately
-          uses so the workflow YAML that runs comes from `main` (trusted),
-          while `refs/pull/N/head` is separately checked out for the actual
-          test steps. A concurrent "Fetch trusted configuration files from
-          main branch" step overwrites any protected-file changes the PR
-          made (see the SECURITY NOTE at the top of pr.yaml). Converting to
-          `pull_request` would remove the safe-configs guarantee and open
-          the door to a malicious PR silencing analyzers.
+      # pr.yaml's `pull_request_target` is deliberate: the workflow YAML
+      # executes from the base branch (main), not from the PR branch, so
+      # a malicious PR cannot modify the workflow logic that validates
+      # it. A concurrent "Fetch trusted configuration files from main
+      # branch" step overwrites any protected-file changes the PR made
+      # before any build step runs (see the SECURITY NOTE at the top of
+      # pr.yaml). Converting to `pull_request` would remove that safe-
+      # configs guarantee and open the door to a malicious PR silencing
+      # analyzers. This is the same intent already documented for
+      # Scorecard's DangerousWorkflowID in scorecard.yaml's Filter step.
+      - pr.yaml
