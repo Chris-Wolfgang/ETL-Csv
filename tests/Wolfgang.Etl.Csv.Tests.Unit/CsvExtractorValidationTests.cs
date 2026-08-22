@@ -57,10 +57,12 @@ public class CsvExtractorValidationTests
 
 
 
-    // The prior "tolerates a validator that returns null failures" test is gone: as of the
-    // two-ctor redesign of CsvValidationResult, the illegal state (failed result with null or
-    // empty Failures) can no longer be constructed — the ctor throws. See CsvValidatorTests
-    // for the ctor-guard tests that took its place.
+    // The prior "tolerates a validator that returns null failures" test is gone: the
+    // CsvValidationResult ctors (both the recommended two-arg pair and the legacy positional
+    // one, now marked [Obsolete]) all throw on null / empty / mismatched failures at
+    // construction. A validator returning `new CsvValidationResult(false, null!)` throws
+    // inside the validator delegate before the extractor sees a result. See
+    // CsvValidatorTests for the ctor-guard tests.
 
 
 

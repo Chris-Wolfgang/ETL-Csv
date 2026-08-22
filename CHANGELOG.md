@@ -7,31 +7,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Changed (breaking — 0.7.0)
+### Added (0.7.0)
 
-- **`CsvValidationResult` redesign**: converted from a `public sealed record` to a
-  `public sealed class` with two explicit constructors. Illegal states
-  (successful-with-failures, failed-without-failures) are now unrepresentable —
-  the failure constructor throws `ArgumentException` on empty or
-  `ArgumentNullException` on null.
+- **`CsvValidationResult` two-constructor API**: two new explicit constructors
+  that make illegal states (successful-with-failures, failed-without-failures,
+  null failures) unrepresentable at the call site:
+  - `new CsvValidationResult()` — successful result, no failures
+  - `new CsvValidationResult(IReadOnlyList<string> failures)` — failed result;
+    throws `ArgumentNullException` on null or `ArgumentException` on empty
+
+  Recommended over the legacy positional constructor. `Pass` and `Fail(params)`
+  are unchanged and still the shortest paths.
+
+### Deprecated (0.7.0)
+
+- **`CsvValidationResult.CsvValidationResult(bool isValid, IReadOnlyList<string> failures)`**
+  and **`CsvValidationResult.Deconstruct(out bool, out IReadOnlyList<string>)`**
+  are marked `[Obsolete]`. Both still work — the positional constructor now
+  validates its inputs and throws on inconsistent state (previously any
+  combination was silently accepted, including the `null!` bypass) — but the
+  two named constructors above are the recommended path. Both will be removed
+  in a future major version.
 
   **Migration**:
   - `new CsvValidationResult(true, someList)` → `CsvValidationResult.Pass` or `new CsvValidationResult()`
   - `new CsvValidationResult(false, failuresList)` → `new CsvValidationResult(failuresList)`
-  - `CsvValidationResult.Fail("reason")` — unchanged, still the shortest failure factory
+  - `var (isValid, failures) = result` → `result.IsValid` and `result.Failures`
+  - `CsvValidationResult.Fail("reason")` — unchanged
 
-  **Removed symbols** (record-synthesized): primary constructor
-  `(bool, IReadOnlyList<string>)`, `Deconstruct`, `Equals(CsvValidationResult?)`,
-  `override Equals(object?)`, `override GetHashCode()`, `override ToString()`,
-  `operator ==`, `operator !=`, `<Clone>$`, `IsValid.init`, `Failures.init`, and
-  the `IEquatable<CsvValidationResult>` interface. Consumers get a compile-time
-  error if they depended on any of these — loud, not silent.
-
-  **Behaviour change**: validators that returned
-  `new CsvValidationResult(false, null!)` used to be silently tolerated by the
-  extractor. Under the new design that call throws at construction, so the
-  extractor never sees the illegal state. The prior `ExtractAsync_tolerates_a_validator_that_returns_null_failures`
-  test is gone; new ctor-guard tests take its place.
+  No public API is removed in this release — consumers of the record's
+  value-equality surface (`Equals`, `==`, `GetHashCode`, `IEquatable<T>`,
+  `ToString`), `with` expressions, `Deconstruct`, and the legacy positional
+  constructor all continue to work; the two deprecations only surface
+  compile-time warnings pointing at the new constructors.
 
 ### Changed
 
@@ -43,6 +51,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `// ReSharper disable` comments at each site with rationale, replacing the
   earlier folder-scoped `.editorconfig`. Nothing hidden in an `.editorconfig`
   block.
+- `CsvExtractor.TryValidate` drops the defensive `if (result.Failures is not null)`
+  wrapper — the ctor guards make the check unreachable. This retires the last
+  `ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract` suppression from
+  Group A.
 
 ## [0.6.1] - 2026-08-19
 

@@ -226,6 +226,81 @@ public class CsvValidatorTests
 
 
 
+    // Legacy positional-record constructor kept for source compat + marked [Obsolete].
+    // Verifies both that it still works and that the new validation catches the illegal
+    // states the two-ctor design was created to prevent.
+
+    [Fact]
+    public void CsvValidationResult_legacy_ctor_accepts_valid_success_shape()
+    {
+#pragma warning disable CS0618 // legacy ctor is [Obsolete] — deliberate call under test
+        var result = new CsvValidationResult(IsValid: true, Failures: Array.Empty<string>());
+#pragma warning restore CS0618
+
+        Assert.True(result.IsValid);
+        Assert.Empty(result.Failures);
+    }
+
+
+
+    [Fact]
+    public void CsvValidationResult_legacy_ctor_accepts_valid_failure_shape()
+    {
+#pragma warning disable CS0618 // legacy ctor is [Obsolete] — deliberate call under test
+        var result = new CsvValidationResult(IsValid: false, Failures: new[] { "reason" });
+#pragma warning restore CS0618
+
+        Assert.False(result.IsValid);
+        Assert.Equal("reason", Assert.Single(result.Failures));
+    }
+
+
+
+    [Fact]
+    public void CsvValidationResult_legacy_ctor_throws_on_null_failures()
+    {
+#pragma warning disable CS0618 // legacy ctor is [Obsolete] — deliberate call under test
+        Assert.Throws<ArgumentNullException>(() => new CsvValidationResult(IsValid: false, Failures: null!));
+#pragma warning restore CS0618
+    }
+
+
+
+    [Fact]
+    public void CsvValidationResult_legacy_ctor_throws_on_success_with_failures()
+    {
+#pragma warning disable CS0618 // legacy ctor is [Obsolete] — deliberate call under test
+        Assert.Throws<ArgumentException>(() => new CsvValidationResult(IsValid: true, Failures: new[] { "impossible" }));
+#pragma warning restore CS0618
+    }
+
+
+
+    [Fact]
+    public void CsvValidationResult_legacy_ctor_throws_on_failure_without_failures()
+    {
+#pragma warning disable CS0618 // legacy ctor is [Obsolete] — deliberate call under test
+        Assert.Throws<ArgumentException>(() => new CsvValidationResult(IsValid: false, Failures: Array.Empty<string>()));
+#pragma warning restore CS0618
+    }
+
+
+
+    [Fact]
+    public void CsvValidationResult_legacy_Deconstruct_still_works()
+    {
+        var result = CsvValidationResult.Fail("x", "y");
+
+#pragma warning disable CS0618 // Deconstruct is [Obsolete] — deliberate call under test
+        var (isValid, failures) = result;
+#pragma warning restore CS0618
+
+        Assert.False(isValid);
+        Assert.Equal(new[] { "x", "y" }, failures);
+    }
+
+
+
     [Fact]
     public void CsvValidationException_exposes_line_and_failures_in_its_message()
     {

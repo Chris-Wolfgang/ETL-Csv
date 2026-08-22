@@ -1,15 +1,4 @@
 #nullable enable
-*REMOVED*override Wolfgang.Etl.Csv.CsvValidationResult.Equals(object? obj) -> bool
-*REMOVED*override Wolfgang.Etl.Csv.CsvValidationResult.GetHashCode() -> int
-*REMOVED*override Wolfgang.Etl.Csv.CsvValidationResult.ToString() -> string!
-*REMOVED*static Wolfgang.Etl.Csv.CsvValidationResult.operator !=(Wolfgang.Etl.Csv.CsvValidationResult? left, Wolfgang.Etl.Csv.CsvValidationResult? right) -> bool
-*REMOVED*static Wolfgang.Etl.Csv.CsvValidationResult.operator ==(Wolfgang.Etl.Csv.CsvValidationResult? left, Wolfgang.Etl.Csv.CsvValidationResult? right) -> bool
-*REMOVED*Wolfgang.Etl.Csv.CsvValidationResult.<Clone>$() -> Wolfgang.Etl.Csv.CsvValidationResult!
-*REMOVED*Wolfgang.Etl.Csv.CsvValidationResult.CsvValidationResult(bool IsValid, System.Collections.Generic.IReadOnlyList<string!>! Failures) -> void
-*REMOVED*Wolfgang.Etl.Csv.CsvValidationResult.Deconstruct(out bool IsValid, out System.Collections.Generic.IReadOnlyList<string!>! Failures) -> void
-*REMOVED*Wolfgang.Etl.Csv.CsvValidationResult.Equals(Wolfgang.Etl.Csv.CsvValidationResult? other) -> bool
-*REMOVED*Wolfgang.Etl.Csv.CsvValidationResult.Failures.init -> void
-*REMOVED*Wolfgang.Etl.Csv.CsvValidationResult.IsValid.init -> void
 override Wolfgang.Etl.Csv.CsvBadDataInfo.ToString() -> string!
 override Wolfgang.Etl.Csv.CsvColumnMap.ToString() -> string!
 override Wolfgang.Etl.Csv.CsvExtractorProgress.EqualityContract.get -> System.Type!

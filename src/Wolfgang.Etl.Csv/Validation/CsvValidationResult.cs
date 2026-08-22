@@ -6,15 +6,16 @@ namespace Wolfgang.Etl.Csv;
 /// <summary>
 /// The outcome of running a <see cref="CsvValidator{T}"/> against a record: whether it passed and, if
 /// not, the human-readable reasons it failed. Illegal states (successful-with-failures, failed-without-
-/// failures) are unrepresentable — the type has two constructors, one for each outcome, and each
-/// enforces its own invariant at construction time.
+/// failures, null failures) throw at construction — the two named constructors below are the recommended
+/// path; the legacy positional constructor is retained for source-compat and marked
+/// <see cref="ObsoleteAttribute"/>.
 /// </summary>
 /// <remarks>
 /// Use <see cref="Pass"/> or the default constructor for a successful result, and either the
 /// <see cref="CsvValidationResult(IReadOnlyList{string})"/> constructor or the
 /// <see cref="Fail(string[])"/> factory for a failed result.
 /// </remarks>
-public sealed class CsvValidationResult
+public sealed record CsvValidationResult
 {
     /// <summary>Constructs a successful validation result (no failures).</summary>
     public CsvValidationResult()
@@ -51,8 +52,29 @@ public sealed class CsvValidationResult
 
 
 
+    /// <summary>
+    /// Legacy positional constructor retained from the 0.6.x record-primary-ctor shape. Prefer
+    /// <see cref="CsvValidationResult()"/> for success or <see cref="CsvValidationResult(IReadOnlyList{string})"/>
+    /// for failure — those constructors make illegal states unrepresentable at the call site.
+    /// This constructor still validates its inputs and throws on inconsistent state, but the
+    /// callsite can't express the intent as clearly as the two named constructors.
+    /// </summary>
+    /// <exception cref="ArgumentNullException"><paramref name="Failures"/> is <c>null</c>.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="IsValid"/> is <c>true</c> and <paramref name="Failures"/> is non-empty,
+    /// or <paramref name="IsValid"/> is <c>false</c> and <paramref name="Failures"/> is empty.
+    /// </exception>
+    [Obsolete("Use CsvValidationResult() for success or CsvValidationResult(IReadOnlyList<string>) for failure. This constructor will be removed in a future major version.")]
+    public CsvValidationResult(bool IsValid, IReadOnlyList<string> Failures)
+    {
+        this.Failures = ValidateFailures(IsValid, Failures);
+        this.IsValid = IsValid;
+    }
+
+
+
     /// <summary><c>true</c> when the record satisfied the rule; otherwise <c>false</c>.</summary>
-    public bool IsValid { get; }
+    public bool IsValid { get; init; }
 
 
 
@@ -60,7 +82,7 @@ public sealed class CsvValidationResult
     /// The failure reasons. Empty (never <c>null</c>) when <see cref="IsValid"/> is <c>true</c>;
     /// non-empty otherwise.
     /// </summary>
-    public IReadOnlyList<string> Failures { get; }
+    public IReadOnlyList<string> Failures { get; init; }
 
 
 
@@ -90,5 +112,49 @@ public sealed class CsvValidationResult
         }
 
         return new CsvValidationResult(reasons);
+    }
+
+
+
+    /// <summary>
+    /// Legacy positional deconstruction retained from the 0.6.x record-primary-ctor shape. Prefer
+    /// reading <see cref="IsValid"/> and <see cref="Failures"/> directly. Will be removed in a
+    /// future major version alongside the positional constructor.
+    /// </summary>
+    [Obsolete("Read IsValid and Failures directly. Deconstruct will be removed in a future major version.")]
+    public void Deconstruct(out bool IsValid, out IReadOnlyList<string> Failures)
+    {
+        IsValid = this.IsValid;
+        Failures = this.Failures;
+    }
+
+
+
+    private static IReadOnlyList<string> ValidateFailures(bool isValid, IReadOnlyList<string> failures)
+    {
+        if (failures is null)
+        {
+            throw new ArgumentNullException(nameof(failures));
+        }
+
+        if (isValid && failures.Count > 0)
+        {
+            throw new ArgumentException
+            (
+                "A successful CsvValidationResult cannot carry failure reasons.",
+                nameof(failures)
+            );
+        }
+
+        if (!isValid && failures.Count == 0)
+        {
+            throw new ArgumentException
+            (
+                "A failed CsvValidationResult must contain at least one failure reason.",
+                nameof(failures)
+            );
+        }
+
+        return failures;
     }
 }
