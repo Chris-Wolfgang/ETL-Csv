@@ -7,7 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added (0.7.0)
+## [0.7.0] - 2026-08-22
+
+### Added
 
 - **`CsvValidationResult` two-constructor API**: two new explicit constructors
   that make illegal states (successful-with-failures, failed-without-failures,
@@ -19,7 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Recommended over the legacy positional constructor. `Pass` and `Fail(params)`
   are unchanged and still the shortest paths.
 
-### Deprecated (0.7.0)
+### Deprecated
 
 - **`CsvValidationResult.CsvValidationResult(bool IsValid, IReadOnlyList<string> Failures)`**
   (the record's positional primary constructor) is marked `[Obsolete]`. It
