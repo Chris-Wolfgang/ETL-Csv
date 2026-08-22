@@ -11,3 +11,16 @@
 # for the code to build; S8969 misreads it as redundant.
 [CsvDiscriminator.cs]
 dotnet_diagnostic.S8969.severity = none
+
+# CsvClassMapFactory's ApplyAttributeToMemberMap / ApplyAttributes use
+# `if (!string.IsNullOrEmpty(col.Name)) memberMap.Name(col.Name!);` and
+# the same pattern for col.Format. On modern TFMs (net5.0+) the compiler
+# flow-narrows via `string.IsNullOrEmpty`'s `[NotNullWhen(false)]` and
+# S8969 correctly sees the `!` as redundant. On net462 / netstandard2.0
+# that attribute is unavailable, the compiler cannot flow-narrow, and
+# dropping the `!` produces CS8604 "Possible null reference argument"
+# on both `.Name(col.Name)` and `.Format(col.Format)` (verified locally
+# by removing the bangs and building net462). The `!` is required for
+# the code to build across all TFMs; S8969 sees only the modern-TFM view.
+[CsvClassMapFactory.cs]
+dotnet_diagnostic.S8969.severity = none

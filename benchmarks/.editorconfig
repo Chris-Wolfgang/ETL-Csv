@@ -14,12 +14,6 @@ dotnet_diagnostic.S1215.severity = none
 # VSTHRD200: Use Async suffix — benchmark methods follow BenchmarkDotNet naming conventions
 dotnet_diagnostic.VSTHRD200.severity = none
 
-# NotAccessedVariable fires on the dead-store `count` inside benchmark
-# hot loops that assigns a value to keep the JIT from eliding the work
-# being measured (MemoryDeltaBenchmarks.cs:58 pattern). Removing the
-# store would defeat the benchmark; the assignment is the benchmark.
-dotnet_diagnostic.NotAccessedVariable.severity = none
-
 # RS0016/RS0017/RS0037 — PublicApiAnalyzers is loaded fleet-wide via
 # Directory.Build.props but only meaningful for src/ projects that ship
 # a public API. Benchmark projects don't ship. Same rationale as the

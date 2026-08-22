@@ -697,10 +697,7 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
             if (!result.IsValid)
             {
                 failures ??= new List<string>();
-                if (result.Failures is not null)
-                {
-                    failures.AddRange(result.Failures);
-                }
+                failures.AddRange(result.Failures);
             }
         }
 

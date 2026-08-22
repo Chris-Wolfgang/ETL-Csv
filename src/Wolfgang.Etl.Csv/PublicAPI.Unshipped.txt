@@ -1,7 +1,1 @@
 #nullable enable
-override Wolfgang.Etl.Csv.CsvBadDataInfo.ToString() -> string!
-override Wolfgang.Etl.Csv.CsvColumnMap.ToString() -> string!
-override Wolfgang.Etl.Csv.CsvExtractorProgress.EqualityContract.get -> System.Type!
-override Wolfgang.Etl.Csv.CsvLoaderProgress.EqualityContract.get -> System.Type!
-override Wolfgang.Etl.Csv.CsvReadingExceptionInfo.ToString() -> string!
-override Wolfgang.Etl.Csv.CsvShouldQuoteContext.ToString() -> string!

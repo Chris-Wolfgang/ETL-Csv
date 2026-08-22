@@ -7,6 +7,57 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-08-22
+
+### Added
+
+- **`CsvValidationResult` two-constructor API**: two new explicit constructors
+  that make illegal states (successful-with-failures, failed-without-failures,
+  null failures) unrepresentable at the call site:
+  - `new CsvValidationResult()` — successful result, no failures
+  - `new CsvValidationResult(IReadOnlyList<string> failures)` — failed result;
+    throws `ArgumentNullException` on null or `ArgumentException` on empty
+
+  Recommended over the legacy positional constructor. `Pass` and `Fail(params)`
+  are unchanged and still the shortest paths.
+
+### Deprecated
+
+- **`CsvValidationResult.CsvValidationResult(bool IsValid, IReadOnlyList<string> Failures)`**
+  (the record's positional primary constructor) is marked `[Obsolete]`. It
+  still works — and now validates its inputs, throwing on inconsistent state
+  (previously any combination was silently accepted, including the `null!`
+  bypass) — but the two named constructors above are the recommended path.
+  Will be removed in a future major version. `Deconstruct` is not obsoleted;
+  it's the standard record-synthesized shape and stays available.
+
+  **Migration**:
+  - `new CsvValidationResult(true, someList)` → `CsvValidationResult.Pass` or `new CsvValidationResult()`
+  - `new CsvValidationResult(false, failuresList)` → `new CsvValidationResult(failuresList)`
+  - `var (isValid, failures) = result` → `result.IsValid` and `result.Failures`
+  - `CsvValidationResult.Fail("reason")` — unchanged
+
+  No public API is removed in this release — consumers of the record's
+  value-equality surface (`Equals`, `==`, `GetHashCode`, `IEquatable<T>`,
+  `ToString`), `with` expressions, `Deconstruct`, and the legacy positional
+  constructor all continue to work; the two deprecations only surface
+  compile-time warnings pointing at the new constructors.
+
+### Changed
+
+- Retired the remaining ~26 Code Scanning alerts left after the 0.6.1 `#201`
+  sweep. Two alerts became real code fixes (deleted dead `count` in
+  `MemoryDeltaBenchmarks.cs`; moved internal `CsvClassMapFactory.cs` to root
+  so folder matches the flat `Wolfgang.Etl.Csv` namespace). Remaining
+  suppressions on the `Properties/*.cs` polyfills are now per-line
+  `// ReSharper disable` comments at each site with rationale, replacing the
+  earlier folder-scoped `.editorconfig`. Nothing hidden in an `.editorconfig`
+  block.
+- `CsvExtractor.TryValidate` drops the defensive `if (result.Failures is not null)`
+  wrapper — the ctor guards make the check unreachable. This retires the last
+  `ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract` suppression from
+  Group A.
+
 ## [0.6.1] - 2026-08-19
 
 ### Security
