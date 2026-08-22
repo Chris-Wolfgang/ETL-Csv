@@ -70,7 +70,7 @@ jobs:
         #   from `main`, while `refs/pull/N/head` is separately checked
         #   out only for the actual test steps. See the SECURITY NOTE at
         #   the top of pr.yaml. This is the same intent already documented
-        #   for zizmor in .zizmor.yml under `dangerous-triggers`. The
+        #   for zizmor in .github/zizmor.yml under `dangerous-triggers`. The
         #   accepted-as-intentional set stays in ONE place per tool.
         #
         # - PinnedDependenciesID for nugetCommand and pipCommand — the
