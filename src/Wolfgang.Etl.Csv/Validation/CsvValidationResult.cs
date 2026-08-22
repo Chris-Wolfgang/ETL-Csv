@@ -7,24 +7,38 @@ namespace Wolfgang.Etl.Csv;
 /// The outcome of running a <see cref="CsvValidator{T}"/> against a record: whether it passed and, if
 /// not, the human-readable reasons it failed. Illegal states (successful-with-failures, failed-without-
 /// failures, null failures) throw at construction — the two named constructors below are the recommended
-/// path; the record's positional constructor is retained for source-compat and marked
+/// path; the legacy positional constructor is retained for source-compat and marked
 /// <see cref="ObsoleteAttribute"/>.
 /// </summary>
-/// <param name="IsValid"><c>true</c> when the record satisfied the rule; otherwise <c>false</c>.</param>
-/// <param name="Failures">The failure reasons. Empty when <paramref name="IsValid"/> is <c>true</c>.</param>
 public sealed record CsvValidationResult
 {
-
+    /// <summary>
+    /// Legacy positional constructor retained from the 0.6.x record-primary-ctor shape. Prefer
+    /// <see cref="CsvValidationResult()"/> for success or <see cref="CsvValidationResult(IReadOnlyList{string})"/>
+    /// for failure. This constructor still validates its inputs and throws on inconsistent state.
+    /// </summary>
+    /// <param name="IsValid"><c>true</c> when the record satisfied the rule; otherwise <c>false</c>.</param>
+    /// <param name="Failures">The failure reasons. Empty when <paramref name="IsValid"/> is <c>true</c>; non-empty otherwise.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="Failures"/> is <c>null</c>.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="IsValid"/> is <c>true</c> and <paramref name="Failures"/> is non-empty,
+    /// or <paramref name="IsValid"/> is <c>false</c> and <paramref name="Failures"/> is empty.
+    /// </exception>
     [Obsolete("Use CsvValidationResult() for success or CsvValidationResult(IReadOnlyList<string>) for failure. This constructor will be removed in a future major version.")]
     public CsvValidationResult(bool IsValid, IReadOnlyList<string> Failures)
     {
-        ...
+        this.Failures = ValidateFailures(IsValid, Failures);
+        this.IsValid = IsValid;
     }
-    
+
+
+
     /// <summary>Constructs a successful validation result (no failures).</summary>
-#pragma warning disable CS0618 // internal chain to the record's own [Obsolete] primary ctor is intentional
-    public CsvValidationResult() : this(IsValid: true, Failures: Array.Empty<string>()) { }
-#pragma warning restore CS0618
+    public CsvValidationResult()
+    {
+        IsValid = true;
+        Failures = Array.Empty<string>();
+    }
 
 
 
@@ -32,10 +46,13 @@ public sealed record CsvValidationResult
     /// <param name="failures">The failure reasons. Must be non-null and contain at least one entry.</param>
     /// <exception cref="ArgumentNullException"><paramref name="failures"/> is <c>null</c>.</exception>
     /// <exception cref="ArgumentException"><paramref name="failures"/> is empty.</exception>
-#pragma warning disable CS0618 // internal chain to the record's own [Obsolete] primary ctor is intentional
     public CsvValidationResult(IReadOnlyList<string> failures)
-        : this(IsValid: false, Failures: failures ?? throw new ArgumentNullException(nameof(failures)))
     {
+        if (failures is null)
+        {
+            throw new ArgumentNullException(nameof(failures));
+        }
+
         if (failures.Count == 0)
         {
             throw new ArgumentException
@@ -44,17 +61,39 @@ public sealed record CsvValidationResult
                 nameof(failures)
             );
         }
+
+        IsValid = false;
+        Failures = failures;
     }
-#pragma warning restore CS0618
+
+
+
+    /// <summary><c>true</c> when the record satisfied the rule; otherwise <c>false</c>.</summary>
+    public bool IsValid { get; init; }
 
 
 
     /// <summary>
     /// The failure reasons. Empty (never <c>null</c>) when <see cref="IsValid"/> is <c>true</c>;
-    /// non-empty otherwise. The initializer enforces the invariant so the primary constructor throws
-    /// on inconsistent state whether callers use the new API or the deprecated positional one.
+    /// non-empty otherwise.
     /// </summary>
-    public IReadOnlyList<string> Failures { get; init; } = ValidateFailures(IsValid, Failures);
+    public IReadOnlyList<string> Failures { get; init; }
+
+
+
+    /// <summary>
+    /// Deconstructs the result into its <see cref="IsValid"/> and <see cref="Failures"/> components.
+    /// Kept explicit because the record no longer carries a positional primary constructor — without
+    /// this, the compiler wouldn't synthesize a <c>Deconstruct</c> at all and the shipped 0.6.x API
+    /// would break.
+    /// </summary>
+    /// <param name="IsValid">Receives <see cref="IsValid"/>.</param>
+    /// <param name="Failures">Receives <see cref="Failures"/>.</param>
+    public void Deconstruct(out bool IsValid, out IReadOnlyList<string> Failures)
+    {
+        IsValid = this.IsValid;
+        Failures = this.Failures;
+    }
 
 
 
