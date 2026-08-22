@@ -287,13 +287,11 @@ public class CsvValidatorTests
 
 
     [Fact]
-    public void CsvValidationResult_legacy_Deconstruct_still_works()
+    public void CsvValidationResult_Deconstruct_still_works()
     {
         var result = CsvValidationResult.Fail("x", "y");
 
-#pragma warning disable CS0618 // Deconstruct is [Obsolete] — deliberate call under test
         var (isValid, failures) = result;
-#pragma warning restore CS0618
 
         Assert.False(isValid);
         Assert.Equal(new[] { "x", "y" }, failures);

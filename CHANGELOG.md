@@ -21,13 +21,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Deprecated (0.7.0)
 
-- **`CsvValidationResult.CsvValidationResult(bool isValid, IReadOnlyList<string> failures)`**
-  and **`CsvValidationResult.Deconstruct(out bool, out IReadOnlyList<string>)`**
-  are marked `[Obsolete]`. Both still work — the positional constructor now
-  validates its inputs and throws on inconsistent state (previously any
-  combination was silently accepted, including the `null!` bypass) — but the
-  two named constructors above are the recommended path. Both will be removed
-  in a future major version.
+- **`CsvValidationResult.CsvValidationResult(bool IsValid, IReadOnlyList<string> Failures)`**
+  (the record's positional primary constructor) is marked `[Obsolete]`. It
+  still works — and now validates its inputs, throwing on inconsistent state
+  (previously any combination was silently accepted, including the `null!`
+  bypass) — but the two named constructors above are the recommended path.
+  Will be removed in a future major version. `Deconstruct` is not obsoleted;
+  it's the standard record-synthesized shape and stays available.
 
   **Migration**:
   - `new CsvValidationResult(true, someList)` → `CsvValidationResult.Pass` or `new CsvValidationResult()`
