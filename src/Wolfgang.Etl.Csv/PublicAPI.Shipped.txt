@@ -243,11 +243,13 @@ Wolfgang.Etl.Csv.ICsvLoaderBuilder<T>.TrimOptions(Wolfgang.Etl.Csv.CsvTrimOption
 override Wolfgang.Etl.Csv.CsvBadDataInfo.ToString() -> string!
 override Wolfgang.Etl.Csv.CsvColumnMap.ToString() -> string!
 override Wolfgang.Etl.Csv.CsvExtractorProgress.EqualityContract.get -> System.Type!
+override Wolfgang.Etl.Csv.CsvExtractorProgress.PrintMembers(System.Text.StringBuilder! builder) -> bool
 override Wolfgang.Etl.Csv.CsvExtractorProgress.ToString() -> string!
 override Wolfgang.Etl.Csv.CsvInvalidRecord<T>.Equals(object? obj) -> bool
 override Wolfgang.Etl.Csv.CsvInvalidRecord<T>.GetHashCode() -> int
 override Wolfgang.Etl.Csv.CsvInvalidRecord<T>.ToString() -> string!
 override Wolfgang.Etl.Csv.CsvLoaderProgress.EqualityContract.get -> System.Type!
+override Wolfgang.Etl.Csv.CsvLoaderProgress.PrintMembers(System.Text.StringBuilder! builder) -> bool
 override Wolfgang.Etl.Csv.CsvLoaderProgress.ToString() -> string!
 override Wolfgang.Etl.Csv.CsvReadingExceptionInfo.ToString() -> string!
 override Wolfgang.Etl.Csv.CsvShouldQuoteContext.ToString() -> string!
@@ -255,14 +257,18 @@ override Wolfgang.Etl.Csv.CsvValidationResult.Equals(object? obj) -> bool
 override Wolfgang.Etl.Csv.CsvValidationResult.GetHashCode() -> int
 override Wolfgang.Etl.Csv.CsvValidationResult.ToString() -> string!
 static Wolfgang.Etl.Csv.CsvBadDataInfo.operator !=(Wolfgang.Etl.Csv.CsvBadDataInfo? left, Wolfgang.Etl.Csv.CsvBadDataInfo? right) -> bool
+static Wolfgang.Etl.Csv.CsvBadDataInfo.operator ==(Wolfgang.Etl.Csv.CsvBadDataInfo? left, Wolfgang.Etl.Csv.CsvBadDataInfo? right) -> bool
 static Wolfgang.Etl.Csv.CsvCheckpointExtensions.ReadCheckpointAsync(string! path, System.Threading.CancellationToken token = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<int>
 static Wolfgang.Etl.Csv.CsvCheckpointExtensions.ResumeFromCheckpointAsync<TRecord>(this Wolfgang.Etl.Csv.CsvExtractor<TRecord>! extractor, string! path, System.Threading.CancellationToken token = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<int>
 static Wolfgang.Etl.Csv.CsvCheckpointExtensions.WriteCheckpointAsync(string! path, int count, System.Threading.CancellationToken token = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask
 static Wolfgang.Etl.Csv.CsvColumnMap.operator !=(Wolfgang.Etl.Csv.CsvColumnMap? left, Wolfgang.Etl.Csv.CsvColumnMap? right) -> bool
+static Wolfgang.Etl.Csv.CsvColumnMap.operator ==(Wolfgang.Etl.Csv.CsvColumnMap? left, Wolfgang.Etl.Csv.CsvColumnMap? right) -> bool
 static Wolfgang.Etl.Csv.CsvInvalidRecord<T>.operator !=(Wolfgang.Etl.Csv.CsvInvalidRecord<T>? left, Wolfgang.Etl.Csv.CsvInvalidRecord<T>? right) -> bool
 static Wolfgang.Etl.Csv.CsvInvalidRecord<T>.operator ==(Wolfgang.Etl.Csv.CsvInvalidRecord<T>? left, Wolfgang.Etl.Csv.CsvInvalidRecord<T>? right) -> bool
 static Wolfgang.Etl.Csv.CsvReadingExceptionInfo.operator !=(Wolfgang.Etl.Csv.CsvReadingExceptionInfo? left, Wolfgang.Etl.Csv.CsvReadingExceptionInfo? right) -> bool
+static Wolfgang.Etl.Csv.CsvReadingExceptionInfo.operator ==(Wolfgang.Etl.Csv.CsvReadingExceptionInfo? left, Wolfgang.Etl.Csv.CsvReadingExceptionInfo? right) -> bool
 static Wolfgang.Etl.Csv.CsvShouldQuoteContext.operator !=(Wolfgang.Etl.Csv.CsvShouldQuoteContext? left, Wolfgang.Etl.Csv.CsvShouldQuoteContext? right) -> bool
+static Wolfgang.Etl.Csv.CsvShouldQuoteContext.operator ==(Wolfgang.Etl.Csv.CsvShouldQuoteContext? left, Wolfgang.Etl.Csv.CsvShouldQuoteContext? right) -> bool
 static Wolfgang.Etl.Csv.CsvValidationResult.Fail(params string![]! reasons) -> Wolfgang.Etl.Csv.CsvValidationResult!
 static Wolfgang.Etl.Csv.CsvValidationResult.Pass.get -> Wolfgang.Etl.Csv.CsvValidationResult!
 static Wolfgang.Etl.Csv.CsvValidationResult.operator !=(Wolfgang.Etl.Csv.CsvValidationResult? left, Wolfgang.Etl.Csv.CsvValidationResult? right) -> bool
