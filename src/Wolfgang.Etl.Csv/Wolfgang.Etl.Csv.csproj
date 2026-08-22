@@ -5,7 +5,7 @@
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>disable</ImplicitUsings>
-    <Version>0.7.0</Version>
+    <Version>0.7.1</Version>
     <!-- Pin AssemblyVersion to MAJOR.MINOR.0.0 so .NET Framework consumers on
          the 0.7.x line don't need a binding redirect between PATCH bumps.
          Fleet convention for pre-1.0 libraries is "0.{Minor}.0.0" — only
