@@ -1,25 +1,25 @@
 Summary
-  Generated on: 8/21/2026 - 1:01:35 PM
-  Coverage date: 8/21/2026 - 1:01:31 PM
+  Generated on: 8/22/2026 - 6:26:41 PM
+  Coverage date: 8/22/2026 - 6:26:37 PM
   Parser: Cobertura
   Assemblies: 1
   Classes: 22
   Files: 22
-  Line coverage: 96.7%
-  Covered lines: 924
+  Line coverage: 96.9%
+  Covered lines: 970
   Uncovered lines: 31
-  Coverable lines: 955
-  Total lines: 3604
-  Branch coverage: 88.7% (433 of 488)
-  Covered branches: 433
-  Total branches: 488
-  Method coverage: 98.2% (221 of 225)
-  Full method coverage: 95.1% (214 of 225)
-  Covered methods: 221
-  Fully covered methods: 214
-  Total methods: 225
+  Coverable lines: 1001
+  Total lines: 3735
+  Branch coverage: 88.8% (446 of 502)
+  Covered branches: 446
+  Total branches: 502
+  Method coverage: 98.2% (227 of 231)
+  Full method coverage: 95.2% (220 of 231)
+  Covered methods: 227
+  Fully covered methods: 220
+  Total methods: 231
 
-Wolfgang.Etl.Csv                                96.7%
+Wolfgang.Etl.Csv                                96.9%
   Wolfgang.Etl.Csv.CsvBadDataInfo                100%
   Wolfgang.Etl.Csv.CsvCheckpointExtensions      92.5%
   Wolfgang.Etl.Csv.CsvClassMapFactory           99.1%

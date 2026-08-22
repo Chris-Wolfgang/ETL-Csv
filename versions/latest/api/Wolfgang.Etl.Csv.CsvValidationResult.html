@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class CsvValidationResult | Wolfgang.Etl.Csv Documentation ">
       
-      <meta name="description" content="The outcome of running a  against a record: whether it passed and, if not, the human-readable reasons it failed.">
+      <meta name="description" content="The outcome of running a  against a record: whether it passed and, if not, the human-readable reasons it failed. Illegal states (successful-with-failures, failed-without- failures, null failures) throw at construction — the two named constructors below are the recommended path; the legacy positional constructor is retained for source-compat and marked .">
       <link rel="icon" href="../favicon.svg">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/Chris-Wolfgang/ETL-Csv/new/v0.6.1/apiSpec/new?filename=Wolfgang_Etl_Csv_CsvValidationResult.md&amp;value=---%0Auid%3A%20Wolfgang.Etl.Csv.CsvValidationResult%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="docfx:docurl" content="https://github.com/Chris-Wolfgang/ETL-Csv/new/v0.7.0/apiSpec/new?filename=Wolfgang_Etl_Csv_CsvValidationResult.md&amp;value=---%0Auid%3A%20Wolfgang.Etl.Csv.CsvValidationResult%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -75,7 +75,7 @@
 
 
   <h1 id="Wolfgang_Etl_Csv_CsvValidationResult" data-uid="Wolfgang.Etl.Csv.CsvValidationResult" class="text-break">
-Class CsvValidationResult  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.6.1/src/Wolfgang.Etl.Csv/Validation/CsvValidationResult.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class CsvValidationResult  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.7.0/src/Wolfgang.Etl.Csv/Validation/CsvValidationResult.cs/#L13"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -84,7 +84,10 @@ Class CsvValidationResult  <a class="header-action link-secondary" title="View s
   </div>
 
   <div class="markdown summary"><p>The outcome of running a <a class="xref" href="Wolfgang.Etl.Csv.CsvValidator-1.html">CsvValidator&lt;T&gt;</a> against a record: whether it passed and, if
-not, the human-readable reasons it failed.</p>
+not, the human-readable reasons it failed. Illegal states (successful-with-failures, failed-without-
+failures, null failures) throw at construction — the two named constructors below are the recommended
+path; the legacy positional constructor is retained for source-compat and marked
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.obsoleteattribute">ObsoleteAttribute</a>.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -145,18 +148,47 @@ not, the human-readable reasons it failed.</p>
 
   <a id="Wolfgang_Etl_Csv_CsvValidationResult__ctor_" data-uid="Wolfgang.Etl.Csv.CsvValidationResult.#ctor*"></a>
 
-  <h3 id="Wolfgang_Etl_Csv_CsvValidationResult__ctor_System_Boolean_System_Collections_Generic_IReadOnlyList_System_String__" data-uid="Wolfgang.Etl.Csv.CsvValidationResult.#ctor(System.Boolean,System.Collections.Generic.IReadOnlyList{System.String})">
-  CsvValidationResult(bool, IReadOnlyList&lt;string&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.6.1/src/Wolfgang.Etl.Csv/Validation/CsvValidationResult.cs/#L12"><i class="bi bi-code-slash"></i></a>
+  <h3 id="Wolfgang_Etl_Csv_CsvValidationResult__ctor" data-uid="Wolfgang.Etl.Csv.CsvValidationResult.#ctor">
+  CsvValidationResult()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.7.0/src/Wolfgang.Etl.Csv/Validation/CsvValidationResult.cs/#L37"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>The outcome of running a <a class="xref" href="Wolfgang.Etl.Csv.CsvValidator-1.html">CsvValidator&lt;T&gt;</a> against a record: whether it passed and, if
-not, the human-readable reasons it failed.</p>
+  <div class="markdown level1 summary"><p>Constructs a successful validation result (no failures).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public CsvValidationResult(bool IsValid, IReadOnlyList&lt;string&gt; Failures)</code></pre>
+    <pre><code class="lang-csharp hljs">public CsvValidationResult()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_CsvValidationResult__ctor_" data-uid="Wolfgang.Etl.Csv.CsvValidationResult.#ctor*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvValidationResult__ctor_System_Boolean_System_Collections_Generic_IReadOnlyList_System_String__" data-uid="Wolfgang.Etl.Csv.CsvValidationResult.#ctor(System.Boolean,System.Collections.Generic.IReadOnlyList{System.String})">
+  CsvValidationResult(bool, IReadOnlyList&lt;string&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.7.0/src/Wolfgang.Etl.Csv/Validation/CsvValidationResult.cs/#L27"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Legacy positional constructor retained from the 0.6.x record-primary-ctor shape. Prefer
+<a class="xref" href="Wolfgang.Etl.Csv.CsvValidationResult.html#Wolfgang_Etl_Csv_CsvValidationResult__ctor">CsvValidationResult()</a> for success or <a class="xref" href="Wolfgang.Etl.Csv.CsvValidationResult.html#Wolfgang_Etl_Csv_CsvValidationResult__ctor_System_Collections_Generic_IReadOnlyList_System_String__">CsvValidationResult(IReadOnlyList&lt;string&gt;)</a>
+for failure. This constructor still validates its inputs and throws on inconsistent state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Obsolete(&quot;Use CsvValidationResult() for success or CsvValidationResult(IReadOnlyList&lt;string&gt;) for failure. This constructor will be removed in a future major version.&quot;)]
+public CsvValidationResult(bool IsValid, IReadOnlyList&lt;string&gt; Failures)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -165,7 +197,7 @@ not, the human-readable reasons it failed.</p>
     <dd><p><code>true</code> when the record satisfied the rule; otherwise <code>false</code>.</p>
 </dd>
     <dt><code>Failures</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
-    <dd><p>The failure reasons. Empty when <code class="paramref">IsValid</code> is <code>true</code>.</p>
+    <dd><p>The failure reasons. Empty when <code class="paramref">IsValid</code> is <code>true</code>; non-empty otherwise.</p>
 </dd>
   </dl>
 
@@ -177,6 +209,58 @@ not, the human-readable reasons it failed.</p>
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">Failures</code> is <code>null</code>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">IsValid</code> is <code>true</code> and <code class="paramref">Failures</code> is non-empty,
+or <code class="paramref">IsValid</code> is <code>false</code> and <code class="paramref">Failures</code> is empty.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Wolfgang_Etl_Csv_CsvValidationResult__ctor_" data-uid="Wolfgang.Etl.Csv.CsvValidationResult.#ctor*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvValidationResult__ctor_System_Collections_Generic_IReadOnlyList_System_String__" data-uid="Wolfgang.Etl.Csv.CsvValidationResult.#ctor(System.Collections.Generic.IReadOnlyList{System.String})">
+  CsvValidationResult(IReadOnlyList&lt;string&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.7.0/src/Wolfgang.Etl.Csv/Validation/CsvValidationResult.cs/#L49"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Constructs a failed validation result carrying one or more failure reasons.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CsvValidationResult(IReadOnlyList&lt;string&gt; failures)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>failures</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>The failure reasons. Must be non-null and contain at least one entry.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">failures</code> is <code>null</code>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">failures</code> is empty.</p>
+</dd>
+  </dl>
 
 
 
@@ -188,10 +272,11 @@ not, the human-readable reasons it failed.</p>
 
   <h3 id="Wolfgang_Etl_Csv_CsvValidationResult_Failures" data-uid="Wolfgang.Etl.Csv.CsvValidationResult.Failures">
   Failures
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.6.1/src/Wolfgang.Etl.Csv/Validation/CsvValidationResult.cs/#L12"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.7.0/src/Wolfgang.Etl.Csv/Validation/CsvValidationResult.cs/#L80"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>The failure reasons. Empty when <code class="paramref">IsValid</code> is <code>true</code>.</p>
+  <div class="markdown level1 summary"><p>The failure reasons. Empty (never <code>null</code>) when <a class="xref" href="Wolfgang.Etl.Csv.CsvValidationResult.html#Wolfgang_Etl_Csv_CsvValidationResult_IsValid">IsValid</a> is <code>true</code>;
+non-empty otherwise.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -220,7 +305,7 @@ not, the human-readable reasons it failed.</p>
 
   <h3 id="Wolfgang_Etl_Csv_CsvValidationResult_IsValid" data-uid="Wolfgang.Etl.Csv.CsvValidationResult.IsValid">
   IsValid
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.6.1/src/Wolfgang.Etl.Csv/Validation/CsvValidationResult.cs/#L12"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.7.0/src/Wolfgang.Etl.Csv/Validation/CsvValidationResult.cs/#L72"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p><code>true</code> when the record satisfied the rule; otherwise <code>false</code>.</p>
@@ -252,7 +337,7 @@ not, the human-readable reasons it failed.</p>
 
   <h3 id="Wolfgang_Etl_Csv_CsvValidationResult_Pass" data-uid="Wolfgang.Etl.Csv.CsvValidationResult.Pass">
   Pass
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.6.1/src/Wolfgang.Etl.Csv/Validation/CsvValidationResult.cs/#L15"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.7.0/src/Wolfgang.Etl.Csv/Validation/CsvValidationResult.cs/#L101"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>A shared, cached &quot;passed&quot; result with no failures.</p>
@@ -284,11 +369,50 @@ not, the human-readable reasons it failed.</p>
 </h2>
 
 
+  <a id="Wolfgang_Etl_Csv_CsvValidationResult_Deconstruct_" data-uid="Wolfgang.Etl.Csv.CsvValidationResult.Deconstruct*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvValidationResult_Deconstruct_System_Boolean__System_Collections_Generic_IReadOnlyList_System_String___" data-uid="Wolfgang.Etl.Csv.CsvValidationResult.Deconstruct(System.Boolean@,System.Collections.Generic.IReadOnlyList{System.String}@)">
+  Deconstruct(out bool, out IReadOnlyList&lt;string&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.7.0/src/Wolfgang.Etl.Csv/Validation/CsvValidationResult.cs/#L92"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deconstructs the result into its <a class="xref" href="Wolfgang.Etl.Csv.CsvValidationResult.html#Wolfgang_Etl_Csv_CsvValidationResult_IsValid">IsValid</a> and <a class="xref" href="Wolfgang.Etl.Csv.CsvValidationResult.html#Wolfgang_Etl_Csv_CsvValidationResult_Failures">Failures</a> components.
+Kept explicit because the record no longer carries a positional primary constructor — without
+this, the compiler wouldn't synthesize a <code>Deconstruct</code> at all and the shipped 0.6.x API
+would break.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Deconstruct(out bool IsValid, out IReadOnlyList&lt;string&gt; Failures)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>IsValid</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>Receives <a class="xref" href="Wolfgang.Etl.Csv.CsvValidationResult.html#Wolfgang_Etl_Csv_CsvValidationResult_IsValid">IsValid</a>.</p>
+</dd>
+    <dt><code>Failures</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>Receives <a class="xref" href="Wolfgang.Etl.Csv.CsvValidationResult.html#Wolfgang_Etl_Csv_CsvValidationResult_Failures">Failures</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
   <a id="Wolfgang_Etl_Csv_CsvValidationResult_Fail_" data-uid="Wolfgang.Etl.Csv.CsvValidationResult.Fail*"></a>
 
   <h3 id="Wolfgang_Etl_Csv_CsvValidationResult_Fail_System_String___" data-uid="Wolfgang.Etl.Csv.CsvValidationResult.Fail(System.String[])">
   Fail(params string[])
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.6.1/src/Wolfgang.Etl.Csv/Validation/CsvValidationResult.cs/#L21"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.7.0/src/Wolfgang.Etl.Csv/Validation/CsvValidationResult.cs/#L109"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Creates a failed result carrying one or more <code class="paramref">reasons</code>.</p>
@@ -302,7 +426,7 @@ not, the human-readable reasons it failed.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>reasons</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>[]</dt>
-    <dd><p>The reasons the record failed. A null array is treated as empty.</p>
+    <dd><p>The reasons the record failed. Must be non-null and contain at least one entry.</p>
 </dd>
   </dl>
 
@@ -319,6 +443,15 @@ not, the human-readable reasons it failed.</p>
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">reasons</code> is <code>null</code>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">reasons</code> is empty.</p>
+</dd>
+  </dl>
 
 
 
@@ -326,7 +459,7 @@ not, the human-readable reasons it failed.</p>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.6.1/src/Wolfgang.Etl.Csv/Validation/CsvValidationResult.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.7.0/src/Wolfgang.Etl.Csv/Validation/CsvValidationResult.cs/#L13" class="edit-link">Edit this page</a>
         </div>
 
 

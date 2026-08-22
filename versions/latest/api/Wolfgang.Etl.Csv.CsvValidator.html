@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/Chris-Wolfgang/ETL-Csv/new/v0.6.1/apiSpec/new?filename=Wolfgang_Etl_Csv_CsvValidator.md&amp;value=---%0Auid%3A%20Wolfgang.Etl.Csv.CsvValidator%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="docfx:docurl" content="https://github.com/Chris-Wolfgang/ETL-Csv/new/v0.7.0/apiSpec/new?filename=Wolfgang_Etl_Csv_CsvValidator.md&amp;value=---%0Auid%3A%20Wolfgang.Etl.Csv.CsvValidator%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -75,7 +75,7 @@
 
 
   <h1 id="Wolfgang_Etl_Csv_CsvValidator" data-uid="Wolfgang.Etl.Csv.CsvValidator" class="text-break">
-Class CsvValidator  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.6.1/src/Wolfgang.Etl.Csv/Validation/CsvValidator.cs/#L22"><i class="bi bi-code-slash"></i></a>
+Class CsvValidator  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.7.0/src/Wolfgang.Etl.Csv/Validation/CsvValidator.cs/#L22"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -144,7 +144,7 @@ that reads the member under test, so the rules stay strongly typed without refle
 
   <h3 id="Wolfgang_Etl_Csv_CsvValidator_Custom__1_System_Func___0_System_Boolean__System_String_" data-uid="Wolfgang.Etl.Csv.CsvValidator.Custom``1(System.Func{``0,System.Boolean},System.String)">
   Custom&lt;T&gt;(Func&lt;T, bool&gt;, string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.6.1/src/Wolfgang.Etl.Csv/Validation/CsvValidator.cs/#L168"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.7.0/src/Wolfgang.Etl.Csv/Validation/CsvValidator.cs/#L168"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Fails when <code class="paramref">predicate</code> returns <code>false</code>, reporting <code class="paramref">failureMessage</code>.</p>
@@ -197,7 +197,7 @@ that reads the member under test, so the rules stay strongly typed without refle
 
   <h3 id="Wolfgang_Etl_Csv_CsvValidator_GreaterThan__1_System_Func___0_System_IComparable__System_IComparable_System_String_" data-uid="Wolfgang.Etl.Csv.CsvValidator.GreaterThan``1(System.Func{``0,System.IComparable},System.IComparable,System.String)">
   GreaterThan&lt;T&gt;(Func&lt;T, IComparable&gt;, IComparable, string?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.6.1/src/Wolfgang.Etl.Csv/Validation/CsvValidator.cs/#L50"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.7.0/src/Wolfgang.Etl.Csv/Validation/CsvValidator.cs/#L50"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Fails when the selected value is not strictly greater than <code class="paramref">threshold</code>.</p>
@@ -253,7 +253,7 @@ that reads the member under test, so the rules stay strongly typed without refle
 
   <h3 id="Wolfgang_Etl_Csv_CsvValidator_InRange__1_System_Func___0_System_IComparable__System_IComparable_System_IComparable_System_String_" data-uid="Wolfgang.Etl.Csv.CsvValidator.InRange``1(System.Func{``0,System.IComparable},System.IComparable,System.IComparable,System.String)">
   InRange&lt;T&gt;(Func&lt;T, IComparable&gt;, IComparable, IComparable, string?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.6.1/src/Wolfgang.Etl.Csv/Validation/CsvValidator.cs/#L80"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.7.0/src/Wolfgang.Etl.Csv/Validation/CsvValidator.cs/#L80"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Fails when the selected value is outside the inclusive range [<code class="paramref">min</code>, <code class="paramref">max</code>].</p>
@@ -312,7 +312,7 @@ that reads the member under test, so the rules stay strongly typed without refle
 
   <h3 id="Wolfgang_Etl_Csv_CsvValidator_Matches__1_System_Func___0_System_String__System_Text_RegularExpressions_Regex_System_String_" data-uid="Wolfgang.Etl.Csv.CsvValidator.Matches``1(System.Func{``0,System.String},System.Text.RegularExpressions.Regex,System.String)">
   Matches&lt;T&gt;(Func&lt;T, string?&gt;, Regex, string?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.6.1/src/Wolfgang.Etl.Csv/Validation/CsvValidator.cs/#L143"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.7.0/src/Wolfgang.Etl.Csv/Validation/CsvValidator.cs/#L143"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Fails when the selected string does not match <code class="paramref">pattern</code>. A null string is tested as empty.</p>
@@ -368,7 +368,7 @@ that reads the member under test, so the rules stay strongly typed without refle
 
   <h3 id="Wolfgang_Etl_Csv_CsvValidator_MaxLength__1_System_Func___0_System_String__System_Int32_System_String_" data-uid="Wolfgang.Etl.Csv.CsvValidator.MaxLength``1(System.Func{``0,System.String},System.Int32,System.String)">
   MaxLength&lt;T&gt;(Func&lt;T, string?&gt;, int, string?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.6.1/src/Wolfgang.Etl.Csv/Validation/CsvValidator.cs/#L117"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.7.0/src/Wolfgang.Etl.Csv/Validation/CsvValidator.cs/#L117"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Fails when the selected string is longer than <code class="paramref">maxLength</code>. A null string passes.</p>
@@ -427,7 +427,7 @@ that reads the member under test, so the rules stay strongly typed without refle
 
   <h3 id="Wolfgang_Etl_Csv_CsvValidator_NotNullOrEmpty__1_System_Func___0_System_String__System_String_" data-uid="Wolfgang.Etl.Csv.CsvValidator.NotNullOrEmpty``1(System.Func{``0,System.String},System.String)">
   NotNullOrEmpty&lt;T&gt;(Func&lt;T, string?&gt;, string?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.6.1/src/Wolfgang.Etl.Csv/Validation/CsvValidator.cs/#L29"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.7.0/src/Wolfgang.Etl.Csv/Validation/CsvValidator.cs/#L29"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Fails when the selected string is null or empty.</p>
@@ -480,7 +480,7 @@ that reads the member under test, so the rules stay strongly typed without refle
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.6.1/src/Wolfgang.Etl.Csv/Validation/CsvValidator.cs/#L22" class="edit-link">Edit this page</a>
+          <a href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.7.0/src/Wolfgang.Etl.Csv/Validation/CsvValidator.cs/#L22" class="edit-link">Edit this page</a>
         </div>
 
 

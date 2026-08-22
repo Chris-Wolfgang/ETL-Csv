@@ -177,7 +177,10 @@ failure reasons.</p>
     <dl class="jumplist">
       <dt><a class="xref" href="Wolfgang.Etl.Csv.CsvValidationResult.html">CsvValidationResult</a></dt>
       <dd><p>The outcome of running a <a class="xref" href="Wolfgang.Etl.Csv.CsvValidator-1.html">CsvValidator&lt;T&gt;</a> against a record: whether it passed and, if
-not, the human-readable reasons it failed.</p>
+not, the human-readable reasons it failed. Illegal states (successful-with-failures, failed-without-
+failures, null failures) throw at construction — the two named constructors below are the recommended
+path; the legacy positional constructor is retained for source-compat and marked
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.obsoleteattribute">ObsoleteAttribute</a>.</p>
 </dd>
     </dl>
     <dl class="jumplist">

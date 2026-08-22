@@ -274,7 +274,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Wolfgang.Etl.Csv.CsvValidationResult",
-      "Summary": "<p sourcefile=\"api/Wolfgang.Etl.Csv.CsvValidationResult.yml\" sourcestartlinenumber=\"1\">The outcome of running a <xref href=\"Wolfgang.Etl.Csv.CsvValidator%601\" data-throw-if-not-resolved=\"false\"></xref> against a record: whether it passed and, if\nnot, the human-readable reasons it failed.</p>\n"
+      "Summary": "<p sourcefile=\"api/Wolfgang.Etl.Csv.CsvValidationResult.yml\" sourcestartlinenumber=\"1\">The outcome of running a <xref href=\"Wolfgang.Etl.Csv.CsvValidator%601\" data-throw-if-not-resolved=\"false\"></xref> against a record: whether it passed and, if\nnot, the human-readable reasons it failed. Illegal states (successful-with-failures, failed-without-\nfailures, null failures) throw at construction — the two named constructors below are the recommended\npath; the legacy positional constructor is retained for source-compat and marked\n<xref href=\"System.ObsoleteAttribute\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
