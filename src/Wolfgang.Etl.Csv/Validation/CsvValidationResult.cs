@@ -12,9 +12,15 @@ namespace Wolfgang.Etl.Csv;
 /// </summary>
 /// <param name="IsValid"><c>true</c> when the record satisfied the rule; otherwise <c>false</c>.</param>
 /// <param name="Failures">The failure reasons. Empty when <paramref name="IsValid"/> is <c>true</c>.</param>
-[method: Obsolete("Use CsvValidationResult() for success or CsvValidationResult(IReadOnlyList<string>) for failure. This constructor will be removed in a future major version.")]
-public sealed record CsvValidationResult(bool IsValid, IReadOnlyList<string> Failures)
+public sealed record CsvValidationResult
 {
+
+    [Obsolete("Use CsvValidationResult() for success or CsvValidationResult(IReadOnlyList<string>) for failure. This constructor will be removed in a future major version.")]
+    public CsvValidationResult(bool IsValid, IReadOnlyList<string> Failures)
+    {
+        ...
+    }
+    
     /// <summary>Constructs a successful validation result (no failures).</summary>
 #pragma warning disable CS0618 // internal chain to the record's own [Obsolete] primary ctor is intentional
     public CsvValidationResult() : this(IsValid: true, Failures: Array.Empty<string>()) { }
