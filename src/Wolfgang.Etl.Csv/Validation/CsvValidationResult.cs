@@ -27,7 +27,30 @@ public sealed record CsvValidationResult
     [Obsolete("Use CsvValidationResult() for success or CsvValidationResult(IReadOnlyList<string>) for failure. This constructor will be removed in a future major version.")]
     public CsvValidationResult(bool IsValid, IReadOnlyList<string> Failures)
     {
-        this.Failures = ValidateFailures(IsValid, Failures);
+        if (Failures is null)
+        {
+            throw new ArgumentNullException(nameof(Failures));
+        }
+
+        if (IsValid && Failures.Count > 0)
+        {
+            throw new ArgumentException
+            (
+                "A successful CsvValidationResult cannot carry failure reasons.",
+                nameof(Failures)
+            );
+        }
+
+        if (!IsValid && Failures.Count == 0)
+        {
+            throw new ArgumentException
+            (
+                "A failed CsvValidationResult must contain at least one failure reason.",
+                nameof(Failures)
+            );
+        }
+
+        this.Failures = Failures;
         this.IsValid = IsValid;
     }
 
@@ -127,31 +150,4 @@ public sealed record CsvValidationResult
 
 
 
-    private static IReadOnlyList<string> ValidateFailures(bool isValid, IReadOnlyList<string> failures)
-    {
-        if (failures is null)
-        {
-            throw new ArgumentNullException(nameof(failures));
-        }
-
-        if (isValid && failures.Count > 0)
-        {
-            throw new ArgumentException
-            (
-                "A successful CsvValidationResult cannot carry failure reasons.",
-                nameof(failures)
-            );
-        }
-
-        if (!isValid && failures.Count == 0)
-        {
-            throw new ArgumentException
-            (
-                "A failed CsvValidationResult must contain at least one failure reason.",
-                nameof(failures)
-            );
-        }
-
-        return failures;
-    }
 }

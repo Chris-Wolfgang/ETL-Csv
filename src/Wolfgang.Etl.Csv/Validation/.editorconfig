@@ -55,13 +55,6 @@ dotnet_diagnostic.S1133.severity = none
 # exact shipped parameter names. camelCase renames would break
 # consumers using named-argument deconstruction.
 resharper_parameter_hides_member_highlighting = none
-# ValidateFailures(bool isValid, IReadOnlyList<string> failures) uses
-# `isValid` only in its precondition branches — that's the helper's job:
-# guard the two illegal (isValid, failures) combinations at construction
-# time. Restructuring to pass the boolean via a different mechanism
-# (two helpers, an enum) would duplicate logic without changing behavior.
-resharper_parameter_only_used_for_precondition_check_local_highlighting = none
-
 # CsvValidationException intentionally exposes only the
 # (int lineNumber, IReadOnlyList<string> failures) constructor because
 # both pieces of state are required to build a meaningful message.
