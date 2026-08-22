@@ -41,6 +41,26 @@ dotnet_diagnostic.S8969.severity = none
 
 [CsvValidationResult.cs]
 resharper_null_coalescing_condition_is_always_not_null_according_to_api_contract_highlighting = none
+# The legacy positional constructor is intentionally kept and marked
+# [Obsolete] to preserve the 0.6.x shipped API. Removal is a breaking
+# change reserved for a future MAJOR bump (see the [Obsolete] message on
+# the ctor for the migration path). S1133 flags every [Obsolete] as
+# "remove someday" — accurate but redundant with the ctor's own message.
+dotnet_diagnostic.S1133.severity = none
+# The Deconstruct method's out parameters are named `IsValid` and
+# `Failures` (PascalCase) to match the shipped Deconstruct signature that
+# the record-positional primary ctor would have synthesized. The
+# positional primary ctor is gone (kept only as an [Obsolete] manual
+# ctor above), so we declare Deconstruct explicitly to preserve the
+# exact shipped parameter names. camelCase renames would break
+# consumers using named-argument deconstruction.
+resharper_parameter_hides_member_highlighting = none
+# ValidateFailures(bool isValid, IReadOnlyList<string> failures) uses
+# `isValid` only in its precondition branches — that's the helper's job:
+# guard the two illegal (isValid, failures) combinations at construction
+# time. Restructuring to pass the boolean via a different mechanism
+# (two helpers, an enum) would duplicate logic without changing behavior.
+resharper_parameter_only_used_for_precondition_check_local_highlighting = none
 
 # CsvValidationException intentionally exposes only the
 # (int lineNumber, IReadOnlyList<string> failures) constructor because
