@@ -63,6 +63,7 @@ jobs:
         # reference_scorecard_dismissal_not_durable.
         #
         # Accepted findings:
+        #
         # - DangerousWorkflowID on .github/workflows/pr.yaml — pr.yaml
         #   deliberately uses `pull_request_target` with a trusted-config
         #   re-fetch step so the workflow YAML that runs always comes
@@ -71,12 +72,46 @@ jobs:
         #   the top of pr.yaml. This is the same intent already documented
         #   for zizmor in .zizmor.yml under `dangerous-triggers`. The
         #   accepted-as-intentional set stays in ONE place per tool.
+        #
+        # - PinnedDependenciesID for nugetCommand and pipCommand — the
+        #   .NET tooling (`dotnet restore`, `dotnet tool install`) has no
+        #   first-class hash-pin verification analogous to `go.sum` /
+        #   requirements.txt --require-hashes; NuGet package integrity is
+        #   verified via signed .nupkg + PackageVersion pinning in the
+        #   csproj/globaljson (already in place). pipCommand fires on the
+        #   single-package `pip install --user 'zizmor==1.5.2'` in
+        #   workflow-security.yaml — an exact-version pin against a
+        #   PyPI-published tool; no requirements.txt exists to add
+        #   --require-hashes to. Only the nuget/pip subclasses are
+        #   filtered; a future PinnedDependenciesID against something
+        #   else (e.g. an unpinned action) will still surface.
+        #
+        # - BranchProtectionID / CIIBestPracticesID / CodeReviewID —
+        #   solo-maintainer repo. No second reviewer to require, no
+        #   CODEOWNERS to enforce (nobody else has commit access), and
+        #   the OpenSSF Best Practices badge program requires ongoing
+        #   process work that doesn't scale to a personal .NET library
+        #   fleet. All three are visibility findings, not defects.
+        #
+        # - FuzzingID — Scorecard has no .NET fuzzer detector (see
+        #   reference_scorecard_fuzzing_unfixable_for_dotnet). The repo's
+        #   CsvFuzzTests suite exists but is invisible to the check.
         run: |
           set -euo pipefail
           jq '.runs[].results |= map(select(
             (
-              (.ruleId == "DangerousWorkflowID")
-              and (.locations[0].physicalLocation.artifactLocation.uri == ".github/workflows/pr.yaml")
+              (
+                (.ruleId == "DangerousWorkflowID")
+                and (.locations[0].physicalLocation.artifactLocation.uri == ".github/workflows/pr.yaml")
+              )
+              or (
+                (.ruleId == "PinnedDependenciesID")
+                and (.message.text | test("(nuget|pip)Command not pinned by hash"))
+              )
+              or (.ruleId == "BranchProtectionID")
+              or (.ruleId == "CIIBestPracticesID")
+              or (.ruleId == "CodeReviewID")
+              or (.ruleId == "FuzzingID")
             ) | not
           ))' results.sarif > results.filtered.sarif
           mv results.filtered.sarif results.sarif
