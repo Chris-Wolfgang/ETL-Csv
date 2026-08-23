@@ -1,0 +1,498 @@
+{
+  "source_base_path": "D:/a/ETL-Csv/ETL-Csv/docfx_project",
+  "xrefmap": "xrefmap.yml",
+  "files": [
+    {
+      "type": "Resource",
+      "output": {
+        "resource": {
+          "relative_path": "index.json"
+        }
+      }
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wolfgang.Etl.Csv.CsvBadDataInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wolfgang.Etl.Csv.CsvBadDataInfo.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Wolfgang.Etl.Csv.CsvBadDataInfo",
+      "Summary": "<p sourcefile=\"api/Wolfgang.Etl.Csv.CsvBadDataInfo.yml\" sourcestartlinenumber=\"1\">Describes a bad-data event encountered while reading a CSV stream.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wolfgang.Etl.Csv.CsvCheckpointExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wolfgang.Etl.Csv.CsvCheckpointExtensions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Wolfgang.Etl.Csv.CsvCheckpointExtensions",
+      "Summary": "<p sourcefile=\"api/Wolfgang.Etl.Csv.CsvCheckpointExtensions.yml\" sourcestartlinenumber=\"1\">Syntactic sugar for the resumable-extraction pattern: atomically persist and read back a\nrecord counter, and resume a <xref href=\"Wolfgang.Etl.Csv.CsvExtractor%601\" data-throw-if-not-resolved=\"false\"></xref> from it via\n<xref href=\"Wolfgang.Etl.Csv.CsvExtractor%601.SkipRecordCount\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wolfgang.Etl.Csv.CsvColumnAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wolfgang.Etl.Csv.CsvColumnAttribute.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Wolfgang.Etl.Csv.CsvColumnAttribute",
+      "Summary": "<p sourcefile=\"api/Wolfgang.Etl.Csv.CsvColumnAttribute.yml\" sourcestartlinenumber=\"1\">Configures how a property is mapped to a CSV column when read or written.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wolfgang.Etl.Csv.CsvColumnMap.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wolfgang.Etl.Csv.CsvColumnMap.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Wolfgang.Etl.Csv.CsvColumnMap",
+      "Summary": "<p sourcefile=\"api/Wolfgang.Etl.Csv.CsvColumnMap.yml\" sourcestartlinenumber=\"1\">Runtime descriptor for a single property-to-column mapping. The parser-agnostic\nequivalent of <xref href=\"Wolfgang.Etl.Csv.CsvColumnAttribute\" data-throw-if-not-resolved=\"false\"></xref> for cases where the layout isn't\nknown until runtime (for example, layout selected from configuration or a database).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wolfgang.Etl.Csv.CsvDiscriminator-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wolfgang.Etl.Csv.CsvDiscriminator-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Wolfgang.Etl.Csv.CsvDiscriminator<TBase>",
+      "Summary": "<p sourcefile=\"api/Wolfgang.Etl.Csv.CsvDiscriminator-1.yml\" sourcestartlinenumber=\"1\">Describes how a single CSV file mixes multiple record shapes, keyed by a discriminator column, so a\n<xref href=\"Wolfgang.Etl.Csv.CsvExtractor%601\" data-throw-if-not-resolved=\"false\"></xref> binds each row to the right concrete type and a\n<xref href=\"Wolfgang.Etl.Csv.CsvLoader%601\" data-throw-if-not-resolved=\"false\"></xref> writes each record's type and columns. Build one with\n<xref href=\"Wolfgang.Etl.Csv.CsvDiscriminatorBuilder%601\" data-throw-if-not-resolved=\"false\"></xref> — that path is trim/AOT-safe. Constructing it directly\nfrom a <xref href=\"Wolfgang.Etl.Csv.CsvDiscriminator%601.Mapping\" data-throw-if-not-resolved=\"false\"></xref> dictionary is supported but reflects over the mapped types at run time.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wolfgang.Etl.Csv.CsvDiscriminatorAction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wolfgang.Etl.Csv.CsvDiscriminatorAction.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Wolfgang.Etl.Csv.CsvDiscriminatorAction",
+      "Summary": "<p sourcefile=\"api/Wolfgang.Etl.Csv.CsvDiscriminatorAction.yml\" sourcestartlinenumber=\"1\">How a polymorphic <xref href=\"Wolfgang.Etl.Csv.CsvExtractor%601\" data-throw-if-not-resolved=\"false\"></xref> (read) or <xref href=\"Wolfgang.Etl.Csv.CsvLoader%601\" data-throw-if-not-resolved=\"false\"></xref>\n(write) handles a row whose discriminator value — or, on write, whose runtime type — is not in\nthe <xref href=\"Wolfgang.Etl.Csv.CsvDiscriminator%601\" data-throw-if-not-resolved=\"false\"></xref> mapping.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wolfgang.Etl.Csv.CsvDiscriminatorBuilder-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wolfgang.Etl.Csv.CsvDiscriminatorBuilder-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Wolfgang.Etl.Csv.CsvDiscriminatorBuilder<TBase>",
+      "Summary": "<p sourcefile=\"api/Wolfgang.Etl.Csv.CsvDiscriminatorBuilder-1.yml\" sourcestartlinenumber=\"1\">Fluent, trim/AOT-safe builder for a <xref href=\"Wolfgang.Etl.Csv.CsvDiscriminator%601\" data-throw-if-not-resolved=\"false\"></xref>. Each\n<xref href=\"Wolfgang.Etl.Csv.CsvDiscriminatorBuilder%601.Map%60%601(System.String%2cSystem.Collections.Generic.IReadOnlyList%7bWolfgang.Etl.Csv.CsvColumnMap%7d)\" data-throw-if-not-resolved=\"false\"></xref> call names a concrete type generically,\nso the mapping and its per-type <xref href=\"Wolfgang.Etl.Csv.CsvColumnMap\" data-throw-if-not-resolved=\"false\"></xref>s are resolved with the property metadata\ntrimming/AOT needs preserved.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wolfgang.Etl.Csv.CsvExtractor-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wolfgang.Etl.Csv.CsvExtractor-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Wolfgang.Etl.Csv.CsvExtractor<TRecord>",
+      "Summary": "<p sourcefile=\"api/Wolfgang.Etl.Csv.CsvExtractor-1.yml\" sourcestartlinenumber=\"1\">Extracts records of type <code class=\"typeparamref\">TRecord</code> from a CSV stream\nusing <a href=\"https://joshclose.github.io/CsvHelper/\">CsvHelper</a>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wolfgang.Etl.Csv.CsvExtractorProgress.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wolfgang.Etl.Csv.CsvExtractorProgress.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Wolfgang.Etl.Csv.CsvExtractorProgress",
+      "Summary": "<p sourcefile=\"api/Wolfgang.Etl.Csv.CsvExtractorProgress.yml\" sourcestartlinenumber=\"1\">Progress report for CSV extraction operations.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wolfgang.Etl.Csv.CsvIgnoreAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wolfgang.Etl.Csv.CsvIgnoreAttribute.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Wolfgang.Etl.Csv.CsvIgnoreAttribute",
+      "Summary": "<p sourcefile=\"api/Wolfgang.Etl.Csv.CsvIgnoreAttribute.yml\" sourcestartlinenumber=\"1\">Marks a property to be excluded from CSV mapping.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wolfgang.Etl.Csv.CsvInvalidRecord-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wolfgang.Etl.Csv.CsvInvalidRecord-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Wolfgang.Etl.Csv.CsvInvalidRecord<T>",
+      "Summary": "<p sourcefile=\"api/Wolfgang.Etl.Csv.CsvInvalidRecord-1.yml\" sourcestartlinenumber=\"1\">A record that failed validation, together with where it came from and why. Passed to the\n<code>InvalidRecordHandler</code> on the extractor / loader.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wolfgang.Etl.Csv.CsvLoader-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wolfgang.Etl.Csv.CsvLoader-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Wolfgang.Etl.Csv.CsvLoader<TRecord>",
+      "Summary": "<p sourcefile=\"api/Wolfgang.Etl.Csv.CsvLoader-1.yml\" sourcestartlinenumber=\"1\">Loads records of type <code class=\"typeparamref\">TRecord</code> into a CSV stream\nusing <a href=\"https://joshclose.github.io/CsvHelper/\">CsvHelper</a>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wolfgang.Etl.Csv.CsvLoaderProgress.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wolfgang.Etl.Csv.CsvLoaderProgress.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Wolfgang.Etl.Csv.CsvLoaderProgress",
+      "Summary": "<p sourcefile=\"api/Wolfgang.Etl.Csv.CsvLoaderProgress.yml\" sourcestartlinenumber=\"1\">Progress report for CSV loading operations.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wolfgang.Etl.Csv.CsvReadingExceptionInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wolfgang.Etl.Csv.CsvReadingExceptionInfo.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Wolfgang.Etl.Csv.CsvReadingExceptionInfo",
+      "Summary": "<p sourcefile=\"api/Wolfgang.Etl.Csv.CsvReadingExceptionInfo.yml\" sourcestartlinenumber=\"1\">Describes a recoverable parse exception encountered while reading a CSV stream.\nSurfaced to the caller via <xref href=\"Wolfgang.Etl.Csv.CsvExtractor%601.ReadingExceptionOccurred\" data-throw-if-not-resolved=\"false\"></xref>\nso logging, metrics, or quarantine logic can be plugged in without the library\nmaking logging decisions on the caller's behalf.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wolfgang.Etl.Csv.CsvShouldQuoteContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wolfgang.Etl.Csv.CsvShouldQuoteContext.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Wolfgang.Etl.Csv.CsvShouldQuoteContext",
+      "Summary": "<p sourcefile=\"api/Wolfgang.Etl.Csv.CsvShouldQuoteContext.yml\" sourcestartlinenumber=\"1\">Provides per-field context to a <code>ShouldQuote</code> callback while writing a CSV stream.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wolfgang.Etl.Csv.CsvTrimOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wolfgang.Etl.Csv.CsvTrimOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Wolfgang.Etl.Csv.CsvTrimOptions",
+      "Summary": "<p sourcefile=\"api/Wolfgang.Etl.Csv.CsvTrimOptions.yml\" sourcestartlinenumber=\"1\">Specifies how whitespace should be trimmed when reading or writing CSV fields.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wolfgang.Etl.Csv.CsvValidationException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wolfgang.Etl.Csv.CsvValidationException.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Wolfgang.Etl.Csv.CsvValidationException",
+      "Summary": "<p sourcefile=\"api/Wolfgang.Etl.Csv.CsvValidationException.yml\" sourcestartlinenumber=\"1\">Thrown when a record fails validation and <code>OnValidationFailure</code> is\n<xref href=\"Wolfgang.Etl.Csv.CsvValidationFailureAction.Stop\" data-throw-if-not-resolved=\"false\"></xref>. Carries the source line and the aggregated\nfailure reasons.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wolfgang.Etl.Csv.CsvValidationFailureAction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wolfgang.Etl.Csv.CsvValidationFailureAction.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Wolfgang.Etl.Csv.CsvValidationFailureAction",
+      "Summary": "<p sourcefile=\"api/Wolfgang.Etl.Csv.CsvValidationFailureAction.yml\" sourcestartlinenumber=\"1\">Chooses what a <xref href=\"Wolfgang.Etl.Csv.CsvExtractor%601\" data-throw-if-not-resolved=\"false\"></xref> (or <xref href=\"Wolfgang.Etl.Csv.CsvLoader%601\" data-throw-if-not-resolved=\"false\"></xref>) does with a\nrecord that fails one or more <xref href=\"Wolfgang.Etl.Csv.CsvValidator%601\" data-throw-if-not-resolved=\"false\"></xref>s. In every case the invalid record is\ncounted (<code>CurrentInvalidItemCount</code>) and the <code>InvalidRecordHandler</code>, if any, is invoked first.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wolfgang.Etl.Csv.CsvValidationResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wolfgang.Etl.Csv.CsvValidationResult.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Wolfgang.Etl.Csv.CsvValidationResult",
+      "Summary": "<p sourcefile=\"api/Wolfgang.Etl.Csv.CsvValidationResult.yml\" sourcestartlinenumber=\"1\">The outcome of running a <xref href=\"Wolfgang.Etl.Csv.CsvValidator%601\" data-throw-if-not-resolved=\"false\"></xref> against a record: whether it passed and, if\nnot, the human-readable reasons it failed. Illegal states (successful-with-failures, failed-without-\nfailures, null failures) throw at construction — the two named constructors below are the recommended\npath; the legacy positional constructor is retained for source-compat and marked\n<xref href=\"System.ObsoleteAttribute\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wolfgang.Etl.Csv.CsvValidator-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wolfgang.Etl.Csv.CsvValidator-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Wolfgang.Etl.Csv.CsvValidator<T>",
+      "Summary": "<p sourcefile=\"api/Wolfgang.Etl.Csv.CsvValidator-1.yml\" sourcestartlinenumber=\"1\">A synchronous, per-record validation rule. Runs after a record is bound and returns a\n<xref href=\"Wolfgang.Etl.Csv.CsvValidationResult\" data-throw-if-not-resolved=\"false\"></xref>. Combine several on the extractor's (or loader's) <code>Validators</code>\ncollection; their failures aggregate.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wolfgang.Etl.Csv.CsvValidator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wolfgang.Etl.Csv.CsvValidator.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Wolfgang.Etl.Csv.CsvValidator",
+      "Summary": "<p sourcefile=\"api/Wolfgang.Etl.Csv.CsvValidator.yml\" sourcestartlinenumber=\"1\">Factory methods for the common built-in <xref href=\"Wolfgang.Etl.Csv.CsvValidator%601\" data-throw-if-not-resolved=\"false\"></xref> rules. Each takes a selector\nthat reads the member under test, so the rules stay strongly typed without reflection.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Wolfgang.Etl.Csv.EtlPipelineCsvExtensions",
+      "Summary": "<p sourcefile=\"api/Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.yml\" sourcestartlinenumber=\"1\">Class-named CSV source factories and sink terminators for the fluent <xref href=\"Wolfgang.Etl.Abstractions.EtlPipeline\" data-throw-if-not-resolved=\"false\"></xref>\nchain. Source factories hang off <xref href=\"Wolfgang.Etl.Abstractions.EtlPipeline\" data-throw-if-not-resolved=\"false\"></xref> so a pipeline reads\n<code>EtlPipeline.Create().CsvExtractor&lt;Order&gt;(&quot;orders.csv&quot;)</code>; sink terminators hang off\n<xref href=\"Wolfgang.Etl.Abstractions.IEtlPipeline%601\" data-throw-if-not-resolved=\"false\"></xref> so it ends <code>… .CsvLoader&lt;Order&gt;(&quot;out.csv&quot;).RunAsync()</code>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Wolfgang.Etl.Csv.ICsvExtractorBuilder<T>",
+      "Summary": "<p sourcefile=\"api/Wolfgang.Etl.Csv.ICsvExtractorBuilder-1.yml\" sourcestartlinenumber=\"1\">Fluent builder for a <xref href=\"Wolfgang.Etl.Csv.CsvExtractor%601\" data-throw-if-not-resolved=\"false\"></xref> hung off the generic\n<xref href=\"Wolfgang.Etl.Abstractions.EtlPipeline\" data-throw-if-not-resolved=\"false\"></xref> chain. Extends <xref href=\"Wolfgang.Etl.Abstractions.IEtlPipeline%601\" data-throw-if-not-resolved=\"false\"></xref>, so a consumer\ntransitions from configuring the extractor to appending pipeline operators simply by\ncalling one — no explicit <code>Build()</code> step. The first pipeline operator (for example\n<code>Where</code>, <code>Select</code>, or a <xref href=\"Wolfgang.Etl.Abstractions.IEtlPipeline%601.Through%60%601(Wolfgang.Etl.Abstractions.ITransformAsync%7b%600%2c%60%600%7d)\" data-throw-if-not-resolved=\"false\"></xref>\nstage) materializes the extractor and the configuration setters fall off the surface.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wolfgang.Etl.Csv.ICsvLoaderBuilder-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wolfgang.Etl.Csv.ICsvLoaderBuilder-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Wolfgang.Etl.Csv.ICsvLoaderBuilder<T>",
+      "Summary": "<p sourcefile=\"api/Wolfgang.Etl.Csv.ICsvLoaderBuilder-1.yml\" sourcestartlinenumber=\"1\">Fluent builder for a <xref href=\"Wolfgang.Etl.Csv.CsvLoader%601\" data-throw-if-not-resolved=\"false\"></xref> that terminates the generic\n<xref href=\"Wolfgang.Etl.Abstractions.EtlPipeline\" data-throw-if-not-resolved=\"false\"></xref> chain. Extends <xref href=\"Wolfgang.Etl.Abstractions.IEtlPipelineSink\" data-throw-if-not-resolved=\"false\"></xref>, so the pipeline is\nrunnable as soon as the terminator is called; the fluent setters simply refine the loader\nbefore <xref href=\"Wolfgang.Etl.Abstractions.IEtlPipelineSink.RunAsync(System.IProgress%7bWolfgang.Etl.Abstractions.EtlPipelineProgress%7d%2cSystem.Threading.CancellationToken)\" data-throw-if-not-resolved=\"false\"></xref>\nmaterializes and runs it.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wolfgang.Etl.Csv.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wolfgang.Etl.Csv.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Wolfgang.Etl.Csv",
+      "Summary": null
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "api/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/toc.html"
+        },
+        ".json": {
+          "relative_path": "api/toc.json"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "apple-touch-icon.png",
+      "output": {
+        "resource": {
+          "relative_path": "apple-touch-icon.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/getting-started.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/getting-started.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/index.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/introduction.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/introduction.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "docs/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/toc.html"
+        },
+        ".json": {
+          "relative_path": "docs/toc.json"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "favicon.ico",
+      "output": {
+        "resource": {
+          "relative_path": "favicon.ico"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "favicon.svg",
+      "output": {
+        "resource": {
+          "relative_path": "favicon.svg"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "index.md",
+      "output": {
+        ".html": {
+          "relative_path": "index.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "logo.svg",
+      "output": {
+        "resource": {
+          "relative_path": "logo.svg"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "public/version-picker.js",
+      "output": {
+        "resource": {
+          "relative_path": "public/version-picker.js"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "toc.html"
+        },
+        ".json": {
+          "relative_path": "toc.json"
+        }
+      },
+      "version": ""
+    }
+  ],
+  "groups": [
+    {
+      "xrefmap": "xrefmap.yml"
+    }
+  ]
+}
