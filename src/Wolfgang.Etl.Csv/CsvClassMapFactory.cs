@@ -248,9 +248,9 @@ internal static class CsvClassMapFactory
         {
             memberMap.Index(col.Index);
         }
-        else if (!string.IsNullOrEmpty(col.Name))
+        else if (col.Name is not null && col.Name.Length > 0)
         {
-            memberMap.Name(col.Name!);
+            memberMap.Name(col.Name);
         }
 
         if (col.Optional)
@@ -258,9 +258,9 @@ internal static class CsvClassMapFactory
             memberMap.Optional();
         }
 
-        if (!string.IsNullOrEmpty(col.Format))
+        if (col.Format is not null && col.Format.Length > 0)
         {
-            memberMap.TypeConverterOption.Format(col.Format!);
+            memberMap.TypeConverterOption.Format(col.Format);
         }
 
         if (col.Default is not null)
@@ -336,9 +336,9 @@ internal static class CsvClassMapFactory
         {
             memberMap.Index(col.Index);
         }
-        else if (!string.IsNullOrEmpty(col.Name))
+        else if (col.Name is not null && col.Name.Length > 0)
         {
-            memberMap.Name(col.Name!);
+            memberMap.Name(col.Name);
         }
 
         if (col.Optional)
@@ -346,9 +346,9 @@ internal static class CsvClassMapFactory
             memberMap.Optional();
         }
 
-        if (!string.IsNullOrEmpty(col.Format))
+        if (col.Format is not null && col.Format.Length > 0)
         {
-            memberMap.TypeConverterOption.Format(col.Format!);
+            memberMap.TypeConverterOption.Format(col.Format);
         }
 
         if (col.Default is not null)

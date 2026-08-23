@@ -7,6 +7,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.1] - 2026-08-23
+
+Analyzer-noise cleanup release. Zero consumer-visible API or behavior changes —
+drop-in replacement for 0.7.0.
+
+### Changed
+
+- `CsvClassMapFactory` internal per-column configuration guards rewritten from
+  `!string.IsNullOrEmpty(x) + x!` to `x is not null && x.Length > 0`, eliminating
+  the null-forgiving operators without any suppression. Same semantic; behavior
+  unchanged. Retires 4 SonarAnalyzer S8969 findings at the source. (#241)
+- `CsvValidationResult` legacy `[Obsolete]` positional constructor now validates
+  its inputs inline (the `ValidateFailures` helper was the only call site and was
+  inlined). Same throw behavior; no consumer-visible change. (#240)
+- Six record-synthesized members already present on the shipped assembly are now
+  declared in `PublicAPI.Shipped.txt` — `operator ==` for `CsvBadDataInfo`,
+  `CsvColumnMap`, `CsvReadingExceptionInfo`, `CsvShouldQuoteContext`; and
+  `PrintMembers(StringBuilder)` for `CsvExtractorProgress`, `CsvLoaderProgress`.
+  Documentation catch-up only — these members were callable in 0.7.0. (#239)
+
+### Internal
+
+- `.zizmor.yml` moved to `.github/zizmor.yml` (zizmor 1.5.2 auto-discovers only
+  the `.github/` location) and rewritten to the schema version 1.5.2 requires.
+  The existing `dangerous-triggers: ignore: [pr.yaml]` documented-suppression
+  rule now actually takes effect. Retires 1 zizmor alert. (#242)
+- `.github/workflows/scorecard.yaml` SARIF filter step extended to strip 9
+  additional accepted-as-intentional Scorecard findings: `PinnedDependenciesID`
+  for `dotnet`/`pip` invocations (no first-class hash-pin verify for either),
+  and the four solo-maintainer structural rules `BranchProtectionID`,
+  `CIIBestPracticesID`, `CodeReviewID`, `FuzzingID`. Full rationale documented
+  inline. Existing `DangerousWorkflowID` filter for pr.yaml unchanged. (#243)
+- `Validation/.editorconfig` gains three narrow file-scoped suppressions on
+  `CsvValidationResult.cs` — S1133 on the `[Obsolete]` ctor and
+  ParameterHidesMember on the explicit `Deconstruct(out bool IsValid, ...)` out
+  params — both required to preserve the shipped API surface. Rationale
+  documented alongside each entry. (#240)
+
+Part of umbrella #201.
+
 ## [0.7.0] - 2026-08-22
 
 ### Added
