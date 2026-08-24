@@ -93,13 +93,16 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     /// injected progress timer for testing.
     /// </summary>
     /// <param name="streamReader">The <see cref="StreamReader"/> to read CSV data from.</param>
-    /// <param name="logger">An optional logger instance for diagnostic output.</param>
     /// <param name="timer">The progress timer to inject.</param>
+    /// <param name="logger">
+    /// An optional logger instance for diagnostic output. When <c>null</c> — or omitted —
+    /// <see cref="NullLogger.Instance"/> is used and logging is disabled.
+    /// </param>
     internal CsvExtractor
     (
         StreamReader streamReader,
-        ILogger? logger,
-        IProgressTimer timer
+        IProgressTimer timer,
+        ILogger? logger = null
     )
     {
         _reader = streamReader ?? throw new ArgumentNullException(nameof(streamReader));

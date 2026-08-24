@@ -65,8 +65,8 @@ public class CsvLoaderTests
         return new CsvLoader<PersonRecord>
         (
             writer,
-            NullLogger<CsvLoader<PersonRecord>>.Instance,
-            timer
+            timer,
+            NullLogger<CsvLoader<PersonRecord>>.Instance
         )
         {
             LeaveOpen = true,
@@ -144,8 +144,8 @@ public class CsvLoaderTests
             () => new CsvLoader<PersonRecord>
             (
                 writer,
-                NullLogger<CsvLoader<PersonRecord>>.Instance,
-                null!
+                null!,
+                NullLogger<CsvLoader<PersonRecord>>.Instance
             )
         );
     }
@@ -160,8 +160,8 @@ public class CsvLoaderTests
             () => new CsvLoader<PersonRecord>
             (
                 null!,
-                NullLogger<CsvLoader<PersonRecord>>.Instance,
-                new ManualProgressTimer()
+                new ManualProgressTimer(),
+                NullLogger<CsvLoader<PersonRecord>>.Instance
             )
         );
     }
@@ -177,8 +177,8 @@ public class CsvLoaderTests
         var sut = new CsvLoader<PersonRecord>
         (
             writer,
-            logger: null,
-            new ManualProgressTimer()
+            new ManualProgressTimer(),
+            logger: null
         );
 
         Assert.NotNull(sut);
