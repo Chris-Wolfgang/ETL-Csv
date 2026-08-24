@@ -72,7 +72,7 @@ Wolfgang.Etl.Csv.CsvExtractor<TRecord>.ColumnMaps.set -> void
 Wolfgang.Etl.Csv.CsvExtractor<TRecord>.Comment.get -> char
 Wolfgang.Etl.Csv.CsvExtractor<TRecord>.Comment.set -> void
 Wolfgang.Etl.Csv.CsvExtractor<TRecord>.CsvExtractor(System.IO.StreamReader! streamReader) -> void
-Wolfgang.Etl.Csv.CsvExtractor<TRecord>.CsvExtractor(System.IO.StreamReader! streamReader, Microsoft.Extensions.Logging.ILogger<Wolfgang.Etl.Csv.CsvExtractor<TRecord>!>! logger) -> void
+Wolfgang.Etl.Csv.CsvExtractor<TRecord>.CsvExtractor(System.IO.StreamReader! streamReader, Microsoft.Extensions.Logging.ILogger<Wolfgang.Etl.Csv.CsvExtractor<TRecord>!>? logger = null) -> void
 Wolfgang.Etl.Csv.CsvExtractor<TRecord>.Delimiter.get -> string!
 Wolfgang.Etl.Csv.CsvExtractor<TRecord>.Delimiter.set -> void
 Wolfgang.Etl.Csv.CsvExtractor<TRecord>.Discriminator.get -> Wolfgang.Etl.Csv.CsvDiscriminator<TRecord>?
@@ -131,7 +131,7 @@ Wolfgang.Etl.Csv.CsvLoader<TRecord>
 Wolfgang.Etl.Csv.CsvLoader<TRecord>.ColumnMaps.get -> System.Collections.Generic.IReadOnlyList<Wolfgang.Etl.Csv.CsvColumnMap!>?
 Wolfgang.Etl.Csv.CsvLoader<TRecord>.ColumnMaps.set -> void
 Wolfgang.Etl.Csv.CsvLoader<TRecord>.CsvLoader(System.IO.StreamWriter! streamWriter) -> void
-Wolfgang.Etl.Csv.CsvLoader<TRecord>.CsvLoader(System.IO.StreamWriter! streamWriter, Microsoft.Extensions.Logging.ILogger<Wolfgang.Etl.Csv.CsvLoader<TRecord>!>! logger) -> void
+Wolfgang.Etl.Csv.CsvLoader<TRecord>.CsvLoader(System.IO.StreamWriter! streamWriter, Microsoft.Extensions.Logging.ILogger<Wolfgang.Etl.Csv.CsvLoader<TRecord>!>? logger = null) -> void
 Wolfgang.Etl.Csv.CsvLoader<TRecord>.Delimiter.get -> string!
 Wolfgang.Etl.Csv.CsvLoader<TRecord>.Delimiter.set -> void
 Wolfgang.Etl.Csv.CsvLoader<TRecord>.Discriminator.get -> Wolfgang.Etl.Csv.CsvDiscriminator<TRecord>?

@@ -106,16 +106,27 @@ public class CsvExtractorTests
 
 
     [Fact]
-    public void Constructor_with_logger_when_logger_is_null_throws_ArgumentNullException()
+    public void Constructor_when_logger_is_null_uses_NullLogger()
     {
-        Assert.Throws<ArgumentNullException>
+        // logger is now an optional trailing parameter; null means "no logging"
+        // (NullLogger.Instance) rather than an argument error.
+        var sut = new CsvExtractor<PersonRecord>
         (
-            () => new CsvExtractor<PersonRecord>
-            (
-                CreateCsvStream(ExpectedItems),
-                logger: null!
-            )
+            CreateCsvStream(ExpectedItems),
+            logger: null
         );
+
+        Assert.NotNull(sut);
+    }
+
+
+
+    [Fact]
+    public void Constructor_when_logger_is_omitted_uses_NullLogger()
+    {
+        var sut = new CsvExtractor<PersonRecord>(CreateCsvStream(ExpectedItems));
+
+        Assert.NotNull(sut);
     }
 
 

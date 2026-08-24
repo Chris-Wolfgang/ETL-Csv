@@ -68,19 +68,22 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     /// Initializes a new instance of the <see cref="CsvExtractor{TRecord}"/> class with diagnostic logging.
     /// </summary>
     /// <param name="streamReader">The <see cref="StreamReader"/> to read CSV data from.</param>
-    /// <param name="logger">The logger instance for diagnostic output.</param>
+    /// <param name="logger">
+    /// An optional logger instance for diagnostic output. When <c>null</c> — or omitted —
+    /// <see cref="NullLogger.Instance"/> is used and logging is disabled.
+    /// </param>
     /// <exception cref="ArgumentNullException">
-    /// <paramref name="streamReader"/> or <paramref name="logger"/> is <c>null</c>.
+    /// <paramref name="streamReader"/> is <c>null</c>.
     /// </exception>
     [RequiresUnreferencedCode("CsvExtractor uses CsvHelper, which reflects over TRecord's members beyond what DynamicallyAccessedMembers can express (type converter constructors, non-public setters in some flows). The library is not trim/NativeAOT safe.")]
     public CsvExtractor
     (
         StreamReader streamReader,
-        ILogger<CsvExtractor<TRecord>> logger
+        ILogger<CsvExtractor<TRecord>>? logger = null
     )
     {
         _reader = streamReader ?? throw new ArgumentNullException(nameof(streamReader));
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _logger = logger ?? (ILogger)NullLogger.Instance;
     }
 
 
