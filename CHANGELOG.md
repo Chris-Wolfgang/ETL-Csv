@@ -38,6 +38,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   counterpart honored the caller's encoding. In both cases the constructor that was easiest to
   overlook was the one that got it wrong.
 
+### Fixed
+
+- **`netcoreapp3.1` and `net5.0` were running zero tests.** Both slots reported
+  *"No test is available"* and contributed nothing, while `dotnet test` exited non-zero with **no
+  reported failures** — so a green-looking local run said nothing about those two frameworks.
+
+  `xunit.runner.visualstudio` **2.8.2 ships `build`/`lib` assets for `net462` and `net6.0` only**, so
+  neither slot resolved a test adapter. The runner is now pinned per slot: **2.4.5** (the newest 2.x
+  that still ships a `netcoreapp3.1` asset, which `net5.0` also consumes) for those two frameworks,
+  2.8.2 everywhere else, both capped below `3.0.0` since runner 3.x drops these frameworks outright.
+
+  Restores **313** tests on `netcoreapp3.1` and **315** on `net5.0`. Test-infrastructure only — no
+  product code, no API change.
+
 ## [0.7.1] - 2026-08-23
 
 Analyzer-noise cleanup release. Zero consumer-visible API or behavior changes —
