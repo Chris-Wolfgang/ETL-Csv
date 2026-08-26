@@ -56,9 +56,8 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     (
         StreamWriter streamWriter
     )
+        : this(streamWriter, (ILogger?)null)
     {
-        _writer = streamWriter ?? throw new ArgumentNullException(nameof(streamWriter));
-        _logger = NullLogger.Instance;
     }
 
 
@@ -80,9 +79,8 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
         StreamWriter streamWriter,
         ILogger<CsvLoader<TRecord>>? logger = null
     )
+        : this(streamWriter, (ILogger?)logger)
     {
-        _writer = streamWriter ?? throw new ArgumentNullException(nameof(streamWriter));
-        _logger = logger ?? (ILogger)NullLogger.Instance;
     }
 
 
@@ -103,10 +101,32 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
         IProgressTimer timer,
         ILogger? logger = null
     )
+        : this(streamWriter, logger)
+    {
+        _progressTimer = timer ?? throw new ArgumentNullException(nameof(timer));
+    }
+
+
+
+    /// <summary>
+    /// The single initialization path for <see cref="CsvLoader{TRecord}"/>. Every other
+    /// constructor chains into this one, so the shared fields are assigned in exactly one place.
+    /// </summary>
+    /// <param name="streamWriter">The <see cref="StreamWriter"/> to write CSV data to.</param>
+    /// <param name="logger">
+    /// The logger to use, or <c>null</c> for <see cref="NullLogger.Instance"/>.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="streamWriter"/> is <c>null</c>.
+    /// </exception>
+    private CsvLoader
+    (
+        StreamWriter streamWriter,
+        ILogger? logger
+    )
     {
         _writer = streamWriter ?? throw new ArgumentNullException(nameof(streamWriter));
         _logger = logger ?? NullLogger.Instance;
-        _progressTimer = timer ?? throw new ArgumentNullException(nameof(timer));
     }
 
 
