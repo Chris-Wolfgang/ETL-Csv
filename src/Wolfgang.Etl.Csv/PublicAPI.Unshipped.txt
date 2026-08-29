@@ -1,1 +1,83 @@
 #nullable enable
+Wolfgang.Etl.Csv.CsvExtractor<TRecord>.CsvExtractor(System.IO.StreamReader! streamReader, Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>? options, Microsoft.Extensions.Logging.ILogger<Wolfgang.Etl.Csv.CsvExtractor<TRecord>!>? logger = null) -> void
+Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>
+Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>.AllowComments.get -> bool
+Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>.AllowComments.init -> void
+Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>.ColumnMaps.get -> System.Collections.Generic.IReadOnlyList<Wolfgang.Etl.Csv.CsvColumnMap!>?
+Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>.ColumnMaps.init -> void
+Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>.Comment.get -> char
+Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>.Comment.init -> void
+Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>.CsvExtractorOptions() -> void
+Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>.Delimiter.get -> string!
+Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>.Delimiter.init -> void
+Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>.Discriminator.get -> Wolfgang.Etl.Csv.CsvDiscriminator<TRecord>?
+Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>.Discriminator.init -> void
+Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>.Equals(Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>? other) -> bool
+Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>.Escape.get -> char
+Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>.Escape.init -> void
+Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>.HasHeaderRecord.get -> bool
+Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>.HasHeaderRecord.init -> void
+Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>.IgnoreBlankLines.get -> bool
+Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>.IgnoreBlankLines.init -> void
+Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>.InitialRecordIndex.get -> int
+Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>.InitialRecordIndex.init -> void
+Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>.InvalidRecordHandler.get -> System.Action<Wolfgang.Etl.Csv.CsvInvalidRecord<TRecord>!>?
+Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>.InvalidRecordHandler.init -> void
+Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>.LeaveOpen.get -> bool
+Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>.LeaveOpen.init -> void
+Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>.MaxRecordCount.get -> int
+Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>.MaxRecordCount.init -> void
+Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>.OnValidationFailure.get -> Wolfgang.Etl.Csv.CsvValidationFailureAction
+Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>.OnValidationFailure.init -> void
+Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>.Quote.get -> char
+Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>.Quote.init -> void
+Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>.SkipRecordCount.get -> int
+Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>.SkipRecordCount.init -> void
+Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>.TrimOptions.get -> Wolfgang.Etl.Csv.CsvTrimOptions
+Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>.TrimOptions.init -> void
+Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>.Validators.get -> System.Collections.Generic.IReadOnlyList<Wolfgang.Etl.Csv.CsvValidator<TRecord>!>?
+Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>.Validators.init -> void
+Wolfgang.Etl.Csv.CsvLoader<TRecord>.CsvLoader(System.IO.StreamWriter! streamWriter, Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>? options, Microsoft.Extensions.Logging.ILogger<Wolfgang.Etl.Csv.CsvLoader<TRecord>!>? logger = null) -> void
+Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>
+Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.ColumnMaps.get -> System.Collections.Generic.IReadOnlyList<Wolfgang.Etl.Csv.CsvColumnMap!>?
+Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.ColumnMaps.init -> void
+Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.CsvLoaderOptions() -> void
+Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.Delimiter.get -> string!
+Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.Delimiter.init -> void
+Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.Discriminator.get -> Wolfgang.Etl.Csv.CsvDiscriminator<TRecord>?
+Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.Discriminator.init -> void
+Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.Equals(Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>? other) -> bool
+Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.Escape.get -> char
+Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.Escape.init -> void
+Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.HasHeaderRecord.get -> bool
+Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.HasHeaderRecord.init -> void
+Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.InvalidRecordHandler.get -> System.Action<Wolfgang.Etl.Csv.CsvInvalidRecord<TRecord>!>?
+Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.InvalidRecordHandler.init -> void
+Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.LeaveOpen.get -> bool
+Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.LeaveOpen.init -> void
+Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.MaxRecordCount.get -> int
+Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.MaxRecordCount.init -> void
+Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.NewLine.get -> string!
+Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.NewLine.init -> void
+Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.OnValidationFailure.get -> Wolfgang.Etl.Csv.CsvValidationFailureAction
+Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.OnValidationFailure.init -> void
+Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.Quote.get -> char
+Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.Quote.init -> void
+Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.ShouldQuote.get -> System.Func<Wolfgang.Etl.Csv.CsvShouldQuoteContext!, bool>?
+Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.ShouldQuote.init -> void
+Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.SkipRecordCount.get -> int
+Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.SkipRecordCount.init -> void
+Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.TrimOptions.get -> Wolfgang.Etl.Csv.CsvTrimOptions
+Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.TrimOptions.init -> void
+Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.Validators.get -> System.Collections.Generic.IReadOnlyList<Wolfgang.Etl.Csv.CsvValidator<TRecord>!>?
+Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.Validators.init -> void
+override Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>.Equals(object? obj) -> bool
+override Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>.GetHashCode() -> int
+override Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>.ToString() -> string!
+override Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.Equals(object? obj) -> bool
+override Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.GetHashCode() -> int
+override Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.ToString() -> string!
+static Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>.operator !=(Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>? left, Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>? right) -> bool
+static Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>.operator ==(Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>? left, Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>? right) -> bool
+static Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.operator !=(Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>? left, Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>? right) -> bool
+static Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.operator ==(Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>? left, Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>? right) -> bool
