@@ -45,6 +45,9 @@ internal sealed class CsvExtractorBuilder<[DynamicallyAccessedMembers(Dynamicall
     internal static ICsvExtractorBuilder<T> FromExtractor(CsvExtractor<T> extractor) => new CsvExtractorBuilder<T>(path: null, reader: null, extractor);
 
 
+#pragma warning disable CS0618
+    // The builder is the supported replacement for these setters. It must still write them
+    // directly for a caller-supplied instance, which has no constructor to route through.
     public ICsvExtractorBuilder<T> Delimiter(string delimiter)
     {
         if (delimiter is null)
@@ -137,6 +140,9 @@ internal sealed class CsvExtractorBuilder<[DynamicallyAccessedMembers(Dynamicall
         return Configure(e => e.ReadingExceptionOccurred = handler);
 #pragma warning restore CS0618
     }
+
+
+#pragma warning restore CS0618
 
 
     public IEtlPipeline<TOut> Through<TOut>(ITransformAsync<T, TOut> transformer) where TOut : notnull => Pipeline().Through(transformer);

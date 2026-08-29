@@ -47,6 +47,9 @@ internal sealed class CsvLoaderBuilder<[DynamicallyAccessedMembers(DynamicallyAc
     internal static ICsvLoaderBuilder<T> FromLoader(IEtlPipeline<T> pipeline, CsvLoader<T> loader) => new CsvLoaderBuilder<T>(pipeline, path: null, writer: null, loader);
 
 
+#pragma warning disable CS0618
+    // The builder is the supported replacement for these setters. It must still write them
+    // directly for a caller-supplied instance, which has no constructor to route through.
     public ICsvLoaderBuilder<T> Delimiter(string delimiter)
     {
         if (delimiter is null)
@@ -124,6 +127,11 @@ internal sealed class CsvLoaderBuilder<[DynamicallyAccessedMembers(DynamicallyAc
         "IL2026",
         Justification = "CsvLoader construction is unreferenced-code; the public terminator extension methods on IEtlPipeline that create this builder carry [RequiresUnreferencedCode]."
     )]
+
+
+#pragma warning restore CS0618
+
+
     public Task RunAsync
     (
         IProgress<EtlPipelineProgress>? progress = null,
