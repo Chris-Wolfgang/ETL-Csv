@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Third-party notices and a license-audit gate (#253).** `THIRD-PARTY-NOTICES.md` records every
+  shipped runtime dependency with its version and license, and is packed into the NuGet output
+  alongside `README.md`. A new `license-audit.yaml` workflow runs `dotnet-project-licenses` against
+  the `src/` dependency graph on every PR touching a `.csproj`, plus weekly, gating against
+  `licenses/allowed-licenses.json`.
+
+  The allowlist carries the literal SPDX expression `MS-PL OR Apache-2.0` alongside the individual
+  identifiers. CsvHelper is dual-licensed and declares that compound expression, which
+  `dotnet-project-licenses` compares as text — an allowlist holding only `Apache-2.0` would fail the
+  audit on it despite one of its alternatives being allowed. This package consumes CsvHelper under
+  Apache-2.0.
+
+  Analyzer packages are out of scope: they are `PrivateAssets=all` and never distributed.
+
 ### Changed
 
 - **`logger` is now an optional trailing constructor parameter on `CsvExtractor<T>` and
