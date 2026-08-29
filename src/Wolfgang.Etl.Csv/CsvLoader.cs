@@ -92,13 +92,16 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     /// injected progress timer for testing.
     /// </summary>
     /// <param name="streamWriter">The <see cref="StreamWriter"/> to write CSV data to.</param>
-    /// <param name="logger">An optional logger instance for diagnostic output.</param>
     /// <param name="timer">The progress timer to inject.</param>
+    /// <param name="logger">
+    /// An optional logger instance for diagnostic output. When <c>null</c> — or omitted —
+    /// <see cref="NullLogger.Instance"/> is used and logging is disabled.
+    /// </param>
     internal CsvLoader
     (
         StreamWriter streamWriter,
-        ILogger? logger,
-        IProgressTimer timer
+        IProgressTimer timer,
+        ILogger? logger = null
     )
     {
         _writer = streamWriter ?? throw new ArgumentNullException(nameof(streamWriter));
