@@ -9,6 +9,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Configuration via options records (#258).** `CsvExtractor<T>` and `CsvLoader<T>` gained
+  constructors taking `CsvExtractorOptions<TRecord>` / `CsvLoaderOptions<TRecord>`, so configuration
+  travels through the constructor instead of post-construction property assignment. Defaults live on
+  the records' property initializers, so no constructor can diverge from them.
+
+  Purely additive — every existing constructor and property still works exactly as before.
+
+  Five members are deliberately **absent** from the records. `Encoding` is inert: it never controlled
+  how bytes are decoded or encoded (the `StreamReader`/`StreamWriter` you supply is authoritative),
+  so there is nothing to migrate to. `BadDataFound` and `ReadingExceptionOccurred` were already
+  obsolete, superseded by the unified error policy. `IsDryRun` implements
+  `ISupportDryRun.IsDryRun`, which declares a `set` accessor and so cannot become `init`-only while
+  that interface stands; set it on the loader after construction as before.
+
 - **Third-party notices and a license-audit gate (#253).** `THIRD-PARTY-NOTICES.md` records every
   shipped runtime dependency with its version and license, and is packed into the NuGet output
   alongside `README.md`. A new `license-audit.yaml` workflow runs `dotnet-project-licenses` against
@@ -53,6 +67,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   didn't, and an ETL-FixedWidth internal constructor that hard-coded UTF-8 while its public
   counterpart honored the caller's encoding. In both cases the constructor that was easiest to
   overlook was the one that got it wrong.
+
+### Deprecated
+
+- **The mutable configuration setters on `CsvExtractor<T>` and `CsvLoader<T>` (#259).** 34 property
+  setters are now `[Obsolete]`, pointing at the options records above. Configure through the
+  constructor instead.
+
+  Only the **setter accessor** is marked, not the whole property — reading these properties stays
+  warning-free, and object-initializer syntax now warns because it calls the same setter.
+
+  `Encoding` carries a different message from the rest: rather than pointing at an options record it
+  states that the property is inert and directs you to the `StreamReader`/`StreamWriter`, since the
+  records deliberately omit it.
+
+  Nothing is removed in this release. Under `TreatWarningsAsErrors` these warnings become build
+  errors, so migrate configuration to the options records at your convenience before the removal
+  release; the setters continue to work until then.
 
 ### Fixed
 
