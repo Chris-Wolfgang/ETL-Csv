@@ -1,6 +1,11 @@
 using System.Text;
 using Wolfgang.Etl.Csv;
 using Wolfgang.Etl.Csv.Examples.ResumableExtraction;
+// These files still configure via the deprecated property setters in places where the value is
+// applied after construction, so it cannot travel through the options constructor without
+// restructuring the test. They keep exercising the setter path until the setters are removed.
+#pragma warning disable CS0618
+
 
 // Resumable extraction: persist a record counter as a checkpoint, and on the next run skip past
 // the records already acknowledged. CsvCheckpointExtensions covers the mechanical bits — the atomic

@@ -195,7 +195,10 @@ public static class CsvCheckpointExtensions
         }
 
         var count = await ReadCheckpointAsync(path, token).ConfigureAwait(false);
+#pragma warning disable CS0618 // Resume operates on an already-constructed extractor, so the
+        // skip count cannot travel through its constructor.
         extractor.SkipRecordCount = count;
+#pragma warning restore CS0618
         return count;
     }
 }
