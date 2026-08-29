@@ -99,6 +99,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Restores **313** tests on `netcoreapp3.1` and **315** on `net5.0`. Test-infrastructure only — no
   product code, no API change.
 
+### Internal
+
+- **The internal test-injection constructors now take the logger last (#251).** `CsvExtractor<T>`
+  and `CsvLoader<T>` previously accepted `(reader, logger, timer)`; they now accept
+  `(reader, timer, logger)` with the logger optional, matching the fleet convention that the logger
+  is always the trailing parameter. These constructors are `internal` and visible only to
+  `Wolfgang.Etl.Csv.Tests.Unit`, so there is no consumer-visible change and no binary-compatibility
+  consequence.
+
+- **122 public API symbols were recorded that the analyzer had never reported (#261).** `RS0016`
+  defaults below warning on PublicApiAnalyzers 5.x and was not raised for `src/`, so public surface
+  could go unrecorded through a fully green build. 30 record-synthesized members that shipped in
+  0.7.1 were added to `PublicAPI.Shipped.txt`, and 82 entries for the new options records and their
+  constructors to `PublicAPI.Unshipped.txt`. No API changed — this only records what already exists.
+
 ## [0.7.1] - 2026-08-23
 
 Analyzer-noise cleanup release. Zero consumer-visible API or behavior changes —
