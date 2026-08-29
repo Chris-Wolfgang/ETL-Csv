@@ -57,9 +57,8 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     (
         StreamReader streamReader
     )
+        : this(streamReader, (ILogger?)null)
     {
-        _reader = streamReader ?? throw new ArgumentNullException(nameof(streamReader));
-        _logger = NullLogger.Instance;
     }
 
 
@@ -81,9 +80,8 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
         StreamReader streamReader,
         ILogger<CsvExtractor<TRecord>>? logger = null
     )
+        : this(streamReader, (ILogger?)logger)
     {
-        _reader = streamReader ?? throw new ArgumentNullException(nameof(streamReader));
-        _logger = logger ?? (ILogger)NullLogger.Instance;
     }
 
 
@@ -104,10 +102,32 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
         IProgressTimer timer,
         ILogger? logger = null
     )
+        : this(streamReader, logger)
+    {
+        _progressTimer = timer ?? throw new ArgumentNullException(nameof(timer));
+    }
+
+
+
+    /// <summary>
+    /// The single initialization path for <see cref="CsvExtractor{TRecord}"/>. Every other
+    /// constructor chains into this one, so the shared fields are assigned in exactly one place.
+    /// </summary>
+    /// <param name="streamReader">The <see cref="StreamReader"/> to read CSV data from.</param>
+    /// <param name="logger">
+    /// The logger to use, or <c>null</c> for <see cref="NullLogger.Instance"/>.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="streamReader"/> is <c>null</c>.
+    /// </exception>
+    private CsvExtractor
+    (
+        StreamReader streamReader,
+        ILogger? logger
+    )
     {
         _reader = streamReader ?? throw new ArgumentNullException(nameof(streamReader));
         _logger = logger ?? NullLogger.Instance;
-        _progressTimer = timer ?? throw new ArgumentNullException(nameof(timer));
     }
 
 

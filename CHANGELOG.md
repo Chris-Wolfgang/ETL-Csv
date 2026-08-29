@@ -24,6 +24,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   already-compiled consumers, because optional-argument defaults are baked in at the caller's
   compile time. They are scheduled for `[Obsolete]` in the next minor and removal in the one after.
 
+- **`CsvExtractor<T>` and `CsvLoader<T>` now have a single initialization path.** All three
+  constructors previously assigned `_reader`/`_writer` and `_logger` independently — three copies of
+  the same setup, each free to drift from the others. They now chain into one private constructor
+  that assigns the shared fields in exactly one place.
+
+  No API or behavior change: the signatures, the `ArgumentNullException` for a null reader/writer,
+  and the order in which arguments are validated are all unchanged.
+
+  This is a defect-prevention change. The identical triplicated-assignment shape produced two
+  shipped bugs elsewhere in the fleet — a `LeaveOpen` flag one ETL-Xml constructor set and another
+  didn't, and an ETL-FixedWidth internal constructor that hard-coded UTF-8 while its public
+  counterpart honored the caller's encoding. In both cases the constructor that was easiest to
+  overlook was the one that got it wrong.
+
 ## [0.7.1] - 2026-08-23
 
 Analyzer-noise cleanup release. Zero consumer-visible API or behavior changes —
