@@ -67,19 +67,22 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     /// Initializes a new instance of the <see cref="CsvLoader{TRecord}"/> class with diagnostic logging.
     /// </summary>
     /// <param name="streamWriter">The <see cref="StreamWriter"/> to write CSV data to.</param>
-    /// <param name="logger">The logger instance for diagnostic output.</param>
+    /// <param name="logger">
+    /// An optional logger instance for diagnostic output. When <c>null</c> — or omitted —
+    /// <see cref="NullLogger.Instance"/> is used and logging is disabled.
+    /// </param>
     /// <exception cref="ArgumentNullException">
-    /// <paramref name="streamWriter"/> or <paramref name="logger"/> is <c>null</c>.
+    /// <paramref name="streamWriter"/> is <c>null</c>.
     /// </exception>
     [RequiresUnreferencedCode("CsvLoader uses CsvHelper, which reflects over TRecord's members beyond what DynamicallyAccessedMembers can express (type converter constructors, non-public getters in some flows). The library is not trim/NativeAOT safe.")]
     public CsvLoader
     (
         StreamWriter streamWriter,
-        ILogger<CsvLoader<TRecord>> logger
+        ILogger<CsvLoader<TRecord>>? logger = null
     )
     {
         _writer = streamWriter ?? throw new ArgumentNullException(nameof(streamWriter));
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _logger = logger ?? (ILogger)NullLogger.Instance;
     }
 
 

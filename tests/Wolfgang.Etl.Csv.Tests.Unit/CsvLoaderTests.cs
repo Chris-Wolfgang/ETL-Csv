@@ -102,19 +102,33 @@ public class CsvLoaderTests
 
 
     [Fact]
-    public void Constructor_with_logger_when_logger_is_null_throws_ArgumentNullException()
+    public void Constructor_when_logger_is_null_uses_NullLogger()
+    {
+        // logger is now an optional trailing parameter; null means "no logging"
+        // (NullLogger.Instance) rather than an argument error.
+        var stream = new MemoryStream();
+        var writer = new StreamWriter(stream, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false), 1024, leaveOpen: true);
+
+        var sut = new CsvLoader<PersonRecord>
+        (
+            writer,
+            logger: null
+        );
+
+        Assert.NotNull(sut);
+    }
+
+
+
+    [Fact]
+    public void Constructor_when_logger_is_omitted_uses_NullLogger()
     {
         var stream = new MemoryStream();
         var writer = new StreamWriter(stream, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false), 1024, leaveOpen: true);
 
-        Assert.Throws<ArgumentNullException>
-        (
-            () => new CsvLoader<PersonRecord>
-            (
-                writer,
-                logger: null!
-            )
-        );
+        var sut = new CsvLoader<PersonRecord>(writer);
+
+        Assert.NotNull(sut);
     }
 
 

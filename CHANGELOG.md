@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **`logger` is now an optional trailing constructor parameter on `CsvExtractor<T>` and
+  `CsvLoader<T>`.** `ILogger<T> logger` became `ILogger<T>? logger = null`, and passing `null` (or
+  omitting it) now resolves to `NullLogger.Instance` instead of throwing `ArgumentNullException`.
+  This aligns both types with the fleet-wide constructor convention — logger always last, always
+  optional — already followed by `Etl-DbClient`.
+
+  Not a breaking change: the parameter list is unchanged, so the emitted signature is identical and
+  PackageValidation against the published baseline passes. Only the nullability annotation and the
+  default were added. Existing calls that pass a logger continue to bind exactly as before.
+
+  The single-argument `CsvExtractor(StreamReader)` / `CsvLoader(StreamWriter)` constructors are now
+  redundant but are **deliberately retained** — deleting them would be a binary breaking change for
+  already-compiled consumers, because optional-argument defaults are baked in at the caller's
+  compile time. They are scheduled for `[Obsolete]` in the next minor and removal in the one after.
+
 ## [0.7.1] - 2026-08-23
 
 Analyzer-noise cleanup release. Zero consumer-visible API or behavior changes —
