@@ -1,6 +1,11 @@
 using System.Text.Json;
 using Wolfgang.Etl.Csv;
 using Wolfgang.Etl.Csv.Examples.DynamicTemplates;
+// These files still configure via the deprecated property setters in places where the value is
+// applied after construction, so it cannot travel through the options constructor without
+// restructuring the test. They keep exercising the setter path until the setters are removed.
+#pragma warning disable CS0618
+
 
 // CA1849 / S6966 (call async methods in async context) and MA0004 (ConfigureAwait)
 // are overly strict for a demo entry point that's chiefly Console.WriteLine output.

@@ -6,6 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Wolfgang.Etl.Csv;
 
+// These files still configure via the deprecated property setters in places where the value is
+// applied after construction, so it cannot travel through the options constructor without
+// restructuring the test. They keep exercising the setter path until the setters are removed.
+#pragma warning disable CS0618
+
 namespace Wolfgang.Etl.Csv.AotSmoke;
 
 /// <summary>
@@ -103,7 +108,8 @@ internal static class Program
         {
             using (var writer = new StreamWriter(stream, Utf8NoBom, 1024, leaveOpen: true))
             {
-                var loader = new CsvLoader<Person>(writer) { LeaveOpen = true };
+                var loader = new CsvLoader<Person>(writer, new CsvLoaderOptions<Person>
+        { LeaveOpen = true});
                 await loader.LoadAsync(ToAsync(people)).ConfigureAwait(false);
                 await writer.FlushAsync().ConfigureAwait(false);
             }

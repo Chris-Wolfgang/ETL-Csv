@@ -7,6 +7,11 @@ using System.Threading.Tasks;
 using Wolfgang.Etl.Csv.Tests.Unit.TestModels;
 using Xunit;
 
+// These files still configure via the deprecated property setters in places where the value is
+// applied after construction, so it cannot travel through the options constructor without
+// restructuring the test. They keep exercising the setter path until the setters are removed.
+#pragma warning disable CS0618
+
 namespace Wolfgang.Etl.Csv.Tests.Unit;
 
 public class CsvLoaderValidationTests
@@ -27,11 +32,10 @@ public class CsvLoaderValidationTests
     private static CsvLoader<Order> CreateLoader(MemoryStream stream, out StreamWriter writer)
     {
         writer = new StreamWriter(stream, Utf8NoBom, 1024, leaveOpen: true);
-        return new CsvLoader<Order>(writer)
+        return new CsvLoader<Order>(writer, new CsvLoaderOptions<Order>
         {
             LeaveOpen = true,
-            Validators = new[] { CsvValidator.GreaterThan<Order>(o => o.Quantity, 0, "Quantity") },
-        };
+            Validators = new[] { CsvValidator.GreaterThan<Order>(o => o.Quantity, 0, "Quantity") },});
     }
 
 
@@ -129,7 +133,8 @@ public class CsvLoaderValidationTests
     {
         using var stream = new MemoryStream();
         var writer = new StreamWriter(stream, Utf8NoBom, 1024, leaveOpen: true);
-        var loader = new CsvLoader<Order>(writer) { LeaveOpen = true };
+        var loader = new CsvLoader<Order>(writer, new CsvLoaderOptions<Order>
+        { LeaveOpen = true});
 
         var output = await LoadAndReadAsync(loader, stream, writer, Orders);
         writer.Dispose();

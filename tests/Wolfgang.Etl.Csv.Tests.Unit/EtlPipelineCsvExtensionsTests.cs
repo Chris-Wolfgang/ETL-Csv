@@ -9,6 +9,11 @@ using Wolfgang.Etl.Abstractions;
 using Wolfgang.Etl.Csv.Tests.Unit.TestModels;
 using Xunit;
 
+// These files still configure via the deprecated property setters in places where the value is
+// applied after construction, so it cannot travel through the options constructor without
+// restructuring the test. They keep exercising the setter path until the setters are removed.
+#pragma warning disable CS0618
+
 namespace Wolfgang.Etl.Csv.Tests.Unit;
 
 /// <summary>
@@ -103,7 +108,8 @@ public sealed class EtlPipelineCsvExtensionsTests : IDisposable
 
         using var targetStream = new MemoryStream();
         using var targetWriter = new StreamWriter(targetStream, Utf8NoBom, 1024, leaveOpen: true);
-        var loader = new CsvLoader<PersonRecord>(targetWriter) { LeaveOpen = true };
+        var loader = new CsvLoader<PersonRecord>(targetWriter, new CsvLoaderOptions<PersonRecord>
+        { LeaveOpen = true});
 
         await EtlPipeline
             .Create()
@@ -261,11 +267,10 @@ public sealed class EtlPipelineCsvExtensionsTests : IDisposable
         var source = WriteTempFile("supplied.csv", "FirstName,LastName,Age\r\nAlice,Smith,30\r\n");
         using var reader = new StreamReader(source);
 
-        var extractor = new CsvExtractor<PersonRecord>(reader)
+        var extractor = new CsvExtractor<PersonRecord>(reader, new CsvExtractorOptions<PersonRecord>
         {
             Quote = '\'',
-            HasHeaderRecord = false
-        };
+            HasHeaderRecord = false});
 
         _ = EtlPipeline
             .Create()
@@ -316,7 +321,8 @@ public sealed class EtlPipelineCsvExtensionsTests : IDisposable
         var pipeline = EtlPipeline.Create().CsvExtractor<PersonRecord>(source);
 
         using var writer = new StreamWriter(new MemoryStream(), Utf8NoBom);
-        var loader = new CsvLoader<PersonRecord>(writer) { LeaveOpen = true };
+        var loader = new CsvLoader<PersonRecord>(writer, new CsvLoaderOptions<PersonRecord>
+        { LeaveOpen = true});
 
         // Null pipeline receiver — every overload.
         Assert.Throws<ArgumentNullException>(() => ((IEtlPipeline<PersonRecord>)null!).CsvLoader("x.csv"));

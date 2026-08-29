@@ -9,6 +9,11 @@ using VerifyXunit;
 using Wolfgang.Etl.Csv.Tests.Unit.TestModels;
 using Xunit;
 
+// These files still configure via the deprecated property setters in places where the value is
+// applied after construction, so it cannot travel through the options constructor without
+// restructuring the test. They keep exercising the setter path until the setters are removed.
+#pragma warning disable CS0618
+
 namespace Wolfgang.Etl.Csv.Tests.Unit;
 
 /// <summary>
@@ -92,7 +97,8 @@ public class CsvSnapshotTests
         using var stream = new MemoryStream();
 
         await using var writer = new StreamWriter(stream, Utf8NoBom, 1024, leaveOpen: true);
-        var loader = new CsvLoader<PersonRecord>(writer) { LeaveOpen = true };
+        var loader = new CsvLoader<PersonRecord>(writer, new CsvLoaderOptions<PersonRecord>
+        { LeaveOpen = true});
         configure?.Invoke(loader);
 
         await loader.LoadAsync(ToAsync(records));
