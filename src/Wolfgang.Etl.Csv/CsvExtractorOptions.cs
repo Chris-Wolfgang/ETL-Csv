@@ -141,29 +141,27 @@ public sealed record CsvExtractorOptions<TRecord>
 
 
     /// <summary>
-    /// Gets the one-based index of the first record to read. When left unset the extractor's
-    /// default of <c>1</c> applies.
+    /// Gets the one-based index of the first record to read. Defaults to <c>1</c>.
     /// </summary>
-    /// <remarks>
-    /// Nullable so that "unset" is distinguishable from an explicit value. The underlying property
-    /// rejects values below <c>1</c>, so a non-nullable option defaulting to <c>0</c> would make
-    /// every options-constructed extractor throw.
-    /// </remarks>
-    public int? InitialRecordIndex { get; init; }
+    public int InitialRecordIndex { get; init; } = 1;
 
 
 
     /// <summary>
     /// Gets the number of records to skip before extracting. Alias for
-    /// <c>ExtractorBase.SkipItemCount</c>. When left unset the base default applies.
+    /// <c>ExtractorBase.SkipItemCount</c>. Defaults to <c>0</c>.
     /// </summary>
-    public int? SkipRecordCount { get; init; }
+    public int SkipRecordCount { get; init; }
 
 
 
     /// <summary>
     /// Gets the maximum number of records to extract. Alias for
-    /// <c>ExtractorBase.MaximumItemCount</c>. When left unset the base default applies.
+    /// <c>ExtractorBase.MaximumItemCount</c>. Defaults to <see cref="int.MaxValue"/>.
     /// </summary>
-    public int? MaxRecordCount { get; init; }
+    /// <remarks>
+    /// This restates a default owned by <c>ExtractorBase</c>, so a test asserts the two still agree.
+    /// A change on the base side then fails the build rather than being silently overridden here.
+    /// </remarks>
+    public int MaxRecordCount { get; init; } = int.MaxValue;
 }

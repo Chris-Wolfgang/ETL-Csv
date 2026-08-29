@@ -186,21 +186,9 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
         Validators = options.Validators;
         OnValidationFailure = options.OnValidationFailure;
         InvalidRecordHandler = options.InvalidRecordHandler;
-
-        if (options.InitialRecordIndex is { } initialRecordIndex)
-        {
-            InitialRecordIndex = initialRecordIndex;
-        }
-
-        if (options.SkipRecordCount is { } skipRecordCount)
-        {
-            SkipRecordCount = skipRecordCount;
-        }
-
-        if (options.MaxRecordCount is { } maxRecordCount)
-        {
-            MaxRecordCount = maxRecordCount;
-        }
+        InitialRecordIndex = options.InitialRecordIndex;
+        SkipRecordCount = options.SkipRecordCount;
+        MaxRecordCount = options.MaxRecordCount;
     }
 
 

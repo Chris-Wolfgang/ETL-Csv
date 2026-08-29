@@ -131,15 +131,19 @@ public sealed record CsvLoaderOptions<TRecord>
 
     /// <summary>
     /// Gets the number of records to skip before loading. Alias for
-    /// <c>LoaderBase.SkipItemCount</c>. When left unset the base default applies.
+    /// <c>LoaderBase.SkipItemCount</c>. Defaults to <c>0</c>.
     /// </summary>
-    public int? SkipRecordCount { get; init; }
+    public int SkipRecordCount { get; init; }
 
 
 
     /// <summary>
     /// Gets the maximum number of records to load. Alias for
-    /// <c>LoaderBase.MaximumItemCount</c>. When left unset the base default applies.
+    /// <c>LoaderBase.MaximumItemCount</c>. Defaults to <see cref="int.MaxValue"/>.
     /// </summary>
-    public int? MaxRecordCount { get; init; }
+    /// <remarks>
+    /// This restates a default owned by <c>LoaderBase</c>, so a test asserts the two still agree.
+    /// A change on the base side then fails the build rather than being silently overridden here.
+    /// </remarks>
+    public int MaxRecordCount { get; init; } = int.MaxValue;
 }

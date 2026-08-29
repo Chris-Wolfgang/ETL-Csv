@@ -184,16 +184,8 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
         Validators = options.Validators;
         OnValidationFailure = options.OnValidationFailure;
         InvalidRecordHandler = options.InvalidRecordHandler;
-
-        if (options.SkipRecordCount is { } skipRecordCount)
-        {
-            SkipRecordCount = skipRecordCount;
-        }
-
-        if (options.MaxRecordCount is { } maxRecordCount)
-        {
-            MaxRecordCount = maxRecordCount;
-        }
+        SkipRecordCount = options.SkipRecordCount;
+        MaxRecordCount = options.MaxRecordCount;
     }
 
 
