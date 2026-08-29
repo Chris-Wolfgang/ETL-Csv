@@ -139,7 +139,7 @@ public class CsvExtractorTests
             () => new CsvExtractor<PersonRecord>
             (
                 CreateCsvStream(ExpectedItems),
-                null!,
+                (IProgressTimer)null!,
                 NullLogger<CsvExtractor<PersonRecord>>.Instance
             )
         );

@@ -144,7 +144,7 @@ public class CsvLoaderTests
             () => new CsvLoader<PersonRecord>
             (
                 writer,
-                null!,
+                (IProgressTimer)null!,
                 NullLogger<CsvLoader<PersonRecord>>.Instance
             )
         );

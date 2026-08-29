@@ -130,6 +130,65 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     }
 
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CsvLoader{TRecord}"/> class configured from an
+    /// options record.
+    /// </summary>
+    /// <param name="streamWriter">The <see cref="StreamWriter"/> to write CSV data to.</param>
+    /// <param name="options">
+    /// The configuration to apply. When <c>null</c>, the documented defaults apply.
+    /// </param>
+    /// <param name="logger">
+    /// An optional logger instance for diagnostic output. When <c>null</c> — or omitted —
+    /// <see cref="NullLogger.Instance"/> is used and logging is disabled.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="streamWriter"/> is <c>null</c>.
+    /// </exception>
+    [RequiresUnreferencedCode("CsvLoader uses CsvHelper, which reflects over TRecord's members beyond what DynamicallyAccessedMembers can express (type converter constructors, non-public getters in some flows). The library is not trim/NativeAOT safe.")]
+    public CsvLoader
+    (
+        StreamWriter streamWriter,
+        CsvLoaderOptions<TRecord>? options,
+        ILogger<CsvLoader<TRecord>>? logger = null
+    )
+        : this(streamWriter, (ILogger?)logger)
+    {
+        ApplyOptions(options);
+    }
+
+
+
+    /// <summary>
+    /// Copies <paramref name="options"/> onto this instance. A <c>null</c> options object leaves
+    /// every property at its default.
+    /// </summary>
+    /// <param name="options">The configuration to apply, or <c>null</c>.</param>
+    internal void ApplyOptions(CsvLoaderOptions<TRecord>? options)
+    {
+        if (options is null)
+        {
+            return;
+        }
+
+        Delimiter = options.Delimiter;
+        Escape = options.Escape;
+        HasHeaderRecord = options.HasHeaderRecord;
+        LeaveOpen = options.LeaveOpen;
+        NewLine = options.NewLine;
+        Quote = options.Quote;
+        ShouldQuote = options.ShouldQuote;
+        TrimOptions = options.TrimOptions;
+        ColumnMaps = options.ColumnMaps;
+        Discriminator = options.Discriminator;
+        Validators = options.Validators;
+        OnValidationFailure = options.OnValidationFailure;
+        InvalidRecordHandler = options.InvalidRecordHandler;
+        SkipRecordCount = options.SkipRecordCount;
+        MaxRecordCount = options.MaxRecordCount;
+    }
+
+
 
     /// <summary>Gets or sets the field delimiter. Default is <c>","</c>.</summary>
     public string Delimiter { get; set; } = ",";

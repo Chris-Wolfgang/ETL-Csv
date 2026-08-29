@@ -253,6 +253,31 @@ public sealed class EtlPipelineCsvExtensionsTests : IDisposable
 
 
     [Fact]
+    public void Configuring_a_caller_supplied_extractor_leaves_its_other_properties_alone()
+    {
+        // Regression guard: the builder folds configuration into an options record for sources it
+        // constructs, but a caller-supplied extractor is already configured. Applying the whole
+        // record to it would reset every property the caller set directly - here, Quote.
+        var source = WriteTempFile("supplied.csv", "FirstName,LastName,Age\r\nAlice,Smith,30\r\n");
+        using var reader = new StreamReader(source);
+
+        var extractor = new CsvExtractor<PersonRecord>(reader)
+        {
+            Quote = '\'',
+            HasHeaderRecord = false
+        };
+
+        _ = EtlPipeline
+            .Create()
+            .CsvExtractor(extractor)
+            .Delimiter(";");
+
+        Assert.Equal('\'', extractor.Quote);
+        Assert.False(extractor.HasHeaderRecord);
+    }
+
+
+    [Fact]
     public void Configuring_the_extractor_after_it_is_materialized_throws()
     {
         var source = WriteTempFile("late.csv", "FirstName,LastName,Age\r\nAlice,Smith,30\r\n");
