@@ -9,6 +9,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+
+## [0.8.0] - 2026-08-29
+
+### Added
+
 - **Configuration via options records (#258).** `CsvExtractor<T>` and `CsvLoader<T>` gained
   constructors taking `CsvExtractorOptions<TRecord>` / `CsvLoaderOptions<TRecord>`, so configuration
   travels through the constructor instead of post-construction property assignment. Defaults live on
