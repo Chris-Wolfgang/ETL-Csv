@@ -124,6 +124,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Wolfgang.Etl.Csv.CsvExtractorOptions-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wolfgang.Etl.Csv.CsvExtractorOptions-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>",
+      "Summary": "<p sourcefile=\"api/Wolfgang.Etl.Csv.CsvExtractorOptions-1.yml\" sourcestartlinenumber=\"1\">Options for the <xref href=\"Wolfgang.Etl.Csv.CsvExtractor%601\" data-throw-if-not-resolved=\"false\"></xref> constructors.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Wolfgang.Etl.Csv.CsvExtractorProgress.yml",
       "output": {
         ".html": {
@@ -177,6 +191,20 @@
       "IsMRef": true,
       "Title": "Wolfgang.Etl.Csv.CsvLoader<TRecord>",
       "Summary": "<p sourcefile=\"api/Wolfgang.Etl.Csv.CsvLoader-1.yml\" sourcestartlinenumber=\"1\">Loads records of type <code class=\"typeparamref\">TRecord</code> into a CSV stream\nusing <a href=\"https://joshclose.github.io/CsvHelper/\">CsvHelper</a>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wolfgang.Etl.Csv.CsvLoaderOptions-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wolfgang.Etl.Csv.CsvLoaderOptions-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>",
+      "Summary": "<p sourcefile=\"api/Wolfgang.Etl.Csv.CsvLoaderOptions-1.yml\" sourcestartlinenumber=\"1\">Options for the <xref href=\"Wolfgang.Etl.Csv.CsvLoader%601\" data-throw-if-not-resolved=\"false\"></xref> constructors.</p>\n"
     },
     {
       "type": "ManagedReference",

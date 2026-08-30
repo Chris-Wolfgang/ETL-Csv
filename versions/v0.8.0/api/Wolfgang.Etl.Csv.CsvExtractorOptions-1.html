@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class CsvExtractorOptions&lt;TRecord&gt; | Wolfgang.Etl.Csv Documentation </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class CsvExtractorOptions&lt;TRecord&gt; | Wolfgang.Etl.Csv Documentation ">
+      
+      <meta name="description" content="Options for the  constructors.">
+      <link rel="icon" href="../favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Chris-Wolfgang/ETL-Csv/new/v0.8.0/apiSpec/new?filename=Wolfgang_Etl_Csv_CsvExtractorOptions_1.md&amp;value=---%0Auid%3A%20Wolfgang.Etl.Csv.CsvExtractorOptions%601%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="Wolfgang.Etl.Csv">
+            Wolfgang.Etl.Csv
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Wolfgang.Etl.Csv.CsvExtractorOptions`1">
+
+
+
+  <h1 id="Wolfgang_Etl_Csv_CsvExtractorOptions_1" data-uid="Wolfgang.Etl.Csv.CsvExtractorOptions`1" class="text-break">
+Class CsvExtractorOptions&lt;TRecord&gt;  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.8.0/src/Wolfgang.Etl.Csv/CsvExtractorOptions.cs/#L30"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Wolfgang.html">Wolfgang</a>.<a class="xref" href="Wolfgang.Etl.html">Etl</a>.<a class="xref" href="Wolfgang.Etl.Csv.html">Csv</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Wolfgang.Etl.Csv.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Options for the <a class="xref" href="Wolfgang.Etl.Csv.CsvExtractor-1.html">CsvExtractor&lt;TRecord&gt;</a> constructors.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed record CsvExtractorOptions&lt;TRecord&gt; : IEquatable&lt;CsvExtractorOptions&lt;TRecord&gt;&gt; where TRecord : notnull</code></pre>
+  </div>
+
+
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TRecord</code></dt>
+    <dd><p>The record type the extractor produces.</p>
+</dd>
+  </dl>
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">CsvExtractorOptions&lt;TRecord&gt;</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Wolfgang.Etl.Csv.CsvExtractorOptions-1.html">CsvExtractorOptions</a>&lt;TRecord&gt;&gt;</div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+  <h2 id="Wolfgang_Etl_Csv_CsvExtractorOptions_1_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>Supplied as the second constructor parameter, ahead of the optional logger. When the whole
+options object is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, or an individual property is left unset, the
+documented defaults below apply — defaults live on the property initializers here rather than
+in constructor bodies, so no constructor can accidentally diverge from them.</p>
+<p>
+This record deliberately carries no <code>Encoding</code> property. Decoding is performed by the
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.streamreader">StreamReader</a> supplied to the constructor, whose
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.streamreader.currentencoding">CurrentEncoding</a> is authoritative; the former
+<a class="xref" href="Wolfgang.Etl.Csv.CsvExtractor-1.html#Wolfgang_Etl_Csv_CsvExtractor_1_Encoding">Encoding</a> property never influenced it and is
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.obsoleteattribute">obsolete</a>. To read a non-default encoding, construct the
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.streamreader">StreamReader</a> with the encoding you want.
+</p>
+<p>
+<code>BadDataFound</code> and <code>ReadingExceptionOccurred</code> are intentionally absent: both are
+already <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.obsoleteattribute">obsolete</a> on <a class="xref" href="Wolfgang.Etl.Csv.CsvExtractor-1.html">CsvExtractor&lt;TRecord&gt;</a>,
+superseded by the unified error policy. Carrying them onto a new options record would
+reintroduce deprecated surface.
+</p>
+</div>
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Wolfgang_Etl_Csv_CsvExtractorOptions_1_AllowComments_" data-uid="Wolfgang.Etl.Csv.CsvExtractorOptions`1.AllowComments*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvExtractorOptions_1_AllowComments" data-uid="Wolfgang.Etl.Csv.CsvExtractorOptions`1.AllowComments">
+  AllowComments
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.8.0/src/Wolfgang.Etl.Csv/CsvExtractorOptions.cs/#L37"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether lines beginning with <a class="xref" href="Wolfgang.Etl.Csv.CsvExtractorOptions-1.html#Wolfgang_Etl_Csv_CsvExtractorOptions_1_Comment">Comment</a> are treated as
+comments and skipped. Defaults to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool AllowComments { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_CsvExtractorOptions_1_ColumnMaps_" data-uid="Wolfgang.Etl.Csv.CsvExtractorOptions`1.ColumnMaps*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvExtractorOptions_1_ColumnMaps" data-uid="Wolfgang.Etl.Csv.CsvExtractorOptions`1.ColumnMaps">
+  ColumnMaps
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.8.0/src/Wolfgang.Etl.Csv/CsvExtractorOptions.cs/#L108"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the explicit column mappings. Defaults to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, meaning mapping is
+driven by attributes on <code class="typeparamref">TRecord</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;CsvColumnMap&gt;? ColumnMaps { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Wolfgang.Etl.Csv.CsvColumnMap.html">CsvColumnMap</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_CsvExtractorOptions_1_Comment_" data-uid="Wolfgang.Etl.Csv.CsvExtractorOptions`1.Comment*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvExtractorOptions_1_Comment" data-uid="Wolfgang.Etl.Csv.CsvExtractorOptions`1.Comment">
+  Comment
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.8.0/src/Wolfgang.Etl.Csv/CsvExtractorOptions.cs/#L47"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the character that marks a comment line when <a class="xref" href="Wolfgang.Etl.Csv.CsvExtractorOptions-1.html#Wolfgang_Etl_Csv_CsvExtractorOptions_1_AllowComments">AllowComments</a> is
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>. Defaults to <code>'#'</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public char Comment { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_CsvExtractorOptions_1_Delimiter_" data-uid="Wolfgang.Etl.Csv.CsvExtractorOptions`1.Delimiter*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvExtractorOptions_1_Delimiter" data-uid="Wolfgang.Etl.Csv.CsvExtractorOptions`1.Delimiter">
+  Delimiter
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.8.0/src/Wolfgang.Etl.Csv/CsvExtractorOptions.cs/#L54"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the field delimiter. Defaults to <code>&quot;,&quot;</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string Delimiter { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_CsvExtractorOptions_1_Discriminator_" data-uid="Wolfgang.Etl.Csv.CsvExtractorOptions`1.Discriminator*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvExtractorOptions_1_Discriminator" data-uid="Wolfgang.Etl.Csv.CsvExtractorOptions`1.Discriminator">
+  Discriminator
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.8.0/src/Wolfgang.Etl.Csv/CsvExtractorOptions.cs/#L116"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the discriminator used to select a record shape per row. Defaults to
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, meaning every row maps to <code class="typeparamref">TRecord</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CsvDiscriminator&lt;TRecord&gt;? Discriminator { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Wolfgang.Etl.Csv.CsvDiscriminator-1.html">CsvDiscriminator</a>&lt;TRecord&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_CsvExtractorOptions_1_Escape_" data-uid="Wolfgang.Etl.Csv.CsvExtractorOptions`1.Escape*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvExtractorOptions_1_Escape" data-uid="Wolfgang.Etl.Csv.CsvExtractorOptions`1.Escape">
+  Escape
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.8.0/src/Wolfgang.Etl.Csv/CsvExtractorOptions.cs/#L61"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the escape character. Defaults to <code>'&quot;'</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public char Escape { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_CsvExtractorOptions_1_HasHeaderRecord_" data-uid="Wolfgang.Etl.Csv.CsvExtractorOptions`1.HasHeaderRecord*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvExtractorOptions_1_HasHeaderRecord" data-uid="Wolfgang.Etl.Csv.CsvExtractorOptions`1.HasHeaderRecord">
+  HasHeaderRecord
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.8.0/src/Wolfgang.Etl.Csv/CsvExtractorOptions.cs/#L69"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the first line is treated as a header record.
+Defaults to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool HasHeaderRecord { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_CsvExtractorOptions_1_IgnoreBlankLines_" data-uid="Wolfgang.Etl.Csv.CsvExtractorOptions`1.IgnoreBlankLines*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvExtractorOptions_1_IgnoreBlankLines" data-uid="Wolfgang.Etl.Csv.CsvExtractorOptions`1.IgnoreBlankLines">
+  IgnoreBlankLines
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.8.0/src/Wolfgang.Etl.Csv/CsvExtractorOptions.cs/#L77"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether blank lines are skipped rather than surfaced as records.
+Defaults to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IgnoreBlankLines { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_CsvExtractorOptions_1_InitialRecordIndex_" data-uid="Wolfgang.Etl.Csv.CsvExtractorOptions`1.InitialRecordIndex*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvExtractorOptions_1_InitialRecordIndex" data-uid="Wolfgang.Etl.Csv.CsvExtractorOptions`1.InitialRecordIndex">
+  InitialRecordIndex
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.8.0/src/Wolfgang.Etl.Csv/CsvExtractorOptions.cs/#L146"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the one-based index of the first record to read. Defaults to <code>1</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int InitialRecordIndex { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_CsvExtractorOptions_1_InvalidRecordHandler_" data-uid="Wolfgang.Etl.Csv.CsvExtractorOptions`1.InvalidRecordHandler*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvExtractorOptions_1_InvalidRecordHandler" data-uid="Wolfgang.Etl.Csv.CsvExtractorOptions`1.InvalidRecordHandler">
+  InvalidRecordHandler
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.8.0/src/Wolfgang.Etl.Csv/CsvExtractorOptions.cs/#L140"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a callback invoked for each record that fails validation. Defaults to
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, meaning no callback.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Action&lt;CsvInvalidRecord&lt;TRecord&gt;&gt;? InvalidRecordHandler { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="Wolfgang.Etl.Csv.CsvInvalidRecord-1.html">CsvInvalidRecord</a>&lt;TRecord&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_CsvExtractorOptions_1_LeaveOpen_" data-uid="Wolfgang.Etl.Csv.CsvExtractorOptions`1.LeaveOpen*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvExtractorOptions_1_LeaveOpen" data-uid="Wolfgang.Etl.Csv.CsvExtractorOptions`1.LeaveOpen">
+  LeaveOpen
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.8.0/src/Wolfgang.Etl.Csv/CsvExtractorOptions.cs/#L85"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the supplied reader is left open when the extractor is
+disposed. Defaults to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool LeaveOpen { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_CsvExtractorOptions_1_MaxRecordCount_" data-uid="Wolfgang.Etl.Csv.CsvExtractorOptions`1.MaxRecordCount*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvExtractorOptions_1_MaxRecordCount" data-uid="Wolfgang.Etl.Csv.CsvExtractorOptions`1.MaxRecordCount">
+  MaxRecordCount
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.8.0/src/Wolfgang.Etl.Csv/CsvExtractorOptions.cs/#L166"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the maximum number of records to extract. Alias for
+<code>ExtractorBase.MaximumItemCount</code>. Defaults to <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32.maxvalue">MaxValue</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int MaxRecordCount { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Wolfgang_Etl_Csv_CsvExtractorOptions_1_MaxRecordCount_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This restates a default owned by <code>ExtractorBase</code>, so a test asserts the two still agree.
+A change on the base side then fails the build rather than being silently overridden here.</p>
+</div>
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_CsvExtractorOptions_1_OnValidationFailure_" data-uid="Wolfgang.Etl.Csv.CsvExtractorOptions`1.OnValidationFailure*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvExtractorOptions_1_OnValidationFailure" data-uid="Wolfgang.Etl.Csv.CsvExtractorOptions`1.OnValidationFailure">
+  OnValidationFailure
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.8.0/src/Wolfgang.Etl.Csv/CsvExtractorOptions.cs/#L132"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the action taken when a record fails validation. Defaults to
+<a class="xref" href="Wolfgang.Etl.Csv.CsvValidationFailureAction.html#Wolfgang_Etl_Csv_CsvValidationFailureAction_Stop">Stop</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CsvValidationFailureAction OnValidationFailure { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Wolfgang.Etl.Csv.CsvValidationFailureAction.html">CsvValidationFailureAction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_CsvExtractorOptions_1_Quote_" data-uid="Wolfgang.Etl.Csv.CsvExtractorOptions`1.Quote*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvExtractorOptions_1_Quote" data-uid="Wolfgang.Etl.Csv.CsvExtractorOptions`1.Quote">
+  Quote
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.8.0/src/Wolfgang.Etl.Csv/CsvExtractorOptions.cs/#L92"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the quote character. Defaults to <code>'&quot;'</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public char Quote { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_CsvExtractorOptions_1_SkipRecordCount_" data-uid="Wolfgang.Etl.Csv.CsvExtractorOptions`1.SkipRecordCount*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvExtractorOptions_1_SkipRecordCount" data-uid="Wolfgang.Etl.Csv.CsvExtractorOptions`1.SkipRecordCount">
+  SkipRecordCount
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.8.0/src/Wolfgang.Etl.Csv/CsvExtractorOptions.cs/#L154"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the number of records to skip before extracting. Alias for
+<code>ExtractorBase.SkipItemCount</code>. Defaults to <code>0</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int SkipRecordCount { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_CsvExtractorOptions_1_TrimOptions_" data-uid="Wolfgang.Etl.Csv.CsvExtractorOptions`1.TrimOptions*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvExtractorOptions_1_TrimOptions" data-uid="Wolfgang.Etl.Csv.CsvExtractorOptions`1.TrimOptions">
+  TrimOptions
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.8.0/src/Wolfgang.Etl.Csv/CsvExtractorOptions.cs/#L100"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the whitespace-trimming behaviour applied to parsed fields. Defaults to
+<a class="xref" href="Wolfgang.Etl.Csv.CsvTrimOptions.html#Wolfgang_Etl_Csv_CsvTrimOptions_None">None</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CsvTrimOptions TrimOptions { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Wolfgang.Etl.Csv.CsvTrimOptions.html">CsvTrimOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_CsvExtractorOptions_1_Validators_" data-uid="Wolfgang.Etl.Csv.CsvExtractorOptions`1.Validators*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvExtractorOptions_1_Validators" data-uid="Wolfgang.Etl.Csv.CsvExtractorOptions`1.Validators">
+  Validators
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.8.0/src/Wolfgang.Etl.Csv/CsvExtractorOptions.cs/#L124"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the validators applied to each extracted record. Defaults to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>,
+meaning no validation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;CsvValidator&lt;TRecord&gt;&gt;? Validators { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Wolfgang.Etl.Csv.CsvValidator-1.html">CsvValidator</a>&lt;TRecord&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.8.0/src/Wolfgang.Etl.Csv/CsvExtractorOptions.cs/#L30" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Made with DocFX <script>(function(){var r='/';if(window.location.hostname.endsWith('.github.io')){var s=window.location.pathname.split('/').filter(Boolean);if(s.length)r='/'+s[0]+'/';}var t=document.createElement('script');t.src=r+'public/version-picker.js';t.async=true;document.head.appendChild(t);})();</script>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
