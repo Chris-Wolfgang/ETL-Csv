@@ -72,8 +72,8 @@ public class CsvExtractorTests
         return new CsvExtractor<PersonRecord>
         (
             CreateCsvStream(ExpectedItems),
-            NullLogger<CsvExtractor<PersonRecord>>.Instance,
-            timer
+            timer,
+            NullLogger<CsvExtractor<PersonRecord>>.Instance
         );
     }
 
@@ -106,16 +106,27 @@ public class CsvExtractorTests
 
 
     [Fact]
-    public void Constructor_with_logger_when_logger_is_null_throws_ArgumentNullException()
+    public void Constructor_when_logger_is_null_uses_NullLogger()
     {
-        Assert.Throws<ArgumentNullException>
+        // logger is now an optional trailing parameter; null means "no logging"
+        // (NullLogger.Instance) rather than an argument error.
+        var sut = new CsvExtractor<PersonRecord>
         (
-            () => new CsvExtractor<PersonRecord>
-            (
-                CreateCsvStream(ExpectedItems),
-                logger: null!
-            )
+            CreateCsvStream(ExpectedItems),
+            logger: null
         );
+
+        Assert.NotNull(sut);
+    }
+
+
+
+    [Fact]
+    public void Constructor_when_logger_is_omitted_uses_NullLogger()
+    {
+        var sut = new CsvExtractor<PersonRecord>(CreateCsvStream(ExpectedItems));
+
+        Assert.NotNull(sut);
     }
 
 
@@ -128,8 +139,8 @@ public class CsvExtractorTests
             () => new CsvExtractor<PersonRecord>
             (
                 CreateCsvStream(ExpectedItems),
-                NullLogger<CsvExtractor<PersonRecord>>.Instance,
-                null!
+                (IProgressTimer)null!,
+                NullLogger<CsvExtractor<PersonRecord>>.Instance
             )
         );
     }
@@ -144,8 +155,8 @@ public class CsvExtractorTests
             () => new CsvExtractor<PersonRecord>
             (
                 null!,
-                NullLogger<CsvExtractor<PersonRecord>>.Instance,
-                new ManualProgressTimer()
+                new ManualProgressTimer(),
+                NullLogger<CsvExtractor<PersonRecord>>.Instance
             )
         );
     }
@@ -158,8 +169,8 @@ public class CsvExtractorTests
         var sut = new CsvExtractor<PersonRecord>
         (
             CreateCsvStream(ExpectedItems),
-            logger: null,
-            new ManualProgressTimer()
+            new ManualProgressTimer(),
+            logger: null
         );
 
         Assert.NotNull(sut);

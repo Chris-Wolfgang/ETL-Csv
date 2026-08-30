@@ -14,8 +14,13 @@ const string csv =
     "A-4,7,this note is deliberately way too long for the limit\n";  // fails MaxLength
 
 using var reader = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(csv)));
-var extractor = new CsvExtractor<Order>(reader)
-{
+// These files still configure via the deprecated property setters in places where the value is
+// applied after construction, so it cannot travel through the options constructor without
+// restructuring the test. They keep exercising the setter path until the setters are removed.
+#pragma warning disable CS0618
+
+var extractor = new CsvExtractor<Order>(reader, new CsvExtractorOptions<Order>
+        {
     Validators =
     [
         CsvValidator.NotNullOrEmpty<Order>(o => o.OrderNumber, nameof(Order.OrderNumber)),
@@ -24,8 +29,7 @@ var extractor = new CsvExtractor<Order>(reader)
     ],
     OnValidationFailure = CsvValidationFailureAction.Skip,
     InvalidRecordHandler = invalid =>
-        Console.WriteLine($"  skipped row {invalid.LineNumber}: {string.Join("; ", invalid.Failures)}"),
-};
+        Console.WriteLine($"  skipped row {invalid.LineNumber}: {string.Join("; ", invalid.Failures)}"),});
 
 // Pass a progress sink so the invalid-count is surfaced through CsvExtractorProgress at completion.
 var progress = new LastValueProgress<CsvExtractorProgress>();

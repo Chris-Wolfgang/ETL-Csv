@@ -10,6 +10,11 @@ using Wolfgang.Etl.Csv.Tests.Unit.TestModels;
 using Wolfgang.Etl.TestKit.Xunit;
 using Xunit;
 
+// These files still configure via the deprecated property setters in places where the value is
+// applied after construction, so it cannot travel through the options constructor without
+// restructuring the test. They keep exercising the setter path until the setters are removed.
+#pragma warning disable CS0618
+
 namespace Wolfgang.Etl.Csv.Tests.Unit;
 
 public class CsvLoaderTests
@@ -35,10 +40,9 @@ public class CsvLoaderTests
     {
         var stream = new MemoryStream();
         var writer = new StreamWriter(stream, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false), 1024, leaveOpen: true);
-        return new CsvLoader<PersonRecord>(writer)
+        return new CsvLoader<PersonRecord>(writer, new CsvLoaderOptions<PersonRecord>
         {
-            LeaveOpen = true,
-        };
+            LeaveOpen = true,});
     }
 
 
@@ -62,14 +66,11 @@ public class CsvLoaderTests
     {
         var stream = new MemoryStream();
         var writer = new StreamWriter(stream, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false), 1024, leaveOpen: true);
-        return new CsvLoader<PersonRecord>
-        (
-            writer,
-            NullLogger<CsvLoader<PersonRecord>>.Instance,
-            timer
-        )
+        // The timer-injection ctor is internal and has no options overload, so this stays on the
+        // setter path; the file-scoped CS0618 suppression above covers it.
+        return new CsvLoader<PersonRecord>(writer, timer, NullLogger<CsvLoader<PersonRecord>>.Instance)
         {
-            LeaveOpen = true,
+            LeaveOpen = true
         };
     }
 
@@ -102,19 +103,33 @@ public class CsvLoaderTests
 
 
     [Fact]
-    public void Constructor_with_logger_when_logger_is_null_throws_ArgumentNullException()
+    public void Constructor_when_logger_is_null_uses_NullLogger()
+    {
+        // logger is now an optional trailing parameter; null means "no logging"
+        // (NullLogger.Instance) rather than an argument error.
+        var stream = new MemoryStream();
+        var writer = new StreamWriter(stream, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false), 1024, leaveOpen: true);
+
+        var sut = new CsvLoader<PersonRecord>
+        (
+            writer,
+            logger: null
+        );
+
+        Assert.NotNull(sut);
+    }
+
+
+
+    [Fact]
+    public void Constructor_when_logger_is_omitted_uses_NullLogger()
     {
         var stream = new MemoryStream();
         var writer = new StreamWriter(stream, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false), 1024, leaveOpen: true);
 
-        Assert.Throws<ArgumentNullException>
-        (
-            () => new CsvLoader<PersonRecord>
-            (
-                writer,
-                logger: null!
-            )
-        );
+        var sut = new CsvLoader<PersonRecord>(writer);
+
+        Assert.NotNull(sut);
     }
 
 
@@ -130,8 +145,8 @@ public class CsvLoaderTests
             () => new CsvLoader<PersonRecord>
             (
                 writer,
-                NullLogger<CsvLoader<PersonRecord>>.Instance,
-                null!
+                (IProgressTimer)null!,
+                NullLogger<CsvLoader<PersonRecord>>.Instance
             )
         );
     }
@@ -146,8 +161,8 @@ public class CsvLoaderTests
             () => new CsvLoader<PersonRecord>
             (
                 null!,
-                NullLogger<CsvLoader<PersonRecord>>.Instance,
-                new ManualProgressTimer()
+                new ManualProgressTimer(),
+                NullLogger<CsvLoader<PersonRecord>>.Instance
             )
         );
     }
@@ -163,8 +178,8 @@ public class CsvLoaderTests
         var sut = new CsvLoader<PersonRecord>
         (
             writer,
-            logger: null,
-            new ManualProgressTimer()
+            new ManualProgressTimer(),
+            logger: null
         );
 
         Assert.NotNull(sut);
@@ -202,10 +217,9 @@ public class CsvLoaderTests
     {
         var stream = new MemoryStream();
         var writer = new StreamWriter(stream, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false), 1024, leaveOpen: true);
-        var sut = new CsvLoader<PersonRecord>(writer)
+        var sut = new CsvLoader<PersonRecord>(writer, new CsvLoaderOptions<PersonRecord>
         {
-            LeaveOpen = true,
-        };
+            LeaveOpen = true,});
 
         await sut.LoadAsync(SourceItems.Take(2).ToAsyncEnumerable());
 
@@ -226,11 +240,10 @@ public class CsvLoaderTests
     {
         var stream = new MemoryStream();
         var writer = new StreamWriter(stream, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false), 1024, leaveOpen: true);
-        var sut = new CsvLoader<PersonRecord>(writer)
+        var sut = new CsvLoader<PersonRecord>(writer, new CsvLoaderOptions<PersonRecord>
         {
             HasHeaderRecord = false,
-            LeaveOpen = true,
-        };
+            LeaveOpen = true,});
 
         await sut.LoadAsync(SourceItems.Take(1).ToAsyncEnumerable());
 
@@ -250,11 +263,10 @@ public class CsvLoaderTests
     {
         var stream = new MemoryStream();
         var writer = new StreamWriter(stream, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false), 1024, leaveOpen: true);
-        var sut = new CsvLoader<PersonRecord>(writer)
+        var sut = new CsvLoader<PersonRecord>(writer, new CsvLoaderOptions<PersonRecord>
         {
             Delimiter = "|",
-            LeaveOpen = true,
-        };
+            LeaveOpen = true,});
 
         await sut.LoadAsync(SourceItems.Take(1).ToAsyncEnumerable());
 
@@ -274,11 +286,10 @@ public class CsvLoaderTests
     {
         var stream = new MemoryStream();
         var writer = new StreamWriter(stream, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false), 1024, leaveOpen: true);
-        var sut = new CsvLoader<PersonRecord>(writer)
+        var sut = new CsvLoader<PersonRecord>(writer, new CsvLoaderOptions<PersonRecord>
         {
             ShouldQuote = _ => true,
-            LeaveOpen = true,
-        };
+            LeaveOpen = true,});
 
         await sut.LoadAsync(SourceItems.Take(1).ToAsyncEnumerable());
 

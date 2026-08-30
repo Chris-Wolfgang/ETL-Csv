@@ -56,9 +56,8 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     (
         StreamWriter streamWriter
     )
+        : this(streamWriter, (ILogger?)null)
     {
-        _writer = streamWriter ?? throw new ArgumentNullException(nameof(streamWriter));
-        _logger = NullLogger.Instance;
     }
 
 
@@ -67,19 +66,21 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     /// Initializes a new instance of the <see cref="CsvLoader{TRecord}"/> class with diagnostic logging.
     /// </summary>
     /// <param name="streamWriter">The <see cref="StreamWriter"/> to write CSV data to.</param>
-    /// <param name="logger">The logger instance for diagnostic output.</param>
+    /// <param name="logger">
+    /// An optional logger instance for diagnostic output. When <c>null</c> — or omitted —
+    /// <see cref="NullLogger.Instance"/> is used and logging is disabled.
+    /// </param>
     /// <exception cref="ArgumentNullException">
-    /// <paramref name="streamWriter"/> or <paramref name="logger"/> is <c>null</c>.
+    /// <paramref name="streamWriter"/> is <c>null</c>.
     /// </exception>
     [RequiresUnreferencedCode("CsvLoader uses CsvHelper, which reflects over TRecord's members beyond what DynamicallyAccessedMembers can express (type converter constructors, non-public getters in some flows). The library is not trim/NativeAOT safe.")]
     public CsvLoader
     (
         StreamWriter streamWriter,
-        ILogger<CsvLoader<TRecord>> logger
+        ILogger<CsvLoader<TRecord>>? logger = null
     )
+        : this(streamWriter, (ILogger?)logger)
     {
-        _writer = streamWriter ?? throw new ArgumentNullException(nameof(streamWriter));
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
 
@@ -89,29 +90,115 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     /// injected progress timer for testing.
     /// </summary>
     /// <param name="streamWriter">The <see cref="StreamWriter"/> to write CSV data to.</param>
-    /// <param name="logger">An optional logger instance for diagnostic output.</param>
     /// <param name="timer">The progress timer to inject.</param>
+    /// <param name="logger">
+    /// An optional logger instance for diagnostic output. When <c>null</c> — or omitted —
+    /// <see cref="NullLogger.Instance"/> is used and logging is disabled.
+    /// </param>
     internal CsvLoader
     (
         StreamWriter streamWriter,
-        ILogger? logger,
-        IProgressTimer timer
+        IProgressTimer timer,
+        ILogger? logger = null
     )
+        : this(streamWriter, logger)
     {
-        _writer = streamWriter ?? throw new ArgumentNullException(nameof(streamWriter));
-        _logger = logger ?? NullLogger.Instance;
         _progressTimer = timer ?? throw new ArgumentNullException(nameof(timer));
     }
 
 
 
+    /// <summary>
+    /// The single initialization path for <see cref="CsvLoader{TRecord}"/>. Every other
+    /// constructor chains into this one, so the shared fields are assigned in exactly one place.
+    /// </summary>
+    /// <param name="streamWriter">The <see cref="StreamWriter"/> to write CSV data to.</param>
+    /// <param name="logger">
+    /// The logger to use, or <c>null</c> for <see cref="NullLogger.Instance"/>.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="streamWriter"/> is <c>null</c>.
+    /// </exception>
+    private CsvLoader
+    (
+        StreamWriter streamWriter,
+        ILogger? logger
+    )
+    {
+        _writer = streamWriter ?? throw new ArgumentNullException(nameof(streamWriter));
+        _logger = logger ?? NullLogger.Instance;
+    }
+
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CsvLoader{TRecord}"/> class configured from an
+    /// options record.
+    /// </summary>
+    /// <param name="streamWriter">The <see cref="StreamWriter"/> to write CSV data to.</param>
+    /// <param name="options">
+    /// The configuration to apply. When <c>null</c>, the documented defaults apply.
+    /// </param>
+    /// <param name="logger">
+    /// An optional logger instance for diagnostic output. When <c>null</c> — or omitted —
+    /// <see cref="NullLogger.Instance"/> is used and logging is disabled.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="streamWriter"/> is <c>null</c>.
+    /// </exception>
+    [RequiresUnreferencedCode("CsvLoader uses CsvHelper, which reflects over TRecord's members beyond what DynamicallyAccessedMembers can express (type converter constructors, non-public getters in some flows). The library is not trim/NativeAOT safe.")]
+    public CsvLoader
+    (
+        StreamWriter streamWriter,
+        CsvLoaderOptions<TRecord>? options,
+        ILogger<CsvLoader<TRecord>>? logger = null
+    )
+        : this(streamWriter, (ILogger?)logger)
+    {
+        ApplyOptions(options);
+    }
+
+
+
+    /// <summary>
+    /// Copies <paramref name="options"/> onto this instance. A <c>null</c> options object leaves
+    /// every property at its default.
+    /// </summary>
+    /// <param name="options">The configuration to apply, or <c>null</c>.</param>
+    internal void ApplyOptions(CsvLoaderOptions<TRecord>? options)
+    {
+#pragma warning disable CS0618 // ApplyOptions is the supported replacement for these setters; it necessarily writes them.
+        if (options is null)
+        {
+            return;
+        }
+
+        Delimiter = options.Delimiter;
+        Escape = options.Escape;
+        HasHeaderRecord = options.HasHeaderRecord;
+        LeaveOpen = options.LeaveOpen;
+        NewLine = options.NewLine;
+        Quote = options.Quote;
+        ShouldQuote = options.ShouldQuote;
+        TrimOptions = options.TrimOptions;
+        ColumnMaps = options.ColumnMaps;
+        Discriminator = options.Discriminator;
+        Validators = options.Validators;
+        OnValidationFailure = options.OnValidationFailure;
+        InvalidRecordHandler = options.InvalidRecordHandler;
+        SkipRecordCount = options.SkipRecordCount;
+        MaxRecordCount = options.MaxRecordCount;
+#pragma warning restore CS0618
+    }
+
+
+
     /// <summary>Gets or sets the field delimiter. Default is <c>","</c>.</summary>
-    public string Delimiter { get; set; } = ",";
+    public string Delimiter { get; [Obsolete("Configure Delimiter through CsvLoaderOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set; } = ",";
 
 
 
     /// <summary>Gets or sets the character used to escape the quote character within a field.</summary>
-    public char Escape { get; set; } = '"';
+    public char Escape { get; [Obsolete("Configure Escape through CsvLoaderOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set; } = '"';
 
 
 
@@ -127,12 +214,12 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     /// encoding, construct the <see cref="StreamWriter"/> with the encoding you want
     /// and ignore this property.
     /// </remarks>
-    public Encoding Encoding { get; set; } = Encoding.UTF8;
+    public Encoding Encoding { get; [Obsolete("This property is inert - it never controlled how bytes are decoded or encoded. Construct the StreamWriter with the encoding you want. This setter will be removed in a future release.")] set; } = Encoding.UTF8;
 
 
 
     /// <summary>Gets or sets a value indicating whether a header record should be written.</summary>
-    public bool HasHeaderRecord { get; set; } = true;
+    public bool HasHeaderRecord { get; [Obsolete("Configure HasHeaderRecord through CsvLoaderOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set; } = true;
 
 
 
@@ -144,17 +231,17 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     /// Defaults to <c>true</c> because the caller owns the <see cref="StreamWriter"/>
     /// passed into the constructor.
     /// </remarks>
-    public bool LeaveOpen { get; set; } = true;
+    public bool LeaveOpen { get; [Obsolete("Configure LeaveOpen through CsvLoaderOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set; } = true;
 
 
 
     /// <summary>Gets or sets the line terminator written between records.</summary>
-    public string NewLine { get; set; } = "\r\n";
+    public string NewLine { get; [Obsolete("Configure NewLine through CsvLoaderOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set; } = "\r\n";
 
 
 
     /// <summary>Gets or sets the quote character used to wrap fields when needed.</summary>
-    public char Quote { get; set; } = '"';
+    public char Quote { get; [Obsolete("Configure Quote through CsvLoaderOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set; } = '"';
 
 
 
@@ -162,12 +249,12 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     /// Gets or sets a callback that decides whether a field should be quoted.
     /// When <c>null</c>, the underlying parser's default policy is used.
     /// </summary>
-    public Func<CsvShouldQuoteContext, bool>? ShouldQuote { get; set; }
+    public Func<CsvShouldQuoteContext, bool>? ShouldQuote { get; [Obsolete("Configure ShouldQuote through CsvLoaderOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set; }
 
 
 
     /// <summary>Gets or sets the trimming options applied while writing.</summary>
-    public CsvTrimOptions TrimOptions { get; set; } = CsvTrimOptions.None;
+    public CsvTrimOptions TrimOptions { get; [Obsolete("Configure TrimOptions through CsvLoaderOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set; } = CsvTrimOptions.None;
 
 
 
@@ -181,7 +268,7 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     /// and non-empty, the runtime maps are the only source of property-to-column
     /// bindings; attribute-based mapping is bypassed.
     /// </remarks>
-    public IReadOnlyList<CsvColumnMap>? ColumnMaps { get; set; }
+    public IReadOnlyList<CsvColumnMap>? ColumnMaps { get; [Obsolete("Configure ColumnMaps through CsvLoaderOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set; }
 
 
 
@@ -193,7 +280,7 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     /// discriminator is set (the shapes have no common header); a record whose runtime type is not
     /// mapped is handled per <see cref="CsvDiscriminator{TBase}.UnknownDiscriminator"/>.
     /// </summary>
-    public CsvDiscriminator<TRecord>? Discriminator { get; set; }
+    public CsvDiscriminator<TRecord>? Discriminator { get; [Obsolete("Configure Discriminator through CsvLoaderOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set; }
 
 
 
@@ -202,7 +289,7 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     /// more of them is counted in <see cref="CsvLoaderProgress.CurrentInvalidItemCount"/>, passed to
     /// <see cref="InvalidRecordHandler"/>, and then handled per <see cref="OnValidationFailure"/>.
     /// </summary>
-    public IReadOnlyList<CsvValidator<TRecord>>? Validators { get; set; }
+    public IReadOnlyList<CsvValidator<TRecord>>? Validators { get; [Obsolete("Configure Validators through CsvLoaderOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set; }
 
 
 
@@ -210,7 +297,7 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     /// How a record that fails validation is handled. Defaults to <see cref="CsvValidationFailureAction.Stop"/>
     /// (the first invalid record raises a <see cref="CsvValidationException"/>).
     /// </summary>
-    public CsvValidationFailureAction OnValidationFailure { get; set; } = CsvValidationFailureAction.Stop;
+    public CsvValidationFailureAction OnValidationFailure { get; [Obsolete("Configure OnValidationFailure through CsvLoaderOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set; } = CsvValidationFailureAction.Stop;
 
 
 
@@ -218,7 +305,7 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     /// Optional callback invoked for each record that fails validation, before <see cref="OnValidationFailure"/>
     /// is applied. Use it to log or quarantine invalid rows.
     /// </summary>
-    public Action<CsvInvalidRecord<TRecord>>? InvalidRecordHandler { get; set; }
+    public Action<CsvInvalidRecord<TRecord>>? InvalidRecordHandler { get; [Obsolete("Configure InvalidRecordHandler through CsvLoaderOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set; }
 
 
 
@@ -241,6 +328,7 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     public int SkipRecordCount
     {
         get => SkipItemCount;
+        [Obsolete("Configure SkipRecordCount through CsvLoaderOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")]
         set => SkipItemCount = value;
     }
 
@@ -253,6 +341,7 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     public int MaxRecordCount
     {
         get => MaximumItemCount;
+        [Obsolete("Configure MaxRecordCount through CsvLoaderOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")]
         set => MaximumItemCount = value;
     }
 
