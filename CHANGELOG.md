@@ -53,6 +53,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **`Wolfgang.Etl.Abstractions`, `Wolfgang.Etl.TestKit` and `Wolfgang.Etl.TestKit.Xunit` moved to
+  0.23.4.** No runtime API change on their side — 0.23.4 is CI, test-coverage and packaging work —
+  and the shipped dependency floors are unchanged from 0.23.3
+  (`Microsoft.Bcl.AsyncInterfaces` 10.0.11, `System.ComponentModel.Annotations` 5.0.0), so this
+  introduces no transitive movement for consumers.
+
 - **`logger` is now an optional trailing constructor parameter on `CsvExtractor<T>` and
   `CsvLoader<T>`.** `ILogger<T> logger` became `ILogger<T>? logger = null`, and passing `null` (or
   omitting it) now resolves to `NullLogger.Instance` instead of throwing `ArgumentNullException`.
