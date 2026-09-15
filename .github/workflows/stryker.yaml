@@ -63,9 +63,13 @@ jobs:
             8.0.x
             10.0.x
 
-      - name: Install dotnet-stryker
-        if: steps.check.outputs.found == 'true'
-        run: dotnet tool update -g dotnet-stryker || dotnet tool install -g dotnet-stryker
+      - name: Restore dotnet-stryker from the tool manifest
+        # The repo has a local tool manifest (.config/dotnet-tools.json, added with the
+        # mutation gate in #68). With a manifest present, `dotnet stryker` resolves the
+        # LOCAL tool and refuses to run until `dotnet tool restore` — a global install is
+        # ignored, which is why this workflow failed every week since 2026-08-23. Restoring
+        # also pins the version to the manifest, matching mutation.yaml.
+        run: dotnet tool restore
 
       - name: Run Stryker
         if: steps.check.outputs.found == 'true'
