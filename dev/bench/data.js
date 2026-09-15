@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1789491450204,
+  "lastUpdate": 1789512028397,
   "repoUrl": "https://github.com/Chris-Wolfgang/ETL-Csv",
   "entries": {
     "BenchmarkDotNet": [
@@ -5220,6 +5220,186 @@ window.BENCHMARK_DATA = {
             "value": 437222824.6666667,
             "unit": "ns",
             "range": "± 355036.30969568924"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "3ecf69337316568cb99aa4a159b1b144d23244a0",
+          "message": "Merge pull request #284 from Chris-Wolfgang/chore/hide-single-arg-ctors\n\nchore(api): hide the single-argument stage ctors from IntelliSense and retain them permanently",
+          "timestamp": "2026-09-15T18:37:10-04:00",
+          "tree_id": "38c417e42bd2955326d65a7caffe708e2a1e0c33",
+          "url": "https://github.com/Chris-Wolfgang/ETL-Csv/commit/3ecf69337316568cb99aa4a159b1b144d23244a0"
+        },
+        "date": 1789512025041,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.DateTimeBenchmarks.Extract_Memory(RecordCount: 10000)",
+            "value": 4407112.471354167,
+            "unit": "ns",
+            "range": "± 80215.781935739"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.DateTimeBenchmarks.Load_Memory(RecordCount: 10000)",
+            "value": 4435409.2421875,
+            "unit": "ns",
+            "range": "± 212053.89647541885"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.ExtractorBenchmarks.Memory_TextReader(RecordCount: 1000)",
+            "value": 1100325.0013020833,
+            "unit": "ns",
+            "range": "± 184228.13795736097"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.ExtractorBenchmarks.File_TextReader_1KB(RecordCount: 1000)",
+            "value": 1338572.0546875,
+            "unit": "ns",
+            "range": "± 96108.17597633821"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.ExtractorBenchmarks.File_TextReader_64KB(RecordCount: 1000)",
+            "value": 1326463.0755208333,
+            "unit": "ns",
+            "range": "± 143090.7115701078"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.ExtractorBenchmarks.Memory_TextReader(RecordCount: 10000)",
+            "value": 3379617.4739583335,
+            "unit": "ns",
+            "range": "± 103249.76883363222"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.ExtractorBenchmarks.File_TextReader_1KB(RecordCount: 10000)",
+            "value": 4358442.606770833,
+            "unit": "ns",
+            "range": "± 135185.2082689748"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.ExtractorBenchmarks.File_TextReader_64KB(RecordCount: 10000)",
+            "value": 4539270.005208333,
+            "unit": "ns",
+            "range": "± 236683.4297577948"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.ExtractorBenchmarks.Memory_TextReader(RecordCount: 100000)",
+            "value": 27575072.15625,
+            "unit": "ns",
+            "range": "± 767226.4465449553"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.ExtractorBenchmarks.File_TextReader_1KB(RecordCount: 100000)",
+            "value": 38489136.44444445,
+            "unit": "ns",
+            "range": "± 3241472.2436422724"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.ExtractorBenchmarks.File_TextReader_64KB(RecordCount: 100000)",
+            "value": 28532238.25,
+            "unit": "ns",
+            "range": "± 239945.92545760807"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.LoaderBenchmarks.Memory_TextWriter(RecordCount: 1000)",
+            "value": 1385032.0924479167,
+            "unit": "ns",
+            "range": "± 87755.49749559672"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.LoaderBenchmarks.File_TextWriter_1KB(RecordCount: 1000)",
+            "value": 5784377,
+            "unit": "ns",
+            "range": "± 2203660.004407877"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.LoaderBenchmarks.File_TextWriter_64KB(RecordCount: 1000)",
+            "value": 5817189.473958333,
+            "unit": "ns",
+            "range": "± 2872997.9540921133"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.LoaderBenchmarks.Memory_TextWriter(RecordCount: 10000)",
+            "value": 4176272.6119791665,
+            "unit": "ns",
+            "range": "± 26844.060693467127"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.LoaderBenchmarks.File_TextWriter_1KB(RecordCount: 10000)",
+            "value": 15025894.85185185,
+            "unit": "ns",
+            "range": "± 7460778.436164241"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.LoaderBenchmarks.File_TextWriter_64KB(RecordCount: 10000)",
+            "value": 8342177.69047619,
+            "unit": "ns",
+            "range": "± 2335564.6490719225"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.LoaderBenchmarks.Memory_TextWriter(RecordCount: 100000)",
+            "value": 30993111,
+            "unit": "ns",
+            "range": "± 1068130.6976310434"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.LoaderBenchmarks.File_TextWriter_1KB(RecordCount: 100000)",
+            "value": 82532449.83333333,
+            "unit": "ns",
+            "range": "± 27006233.533580154"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.LoaderBenchmarks.File_TextWriter_64KB(RecordCount: 100000)",
+            "value": 89864498.83333333,
+            "unit": "ns",
+            "range": "± 60496468.16325752"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.MemoryDeltaBenchmarks.Extract_MemoryDelta(RecordCount: 0)",
+            "value": 297920.4951171875,
+            "unit": "ns",
+            "range": "± 4016.3795187713"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.MemoryDeltaBenchmarks.Extract_MemoryDelta(RecordCount: 1)",
+            "value": 1207901.37109375,
+            "unit": "ns",
+            "range": "± 7573.341883308018"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.MemoryDeltaBenchmarks.Extract_MemoryDelta(RecordCount: 1000)",
+            "value": 1502872.30078125,
+            "unit": "ns",
+            "range": "± 97538.37449671712"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.MemoryDeltaBenchmarks.Extract_MemoryDelta(RecordCount: 10000)",
+            "value": 4152332.6901041665,
+            "unit": "ns",
+            "range": "± 9396.791719278388"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.MemoryDeltaBenchmarks.Extract_MemoryDelta(RecordCount: 100000)",
+            "value": 31769808.577777777,
+            "unit": "ns",
+            "range": "± 132197.53147401699"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.MemoryDeltaBenchmarks.Extract_MemoryDelta(RecordCount: 1000000)",
+            "value": 295823820.8333333,
+            "unit": "ns",
+            "range": "± 18758201.319888536"
           }
         ]
       }
