@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Wolfgang.Etl.Abstractions;
 
 namespace Wolfgang.Etl.Csv;
 
@@ -21,7 +22,7 @@ namespace Wolfgang.Etl.Csv;
 /// </para>
 /// </remarks>
 /// <typeparam name="TRecord">The record type the loader writes.</typeparam>
-public sealed record CsvLoaderOptions<TRecord>
+public sealed record CsvLoaderOptions<TRecord> : LoaderOptions
     where TRecord : notnull
 {
     /// <summary>
@@ -124,22 +125,28 @@ public sealed record CsvLoaderOptions<TRecord>
 
 
     /// <summary>
-    /// Gets the number of records to skip before loading. Alias for
-    /// <c>LoaderBase.SkipItemCount</c>. Defaults to <c>0</c>.
+    /// Deprecated alias for <see cref="LoaderOptions.SkipItemCount"/>, which this record now inherits. Reads and writes
+    /// forward to it; the two never diverge.
     /// </summary>
-    public int SkipRecordCount { get; init; }
+    [Obsolete("Configure SkipItemCount, inherited from LoaderOptions, instead. SkipRecordCount forwards to it and will be removed.")]
+    public int SkipRecordCount
+    {
+        get => SkipItemCount;
+        init => SkipItemCount = value;
+    }
 
 
 
     /// <summary>
-    /// Gets the maximum number of records to load. Alias for
-    /// <c>LoaderBase.MaximumItemCount</c>. Defaults to <see cref="int.MaxValue"/>.
+    /// Deprecated alias for <see cref="LoaderOptions.MaximumItemCount"/>, which this record now inherits. Reads and writes
+    /// forward to it; the two never diverge.
     /// </summary>
-    /// <remarks>
-    /// This restates a default owned by <c>LoaderBase</c>, so a test asserts the two still agree.
-    /// A change on the base side then fails the build rather than being silently overridden here.
-    /// </remarks>
-    public int MaxRecordCount { get; init; } = int.MaxValue;
+    [Obsolete("Configure MaximumItemCount, inherited from LoaderOptions, instead. MaxRecordCount forwards to it and will be removed.")]
+    public int MaxRecordCount
+    {
+        get => MaximumItemCount;
+        init => MaximumItemCount = value;
+    }
 
 
 

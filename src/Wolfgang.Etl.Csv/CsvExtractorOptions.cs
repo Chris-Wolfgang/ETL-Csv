@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Wolfgang.Etl.Abstractions;
 
 namespace Wolfgang.Etl.Csv;
 
@@ -27,7 +28,7 @@ namespace Wolfgang.Etl.Csv;
 /// </para>
 /// </remarks>
 /// <typeparam name="TRecord">The record type the extractor produces.</typeparam>
-public sealed record CsvExtractorOptions<TRecord>
+public sealed record CsvExtractorOptions<TRecord> : ExtractorOptions
     where TRecord : notnull
 {
     /// <summary>
@@ -148,20 +149,26 @@ public sealed record CsvExtractorOptions<TRecord>
 
 
     /// <summary>
-    /// Gets the number of records to skip before extracting. Alias for
-    /// <c>ExtractorBase.SkipItemCount</c>. Defaults to <c>0</c>.
+    /// Deprecated alias for <see cref="ExtractorOptions.SkipItemCount"/>, which this record now inherits. Reads and writes
+    /// forward to it; the two never diverge.
     /// </summary>
-    public int SkipRecordCount { get; init; }
+    [Obsolete("Configure SkipItemCount, inherited from ExtractorOptions, instead. SkipRecordCount forwards to it and will be removed.")]
+    public int SkipRecordCount
+    {
+        get => SkipItemCount;
+        init => SkipItemCount = value;
+    }
 
 
 
     /// <summary>
-    /// Gets the maximum number of records to extract. Alias for
-    /// <c>ExtractorBase.MaximumItemCount</c>. Defaults to <see cref="int.MaxValue"/>.
+    /// Deprecated alias for <see cref="ExtractorOptions.MaximumItemCount"/>, which this record now inherits. Reads and writes
+    /// forward to it; the two never diverge.
     /// </summary>
-    /// <remarks>
-    /// This restates a default owned by <c>ExtractorBase</c>, so a test asserts the two still agree.
-    /// A change on the base side then fails the build rather than being silently overridden here.
-    /// </remarks>
-    public int MaxRecordCount { get; init; } = int.MaxValue;
+    [Obsolete("Configure MaximumItemCount, inherited from ExtractorOptions, instead. MaxRecordCount forwards to it and will be removed.")]
+    public int MaxRecordCount
+    {
+        get => MaximumItemCount;
+        init => MaximumItemCount = value;
+    }
 }
