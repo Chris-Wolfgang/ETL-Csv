@@ -1,1 +1,4 @@
 #nullable enable
+Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.IsDryRun.get -> bool
+Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.IsDryRun.init -> void
+Wolfgang.Etl.Csv.ICsvLoaderBuilder<T>.IsDryRun(bool isDryRun) -> Wolfgang.Etl.Csv.ICsvLoaderBuilder<T>!

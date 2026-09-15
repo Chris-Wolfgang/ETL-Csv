@@ -2,14 +2,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using Wolfgang.Etl.Abstractions;
 using Wolfgang.Etl.Csv.Tests.Unit.TestModels;
 using Xunit;
 
 // These files still configure via the deprecated property setters in places where the value is
 // applied after construction, so it cannot travel through the options constructor without
 // restructuring the test. They keep exercising the setter path until the setters are removed.
-#pragma warning disable CS0618
+#pragma warning disable CS0618 // The remaining setter-path tests keep exercising IsDryRun's deprecated setter until it is removed.
 
 namespace Wolfgang.Etl.Csv.Tests.Unit;
 
@@ -34,11 +33,37 @@ public class CsvLoaderDryRunTests
 
 
     [Fact]
-    public void CsvLoader_implements_ISupportDryRun()
+    public void IsDryRun_when_set_through_options_is_applied()
     {
         using var writer = new StreamWriter(new MemoryStream());
 
-        Assert.IsAssignableFrom<ISupportDryRun>(new CsvLoader<PersonRecord>(writer));
+        var loader = new CsvLoader<PersonRecord>(writer, new CsvLoaderOptions<PersonRecord> { IsDryRun = true });
+
+        Assert.True(loader.IsDryRun);
+    }
+
+
+    [Fact]
+    public void IsDryRun_when_options_leave_it_unset_defaults_to_false()
+    {
+        using var writer = new StreamWriter(new MemoryStream());
+
+        Assert.False(new CsvLoader<PersonRecord>(writer, new CsvLoaderOptions<PersonRecord>()).IsDryRun);
+    }
+
+
+    [Fact]
+    public async Task LoadAsync_when_IsDryRun_is_set_through_options_writes_nothing_to_the_output()
+    {
+        using var stream = new MemoryStream();
+        using (var writer = new StreamWriter(stream, Utf8NoBom, 1024, leaveOpen: true))
+        {
+            var loader = new CsvLoader<PersonRecord>(writer, new CsvLoaderOptions<PersonRecord> { LeaveOpen = true, IsDryRun = true });
+            await loader.LoadAsync(ToAsync(People));
+            await writer.FlushAsync();
+        }
+
+        Assert.Empty(stream.ToArray());
     }
 
 
