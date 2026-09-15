@@ -16,6 +16,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- The single-argument constructors `CsvExtractor<TRecord>(StreamReader)` and `CsvLoader<TRecord>(StreamWriter)` are
+  hidden from IntelliSense (`[EditorBrowsable(Never)]`) and retained permanently for binary compatibility, the same
+  rule ETL-Abstractions applies to its hidden base constructors (Chris-Wolfgang/ETL-Abstractions#461). Not `[Obsolete]`:
+  `new CsvExtractor<T>(reader)` binds to this overload by exact match, so a warning could only be silenced by writing
+  `logger: null`, which the optional-logger overload makes redundant. Nothing changes for callers; the planned removal
+  (#250) is withdrawn.
 - `ICsvLoaderBuilder<T>` gained a member (`IsDryRun`). Anyone implementing the interface themselves must add
   it; the builder returned by `EtlPipeline.CsvLoader(...)` is the only implementation in the family.
 

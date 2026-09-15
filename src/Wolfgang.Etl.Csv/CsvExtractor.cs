@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
@@ -50,8 +51,15 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     /// <summary>
     /// Initializes a new instance of the <see cref="CsvExtractor{TRecord}"/> class.
     /// </summary>
+    /// <remarks>
+    /// Retained for binary compatibility with assemblies compiled before the optional-logger overload existed:
+    /// <c>new CsvExtractor&lt;T&gt;(streamReader)</c> in such an assembly is bound to this exact signature, and removing it
+    /// would fail at runtime with <see cref="MissingMethodException"/> with no compile-time signal. Hidden from IntelliSense;
+    /// source code binds here too, so nothing changes for callers. New code has no reason to name this overload.
+    /// </remarks>
     /// <param name="streamReader">The <see cref="StreamReader"/> to read CSV data from.</param>
     /// <exception cref="ArgumentNullException"><paramref name="streamReader"/> is <c>null</c>.</exception>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     [RequiresUnreferencedCode("CsvExtractor uses CsvHelper, which reflects over TRecord's members beyond what DynamicallyAccessedMembers can express (type converter constructors, non-public setters in some flows). The library is not trim/NativeAOT safe.")]
     public CsvExtractor
     (
