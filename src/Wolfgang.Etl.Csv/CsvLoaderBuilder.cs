@@ -81,6 +81,9 @@ internal sealed class CsvLoaderBuilder<[DynamicallyAccessedMembers(DynamicallyAc
     public ICsvLoaderBuilder<T> HasHeaderRecord(bool hasHeader) => Set(o => o with { HasHeaderRecord = hasHeader }, l => l.HasHeaderRecord = hasHeader);
 
 
+    public ICsvLoaderBuilder<T> IsDryRun(bool isDryRun) => Set(o => o with { IsDryRun = isDryRun }, l => l.IsDryRun = isDryRun);
+
+
     public ICsvLoaderBuilder<T> Encoding(Encoding encoding)
     {
         if (encoding is null)
@@ -199,18 +202,6 @@ internal sealed class CsvLoaderBuilder<[DynamicallyAccessedMembers(DynamicallyAc
             _options = update(_options);
         }
 
-        return this;
-    }
-
-
-    /// <summary>
-    /// Records a post-construction mutation. Reserved for members deliberately absent from
-    /// <see cref="CsvLoaderOptions{T}"/> — currently only <c>IsDryRun</c>, which implements an
-    /// interface declaring a <see langword="set"/> accessor.
-    /// </summary>
-    private ICsvLoaderBuilder<T> Configure(Action<CsvLoader<T>> mutation)
-    {
-        _mutations.Add(mutation);
         return this;
     }
 }

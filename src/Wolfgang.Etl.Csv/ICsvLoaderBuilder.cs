@@ -53,6 +53,12 @@ public interface ICsvLoaderBuilder<T> : IEtlPipelineSink
     /// </summary>
     ICsvLoaderBuilder<T> HasHeaderRecord(bool hasHeader);
 
+    /// <summary>
+    /// Sets <see cref="CsvLoader{TRecord}.IsDryRun"/>: when <see langword="true"/> the loader enumerates,
+    /// counts and reports but writes nothing. Default: <see langword="false"/>.
+    /// </summary>
+    ICsvLoaderBuilder<T> IsDryRun(bool isDryRun);
+
 
     /// <summary>
     /// Sets <see cref="CsvLoader{TRecord}.Encoding"/> and the encoding used to open a path-based
