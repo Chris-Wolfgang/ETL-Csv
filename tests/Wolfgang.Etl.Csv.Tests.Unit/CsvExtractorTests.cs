@@ -451,7 +451,7 @@ public class CsvExtractorTests
     {
         var sut = new CsvExtractor<PersonRecord>(CreateCsvStream(ExpectedItems))
         {
-            SkipRecordCount = 7,
+            SkipItemCount = 7,
         };
 
         Assert.Equal(7, sut.SkipRecordCount);
@@ -465,7 +465,7 @@ public class CsvExtractorTests
     {
         var sut = new CsvExtractor<PersonRecord>(CreateCsvStream(ExpectedItems))
         {
-            MaxRecordCount = 11,
+            MaximumItemCount = 11,
         };
 
         Assert.Equal(11, sut.MaxRecordCount);

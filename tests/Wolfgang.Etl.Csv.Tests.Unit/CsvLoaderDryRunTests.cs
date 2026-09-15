@@ -110,7 +110,7 @@ public class CsvLoaderDryRunTests
         {
             LeaveOpen = true,
             IsDryRun = true,
-            SkipRecordCount = 1,
+            SkipItemCount = 1,
         };
 
         await loader.LoadAsync(ToAsync(People));

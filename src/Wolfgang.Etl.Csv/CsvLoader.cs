@@ -64,7 +64,7 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     (
         StreamWriter streamWriter
     )
-        : this(streamWriter, (ILogger?)null)
+        : this(streamWriter, (ILogger?)null, options: null)
     {
     }
 
@@ -87,7 +87,7 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
         StreamWriter streamWriter,
         ILogger<CsvLoader<TRecord>>? logger = null
     )
-        : this(streamWriter, (ILogger?)logger)
+        : this(streamWriter, (ILogger?)logger, options: null)
     {
     }
 
@@ -109,7 +109,7 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
         IProgressTimer timer,
         ILogger? logger = null
     )
-        : this(streamWriter, logger)
+        : this(streamWriter, logger, options: null)
     {
         _progressTimer = timer ?? throw new ArgumentNullException(nameof(timer));
     }
@@ -127,11 +127,17 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     /// <exception cref="ArgumentNullException">
     /// <paramref name="streamWriter"/> is <c>null</c>.
     /// </exception>
+    /// <param name="options">
+    /// The options record forwarded to the base constructor, which applies the inherited
+    /// <see cref="LoaderOptions"/> settings before this class applies its own; <c>null</c> keeps the defaults.
+    /// </param>
     private CsvLoader
     (
         StreamWriter streamWriter,
-        ILogger? logger
+        ILogger? logger,
+        CsvLoaderOptions<TRecord>? options
     )
+        : base(options)
     {
         _writer = streamWriter ?? throw new ArgumentNullException(nameof(streamWriter));
         _logger = logger ?? NullLogger.Instance;
@@ -160,7 +166,7 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
         CsvLoaderOptions<TRecord>? options,
         ILogger<CsvLoader<TRecord>>? logger = null
     )
-        : this(streamWriter, (ILogger?)logger)
+        : this(streamWriter, (ILogger?)logger, options)
     {
         ApplyOptions(options);
     }
@@ -193,8 +199,6 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
         Validators = options.Validators;
         OnValidationFailure = options.OnValidationFailure;
         InvalidRecordHandler = options.InvalidRecordHandler;
-        SkipRecordCount = options.SkipRecordCount;
-        MaxRecordCount = options.MaxRecordCount;
         IsDryRun = options.IsDryRun;
 #pragma warning restore CS0618
     }

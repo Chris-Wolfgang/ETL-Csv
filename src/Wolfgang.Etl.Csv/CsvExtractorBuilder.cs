@@ -96,10 +96,10 @@ internal sealed class CsvExtractorBuilder<[DynamicallyAccessedMembers(Dynamicall
     public ICsvExtractorBuilder<T> InitialRecordIndex(int oneBasedIndex) => Set(o => o with { InitialRecordIndex = oneBasedIndex }, e => e.InitialRecordIndex = oneBasedIndex);
 
 
-    public ICsvExtractorBuilder<T> SkipRecordCount(int count) => Set(o => o with { SkipRecordCount = count }, e => e.SkipRecordCount = count);
+    public ICsvExtractorBuilder<T> SkipRecordCount(int count) => Set(o => o with { SkipItemCount = count }, e => e.SkipItemCount = count);
 
 
-    public ICsvExtractorBuilder<T> MaxRecordCount(int count) => Set(o => o with { MaxRecordCount = count }, e => e.MaxRecordCount = count);
+    public ICsvExtractorBuilder<T> MaxRecordCount(int count) => Set(o => o with { MaximumItemCount = count }, e => e.MaximumItemCount = count);
 
 
     public ICsvExtractorBuilder<T> TrimOptions(CsvTrimOptions options) => Set(o => o with { TrimOptions = options }, e => e.TrimOptions = options);
