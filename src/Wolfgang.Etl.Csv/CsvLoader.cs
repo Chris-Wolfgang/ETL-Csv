@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
@@ -49,8 +50,15 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     /// <summary>
     /// Initializes a new instance of the <see cref="CsvLoader{TRecord}"/> class.
     /// </summary>
+    /// <remarks>
+    /// Retained for binary compatibility with assemblies compiled before the optional-logger overload existed:
+    /// <c>new CsvLoader&lt;T&gt;(streamWriter)</c> in such an assembly is bound to this exact signature, and removing it
+    /// would fail at runtime with <see cref="MissingMethodException"/> with no compile-time signal. Hidden from IntelliSense;
+    /// source code binds here too, so nothing changes for callers. New code has no reason to name this overload.
+    /// </remarks>
     /// <param name="streamWriter">The <see cref="StreamWriter"/> to write CSV data to.</param>
     /// <exception cref="ArgumentNullException"><paramref name="streamWriter"/> is <c>null</c>.</exception>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     [RequiresUnreferencedCode("CsvLoader uses CsvHelper, which reflects over TRecord's members beyond what DynamicallyAccessedMembers can express (type converter constructors, non-public getters in some flows). The library is not trim/NativeAOT safe.")]
     public CsvLoader
     (
