@@ -30,7 +30,7 @@ namespace Wolfgang.Etl.Csv;
 /// </code>
 /// </example>
 public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TRecord>
-    : LoaderBase<TRecord, CsvLoaderProgress>, ISupportDryRun
+    : LoaderBase<TRecord, CsvLoaderProgress>
     where TRecord : notnull
 {
     private static readonly string OperationName = $"CSV loading of {typeof(TRecord).Name}";
@@ -187,6 +187,7 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
         InvalidRecordHandler = options.InvalidRecordHandler;
         SkipRecordCount = options.SkipRecordCount;
         MaxRecordCount = options.MaxRecordCount;
+        IsDryRun = options.IsDryRun;
 #pragma warning restore CS0618
     }
 
@@ -310,14 +311,14 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
 
 
     /// <summary>
-    /// Gets or sets a value indicating whether the load runs as a dry run. When <c>true</c>,
+    /// Gets a value indicating whether the load runs as a dry run. When <c>true</c>,
     /// the loader enumerates the source and honors <see cref="SkipRecordCount"/> /
     /// <see cref="MaxRecordCount"/>, increments progress counters, fires progress reports, and
     /// logs exactly as a real load would — but writes nothing to the underlying writer (neither
     /// the header nor any records). Use it to validate a pipeline against real data without
     /// producing output. Defaults to <c>false</c>.
     /// </summary>
-    public bool IsDryRun { get; set; }
+    public bool IsDryRun { get; [Obsolete("Configure IsDryRun through CsvLoaderOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set; }
 
 
 

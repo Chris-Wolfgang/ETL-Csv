@@ -19,12 +19,6 @@ namespace Wolfgang.Etl.Csv;
 /// <see cref="ObsoleteAttribute">obsolete</see>. To write a non-default encoding, construct the
 /// <see cref="System.IO.StreamWriter"/> with the encoding you want.
 /// </para>
-/// <para>
-/// It also carries no <c>IsDryRun</c> property. That member implements
-/// <see cref="Wolfgang.Etl.Abstractions.ISupportDryRun.IsDryRun"/>, which declares a
-/// <see langword="set"/> accessor, so it cannot become <see langword="init"/>-only while that
-/// interface stands. Set it on the loader after construction until the interface changes.
-/// </para>
 /// </remarks>
 /// <typeparam name="TRecord">The record type the loader writes.</typeparam>
 public sealed record CsvLoaderOptions<TRecord>
@@ -146,4 +140,15 @@ public sealed record CsvLoaderOptions<TRecord>
     /// A change on the base side then fails the build rather than being silently overridden here.
     /// </remarks>
     public int MaxRecordCount { get; init; } = int.MaxValue;
+
+
+
+    /// <summary>
+    /// Gets a value indicating whether the load runs as a dry run. When <see langword="true"/>, the
+    /// loader enumerates the source, honours <see cref="SkipRecordCount"/> / <see cref="MaxRecordCount"/>,
+    /// increments progress counters, fires progress reports and logs exactly as a real load would — but
+    /// writes nothing to the underlying writer (neither the header nor any records). Use it to validate a
+    /// pipeline against real data without producing output. Defaults to <see langword="false"/>.
+    /// </summary>
+    public bool IsDryRun { get; init; }
 }

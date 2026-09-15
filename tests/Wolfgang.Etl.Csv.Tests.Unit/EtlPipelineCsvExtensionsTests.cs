@@ -152,6 +152,23 @@ public sealed class EtlPipelineCsvExtensionsTests : IDisposable
 
 
     [Fact]
+    public async Task Loader_IsDryRun_through_the_builder_writes_nothing()
+    {
+        var source = WriteTempFile("dryrun.csv", "FirstName,LastName,Age\r\nAlice,Smith,30\r\nBob,Jones,25\r\n");
+        var target = Path.Combine(_tempDir, "dryrun-out.csv");
+
+        await EtlPipeline
+            .Create()
+            .CsvExtractor<PersonRecord>(source)
+            .CsvLoader(target)
+            .IsDryRun(true)
+            .RunAsync();
+
+        Assert.Equal(string.Empty, File.ReadAllText(target));
+    }
+
+
+    [Fact]
     public async Task Extractor_SkipRecordCount_and_MaxRecordCount_bound_the_window()
     {
         var source = WriteTempFile
