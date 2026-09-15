@@ -9,11 +9,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `CsvLoaderOptions<TRecord>.IsDryRun` (`{ get; init; }`) — dry run is now configured through the options
+  record like every other loader setting, per ADR-0009 (Chris-Wolfgang/ETL-Abstractions#455).
+- `ICsvLoaderBuilder<T>.IsDryRun(bool)` — dry run through the fluent builder, which previously had no way
+  to set it (the private mutation hook reserved for it was never wired up and is gone).
+
 ### Changed
+
+- `ICsvLoaderBuilder<T>` gained a member (`IsDryRun`). Anyone implementing the interface themselves must add
+  it; the builder returned by `EtlPipeline.CsvLoader(...)` is the only implementation in the family.
 
 ### Deprecated
 
+- `CsvLoader<TRecord>.IsDryRun`'s setter, the last live setter on the loader — configure it through
+  `CsvLoaderOptions<TRecord>` instead. Marked on the accessor like the other 37; reads stay warning-free.
+
 ### Removed
+
+- `CsvLoader<TRecord>` no longer implements `ISupportDryRun`. ETL-Abstractions removes the interface in its
+  next release (Chris-Wolfgang/ETL-Abstractions#457); no consumer in the family used it. `IsDryRun` itself
+  is unchanged for readers.
 
 ### Fixed
 
