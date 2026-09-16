@@ -223,6 +223,8 @@ Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.HasHeaderRecord.get -> bool
 Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.HasHeaderRecord.init -> void
 Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.InvalidRecordHandler.get -> System.Action<Wolfgang.Etl.Csv.CsvInvalidRecord<TRecord>!>?
 Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.InvalidRecordHandler.init -> void
+Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.IsDryRun.get -> bool
+Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.IsDryRun.init -> void
 Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.LeaveOpen.get -> bool
 Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.LeaveOpen.init -> void
 Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.MaxRecordCount.get -> int
@@ -318,6 +320,7 @@ Wolfgang.Etl.Csv.ICsvLoaderBuilder<T>.Delimiter(string! delimiter) -> Wolfgang.E
 Wolfgang.Etl.Csv.ICsvLoaderBuilder<T>.Encoding(System.Text.Encoding! encoding) -> Wolfgang.Etl.Csv.ICsvLoaderBuilder<T>!
 Wolfgang.Etl.Csv.ICsvLoaderBuilder<T>.Escape(char escape) -> Wolfgang.Etl.Csv.ICsvLoaderBuilder<T>!
 Wolfgang.Etl.Csv.ICsvLoaderBuilder<T>.HasHeaderRecord(bool hasHeader) -> Wolfgang.Etl.Csv.ICsvLoaderBuilder<T>!
+Wolfgang.Etl.Csv.ICsvLoaderBuilder<T>.IsDryRun(bool isDryRun) -> Wolfgang.Etl.Csv.ICsvLoaderBuilder<T>!
 Wolfgang.Etl.Csv.ICsvLoaderBuilder<T>.NewLine(string! newLine) -> Wolfgang.Etl.Csv.ICsvLoaderBuilder<T>!
 Wolfgang.Etl.Csv.ICsvLoaderBuilder<T>.Quote(char quote) -> Wolfgang.Etl.Csv.ICsvLoaderBuilder<T>!
 Wolfgang.Etl.Csv.ICsvLoaderBuilder<T>.ShouldQuote(System.Func<Wolfgang.Etl.Csv.CsvShouldQuoteContext!, bool>! shouldQuote) -> Wolfgang.Etl.Csv.ICsvLoaderBuilder<T>!
@@ -356,7 +359,9 @@ override Wolfgang.Etl.Csv.CsvShouldQuoteContext.ToString() -> string!
 override Wolfgang.Etl.Csv.CsvValidationResult.Equals(object? obj) -> bool
 override Wolfgang.Etl.Csv.CsvValidationResult.GetHashCode() -> int
 override Wolfgang.Etl.Csv.CsvValidationResult.ToString() -> string!
+override sealed Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>.Equals(Wolfgang.Etl.Abstractions.ExtractorOptions? other) -> bool
 override sealed Wolfgang.Etl.Csv.CsvExtractorProgress.Equals(Wolfgang.Etl.Abstractions.Report? other) -> bool
+override sealed Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.Equals(Wolfgang.Etl.Abstractions.LoaderOptions? other) -> bool
 override sealed Wolfgang.Etl.Csv.CsvLoaderProgress.Equals(Wolfgang.Etl.Abstractions.Report? other) -> bool
 static Wolfgang.Etl.Csv.CsvBadDataInfo.operator !=(Wolfgang.Etl.Csv.CsvBadDataInfo? left, Wolfgang.Etl.Csv.CsvBadDataInfo? right) -> bool
 static Wolfgang.Etl.Csv.CsvBadDataInfo.operator ==(Wolfgang.Etl.Csv.CsvBadDataInfo? left, Wolfgang.Etl.Csv.CsvBadDataInfo? right) -> bool
