@@ -35,6 +35,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **New target frameworks `net5.0`, `net6.0` and `net7.0`.** `Wolfgang.Etl.Abstractions` ships per-runtime assemblies, and an
+  `init`-only setter's `IsExternalInit` modreq has a different identity in its `netstandard2.0` and `net5.0+` builds. Now that the
+  options records inherit `ExtractorOptions` / `LoaderOptions`, a `netstandard`-compiled Wolfgang.Etl.Csv running on .NET 5–7
+  threw `MissingMethodException` from `SkipRecordCount` / `MaxRecordCount` (record aliases and builder methods) when it set the
+  inherited property. The new assemblies are compiled against the matching Abstractions assembly, so the signatures agree.
+
 - `Wolfgang.Etl.Abstractions` 0.23.4 → 0.24.0 (and `Wolfgang.Etl.TestKit` / `.TestKit.Xunit` for the test project).
 - **Binary-only break on `net462`, `netstandard2.0` and `netstandard2.1`:** because the options records now have a base
   record, the compiler-synthesized `<Clone>$` method (what a `with` expression calls) returns the base record type on
