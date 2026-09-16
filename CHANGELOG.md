@@ -9,6 +9,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+
+
+## [0.9.0] - 2026-09-16
+
+### Added
+
 - `CsvExtractorOptions<TRecord>` now inherits `ExtractorOptions` and `CsvLoaderOptions<TRecord>` inherits `LoaderOptions`
   (Wolfgang.Etl.Abstractions 0.24.0, ADR-0009): `ReportingInterval`, `ErrorPolicy`, `SkipItemCount` and `MaximumItemCount` are
   configured through the same record as every CSV setting and applied by the base constructor, so one object configures the
@@ -47,10 +62,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `CsvLoader<TRecord>` no longer implements `ISupportDryRun`. ETL-Abstractions removes the interface in its
   next release (Chris-Wolfgang/ETL-Abstractions#457); no consumer in the family used it. `IsDryRun` itself
   is unchanged for readers.
-
-### Fixed
-
-### Security
 
 ## [0.8.0] - 2026-08-29
 
