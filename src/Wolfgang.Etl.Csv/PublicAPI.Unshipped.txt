@@ -2,3 +2,5 @@
 Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.IsDryRun.get -> bool
 Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.IsDryRun.init -> void
 Wolfgang.Etl.Csv.ICsvLoaderBuilder<T>.IsDryRun(bool isDryRun) -> Wolfgang.Etl.Csv.ICsvLoaderBuilder<T>!
+override sealed Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>.Equals(Wolfgang.Etl.Abstractions.ExtractorOptions? other) -> bool
+override sealed Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.Equals(Wolfgang.Etl.Abstractions.LoaderOptions? other) -> bool

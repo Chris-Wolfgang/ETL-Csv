@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `CsvExtractorOptions<TRecord>` now inherits `ExtractorOptions` and `CsvLoaderOptions<TRecord>` inherits `LoaderOptions`
+  (Wolfgang.Etl.Abstractions 0.24.0, ADR-0009): `ReportingInterval`, `ErrorPolicy`, `SkipItemCount` and `MaximumItemCount` are
+  configured through the same record as every CSV setting and applied by the base constructor, so one object configures the
+  whole stage. `ReportingInterval` and `ErrorPolicy` were previously reachable only through the stage's properties.
 - `CsvLoaderOptions<TRecord>.IsDryRun` (`{ get; init; }`) — dry run is now configured through the options
   record like every other loader setting, per ADR-0009 (Chris-Wolfgang/ETL-Abstractions#455).
 - `ICsvLoaderBuilder<T>.IsDryRun(bool)` — dry run through the fluent builder, which previously had no way
@@ -16,6 +20,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- `Wolfgang.Etl.Abstractions` 0.23.4 → 0.24.0 (and `Wolfgang.Etl.TestKit` / `.TestKit.Xunit` for the test project).
+- **Binary-only break on `net462`, `netstandard2.0` and `netstandard2.1`:** because the options records now have a base
+  record, the compiler-synthesized `<Clone>$` method (what a `with` expression calls) returns the base record type on
+  targets without covariant returns. Source compiles unchanged; an assembly compiled against 0.8.0 on one of those
+  targets that uses `with` on an options record must be rebuilt (`CompatibilitySuppressions.xml`, CP0002 ×6).
 - The single-argument constructors `CsvExtractor<TRecord>(StreamReader)` and `CsvLoader<TRecord>(StreamWriter)` are
   hidden from IntelliSense (`[EditorBrowsable(Never)]`) and retained permanently for binary compatibility, the same
   rule ETL-Abstractions applies to its hidden base constructors (Chris-Wolfgang/ETL-Abstractions#461). Not `[Obsolete]`:
@@ -27,6 +36,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Deprecated
 
+- `SkipRecordCount` and `MaxRecordCount` on both options records — they duplicate the inherited `SkipItemCount` and
+  `MaximumItemCount` under a second name. They now forward to the inherited members (reads and `init` writes), so the two
+  can never disagree, and will be removed with the other deprecated members (#283).
 - `CsvLoader<TRecord>.IsDryRun`'s setter, the last live setter on the loader — configure it through
   `CsvLoaderOptions<TRecord>` instead. Marked on the accessor like the other 37; reads stay warning-free.
 

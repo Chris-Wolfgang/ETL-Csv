@@ -65,7 +65,7 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     (
         StreamReader streamReader
     )
-        : this(streamReader, (ILogger?)null)
+        : this(streamReader, (ILogger?)null, options: null)
     {
     }
 
@@ -88,7 +88,7 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
         StreamReader streamReader,
         ILogger<CsvExtractor<TRecord>>? logger = null
     )
-        : this(streamReader, (ILogger?)logger)
+        : this(streamReader, (ILogger?)logger, options: null)
     {
     }
 
@@ -110,7 +110,7 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
         IProgressTimer timer,
         ILogger? logger = null
     )
-        : this(streamReader, logger)
+        : this(streamReader, logger, options: null)
     {
         _progressTimer = timer ?? throw new ArgumentNullException(nameof(timer));
     }
@@ -128,11 +128,17 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     /// <exception cref="ArgumentNullException">
     /// <paramref name="streamReader"/> is <c>null</c>.
     /// </exception>
+    /// <param name="options">
+    /// The options record forwarded to the base constructor, which applies the inherited
+    /// <see cref="ExtractorOptions"/> settings before this class applies its own; <c>null</c> keeps the defaults.
+    /// </param>
     private CsvExtractor
     (
         StreamReader streamReader,
-        ILogger? logger
+        ILogger? logger,
+        CsvExtractorOptions<TRecord>? options
     )
+        : base(options)
     {
         _reader = streamReader ?? throw new ArgumentNullException(nameof(streamReader));
         _logger = logger ?? NullLogger.Instance;
@@ -161,7 +167,7 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
         CsvExtractorOptions<TRecord>? options,
         ILogger<CsvExtractor<TRecord>>? logger = null
     )
-        : this(streamReader, (ILogger?)logger)
+        : this(streamReader, (ILogger?)logger, options)
     {
         ApplyOptions(options);
     }
@@ -196,8 +202,6 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
         OnValidationFailure = options.OnValidationFailure;
         InvalidRecordHandler = options.InvalidRecordHandler;
         InitialRecordIndex = options.InitialRecordIndex;
-        SkipRecordCount = options.SkipRecordCount;
-        MaxRecordCount = options.MaxRecordCount;
 #pragma warning restore CS0618
     }
 
