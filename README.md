@@ -237,7 +237,9 @@ This library targets:
 
 - **.NET Framework:** 4.6.2
 - **.NET Standard:** 2.0, 2.1
-- **.NET:** 8.0, 10.0
+- **.NET:** 5.0, 6.0, 7.0, 8.0, 10.0
+
+The out-of-support 5.0–7.0 targets exist for binary compatibility with `Wolfgang.Etl.Abstractions`, which ships per-runtime assemblies: an `init`-only setter's `IsExternalInit` modreq has a different identity in its `netstandard2.0` and `net5.0+` builds, so a `netstandard`-compiled Wolfgang.Etl.Csv running on .NET 5–7 would fail with `MissingMethodException` when it sets an inherited option (for example `SkipRecordCount` forwarding to `SkipItemCount`). Each Wolfgang.Etl.Csv assembly is compiled against the matching Abstractions assembly instead.
 
 See the [NuGet package page](https://www.nuget.org/packages/Wolfgang.Etl.Csv/) for the authoritative per-TFM compatibility matrix.
 
