@@ -996,15 +996,6 @@ references:
   fullName.vb: Wolfgang.Etl.Csv.CsvExtractor(Of TRecord)
   nameWithType: CsvExtractor<TRecord>
   nameWithType.vb: CsvExtractor(Of TRecord)
-- uid: Wolfgang.Etl.Csv.CsvExtractor`1.#ctor(System.IO.StreamReader)
-  name: CsvExtractor(StreamReader)
-  href: api/Wolfgang.Etl.Csv.CsvExtractor-1.html#Wolfgang_Etl_Csv_CsvExtractor_1__ctor_System_IO_StreamReader_
-  commentId: M:Wolfgang.Etl.Csv.CsvExtractor`1.#ctor(System.IO.StreamReader)
-  name.vb: New(StreamReader)
-  fullName: Wolfgang.Etl.Csv.CsvExtractor<TRecord>.CsvExtractor(System.IO.StreamReader)
-  fullName.vb: Wolfgang.Etl.Csv.CsvExtractor(Of TRecord).New(System.IO.StreamReader)
-  nameWithType: CsvExtractor<TRecord>.CsvExtractor(StreamReader)
-  nameWithType.vb: CsvExtractor(Of TRecord).New(StreamReader)
 - uid: Wolfgang.Etl.Csv.CsvExtractor`1.#ctor(System.IO.StreamReader,Microsoft.Extensions.Logging.ILogger{Wolfgang.Etl.Csv.CsvExtractor{`0}})
   name: CsvExtractor(StreamReader, ILogger<CsvExtractor<TRecord>>?)
   href: api/Wolfgang.Etl.Csv.CsvExtractor-1.html#Wolfgang_Etl_Csv_CsvExtractor_1__ctor_System_IO_StreamReader_Microsoft_Extensions_Logging_ILogger_Wolfgang_Etl_Csv_CsvExtractor__0___
@@ -1621,6 +1612,23 @@ references:
   fullName.vb: Wolfgang.Etl.Csv.CsvLoaderOptions(Of TRecord).InvalidRecordHandler
   nameWithType: CsvLoaderOptions<TRecord>.InvalidRecordHandler
   nameWithType.vb: CsvLoaderOptions(Of TRecord).InvalidRecordHandler
+- uid: Wolfgang.Etl.Csv.CsvLoaderOptions`1.IsDryRun
+  name: IsDryRun
+  href: api/Wolfgang.Etl.Csv.CsvLoaderOptions-1.html#Wolfgang_Etl_Csv_CsvLoaderOptions_1_IsDryRun
+  commentId: P:Wolfgang.Etl.Csv.CsvLoaderOptions`1.IsDryRun
+  fullName: Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.IsDryRun
+  fullName.vb: Wolfgang.Etl.Csv.CsvLoaderOptions(Of TRecord).IsDryRun
+  nameWithType: CsvLoaderOptions<TRecord>.IsDryRun
+  nameWithType.vb: CsvLoaderOptions(Of TRecord).IsDryRun
+- uid: Wolfgang.Etl.Csv.CsvLoaderOptions`1.IsDryRun*
+  name: IsDryRun
+  href: api/Wolfgang.Etl.Csv.CsvLoaderOptions-1.html#Wolfgang_Etl_Csv_CsvLoaderOptions_1_IsDryRun_
+  commentId: Overload:Wolfgang.Etl.Csv.CsvLoaderOptions`1.IsDryRun
+  isSpec: "True"
+  fullName: Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.IsDryRun
+  fullName.vb: Wolfgang.Etl.Csv.CsvLoaderOptions(Of TRecord).IsDryRun
+  nameWithType: CsvLoaderOptions<TRecord>.IsDryRun
+  nameWithType.vb: CsvLoaderOptions(Of TRecord).IsDryRun
 - uid: Wolfgang.Etl.Csv.CsvLoaderOptions`1.LeaveOpen
   name: LeaveOpen
   href: api/Wolfgang.Etl.Csv.CsvLoaderOptions-1.html#Wolfgang_Etl_Csv_CsvLoaderOptions_1_LeaveOpen
@@ -1856,15 +1864,6 @@ references:
   fullName.vb: Wolfgang.Etl.Csv.CsvLoader(Of TRecord)
   nameWithType: CsvLoader<TRecord>
   nameWithType.vb: CsvLoader(Of TRecord)
-- uid: Wolfgang.Etl.Csv.CsvLoader`1.#ctor(System.IO.StreamWriter)
-  name: CsvLoader(StreamWriter)
-  href: api/Wolfgang.Etl.Csv.CsvLoader-1.html#Wolfgang_Etl_Csv_CsvLoader_1__ctor_System_IO_StreamWriter_
-  commentId: M:Wolfgang.Etl.Csv.CsvLoader`1.#ctor(System.IO.StreamWriter)
-  name.vb: New(StreamWriter)
-  fullName: Wolfgang.Etl.Csv.CsvLoader<TRecord>.CsvLoader(System.IO.StreamWriter)
-  fullName.vb: Wolfgang.Etl.Csv.CsvLoader(Of TRecord).New(System.IO.StreamWriter)
-  nameWithType: CsvLoader<TRecord>.CsvLoader(StreamWriter)
-  nameWithType.vb: CsvLoader(Of TRecord).New(StreamWriter)
 - uid: Wolfgang.Etl.Csv.CsvLoader`1.#ctor(System.IO.StreamWriter,Microsoft.Extensions.Logging.ILogger{Wolfgang.Etl.Csv.CsvLoader{`0}})
   name: CsvLoader(StreamWriter, ILogger<CsvLoader<TRecord>>?)
   href: api/Wolfgang.Etl.Csv.CsvLoader-1.html#Wolfgang_Etl_Csv_CsvLoader_1__ctor_System_IO_StreamWriter_Microsoft_Extensions_Logging_ILogger_Wolfgang_Etl_Csv_CsvLoader__0___
@@ -3149,6 +3148,24 @@ references:
   fullName.vb: Wolfgang.Etl.Csv.ICsvLoaderBuilder(Of T).HasHeaderRecord
   nameWithType: ICsvLoaderBuilder<T>.HasHeaderRecord
   nameWithType.vb: ICsvLoaderBuilder(Of T).HasHeaderRecord
+- uid: Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.IsDryRun(System.Boolean)
+  name: IsDryRun(bool)
+  href: api/Wolfgang.Etl.Csv.ICsvLoaderBuilder-1.html#Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_IsDryRun_System_Boolean_
+  commentId: M:Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.IsDryRun(System.Boolean)
+  name.vb: IsDryRun(Boolean)
+  fullName: Wolfgang.Etl.Csv.ICsvLoaderBuilder<T>.IsDryRun(bool)
+  fullName.vb: Wolfgang.Etl.Csv.ICsvLoaderBuilder(Of T).IsDryRun(Boolean)
+  nameWithType: ICsvLoaderBuilder<T>.IsDryRun(bool)
+  nameWithType.vb: ICsvLoaderBuilder(Of T).IsDryRun(Boolean)
+- uid: Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.IsDryRun*
+  name: IsDryRun
+  href: api/Wolfgang.Etl.Csv.ICsvLoaderBuilder-1.html#Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_IsDryRun_
+  commentId: Overload:Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.IsDryRun
+  isSpec: "True"
+  fullName: Wolfgang.Etl.Csv.ICsvLoaderBuilder<T>.IsDryRun
+  fullName.vb: Wolfgang.Etl.Csv.ICsvLoaderBuilder(Of T).IsDryRun
+  nameWithType: ICsvLoaderBuilder<T>.IsDryRun
+  nameWithType.vb: ICsvLoaderBuilder(Of T).IsDryRun
 - uid: Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.NewLine(System.String)
   name: NewLine(string)
   href: api/Wolfgang.Etl.Csv.ICsvLoaderBuilder-1.html#Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_NewLine_System_String_

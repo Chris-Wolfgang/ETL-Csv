@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/Chris-Wolfgang/ETL-Csv/new/v0.8.0/apiSpec/new?filename=Wolfgang_Etl_Csv_CsvLoaderOptions_1.md&amp;value=---%0Auid%3A%20Wolfgang.Etl.Csv.CsvLoaderOptions%601%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="docfx:docurl" content="https://github.com/Chris-Wolfgang/ETL-Csv/new/v0.9.0/apiSpec/new?filename=Wolfgang_Etl_Csv_CsvLoaderOptions_1.md&amp;value=---%0Auid%3A%20Wolfgang.Etl.Csv.CsvLoaderOptions%601%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -75,7 +75,7 @@
 
 
   <h1 id="Wolfgang_Etl_Csv_CsvLoaderOptions_1" data-uid="Wolfgang.Etl.Csv.CsvLoaderOptions`1" class="text-break">
-Class CsvLoaderOptions&lt;TRecord&gt;  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.8.0/src/Wolfgang.Etl.Csv/CsvLoaderOptions.cs/#L30"><i class="bi bi-code-slash"></i></a>
+Class CsvLoaderOptions&lt;TRecord&gt;  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.9.0/src/Wolfgang.Etl.Csv/CsvLoaderOptions.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -88,7 +88,7 @@ Class CsvLoaderOptions&lt;TRecord&gt;  <a class="header-action link-secondary" t
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed record CsvLoaderOptions&lt;TRecord&gt; : IEquatable&lt;CsvLoaderOptions&lt;TRecord&gt;&gt; where TRecord : notnull</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed record CsvLoaderOptions&lt;TRecord&gt; : LoaderOptions, IEquatable&lt;LoaderOptions&gt;, IEquatable&lt;CsvLoaderOptions&lt;TRecord&gt;&gt; where TRecord : notnull</code></pre>
   </div>
 
 
@@ -104,6 +104,7 @@ Class CsvLoaderOptions&lt;TRecord&gt;  <a class="header-action link-secondary" t
     <dt>Inheritance</dt>
     <dd>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">LoaderOptions</span></div>
       <div><span class="xref">CsvLoaderOptions&lt;TRecord&gt;</span></div>
     </dd>
   </dl>
@@ -111,6 +112,7 @@ Class CsvLoaderOptions&lt;TRecord&gt;  <a class="header-action link-secondary" t
   <dl class="typelist implements">
     <dt>Implements</dt>
     <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<span class="xref">LoaderOptions</span>&gt;</div>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Wolfgang.Etl.Csv.CsvLoaderOptions-1.html">CsvLoaderOptions</a>&lt;TRecord&gt;&gt;</div>
     </dd>
   </dl>
@@ -120,22 +122,40 @@ Class CsvLoaderOptions&lt;TRecord&gt;  <a class="header-action link-secondary" t
     <dt>Inherited Members</dt>
     <dd>
     <div>
-      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+      <span class="xref">LoaderOptions.ToString()</span>
+    </div>
+    <div>
+      <span class="xref">LoaderOptions.GetHashCode()</span>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">LoaderOptions.Equals(object)</a>
+    </div>
+    <div>
+      <span class="xref">LoaderOptions.Equals(LoaderOptions)</span>
+    </div>
+    <div>
+      <span class="xref">LoaderOptions.&lt;Clone&gt;$()</span>
+    </div>
+    <div>
+      <span class="xref">LoaderOptions.ReportingInterval</span>
+    </div>
+    <div>
+      <span class="xref">LoaderOptions.MaximumItemCount</span>
+    </div>
+    <div>
+      <span class="xref">LoaderOptions.SkipItemCount</span>
+    </div>
+    <div>
+      <span class="xref">LoaderOptions.ErrorPolicy</span>
     </div>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
-    </div>
-    <div>
-      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
     </div>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
     </div>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
-    </div>
-    <div>
-      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
   </dd></dl>
 
@@ -155,12 +175,6 @@ This record deliberately carries no <code>Encoding</code> property. Byte encodin
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.obsoleteattribute">obsolete</a>. To write a non-default encoding, construct the
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.streamwriter">StreamWriter</a> with the encoding you want.
 </p>
-<p>
-It also carries no <code>IsDryRun</code> property. That member implements
-<span class="xref">Wolfgang.Etl.Abstractions.ISupportDryRun.IsDryRun</span>, which declares a
-<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/set">set</a> accessor, so it cannot become <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/init">init</a>-only while that
-interface stands. Set it on the loader after construction until the interface changes.
-</p>
 </div>
 
 
@@ -172,7 +186,7 @@ interface stands. Set it on the loader after construction until the interface ch
 
   <h3 id="Wolfgang_Etl_Csv_CsvLoaderOptions_1_ColumnMaps" data-uid="Wolfgang.Etl.Csv.CsvLoaderOptions`1.ColumnMaps">
   ColumnMaps
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.8.0/src/Wolfgang.Etl.Csv/CsvLoaderOptions.cs/#L97"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.9.0/src/Wolfgang.Etl.Csv/CsvLoaderOptions.cs/#L92"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the explicit column mappings. Defaults to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, meaning mapping is
@@ -205,7 +219,7 @@ driven by attributes on <code class="typeparamref">TRecord</code>.</p>
 
   <h3 id="Wolfgang_Etl_Csv_CsvLoaderOptions_1_Delimiter" data-uid="Wolfgang.Etl.Csv.CsvLoaderOptions`1.Delimiter">
   Delimiter
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.8.0/src/Wolfgang.Etl.Csv/CsvLoaderOptions.cs/#L36"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.9.0/src/Wolfgang.Etl.Csv/CsvLoaderOptions.cs/#L31"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the field delimiter. Defaults to <code>&quot;,&quot;</code>.</p>
@@ -237,7 +251,7 @@ driven by attributes on <code class="typeparamref">TRecord</code>.</p>
 
   <h3 id="Wolfgang_Etl_Csv_CsvLoaderOptions_1_Discriminator" data-uid="Wolfgang.Etl.Csv.CsvLoaderOptions`1.Discriminator">
   Discriminator
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.8.0/src/Wolfgang.Etl.Csv/CsvLoaderOptions.cs/#L105"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.9.0/src/Wolfgang.Etl.Csv/CsvLoaderOptions.cs/#L100"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the discriminator used to select a record shape per row. Defaults to
@@ -270,7 +284,7 @@ driven by attributes on <code class="typeparamref">TRecord</code>.</p>
 
   <h3 id="Wolfgang_Etl_Csv_CsvLoaderOptions_1_Escape" data-uid="Wolfgang.Etl.Csv.CsvLoaderOptions`1.Escape">
   Escape
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.8.0/src/Wolfgang.Etl.Csv/CsvLoaderOptions.cs/#L43"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.9.0/src/Wolfgang.Etl.Csv/CsvLoaderOptions.cs/#L38"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the escape character. Defaults to <code>'&quot;'</code>.</p>
@@ -302,7 +316,7 @@ driven by attributes on <code class="typeparamref">TRecord</code>.</p>
 
   <h3 id="Wolfgang_Etl_Csv_CsvLoaderOptions_1_HasHeaderRecord" data-uid="Wolfgang.Etl.Csv.CsvLoaderOptions`1.HasHeaderRecord">
   HasHeaderRecord
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.8.0/src/Wolfgang.Etl.Csv/CsvLoaderOptions.cs/#L51"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.9.0/src/Wolfgang.Etl.Csv/CsvLoaderOptions.cs/#L46"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets a value indicating whether a header record is written before the data rows.
@@ -335,7 +349,7 @@ Defaults to <a href="https://learn.microsoft.com/dotnet/csharp/language-referenc
 
   <h3 id="Wolfgang_Etl_Csv_CsvLoaderOptions_1_InvalidRecordHandler" data-uid="Wolfgang.Etl.Csv.CsvLoaderOptions`1.InvalidRecordHandler">
   InvalidRecordHandler
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.8.0/src/Wolfgang.Etl.Csv/CsvLoaderOptions.cs/#L129"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.9.0/src/Wolfgang.Etl.Csv/CsvLoaderOptions.cs/#L124"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets a callback invoked for each record that fails validation. Defaults to
@@ -364,11 +378,47 @@ Defaults to <a href="https://learn.microsoft.com/dotnet/csharp/language-referenc
 
 
 
+  <a id="Wolfgang_Etl_Csv_CsvLoaderOptions_1_IsDryRun_" data-uid="Wolfgang.Etl.Csv.CsvLoaderOptions`1.IsDryRun*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvLoaderOptions_1_IsDryRun" data-uid="Wolfgang.Etl.Csv.CsvLoaderOptions`1.IsDryRun">
+  IsDryRun
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.9.0/src/Wolfgang.Etl.Csv/CsvLoaderOptions.cs/#L160"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the load runs as a dry run. When <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, the
+loader enumerates the source, honours <a class="xref" href="Wolfgang.Etl.Csv.CsvLoaderOptions-1.html#Wolfgang_Etl_Csv_CsvLoaderOptions_1_SkipRecordCount">SkipRecordCount</a> / <a class="xref" href="Wolfgang.Etl.Csv.CsvLoaderOptions-1.html#Wolfgang_Etl_Csv_CsvLoaderOptions_1_MaxRecordCount">MaxRecordCount</a>,
+increments progress counters, fires progress reports and logs exactly as a real load would — but
+writes nothing to the underlying writer (neither the header nor any records). Use it to validate a
+pipeline against real data without producing output. Defaults to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsDryRun { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="Wolfgang_Etl_Csv_CsvLoaderOptions_1_LeaveOpen_" data-uid="Wolfgang.Etl.Csv.CsvLoaderOptions`1.LeaveOpen*"></a>
 
   <h3 id="Wolfgang_Etl_Csv_CsvLoaderOptions_1_LeaveOpen" data-uid="Wolfgang.Etl.Csv.CsvLoaderOptions`1.LeaveOpen">
   LeaveOpen
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.8.0/src/Wolfgang.Etl.Csv/CsvLoaderOptions.cs/#L59"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.9.0/src/Wolfgang.Etl.Csv/CsvLoaderOptions.cs/#L54"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets a value indicating whether the supplied writer is left open when the loader is
@@ -401,16 +451,17 @@ disposed. Defaults to <a href="https://learn.microsoft.com/dotnet/csharp/languag
 
   <h3 id="Wolfgang_Etl_Csv_CsvLoaderOptions_1_MaxRecordCount" data-uid="Wolfgang.Etl.Csv.CsvLoaderOptions`1.MaxRecordCount">
   MaxRecordCount
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.8.0/src/Wolfgang.Etl.Csv/CsvLoaderOptions.cs/#L148"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.9.0/src/Wolfgang.Etl.Csv/CsvLoaderOptions.cs/#L144"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets the maximum number of records to load. Alias for
-<code>LoaderBase.MaximumItemCount</code>. Defaults to <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32.maxvalue">MaxValue</a>.</p>
+  <div class="markdown level1 summary"><p>Deprecated alias for <span class="xref">Wolfgang.Etl.Abstractions.LoaderOptions.MaximumItemCount</span>, which this record now inherits. Reads and writes
+forward to it; the two never diverge.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public int MaxRecordCount { get; init; }</code></pre>
+    <pre><code class="lang-csharp hljs">[Obsolete(&quot;Configure MaximumItemCount, inherited from LoaderOptions, instead. MaxRecordCount forwards to it and will be removed.&quot;)]
+public int MaxRecordCount { get; init; }</code></pre>
   </div>
 
 
@@ -426,10 +477,6 @@ disposed. Defaults to <a href="https://learn.microsoft.com/dotnet/csharp/languag
 
 
 
-  <h4 class="section" id="Wolfgang_Etl_Csv_CsvLoaderOptions_1_MaxRecordCount_remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>This restates a default owned by <code>LoaderBase</code>, so a test asserts the two still agree.
-A change on the base side then fails the build rather than being silently overridden here.</p>
-</div>
 
 
 
@@ -438,7 +485,7 @@ A change on the base side then fails the build rather than being silently overri
 
   <h3 id="Wolfgang_Etl_Csv_CsvLoaderOptions_1_NewLine" data-uid="Wolfgang.Etl.Csv.CsvLoaderOptions`1.NewLine">
   NewLine
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.8.0/src/Wolfgang.Etl.Csv/CsvLoaderOptions.cs/#L66"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.9.0/src/Wolfgang.Etl.Csv/CsvLoaderOptions.cs/#L61"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the newline sequence written between records. Defaults to <code>&quot;\r\n&quot;</code>.</p>
@@ -470,7 +517,7 @@ A change on the base side then fails the build rather than being silently overri
 
   <h3 id="Wolfgang_Etl_Csv_CsvLoaderOptions_1_OnValidationFailure" data-uid="Wolfgang.Etl.Csv.CsvLoaderOptions`1.OnValidationFailure">
   OnValidationFailure
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.8.0/src/Wolfgang.Etl.Csv/CsvLoaderOptions.cs/#L121"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.9.0/src/Wolfgang.Etl.Csv/CsvLoaderOptions.cs/#L116"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the action taken when a record fails validation. Defaults to
@@ -503,7 +550,7 @@ A change on the base side then fails the build rather than being silently overri
 
   <h3 id="Wolfgang_Etl_Csv_CsvLoaderOptions_1_Quote" data-uid="Wolfgang.Etl.Csv.CsvLoaderOptions`1.Quote">
   Quote
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.8.0/src/Wolfgang.Etl.Csv/CsvLoaderOptions.cs/#L73"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.9.0/src/Wolfgang.Etl.Csv/CsvLoaderOptions.cs/#L68"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the quote character. Defaults to <code>'&quot;'</code>.</p>
@@ -535,7 +582,7 @@ A change on the base side then fails the build rather than being silently overri
 
   <h3 id="Wolfgang_Etl_Csv_CsvLoaderOptions_1_ShouldQuote" data-uid="Wolfgang.Etl.Csv.CsvLoaderOptions`1.ShouldQuote">
   ShouldQuote
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.8.0/src/Wolfgang.Etl.Csv/CsvLoaderOptions.cs/#L81"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.9.0/src/Wolfgang.Etl.Csv/CsvLoaderOptions.cs/#L76"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets a predicate deciding whether a given field is quoted. Defaults to
@@ -568,16 +615,17 @@ A change on the base side then fails the build rather than being silently overri
 
   <h3 id="Wolfgang_Etl_Csv_CsvLoaderOptions_1_SkipRecordCount" data-uid="Wolfgang.Etl.Csv.CsvLoaderOptions`1.SkipRecordCount">
   SkipRecordCount
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.8.0/src/Wolfgang.Etl.Csv/CsvLoaderOptions.cs/#L136"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.9.0/src/Wolfgang.Etl.Csv/CsvLoaderOptions.cs/#L131"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets the number of records to skip before loading. Alias for
-<code>LoaderBase.SkipItemCount</code>. Defaults to <code>0</code>.</p>
+  <div class="markdown level1 summary"><p>Deprecated alias for <span class="xref">Wolfgang.Etl.Abstractions.LoaderOptions.SkipItemCount</span>, which this record now inherits. Reads and writes
+forward to it; the two never diverge.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public int SkipRecordCount { get; init; }</code></pre>
+    <pre><code class="lang-csharp hljs">[Obsolete(&quot;Configure SkipItemCount, inherited from LoaderOptions, instead. SkipRecordCount forwards to it and will be removed.&quot;)]
+public int SkipRecordCount { get; init; }</code></pre>
   </div>
 
 
@@ -601,7 +649,7 @@ A change on the base side then fails the build rather than being silently overri
 
   <h3 id="Wolfgang_Etl_Csv_CsvLoaderOptions_1_TrimOptions" data-uid="Wolfgang.Etl.Csv.CsvLoaderOptions`1.TrimOptions">
   TrimOptions
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.8.0/src/Wolfgang.Etl.Csv/CsvLoaderOptions.cs/#L89"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.9.0/src/Wolfgang.Etl.Csv/CsvLoaderOptions.cs/#L84"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the whitespace-trimming behaviour applied to written fields. Defaults to
@@ -634,7 +682,7 @@ A change on the base side then fails the build rather than being silently overri
 
   <h3 id="Wolfgang_Etl_Csv_CsvLoaderOptions_1_Validators" data-uid="Wolfgang.Etl.Csv.CsvLoaderOptions`1.Validators">
   Validators
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.8.0/src/Wolfgang.Etl.Csv/CsvLoaderOptions.cs/#L113"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.9.0/src/Wolfgang.Etl.Csv/CsvLoaderOptions.cs/#L108"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the validators applied to each record before it is written. Defaults to
@@ -667,7 +715,7 @@ A change on the base side then fails the build rather than being silently overri
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.8.0/src/Wolfgang.Etl.Csv/CsvLoaderOptions.cs/#L30" class="edit-link">Edit this page</a>
+          <a href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.9.0/src/Wolfgang.Etl.Csv/CsvLoaderOptions.cs/#L25" class="edit-link">Edit this page</a>
         </div>
 
 
