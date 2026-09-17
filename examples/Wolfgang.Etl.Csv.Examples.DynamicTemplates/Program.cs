@@ -75,23 +75,27 @@ static async Task ReadAndPrintAsync(CsvTemplate template)
 {
     using var reader = new StreamReader(template.CsvFile);
 
-    var extractor = new CsvExtractor<ProductRecord>(reader)
-    {
-        // Start reading on the first data row; everything above is skipped.
-        InitialRecordIndex = template.StartRow,
-
-        // We bind by column position, so headers (if any) are not used.
-        HasHeaderRecord = false,
-
-        // The runtime mapping descriptor — built fresh from the template each run.
-        // Convert the human-friendly 1-based column positions to the library's 0-based Index.
-        ColumnMaps = new[]
+    var extractor = new CsvExtractor<ProductRecord>
+    (
+        reader,
+        new CsvExtractorOptions<ProductRecord>
         {
-            new CsvColumnMap(nameof(ProductRecord.ProductNumber)) { Index = template.ProductNumberColumn - 1 },
-            new CsvColumnMap(nameof(ProductRecord.RetailPrice))   { Index = template.RetailPriceColumn   - 1 },
-            new CsvColumnMap(nameof(ProductRecord.MSRP))          { Index = template.MsrpColumn          - 1 },
-        },
-    };
+            // Start reading on the first data row; everything above is skipped.
+            InitialRecordIndex = template.StartRow,
+
+            // We bind by column position, so headers (if any) are not used.
+            HasHeaderRecord = false,
+
+            // The runtime mapping descriptor — built fresh from the template each run.
+            // Convert the human-friendly 1-based column positions to the library's 0-based Index.
+            ColumnMaps = new[]
+            {
+                new CsvColumnMap(nameof(ProductRecord.ProductNumber)) { Index = template.ProductNumberColumn - 1 },
+                new CsvColumnMap(nameof(ProductRecord.RetailPrice))   { Index = template.RetailPriceColumn   - 1 },
+                new CsvColumnMap(nameof(ProductRecord.MSRP))          { Index = template.MsrpColumn          - 1 },
+            },
+        }
+    );
 
     Console.WriteLine($"{"ProductNumber",-15} {"RetailPrice",12} {"MSRP",12}");
     Console.WriteLine(new string('-', 41));

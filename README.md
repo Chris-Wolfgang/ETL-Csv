@@ -143,17 +143,21 @@ When column positions come from configuration or a database — for example, sev
 ```csharp
 var template = LoadTemplateFromDb("supplier-a"); // 1-based positions per the user's domain
 
-var extractor = new CsvExtractor<ProductRecord>(reader)
-{
-    InitialRecordIndex = template.StartRow,
-    HasHeaderRecord = false,
-    ColumnMaps = new[]
+var extractor = new CsvExtractor<ProductRecord>
+(
+    reader,
+    new CsvExtractorOptions<ProductRecord>
     {
-        new CsvColumnMap(nameof(ProductRecord.ProductNumber)) { Index = template.ProductNumberColumn - 1 },
-        new CsvColumnMap(nameof(ProductRecord.RetailPrice))   { Index = template.RetailPriceColumn   - 1 },
-        new CsvColumnMap(nameof(ProductRecord.MSRP))          { Index = template.MsrpColumn          - 1 },
-    },
-};
+        InitialRecordIndex = template.StartRow,
+        HasHeaderRecord = false,
+        ColumnMaps = new[]
+        {
+            new CsvColumnMap(nameof(ProductRecord.ProductNumber)) { Index = template.ProductNumberColumn - 1 },
+            new CsvColumnMap(nameof(ProductRecord.RetailPrice))   { Index = template.RetailPriceColumn   - 1 },
+            new CsvColumnMap(nameof(ProductRecord.MSRP))          { Index = template.MsrpColumn          - 1 },
+        },
+    }
+);
 ```
 
 When `ColumnMaps` is non-null and non-empty, runtime maps override any attribute-based mapping for that instance. See the runnable example under [`examples/Wolfgang.Etl.Csv.Examples.DynamicTemplates/`](examples/Wolfgang.Etl.Csv.Examples.DynamicTemplates/).
@@ -206,7 +210,14 @@ var discriminator = new CsvDiscriminatorBuilder<LedgerRow>(columnIndex: 0)
     .Map<TrailerRow>("TRL", trailerColumns)
     .Build();
 
-var extractor = new CsvExtractor<LedgerRow>(reader) { HasHeaderRecord = false, Discriminator = discriminator };
+var extractor = new CsvExtractor<LedgerRow>
+(
+    reader,
+    new CsvExtractorOptions<LedgerRow>
+    {
+        HasHeaderRecord = false, Discriminator = discriminator 
+    }
+);
 // each yielded row is a HeaderRow / PaymentRow / TrailerRow
 ```
 
@@ -217,16 +228,20 @@ counts them, and reports each, instead of aborting the batch. The same trio work
 Full walkthrough: [docs/cookbook/record-validation.md](docs/cookbook/record-validation.md).
 
 ```csharp
-var extractor = new CsvExtractor<Order>(reader)
-{
-    Validators =
-    [
-        CsvValidator.NotNullOrEmpty<Order>(o => o.OrderNumber, nameof(Order.OrderNumber)),
-        CsvValidator.GreaterThan<Order>(o => o.Quantity, 0, nameof(Order.Quantity)),
-    ],
-    OnValidationFailure = CsvValidationFailureAction.Skip,
-    InvalidRecordHandler = bad => _logger.LogWarning("Row {Line}: {Why}", bad.LineNumber, string.Join("; ", bad.Failures)),
-};
+var extractor = new CsvExtractor<Order>
+(
+    reader,
+    new CsvExtractorOptions<Order>
+    {
+        Validators =
+        [
+            CsvValidator.NotNullOrEmpty<Order>(o => o.OrderNumber, nameof(Order.OrderNumber)),
+            CsvValidator.GreaterThan<Order>(o => o.Quantity, 0, nameof(Order.Quantity)),
+        ],
+        OnValidationFailure = CsvValidationFailureAction.Skip,
+        InvalidRecordHandler = bad => _logger.LogWarning("Row {Line}: {Why}", bad.LineNumber, string.Join("; ", bad.Failures)),
+    }
+);
 ```
 
 ---

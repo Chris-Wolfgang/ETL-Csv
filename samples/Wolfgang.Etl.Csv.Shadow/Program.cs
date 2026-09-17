@@ -179,11 +179,15 @@ internal static class Program
         for (var skip = 0; skip < total; skip += page)
         {
             using var reader = new StreamReader(new MemoryStream(bytes, writable: false), Encoding.UTF8);
-            var extractor = new CsvExtractor<ShadowRecord>(reader)
-            {
-                SkipRecordCount = skip,
-                MaxRecordCount = page,
-            };
+            var extractor = new CsvExtractor<ShadowRecord>
+            (
+                reader,
+                new CsvExtractorOptions<ShadowRecord>
+                {
+                    SkipItemCount = skip,
+                    MaximumItemCount = page,
+                }
+            );
 
             await foreach (var record in extractor.ExtractAsync().ConfigureAwait(false))
             {
