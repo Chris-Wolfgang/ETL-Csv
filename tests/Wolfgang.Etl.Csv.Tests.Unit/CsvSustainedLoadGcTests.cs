@@ -1,6 +1,7 @@
 #if NET8_0_OR_GREATER
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -27,6 +28,11 @@ namespace Wolfgang.Etl.Csv.Tests.Unit;
 /// (top allocation sites, per-type heap census) is heavier Windows-only tooling left as a
 /// follow-up.
 /// </summary>
+// Two execution modes by design: the fast PR pass (default) and the isolated high-volume pass that
+// gc-profiling.yaml runs with GC_PROFILE_ISOLATED=true / GC_PROFILE_RECORDS set, where no coverage is
+// collected. The isolated-only branches (gen2 assertion, record-count override) therefore never
+// execute under the coverage gate; this is a profiling harness, not test logic with a gap.
+[ExcludeFromCodeCoverage]
 [Trait("Category", "GcProfile")]
 public class CsvSustainedLoadGcTests
 {
