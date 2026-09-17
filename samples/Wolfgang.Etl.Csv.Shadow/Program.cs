@@ -169,7 +169,8 @@ internal static class Program
     }
 
 
-    // Page through a large file in fixed windows via SkipRecordCount + MaxRecordCount — the
+    // Page through a large file in fixed windows via SkipItemCount + MaximumItemCount on the
+    // options record — the
     // resumable / paged-consumption pattern, re-opening the source per page.
     private static async Task<long> WindowedPagingAsync(int total, int page)
     {

@@ -1,6 +1,6 @@
 # Cookbook: resumable extraction
 
-Resuming a large CSV extraction after a crash — without reprocessing everything — is **a discipline, not a feature**. Everything you need is already in the public API: `SkipRecordCount` (and `InitialRecordIndex`) to skip past what's done, plus a small durable counter. The optional `CsvCheckpointExtensions` helper (see below) covers the mechanical read/write so you don't hand-roll it — but *when* to acknowledge a record is application-specific, so that part stays yours.
+Resuming a large CSV extraction after a crash — without reprocessing everything — is **a discipline, not a feature**. Everything you need is already in the public API: `SkipItemCount` on the options record (and `InitialRecordIndex`) to skip past what's done, plus a small durable counter. The optional `CsvCheckpointExtensions` helper (see below) covers the mechanical read/write so you don't hand-roll it — but *when* to acknowledge a record is application-specific, so that part stays yours.
 
 ## 1. The problem
 
@@ -73,14 +73,16 @@ static async Task WriteCheckpointAtomicAsync(string path, int count, Cancellatio
 
 ## 5. Resume
 
-On startup, read the counter (defaulting to `0` when the file doesn't exist yet) and set `SkipRecordCount` to it. The convenience method does both:
+On startup, read the counter (defaulting to `0` when the file doesn't exist yet) and pass it as `SkipItemCount` on the options record:
 
 ```csharp
-var extractor = new CsvExtractor<Order>(reader);
-var resumedFrom = await extractor.ResumeFromCheckpointAsync(checkpointPath, ct);   // sets SkipRecordCount, returns the count
+var resumedFrom = await CsvCheckpointExtensions.ReadCheckpointAsync(checkpointPath, ct);
+var extractor = new CsvExtractor<Order>(reader, new CsvExtractorOptions<Order> { SkipItemCount = resumedFrom });
 ```
 
-`SkipRecordCount` skips *data* records; if your file has metadata rows before the header, combine it with `InitialRecordIndex` (which positions the first line read) exactly as you would on a fresh run.
+The `ResumeFromCheckpointAsync` convenience method is the compatibility route for an extractor that is already constructed: it reads the counter and applies it to the (deprecated) `SkipRecordCount` setter for you. Prefer the record when you control construction.
+
+`SkipItemCount` skips *data* records; if your file has metadata rows before the header, combine it with `InitialRecordIndex` (which positions the first line read) exactly as you would on a fresh run.
 
 ## 6. Where to put the acknowledgement
 
@@ -108,7 +110,7 @@ If the commit/publish throws, you do **not** advance the checkpoint — the reco
 
 ## 7. Multi-source files
 
-When you concatenate N files into one logical stream, a single record counter isn't enough — you need to know *which file* you were in. Persist a small `(fileIndex, recordsCommittedInThatFile)` pair instead of a bare integer, and on resume skip whole files up to `fileIndex`, then set `SkipRecordCount` on that source:
+When you concatenate N files into one logical stream, a single record counter isn't enough — you need to know *which file* you were in. Persist a small `(fileIndex, recordsCommittedInThatFile)` pair instead of a bare integer, and on resume skip whole files up to `fileIndex`, then pass `SkipItemCount` for that source:
 
 ```csharp
 for (var i = checkpoint.FileIndex; i < files.Count; i++)

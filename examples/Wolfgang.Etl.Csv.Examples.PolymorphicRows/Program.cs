@@ -53,11 +53,6 @@ using (var reader = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(csv
 Console.WriteLine();
 Console.WriteLine("Writing them back — the loader dispatches by runtime type:");
 using var buffer = new MemoryStream();
-// These files still configure via the deprecated property setters in places where the value is
-// applied after construction, so it cannot travel through the options constructor without
-// restructuring the test. They keep exercising the setter path until the setters are removed.
-#pragma warning disable CS0618
-
 using (var writer = new StreamWriter(buffer, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false), 1024, leaveOpen: true))
 {
     var loader = new CsvLoader<LedgerRow>(writer, new CsvLoaderOptions<LedgerRow>
