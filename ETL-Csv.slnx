@@ -59,7 +59,7 @@
     <File Path="scripts/Fix-BranchRuleset.ps1" />
     <File Path="scripts/format.ps1" />
     <File Path="scripts/Setup-Labels.ps1" />
-    <File Path="scripts/Validate-DocsDeploy.sh" />
+    <File Path="scripts/Validate-DocsDeploy.ps1" />
   </Folder>
   <Folder Name="/benchmarks/">
     <Project Path="benchmarks/Wolfgang.Etl.Csv.Benchmarks/Wolfgang.Etl.Csv.Benchmarks.csproj" />
