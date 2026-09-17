@@ -1,0 +1,5 @@
+#nullable enable
+override Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>.<Clone>$() -> Wolfgang.Etl.Abstractions.ExtractorOptions!
+override Wolfgang.Etl.Csv.CsvExtractorProgress.<Clone>$() -> Wolfgang.Etl.Abstractions.Report!
+override Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.<Clone>$() -> Wolfgang.Etl.Abstractions.LoaderOptions!
+override Wolfgang.Etl.Csv.CsvLoaderProgress.<Clone>$() -> Wolfgang.Etl.Abstractions.Report!
