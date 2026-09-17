@@ -403,3 +403,7 @@ static Wolfgang.Etl.Csv.EtlPipelineCsvExtensions.CsvLoader<T>(this Wolfgang.Etl.
 virtual Wolfgang.Etl.Csv.CsvExtractorProgress.Equals(Wolfgang.Etl.Csv.CsvExtractorProgress? other) -> bool
 virtual Wolfgang.Etl.Csv.CsvLoaderProgress.Equals(Wolfgang.Etl.Csv.CsvLoaderProgress? other) -> bool
 virtual Wolfgang.Etl.Csv.CsvValidator<T>.Invoke(T record) -> Wolfgang.Etl.Csv.CsvValidationResult!
+Wolfgang.Etl.Csv.CsvBadDataInfo.<Clone>$() -> Wolfgang.Etl.Csv.CsvBadDataInfo!
+Wolfgang.Etl.Csv.CsvColumnMap.<Clone>$() -> Wolfgang.Etl.Csv.CsvColumnMap!
+Wolfgang.Etl.Csv.CsvReadingExceptionInfo.<Clone>$() -> Wolfgang.Etl.Csv.CsvReadingExceptionInfo!
+Wolfgang.Etl.Csv.CsvShouldQuoteContext.<Clone>$() -> Wolfgang.Etl.Csv.CsvShouldQuoteContext!
