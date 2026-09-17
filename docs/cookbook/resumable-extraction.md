@@ -32,7 +32,14 @@ Acknowledge a record **only after the downstream side-effect has committed** —
 var processed = await CsvCheckpointExtensions.ReadCheckpointAsync(checkpointPath, ct);   // 0 if absent
 
 using var reader = new StreamReader("orders.csv");
-var extractor = new CsvExtractor<Order>(reader) { SkipRecordCount = processed };
+var extractor = new CsvExtractor<Order>
+(
+    reader,
+    new CsvExtractorOptions<Order>
+    {
+        SkipItemCount = processed 
+    }
+);
 
 await foreach (var order in extractor.ExtractAsync(ct))
 {
@@ -107,10 +114,14 @@ When you concatenate N files into one logical stream, a single record counter is
 for (var i = checkpoint.FileIndex; i < files.Count; i++)
 {
     using var reader = new StreamReader(files[i]);
-    var extractor = new CsvExtractor<Order>(reader)
-    {
-        SkipRecordCount = i == checkpoint.FileIndex ? checkpoint.RecordsInFile : 0,
-    };
+    var extractor = new CsvExtractor<Order>
+    (
+        reader,
+        new CsvExtractorOptions<Order>
+        {
+            SkipItemCount = i == checkpoint.FileIndex ? checkpoint.RecordsInFile : 0,
+        }
+    );
 
     await foreach (var order in extractor.ExtractAsync(ct))
     {

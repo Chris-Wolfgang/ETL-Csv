@@ -10,18 +10,22 @@ Runnable version: [`examples/Wolfgang.Etl.Csv.Examples.RecordValidation`](../../
 ## 1. Attach validators and a policy
 
 ```csharp
-var extractor = new CsvExtractor<Order>(reader)
-{
-    Validators =
-    [
-        CsvValidator.NotNullOrEmpty<Order>(o => o.OrderNumber, nameof(Order.OrderNumber)),
-        CsvValidator.GreaterThan<Order>(o => o.Quantity, 0, nameof(Order.Quantity)),
-        CsvValidator.MaxLength<Order>(o => o.Notes, 500, nameof(Order.Notes)),
-    ],
-    OnValidationFailure = CsvValidationFailureAction.Skip,
-    InvalidRecordHandler = invalid =>
-        _logger.LogWarning("Skipped row {Line}: {Reasons}", invalid.LineNumber, string.Join("; ", invalid.Failures)),
-};
+var extractor = new CsvExtractor<Order>
+(
+    reader,
+    new CsvExtractorOptions<Order>
+    {
+        Validators =
+        [
+            CsvValidator.NotNullOrEmpty<Order>(o => o.OrderNumber, nameof(Order.OrderNumber)),
+            CsvValidator.GreaterThan<Order>(o => o.Quantity, 0, nameof(Order.Quantity)),
+            CsvValidator.MaxLength<Order>(o => o.Notes, 500, nameof(Order.Notes)),
+        ],
+        OnValidationFailure = CsvValidationFailureAction.Skip,
+        InvalidRecordHandler = invalid =>
+            _logger.LogWarning("Skipped row {Line}: {Reasons}", invalid.LineNumber, string.Join("; ", invalid.Failures)),
+    }
+);
 
 await foreach (var order in extractor.ExtractAsync())
 {

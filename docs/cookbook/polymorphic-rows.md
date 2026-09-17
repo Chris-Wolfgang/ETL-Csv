@@ -61,11 +61,15 @@ To key off a **named** header column instead of an index, construct the builder 
 ## 3. Read
 
 ```csharp
-var extractor = new CsvExtractor<LedgerRow>(reader)
-{
-    HasHeaderRecord = false,
-    Discriminator = discriminator,
-};
+var extractor = new CsvExtractor<LedgerRow>
+(
+    reader,
+    new CsvExtractorOptions<LedgerRow>
+    {
+        HasHeaderRecord = false,
+        Discriminator = discriminator,
+    }
+);
 
 await foreach (var row in extractor.ExtractAsync())
 {
@@ -81,7 +85,14 @@ two-column `TRL`) bind cleanly.
 The same discriminator drives the loader, which dispatches by each record's runtime type:
 
 ```csharp
-var loader = new CsvLoader<LedgerRow>(writer) { Discriminator = discriminator };
+var loader = new CsvLoader<LedgerRow>
+(
+    writer,
+    new CsvLoaderOptions<LedgerRow>
+    {
+        Discriminator = discriminator 
+    }
+);
 await loader.LoadAsync(rows);
 ```
 
