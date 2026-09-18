@@ -9,6 +9,7 @@ A `CsvExtractor<T>` and `CsvLoader<T>` for streaming CSV files into and out of s
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![.NET](https://img.shields.io/badge/.NET-Multi--Targeted-purple.svg)](https://dotnet.microsoft.com/)
 [![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?logo=github)](https://github.com/Chris-Wolfgang/ETL-Csv)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/Chris-Wolfgang/ETL-Csv/badge)](https://scorecard.dev/viewer/?uri=github.com/Chris-Wolfgang/ETL-Csv)
 
 ---
 
