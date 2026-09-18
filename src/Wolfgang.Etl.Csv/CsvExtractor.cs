@@ -181,34 +181,34 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     /// <param name="options">The configuration to apply, or <c>null</c>.</param>
     internal void ApplyOptions(CsvExtractorOptions<TRecord>? options)
     {
-#pragma warning disable CS0618 // ApplyOptions is the supported replacement for these setters; it necessarily writes them.
         if (options is null)
         {
             return;
         }
 
-        AllowComments = options.AllowComments;
-        Comment = options.Comment;
-        Delimiter = options.Delimiter;
-        Escape = options.Escape;
-        HasHeaderRecord = options.HasHeaderRecord;
-        IgnoreBlankLines = options.IgnoreBlankLines;
-        LeaveOpen = options.LeaveOpen;
-        Quote = options.Quote;
-        TrimOptions = options.TrimOptions;
-        ColumnMaps = options.ColumnMaps;
-        Discriminator = options.Discriminator;
-        Validators = options.Validators;
-        OnValidationFailure = options.OnValidationFailure;
-        InvalidRecordHandler = options.InvalidRecordHandler;
-        InitialRecordIndex = options.InitialRecordIndex;
-#pragma warning restore CS0618
+        _allowComments = options.AllowComments;
+        _comment = options.Comment;
+        _delimiter = options.Delimiter;
+        _escape = options.Escape;
+        _hasHeaderRecord = options.HasHeaderRecord;
+        _ignoreBlankLines = options.IgnoreBlankLines;
+        _leaveOpen = options.LeaveOpen;
+        _quote = options.Quote;
+        _trimOptions = options.TrimOptions;
+        _columnMaps = options.ColumnMaps;
+        _discriminator = options.Discriminator;
+        _validators = options.Validators;
+        _onValidationFailure = options.OnValidationFailure;
+        _invalidRecordHandler = options.InvalidRecordHandler;
+        _initialRecordIndex = options.InitialRecordIndex;
     }
 
 
 
+    private bool _allowComments;
+
     /// <summary>Gets or sets a value indicating whether comment lines are allowed.</summary>
-    public bool AllowComments { get; [Obsolete("Configure AllowComments through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set; }
+    public bool AllowComments { get => _allowComments; [Obsolete("Configure AllowComments through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set => _allowComments = value; }
 
 
 
@@ -255,20 +255,28 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
 
 
 
+    private char _comment = '#';
+
     /// <summary>Gets or sets the character used to mark a comment line.</summary>
-    public char Comment { get; [Obsolete("Configure Comment through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set; } = '#';
+    public char Comment { get => _comment; [Obsolete("Configure Comment through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set => _comment = value; }
 
 
+
+    private string _delimiter = ",";
 
     /// <summary>Gets or sets the field delimiter. Default is <c>","</c>.</summary>
-    public string Delimiter { get; [Obsolete("Configure Delimiter through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set; } = ",";
+    public string Delimiter { get => _delimiter; [Obsolete("Configure Delimiter through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set => _delimiter = value; }
 
 
+
+    private char _escape = '"';
 
     /// <summary>Gets or sets the character used to escape the quote character within a field.</summary>
-    public char Escape { get; [Obsolete("Configure Escape through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set; } = '"';
+    public char Escape { get => _escape; [Obsolete("Configure Escape through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set => _escape = value; }
 
 
+
+    private Encoding _encoding = Encoding.UTF8;
 
     /// <summary>
     /// Gets or sets the encoding forwarded to the underlying parser configuration.
@@ -281,17 +289,21 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     /// is authoritative. To read a non-default encoding, construct the
     /// <see cref="StreamReader"/> with the encoding you want and ignore this property.
     /// </remarks>
-    public Encoding Encoding { get; [Obsolete("This property is inert - it never controlled how bytes are decoded or encoded. Construct the StreamReader with the encoding you want. This setter will be removed in a future release.")] set; } = Encoding.UTF8;
+    public Encoding Encoding { get => _encoding; [Obsolete("This property is inert - it never controlled how bytes are decoded or encoded. Construct the StreamReader with the encoding you want. This setter will be removed in a future release.")] set => _encoding = value; }
 
 
+
+    private bool _hasHeaderRecord = true;
 
     /// <summary>Gets or sets a value indicating whether the CSV has a header record.</summary>
-    public bool HasHeaderRecord { get; [Obsolete("Configure HasHeaderRecord through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set; } = true;
+    public bool HasHeaderRecord { get => _hasHeaderRecord; [Obsolete("Configure HasHeaderRecord through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set => _hasHeaderRecord = value; }
 
 
+
+    private bool _ignoreBlankLines = true;
 
     /// <summary>Gets or sets a value indicating whether blank lines are skipped.</summary>
-    public bool IgnoreBlankLines { get; [Obsolete("Configure IgnoreBlankLines through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set; } = true;
+    public bool IgnoreBlankLines { get => _ignoreBlankLines; [Obsolete("Configure IgnoreBlankLines through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set => _ignoreBlankLines = value; }
 
 
 
@@ -325,6 +337,8 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
 
 
 
+    private bool _leaveOpen = true;
+
     /// <summary>
     /// Gets or sets a value indicating whether the underlying stream should be left open
     /// after the parser is disposed.
@@ -333,19 +347,25 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     /// Defaults to <c>true</c> because the caller owns the <see cref="StreamReader"/>
     /// passed into the constructor.
     /// </remarks>
-    public bool LeaveOpen { get; [Obsolete("Configure LeaveOpen through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set; } = true;
+    public bool LeaveOpen { get => _leaveOpen; [Obsolete("Configure LeaveOpen through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set => _leaveOpen = value; }
 
 
+
+    private char _quote = '"';
 
     /// <summary>Gets or sets the quote character used to wrap fields.</summary>
-    public char Quote { get; [Obsolete("Configure Quote through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set; } = '"';
+    public char Quote { get => _quote; [Obsolete("Configure Quote through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set => _quote = value; }
 
 
+
+    private CsvTrimOptions _trimOptions = CsvTrimOptions.None;
 
     /// <summary>Gets or sets the trimming options applied while reading.</summary>
-    public CsvTrimOptions TrimOptions { get; [Obsolete("Configure TrimOptions through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set; } = CsvTrimOptions.None;
+    public CsvTrimOptions TrimOptions { get => _trimOptions; [Obsolete("Configure TrimOptions through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set => _trimOptions = value; }
 
 
+
+    private IReadOnlyList<CsvColumnMap>? _columnMaps;
 
     /// <summary>
     /// Gets or sets a runtime column-map collection that overrides any
@@ -358,9 +378,11 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     /// database "template" row. When non-null and non-empty, the runtime maps are the
     /// only source of property-to-column bindings; attribute-based mapping is bypassed.
     /// </remarks>
-    public IReadOnlyList<CsvColumnMap>? ColumnMaps { get; [Obsolete("Configure ColumnMaps through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set; }
+    public IReadOnlyList<CsvColumnMap>? ColumnMaps { get => _columnMaps; [Obsolete("Configure ColumnMaps through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set => _columnMaps = value; }
 
 
+
+    private CsvDiscriminator<TRecord>? _discriminator;
 
     /// <summary>
     /// When set, each row is bound to a concrete record type chosen by a discriminator column, so a
@@ -369,32 +391,38 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     /// are tolerated so narrower row shapes bind cleanly, and an unmapped discriminator value is handled
     /// per <see cref="CsvDiscriminator{TBase}.UnknownDiscriminator"/>.
     /// </summary>
-    public CsvDiscriminator<TRecord>? Discriminator { get; [Obsolete("Configure Discriminator through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set; }
+    public CsvDiscriminator<TRecord>? Discriminator { get => _discriminator; [Obsolete("Configure Discriminator through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set => _discriminator = value; }
 
 
+
+    private IReadOnlyList<CsvValidator<TRecord>>? _validators;
 
     /// <summary>
     /// Optional per-record validators run after each row is bound. A record that fails one or more of
     /// them is counted in <see cref="CsvExtractorProgress.CurrentInvalidItemCount"/>, passed to
     /// <see cref="InvalidRecordHandler"/>, and then handled per <see cref="OnValidationFailure"/>.
     /// </summary>
-    public IReadOnlyList<CsvValidator<TRecord>>? Validators { get; [Obsolete("Configure Validators through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set; }
+    public IReadOnlyList<CsvValidator<TRecord>>? Validators { get => _validators; [Obsolete("Configure Validators through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set => _validators = value; }
 
 
+
+    private CsvValidationFailureAction _onValidationFailure = CsvValidationFailureAction.Stop;
 
     /// <summary>
     /// How a record that fails validation is handled. Defaults to <see cref="CsvValidationFailureAction.Stop"/>
     /// (the first invalid record raises a <see cref="CsvValidationException"/>).
     /// </summary>
-    public CsvValidationFailureAction OnValidationFailure { get; [Obsolete("Configure OnValidationFailure through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set; } = CsvValidationFailureAction.Stop;
+    public CsvValidationFailureAction OnValidationFailure { get => _onValidationFailure; [Obsolete("Configure OnValidationFailure through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set => _onValidationFailure = value; }
 
 
+
+    private Action<CsvInvalidRecord<TRecord>>? _invalidRecordHandler;
 
     /// <summary>
     /// Optional callback invoked for each record that fails validation, before <see cref="OnValidationFailure"/>
     /// is applied. Use it to log or quarantine invalid rows.
     /// </summary>
-    public Action<CsvInvalidRecord<TRecord>>? InvalidRecordHandler { get; [Obsolete("Configure InvalidRecordHandler through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set; }
+    public Action<CsvInvalidRecord<TRecord>>? InvalidRecordHandler { get => _invalidRecordHandler; [Obsolete("Configure InvalidRecordHandler through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set => _invalidRecordHandler = value; }
 
 
 
