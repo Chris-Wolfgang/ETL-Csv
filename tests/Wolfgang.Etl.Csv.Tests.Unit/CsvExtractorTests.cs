@@ -214,6 +214,18 @@ public class CsvExtractorTests
     }
 
 
+    [Fact]
+    public void CsvExtractorOptions_InitialRecordIndex_when_init_to_zero_throws_ArgumentOutOfRangeException()
+    {
+        var exception = Assert.Throws<ArgumentOutOfRangeException>
+        (
+            () => new CsvExtractorOptions<PersonRecord> { InitialRecordIndex = 0 }
+        );
+
+        Assert.Equal("value", exception.ParamName);
+    }
+
+
 
     [Fact]
     public async Task ExtractAsync_when_HasHeaderRecord_is_false_reads_all_rows_as_data()

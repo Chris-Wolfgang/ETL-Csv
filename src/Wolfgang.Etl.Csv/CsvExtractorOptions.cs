@@ -144,7 +144,20 @@ public sealed record CsvExtractorOptions<TRecord> : ExtractorOptions
     /// <summary>
     /// Gets the one-based index of the first record to read. Defaults to <c>1</c>.
     /// </summary>
-    public int InitialRecordIndex { get; init; } = 1;
+    /// <exception cref="ArgumentOutOfRangeException">value is less than 1.</exception>
+    public int InitialRecordIndex
+    {
+        get;
+        init
+        {
+            if (value < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(value), value, "InitialRecordIndex must be 1 or greater.");
+            }
+
+            field = value;
+        }
+    } = 1;
 
 
 
