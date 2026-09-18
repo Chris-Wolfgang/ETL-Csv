@@ -52,30 +52,24 @@ public class CsvExtractorTests
 
 
 
-    protected override CsvExtractor<PersonRecord> CreateSut(int itemCount)
+    protected override CsvExtractor<PersonRecord> CreateSut(int itemCount, int maximumItemCount, int skipItemCount, int reportingInterval)
     {
         var items = ExpectedItems.Take(itemCount).ToList();
-        return new CsvExtractor<PersonRecord>(CreateCsvStream(items));
+        return new CsvExtractor<PersonRecord>
+        (
+            CreateCsvStream(items),
+            new CsvExtractorOptions<PersonRecord>
+            {
+                MaximumItemCount = maximumItemCount,
+                SkipItemCount = skipItemCount,
+                ReportingInterval = reportingInterval,
+            }
+        );
     }
 
 
 
     protected override IReadOnlyList<PersonRecord> CreateExpectedItems() => ExpectedItems;
-
-
-
-    protected override CsvExtractor<PersonRecord> CreateSutWithTimer
-    (
-        IProgressTimer timer
-    )
-    {
-        return new CsvExtractor<PersonRecord>
-        (
-            CreateCsvStream(ExpectedItems),
-            timer,
-            NullLogger<CsvExtractor<PersonRecord>>.Instance
-        );
-    }
 
 
 
