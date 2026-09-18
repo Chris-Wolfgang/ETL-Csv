@@ -36,43 +36,31 @@ public class CsvLoaderTests
 
 
 
-    private static CsvLoader<PersonRecord> CreateLoader()
+    private static CsvLoader<PersonRecord> CreateLoader(int maximumItemCount = int.MaxValue, int skipItemCount = 0, int reportingInterval = 1_000)
     {
         var stream = new MemoryStream();
         var writer = new StreamWriter(stream, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false), 1024, leaveOpen: true);
-        return new CsvLoader<PersonRecord>(writer, new CsvLoaderOptions<PersonRecord>
-        {
-            LeaveOpen = true,});
+        return new CsvLoader<PersonRecord>
+        (
+            writer,
+            new CsvLoaderOptions<PersonRecord>
+            {
+                LeaveOpen = true,
+                MaximumItemCount = maximumItemCount,
+                SkipItemCount = skipItemCount,
+                ReportingInterval = reportingInterval,
+            }
+        );
     }
 
 
 
-    protected override CsvLoader<PersonRecord> CreateSut(int itemCount)
-    {
-        var sut = CreateLoader();
-        return sut;
-    }
+    protected override CsvLoader<PersonRecord> CreateSut(int itemCount, int maximumItemCount, int skipItemCount, int reportingInterval) =>
+        CreateLoader(maximumItemCount, skipItemCount, reportingInterval);
 
 
 
     protected override IReadOnlyList<PersonRecord> CreateSourceItems() => SourceItems;
-
-
-
-    protected override CsvLoader<PersonRecord> CreateSutWithTimer
-    (
-        IProgressTimer timer
-    )
-    {
-        var stream = new MemoryStream();
-        var writer = new StreamWriter(stream, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false), 1024, leaveOpen: true);
-        // The timer-injection ctor is internal and has no options overload, so this stays on the
-        // setter path; the file-scoped CS0618 suppression above covers it.
-        return new CsvLoader<PersonRecord>(writer, timer, NullLogger<CsvLoader<PersonRecord>>.Instance)
-        {
-            LeaveOpen = true
-        };
-    }
 
 
 
