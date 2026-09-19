@@ -28,6 +28,15 @@ dotnet_diagnostic.S125.severity = none
 resharper_condition_is_always_true_or_false_according_to_nullable_api_contract_highlighting = none
 resharper_static_member_in_generic_type_highlighting = none
 dotnet_diagnostic.S125.severity = none
+dotnet_diagnostic.S1133.severity = none
+
+# The options records keep the pre-0.9 SkipRecordCount / MaxRecordCount / *ItemCount aliases as
+# [Obsolete] forwarders until the 2026-12-15 removal wave (#283) — S1133 same story as above.
+[CsvExtractorOptions.cs]
+dotnet_diagnostic.S1133.severity = none
+
+[CsvLoaderOptions.cs]
+dotnet_diagnostic.S1133.severity = none
 
 [CsvCheckpointExtensions.cs]
 dotnet_diagnostic.S125.severity = none

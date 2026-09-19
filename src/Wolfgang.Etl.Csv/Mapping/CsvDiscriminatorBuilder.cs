@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using CsvHelper;
 using CsvHelper.Configuration;
 
+// ReSharper disable once CheckNamespace -- the public surface is one flat namespace; Mapping/ is organisational
 namespace Wolfgang.Etl.Csv;
 
 /// <summary>

@@ -1,1 +1,5 @@
 #nullable enable
+*REMOVED*Wolfgang.Etl.Csv.CsvExtractor<TRecord>.CsvExtractor(System.IO.StreamReader! streamReader, Microsoft.Extensions.Logging.ILogger<Wolfgang.Etl.Csv.CsvExtractor<TRecord>!>? logger = null) -> void
+Wolfgang.Etl.Csv.CsvExtractor<TRecord>.CsvExtractor(System.IO.StreamReader! streamReader, Microsoft.Extensions.Logging.ILogger<Wolfgang.Etl.Csv.CsvExtractor<TRecord>!>? logger) -> void
+*REMOVED*Wolfgang.Etl.Csv.CsvLoader<TRecord>.CsvLoader(System.IO.StreamWriter! streamWriter, Microsoft.Extensions.Logging.ILogger<Wolfgang.Etl.Csv.CsvLoader<TRecord>!>? logger = null) -> void
+Wolfgang.Etl.Csv.CsvLoader<TRecord>.CsvLoader(System.IO.StreamWriter! streamWriter, Microsoft.Extensions.Logging.ILogger<Wolfgang.Etl.Csv.CsvLoader<TRecord>!>? logger) -> void

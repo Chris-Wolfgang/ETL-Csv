@@ -65,7 +65,7 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     (
         StreamReader streamReader
     )
-        : this(streamReader, (ILogger?)null, options: null)
+        : this(streamReader, logger: null, options: null)
     {
     }
 
@@ -86,9 +86,9 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     public CsvExtractor
     (
         StreamReader streamReader,
-        ILogger<CsvExtractor<TRecord>>? logger = null
+        ILogger<CsvExtractor<TRecord>>? logger
     )
-        : this(streamReader, (ILogger?)logger, options: null)
+        : this(streamReader, logger, options: null)
     {
     }
 
@@ -167,7 +167,7 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
         CsvExtractorOptions<TRecord>? options,
         ILogger<CsvExtractor<TRecord>>? logger = null
     )
-        : this(streamReader, (ILogger?)logger, options)
+        : this(streamReader, logger, options)
     {
         ApplyOptions(options);
     }
