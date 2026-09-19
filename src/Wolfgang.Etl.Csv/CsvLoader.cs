@@ -64,7 +64,7 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     (
         StreamWriter streamWriter
     )
-        : this(streamWriter, (ILogger?)null, options: null)
+        : this(streamWriter, logger: null, options: null)
     {
     }
 
@@ -85,9 +85,9 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     public CsvLoader
     (
         StreamWriter streamWriter,
-        ILogger<CsvLoader<TRecord>>? logger = null
+        ILogger<CsvLoader<TRecord>>? logger
     )
-        : this(streamWriter, (ILogger?)logger, options: null)
+        : this(streamWriter, logger, options: null)
     {
     }
 
@@ -166,7 +166,7 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
         CsvLoaderOptions<TRecord>? options,
         ILogger<CsvLoader<TRecord>>? logger = null
     )
-        : this(streamWriter, (ILogger?)logger, options)
+        : this(streamWriter, logger, options)
     {
         ApplyOptions(options);
     }
