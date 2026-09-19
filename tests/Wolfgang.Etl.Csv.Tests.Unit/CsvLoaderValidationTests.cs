@@ -73,6 +73,30 @@ public class CsvLoaderValidationTests
 
 
     [Fact]
+    public async Task LoadAsync_when_InvalidRecordHandler_is_configured_through_the_options_record_receives_the_invalid_record()
+    {
+        using var stream = new MemoryStream();
+        var writer = new StreamWriter(stream, Utf8NoBom, 1024, leaveOpen: true);
+        CsvInvalidRecord<Order>? captured = null;
+        var loader = new CsvLoader<Order>(writer, new CsvLoaderOptions<Order>
+        {
+            LeaveOpen = true,
+            Validators = new[] { CsvValidator.GreaterThan<Order>(o => o.Quantity, 0, "Quantity") },
+            OnValidationFailure = CsvValidationFailureAction.Skip,
+            InvalidRecordHandler = invalid => captured = invalid,
+        });
+
+        var output = await LoadAndReadAsync(loader, stream, writer, Orders);
+        writer.Dispose();
+
+        Assert.DoesNotContain("A2", output);
+        Assert.NotNull(captured);
+        Assert.Equal("A2", captured.Record.OrderNumber);
+    }
+
+
+
+    [Fact]
     public async Task LoadAsync_reports_the_input_record_ordinal_as_the_invalid_LineNumber()
     {
         // A2 (Quantity 0) is the 2nd record in the input; its LineNumber should be 2, not the
