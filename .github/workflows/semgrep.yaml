@@ -1,28 +1,22 @@
-# Semgrep SAST (#64) — a second static-analysis engine alongside CodeQL.
+name: SAST (Semgrep)
+
+# Security-grade static analysis beyond CodeQL (#164).
 #
-# CodeQL (codeql.yaml) is the OSS-grade dataflow SAST; DevSkim + gitleaks cover
-# pattern/secret scanning. Semgrep adds a different rule engine that catches
-# issue classes those surface with low confidence or miss. It runs entirely on
-# the public community rulesets (p/csharp, p/security-audit, p/secrets) — no
-# Semgrep Cloud account or token, so it stays free for this public repo.
+# Semgrep runs a different engine and ruleset from CodeQL (pattern/dataflow
+# rules for C#, a general security-audit pack, and a secrets pack), so it
+# surfaces issues CodeQL's queries don't. Findings upload to Code Scanning
+# (Security tab) as an additional signal; report-only for now (`|| true`) so a
+# noisy new ruleset can't block merges — promote to a gate once the baseline is
+# clean.
 #
-# Findings upload to GitHub Code Scanning (Security tab) but do NOT gate merge —
-# the scan step swallows Semgrep's findings exit code (1) while still failing on a
-# real scanner error (>=2), matching how the InspectCode job introduces a new
-# analyzer (surface first, gate later once the noise floor is known).
-name: Semgrep SAST
+# Uses the public Semgrep registry packs, which need no account/login.
 
 on:
   pull_request:
   push:
     branches: [main]
-  schedule:
-    - cron: '0 4 * * 1'   # Mondays 04:00 UTC
   workflow_dispatch:
 
-# Workflow-level default is read-only; the one job that needs to upload SARIF
-# declares `security-events: write` at job level (zizmor / Scorecard prefer the
-# narrower scope so the token can't accidentally be reused by an unrelated job).
 permissions:
   contents: read
 
@@ -32,43 +26,58 @@ concurrency:
 
 jobs:
   semgrep:
-    name: Semgrep scan
+    name: Semgrep
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
       contents: read
-      security-events: write   # upload-sarif → Code Scanning
-      actions: read            # upload-sarif needs it to associate the analysis
+      security-events: write
     steps:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
-      # Semgrep exit codes: 0 = clean, 1 = findings, >=2 = scanner/config/network
-      # error. Findings are a Code Scanning signal, not a merge gate (yet), so we
-      # swallow exit 1 — but a real run failure (>=2) must fail the job rather than
-      # be masked by a blanket continue-on-error. Version pinned for reproducibility
-      # and supply-chain safety (this is a security workflow) — bump deliberately.
-      - name: Run Semgrep (public rulesets, no account)
+      - name: Setup Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.x'
+
+      - name: Install Semgrep
+        # Hash-pinned rather than a bare `pip install semgrep` (OSSF Scorecard
+        # Pinned-Dependencies: "pipCommand not pinned by hash"). --require-hashes
+        # makes pip verify every wheel it downloads and refuse anything not
+        # listed, so the transitive tree is pinned too. Regenerate with the uv
+        # command recorded in the header of the requirements file; the resolution
+        # is universal, so it covers every runner platform and Python version.
+        run: pip install --require-hashes -r .github/requirements/semgrep.txt
+
+      - name: Run Semgrep
+        # --error makes findings exit 1; they are reported through the SARIF upload, so
+        # 0 and 1 both continue. Anything else (bad config, crash, network) fails the job
+        # instead of silently uploading nothing.
         run: |
           set +e
-          pipx run --spec 'semgrep==1.172.0' semgrep scan \
+          semgrep scan \
             --config p/csharp \
             --config p/security-audit \
             --config p/secrets \
             --sarif --output semgrep.sarif \
-            --metrics off
-          code=$?
-          if [ "$code" -ge 2 ]; then
-            echo "::error::Semgrep failed to run (exit $code) — not a findings result."
-            exit "$code"
-          fi
-          exit 0
+            --error
+          rc=$?
+          set -e
+          case "$rc" in
+            0) echo "semgrep: no findings" ;;
+            1) echo "semgrep: findings reported (see the Security tab after upload)" ;;
+            *) echo "::error::semgrep failed with exit code $rc (not a findings result)"; exit "$rc" ;;
+          esac
 
-      - name: Upload SARIF to Code Scanning
-        if: ${{ hashFiles('semgrep.sarif') != '' }}
+      - name: Upload Semgrep SARIF
+        # A fork's pull_request token cannot write Code Scanning (security-events: write is
+        # not granted), so the upload would fail after a successful scan. Skip it there; the
+        # scan step above still runs (report-only, as documented) and its SARIF is available
+        # once the change lands in this repository.
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
         uses: github/codeql-action/upload-sarif@b96794f015dfd88f77b49b1c93e0fa7110f94c63 # v4.38.0
         with:
           sarif_file: semgrep.sarif
-          category: semgrep
