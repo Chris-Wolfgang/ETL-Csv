@@ -86,7 +86,7 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     public CsvExtractor
     (
         StreamReader streamReader,
-        ILogger<CsvExtractor<TRecord>>? logger
+        ILogger<CsvExtractor<TRecord>>? logger = null
     )
         : this(streamReader, logger, options: null)
     {
