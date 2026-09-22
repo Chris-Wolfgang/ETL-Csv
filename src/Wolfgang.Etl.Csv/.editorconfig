@@ -14,6 +14,10 @@
 [CsvExtractor.cs]
 dotnet_diagnostic.S1133.severity = none
 dotnet_diagnostic.S125.severity = none
+# S3427: the (reader, logger = null) default is redundant next to the single-argument
+# constructor, but removing it rewrites a recorded public signature; it goes with the
+# 2026-12-15 removal wave (#379). Delete this line with the default.
+dotnet_diagnostic.S3427.severity = none
 
 # The loader defends against user validator implementations that
 # ignore the nullable annotations (returning a CsvValidationResult
@@ -29,6 +33,8 @@ resharper_condition_is_always_true_or_false_according_to_nullable_api_contract_h
 resharper_static_member_in_generic_type_highlighting = none
 dotnet_diagnostic.S125.severity = none
 dotnet_diagnostic.S1133.severity = none
+# S3427: same as CsvExtractor.cs - the (writer, logger = null) default stays until #379.
+dotnet_diagnostic.S3427.severity = none
 
 # The options records keep the pre-0.9 SkipRecordCount / MaxRecordCount / *ItemCount aliases as
 # [Obsolete] forwarders until the 2026-12-15 removal wave (#283) — S1133 same story as above.
