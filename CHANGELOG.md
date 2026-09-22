@@ -20,6 +20,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 
 
+## [0.10.0] - 2026-09-22
+
+### Added
+
+- Built against `Wolfgang.Etl.Abstractions` 0.25.0 (and TestKit / TestKit.Xunit 0.25.0): the base-stage `ReportingInterval` / `MaximumItemCount` / `SkipItemCount` setters are deprecated fleet-wide in favour of the options record, and `IncrementCurrentItemCount(int)` / `IncrementCurrentSkippedItemCount(int)` are available to derived stages. No change to this package's own API.
+
+### Fixed
+
+- Packages ship one `THIRD-PARTY-NOTICES.md` - the per-package file generated from each project's own NuGet closure - instead of failing to pack (`NU5118`) because the repository-wide file was still added alongside it.
+
+### Documentation
+
+- `THIRD-PARTY-NOTICES.md` is packed unconditionally: a missing file now fails `dotnet pack` instead of silently shipping a package without its licence notices. (#268) (#268)
+
+### Internal
+
+- Built against Wolfgang.Etl.Abstractions / ErrorPolicies / TestKit / TestKit.Xunit 0.26.0 (trim- and native-AOT-compatible on net8.0+; no API change from 0.25.0), so the package now requires Abstractions 0.26.0 or later.
+- CheckNamespace: the six `Mapping/*` types carry a documented `ReSharper disable once` — the public surface is one flat `Wolfgang.Etl.Csv` namespace and the folder is organisational.
+- `CsvExtractor` / `CsvLoader` constructor chains: the `(ILogger?)` casts are gone (the named `options:` argument already disambiguates) the `(reader/writer, logger = null)` overloads keep their default for now — dropping it (S3427; the single-argument constructor already wins `new X(reader)`) changes the recorded public signature and is scheduled for the 2026-12-15 wave (#379).
+- Test added: `CsvLoaderOptions<T>.InvalidRecordHandler` configured through the record (the loader-side twin of the extractor's record test).
+- S1133 ("remove this deprecated code someday") is excluded per file for `CsvLoader.cs`, `CsvExtractorOptions.cs` and `CsvLoaderOptions.cs` (joining `CsvExtractor.cs`) in the nested `src/.editorconfig`: their `[Obsolete]` setters and record aliases are the deliberate markers for the 2026-12-15 removal wave (#283).
+- `AssemblyVersion` is now derived from `<Version>` as `0.{Minor}.0.0` instead of hand-pinned, so it can no longer fall behind on a minor bump.
+- The options constructor assigns the stage's backing fields directly instead of going through the deprecated setters, so the `CS0618` suppressions that covered those writes are gone. The `InitialRecordIndex` guard (must be 1 or greater) now also runs on `CsvExtractorOptions<TRecord>.InitialRecordIndex`'s init accessor, with a test. (#339) (#339)
+- The `(reader|writer, logger = null)` constructor defaults on `CsvExtractor` / `CsvLoader` stay as shipped in 0.9; their removal (S3427) is scheduled for the 2026-12-15 wave (#379), with the rule silenced for those two files until then, so this release carries no public-signature change.
+- Record the compiler-synthesized `<Clone>$` members of the shipped records in per-TFM `PublicAPI` files (covariant on net5.0+); they were public all along, no surface change.
+
 ## [0.9.0] - 2026-09-16
 
 ### Added
