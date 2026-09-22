@@ -6,11 +6,12 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>disable</ImplicitUsings>
     <Version>0.9.0</Version>
-    <!-- Pin AssemblyVersion to MAJOR.MINOR.0.0 so .NET Framework consumers on
-         the 0.7.x line don't need a binding redirect between PATCH bumps.
-         Fleet convention for pre-1.0 libraries is "0.{Minor}.0.0" — only
-         change on a MINOR bump (0.7.x -> 0.7.0.0) or MAJOR API change. -->
-    <AssemblyVersion>0.9.0.0</AssemblyVersion>
+    <!-- AssemblyVersion is derived from <Version> as 0.{Minor}.0.0 (ADR-0011 in
+         ETL-Abstractions): the minor is SemVer's breaking position pre-1.0 and
+         AssemblyVersion is bind-time identity on .NET Framework, so it must move
+         with every minor. Deriving it means a release-prep PR cannot forget it,
+         and PATCH bumps keep the same identity (no binding-redirect churn). -->
+    <AssemblyVersion>0.$([System.Version]::Parse($(Version.Split('-')[0])).Minor).0.0</AssemblyVersion>
     <FileVersion>$(Version).0</FileVersion>
     <!-- PackageValidation (#156): fail the pack if the public surface breaks binary/source
          compatibility against the last published release. Bump the baseline to each newly
