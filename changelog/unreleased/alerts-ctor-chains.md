@@ -1,3 +1,3 @@
 type: internal
 
-`CsvExtractor` / `CsvLoader` constructor chains: the `(ILogger?)` casts are gone (the named `options:` argument already disambiguates) and the `(reader/writer, logger = null)` overloads drop their dead default — the hidden single-argument constructor already wins `new X(reader)` (S3427). Binary signature unchanged; PublicAPI text updated.
+`CsvExtractor` / `CsvLoader` constructor chains: the `(ILogger?)` casts are gone (the named `options:` argument already disambiguates) the `(reader/writer, logger = null)` overloads keep their default for now — dropping it (S3427; the single-argument constructor already wins `new X(reader)`) changes the recorded public signature and is scheduled for the 2026-12-15 wave (#379).
