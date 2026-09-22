@@ -85,7 +85,7 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     public CsvLoader
     (
         StreamWriter streamWriter,
-        ILogger<CsvLoader<TRecord>>? logger
+        ILogger<CsvLoader<TRecord>>? logger = null
     )
         : this(streamWriter, logger, options: null)
     {
