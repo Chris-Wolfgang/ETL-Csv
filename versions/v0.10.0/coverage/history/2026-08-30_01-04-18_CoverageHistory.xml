@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<coverage version="1.0" date="2026-08-30_01-04-18" tag="">
+  <assembly name="Wolfgang.Etl.Csv">
+    <class name="Wolfgang.Etl.Csv.CsvBadDataInfo" coveredlines="7" coverablelines="7" totallines="21" coveredbranches="0" totalbranches="0" coveredcodeelements="5" fullcoveredcodeelements="5" totalcodeelements="5" />
+    <class name="Wolfgang.Etl.Csv.CsvCheckpointExtensions" coveredlines="50" coverablelines="54" totallines="204" coveredbranches="18" totalbranches="20" coveredcodeelements="4" fullcoveredcodeelements="2" totalcodeelements="4" />
+    <class name="Wolfgang.Etl.Csv.CsvClassMapFactory" coveredlines="112" coverablelines="113" totallines="359" coveredbranches="62" totalbranches="78" coveredcodeelements="15" fullcoveredcodeelements="15" totalcodeelements="16" />
+    <class name="Wolfgang.Etl.Csv.CsvColumnAttribute" coveredlines="10" coverablelines="10" totallines="87" coveredbranches="0" totalbranches="0" coveredcodeelements="7" fullcoveredcodeelements="7" totalcodeelements="7" />
+    <class name="Wolfgang.Etl.Csv.CsvColumnMap" coveredlines="6" coverablelines="6" totallines="49" coveredbranches="0" totalbranches="0" coveredcodeelements="6" fullcoveredcodeelements="6" totalcodeelements="6" />
+    <class name="Wolfgang.Etl.Csv.CsvDiscriminator`1" coveredlines="39" coverablelines="41" totallines="149" coveredbranches="27" totalbranches="28" coveredcodeelements="14" fullcoveredcodeelements="13" totalcodeelements="14" />
+    <class name="Wolfgang.Etl.Csv.CsvDiscriminatorBuilder`1" coveredlines="53" coverablelines="53" totallines="159" coveredbranches="29" totalbranches="30" coveredcodeelements="7" fullcoveredcodeelements="7" totalcodeelements="7" />
+    <class name="Wolfgang.Etl.Csv.CsvExtractor`1" coveredlines="221" coverablelines="232" totallines="824" coveredbranches="97" totalbranches="122" coveredcodeelements="43" fullcoveredcodeelements="39" totalcodeelements="43" />
+    <class name="Wolfgang.Etl.Csv.CsvExtractorBuilder`1" coveredlines="66" coverablelines="68" totallines="258" coveredbranches="21" totalbranches="22" coveredcodeelements="28" fullcoveredcodeelements="28" totalcodeelements="30" />
+    <class name="Wolfgang.Etl.Csv.CsvExtractorOptions`1" coveredlines="17" coverablelines="17" totallines="167" coveredbranches="0" totalbranches="0" coveredcodeelements="17" fullcoveredcodeelements="17" totalcodeelements="17" />
+    <class name="Wolfgang.Etl.Csv.CsvExtractorProgress" coveredlines="16" coverablelines="16" totallines="130" coveredbranches="0" totalbranches="0" coveredcodeelements="8" fullcoveredcodeelements="8" totalcodeelements="8" />
+    <class name="Wolfgang.Etl.Csv.CsvInvalidRecord`1" coveredlines="1" coverablelines="1" totallines="17" coveredbranches="0" totalbranches="0" coveredcodeelements="1" fullcoveredcodeelements="1" totalcodeelements="1" />
+    <class name="Wolfgang.Etl.Csv.CsvLoader`1" coveredlines="179" coverablelines="192" totallines="716" coveredbranches="71" totalbranches="80" coveredcodeelements="39" fullcoveredcodeelements="35" totalcodeelements="40" />
+    <class name="Wolfgang.Etl.Csv.CsvLoaderBuilder`1" coveredlines="47" coverablelines="51" totallines="216" coveredbranches="18" totalbranches="20" coveredcodeelements="15" fullcoveredcodeelements="13" totalcodeelements="16" />
+    <class name="Wolfgang.Etl.Csv.CsvLoaderOptions`1" coveredlines="15" coverablelines="15" totallines="149" coveredbranches="0" totalbranches="0" coveredcodeelements="15" fullcoveredcodeelements="15" totalcodeelements="15" />
+    <class name="Wolfgang.Etl.Csv.CsvLoaderProgress" coveredlines="10" coverablelines="10" totallines="79" coveredbranches="0" totalbranches="0" coveredcodeelements="5" fullcoveredcodeelements="5" totalcodeelements="5" />
+    <class name="Wolfgang.Etl.Csv.CsvLogMessages" coveredlines="16" coverablelines="16" totallines="52" coveredbranches="0" totalbranches="0" coveredcodeelements="1" fullcoveredcodeelements="1" totalcodeelements="1" />
+    <class name="Wolfgang.Etl.Csv.CsvReadingExceptionInfo" coveredlines="8" coverablelines="8" totallines="29" coveredbranches="0" totalbranches="0" coveredcodeelements="6" fullcoveredcodeelements="6" totalcodeelements="6" />
+    <class name="Wolfgang.Etl.Csv.CsvShouldQuoteContext" coveredlines="5" coverablelines="5" totallines="14" coveredbranches="0" totalbranches="0" coveredcodeelements="3" fullcoveredcodeelements="3" totalcodeelements="3" />
+    <class name="Wolfgang.Etl.Csv.CsvTrimOptionsExtensions" coveredlines="6" coverablelines="6" totallines="33" coveredbranches="4" totalbranches="4" coveredcodeelements="1" fullcoveredcodeelements="1" totalcodeelements="1" />
+    <class name="Wolfgang.Etl.Csv.CsvValidationException" coveredlines="10" coverablelines="10" totallines="43" coveredbranches="3" totalbranches="6" coveredcodeelements="4" fullcoveredcodeelements="4" totalcodeelements="4" />
+    <class name="Wolfgang.Etl.Csv.CsvValidationResult" coveredlines="49" coverablelines="49" totallines="153" coveredbranches="18" totalbranches="18" coveredcodeelements="8" fullcoveredcodeelements="8" totalcodeelements="8" />
+    <class name="Wolfgang.Etl.Csv.CsvValidator" coveredlines="60" coverablelines="60" totallines="212" coveredbranches="50" totalbranches="54" coveredcodeelements="8" fullcoveredcodeelements="8" totalcodeelements="8" />
+    <class name="Wolfgang.Etl.Csv.EtlPipelineCsvExtensions" coveredlines="30" coverablelines="30" totallines="210" coveredbranches="24" totalbranches="24" coveredcodeelements="6" fullcoveredcodeelements="6" totalcodeelements="6" />
+  </assembly>
+</coverage>
