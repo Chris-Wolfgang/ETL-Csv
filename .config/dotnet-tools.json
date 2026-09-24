@@ -57,6 +57,13 @@
         "sourcelink"
       ],
       "rollForward": true
+    },
+    "dotnet-symbol": {
+      "version": "10.0.745401",
+      "commands": [
+        "dotnet-symbol"
+      ],
+      "rollForward": true
     }
   }
 }
