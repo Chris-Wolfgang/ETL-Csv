@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
@@ -264,6 +265,18 @@ public sealed class EtlPipelineCsvExtensionsTests : IDisposable
 
 
     [Fact]
+    public async Task ThrowOnFirst_test_double_completes_on_an_empty_source_and_has_no_current_element()
+    {
+        var enumerator = ThrowOnFirst(AsyncEnumerable.Empty<PersonRecord>()).GetAsyncEnumerator();
+
+        Assert.False(await enumerator.MoveNextAsync());
+        Assert.Throws<InvalidOperationException>(() => enumerator.Current);
+
+        await enumerator.DisposeAsync();
+    }
+
+
+    [Fact]
     public void First_pipeline_operator_narrows_the_builder_off_the_configuration_surface()
     {
         var source = WriteTempFile("narrow.csv", "FirstName,LastName,Age\r\nAlice,Smith,30\r\n");
@@ -441,8 +454,8 @@ public sealed class EtlPipelineCsvExtensionsTests : IDisposable
         await EtlPipeline
             .Create()
             .CsvExtractor<PersonRecord>(source)
-            .BadDataFound(_ => { })
-            .ReadingExceptionOccurred(_ => { })
+            .BadDataFound(new SyncProgress<CsvBadDataInfo>().Report)
+            .ReadingExceptionOccurred(new SyncProgress<CsvReadingExceptionInfo>().Report)
             .CsvLoader(target)
             .RunAsync();
 
@@ -634,19 +647,46 @@ public sealed class EtlPipelineCsvExtensionsTests : IDisposable
     }
 
 
-    // Single-iteration loop is intentional: throw on the first element to
-    // exercise the pipeline's faulted-run cleanup path.
-#pragma warning disable S1751
-    private static async IAsyncEnumerable<PersonRecord> ThrowOnFirst(IAsyncEnumerable<PersonRecord> source)
-    {
-        await foreach (var _ in source.ConfigureAwait(false))
-        {
-            throw new InvalidOperationException("boom");
-        }
+    // Throws on the first element to exercise the pipeline's faulted-run cleanup path.
+    // Hand-written rather than an async iterator: an iterator that always throws still
+    // needs a trailing `yield break`, a line that never runs.
+    private static IAsyncEnumerable<PersonRecord> ThrowOnFirst(IAsyncEnumerable<PersonRecord> source) =>
+        new ThrowOnFirstEnumerable(source);
 
-        yield break;
+
+
+    private sealed class ThrowOnFirstEnumerable : IAsyncEnumerable<PersonRecord>
+    {
+        private readonly IAsyncEnumerable<PersonRecord> _source;
+
+
+        public ThrowOnFirstEnumerable(IAsyncEnumerable<PersonRecord> source) => _source = source;
+
+
+        public IAsyncEnumerator<PersonRecord> GetAsyncEnumerator(CancellationToken cancellationToken = default) =>
+            new ThrowOnFirstEnumerator(_source.GetAsyncEnumerator(cancellationToken));
     }
-#pragma warning restore S1751
+
+
+
+    private sealed class ThrowOnFirstEnumerator : IAsyncEnumerator<PersonRecord>
+    {
+        private readonly IAsyncEnumerator<PersonRecord> _inner;
+
+
+        public ThrowOnFirstEnumerator(IAsyncEnumerator<PersonRecord> inner) => _inner = inner;
+
+
+        // MoveNextAsync never returns true, so there is never a current element.
+        public PersonRecord Current => throw new InvalidOperationException("no current element");
+
+
+        public async ValueTask<bool> MoveNextAsync() =>
+            await _inner.MoveNextAsync().ConfigureAwait(false) ? throw new InvalidOperationException("boom") : false;
+
+
+        public ValueTask DisposeAsync() => _inner.DisposeAsync();
+    }
 
 
     private string WriteTempFile(string name, string content)

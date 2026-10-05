@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -441,7 +440,6 @@ public class CsvExtractorDiscriminatorTests
 
 
 
-    [ExcludeFromCodeCoverage]
     public record LedgerRow
     {
         public string RecordType { get; set; } = string.Empty;
@@ -449,7 +447,6 @@ public class CsvExtractorDiscriminatorTests
 
 
 
-    [ExcludeFromCodeCoverage]
     public record HeaderRow : LedgerRow
     {
         public string BatchId { get; set; } = string.Empty;
@@ -461,7 +458,6 @@ public class CsvExtractorDiscriminatorTests
 
 
 
-    [ExcludeFromCodeCoverage]
     public record PaymentRow : LedgerRow
     {
         public string Account { get; set; } = string.Empty;
@@ -473,7 +469,6 @@ public class CsvExtractorDiscriminatorTests
 
 
 
-    [ExcludeFromCodeCoverage]
     public record TrailerRow : LedgerRow
     {
         public int Count { get; set; }
@@ -481,14 +476,12 @@ public class CsvExtractorDiscriminatorTests
 
 
 
-    [ExcludeFromCodeCoverage]
     public record NamedRow
     {
     }
 
 
 
-    [ExcludeFromCodeCoverage]
     public record NamedPayment : NamedRow
     {
         [CsvColumn(Name = "Account")]
@@ -502,7 +495,6 @@ public class CsvExtractorDiscriminatorTests
 
 
 
-    [ExcludeFromCodeCoverage]
     public record NamedTrailer : NamedRow
     {
         [CsvColumn(Name = "Count")]

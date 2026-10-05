@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -198,7 +197,6 @@ public class CsvLoaderValidationTests
 
 
 
-    [ExcludeFromCodeCoverage]
     public record Order
     {
         public string OrderNumber { get; set; } = string.Empty;

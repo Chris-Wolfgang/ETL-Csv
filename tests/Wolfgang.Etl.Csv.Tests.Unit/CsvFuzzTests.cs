@@ -48,29 +48,61 @@ public class CsvFuzzTests
     {
         GenPerson.List[0, 40].Sample
         (
-            records =>
-            {
-                var csv = LoadToString(records);
-                var readBack = ExtractFromString(csv);
-
-                if (readBack.Count != records.Count)
-                {
-                    return false;
-                }
-
-                for (var i = 0; i < records.Count; i++)
-                {
-                    if (!string.Equals(readBack[i].FirstName, records[i].FirstName, StringComparison.Ordinal)
-                        || !string.Equals(readBack[i].LastName, records[i].LastName, StringComparison.Ordinal)
-                        || readBack[i].Age != records[i].Age)
-                    {
-                        return false;
-                    }
-                }
-
-                return true;
-            }
+            records => SameRecords(records, ExtractFromString(LoadToString(records)))
         );
+    }
+
+
+    [Fact]
+    public void SameRecords_when_lists_match_returns_true()
+    {
+        var records = new List<PersonRecord> { new() { FirstName = "A", LastName = "B", Age = 1 } };
+
+        Assert.True(SameRecords(records, new List<PersonRecord>(records)));
+    }
+
+
+    [Fact]
+    public void SameRecords_when_counts_differ_returns_false()
+    {
+        var records = new List<PersonRecord> { new() { FirstName = "A", LastName = "B", Age = 1 } };
+
+        Assert.False(SameRecords(records, new List<PersonRecord>()));
+    }
+
+
+    [Theory]
+    [InlineData("X", "B", 1)]
+    [InlineData("A", "X", 1)]
+    [InlineData("A", "B", 2)]
+    public void SameRecords_when_a_field_differs_returns_false(string firstName, string lastName, int age)
+    {
+        var expected = new List<PersonRecord> { new() { FirstName = "A", LastName = "B", Age = 1 } };
+        var actual = new List<PersonRecord> { new() { FirstName = firstName, LastName = lastName, Age = age } };
+
+        Assert.False(SameRecords(expected, actual));
+    }
+
+
+    // The round-trip invariant: same count, and every record's fields equal (ordinal).
+    private static bool SameRecords(IReadOnlyList<PersonRecord> expected, IReadOnlyList<PersonRecord> actual)
+    {
+        if (actual.Count != expected.Count)
+        {
+            return false;
+        }
+
+        for (var i = 0; i < expected.Count; i++)
+        {
+            if (!string.Equals(actual[i].FirstName, expected[i].FirstName, StringComparison.Ordinal)
+                || !string.Equals(actual[i].LastName, expected[i].LastName, StringComparison.Ordinal)
+                || actual[i].Age != expected[i].Age)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
 

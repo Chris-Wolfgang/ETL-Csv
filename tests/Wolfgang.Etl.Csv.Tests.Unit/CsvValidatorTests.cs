@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 using Xunit;
 
@@ -312,7 +311,6 @@ public class CsvValidatorTests
 
 
 
-    [ExcludeFromCodeCoverage]
     public record Order
     {
         public string OrderNumber { get; set; } = string.Empty;
