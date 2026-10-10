@@ -79,5 +79,6 @@
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Wolfgang.Etl.Csv.Tests.Unit/Wolfgang.Etl.Csv.Tests.Unit.csproj" />
+    <Project Path="tests/Wolfgang.Etl.Csv.Tests.SourceLink/Wolfgang.Etl.Csv.Tests.SourceLink.csproj" />
   </Folder>
 </Solution>
