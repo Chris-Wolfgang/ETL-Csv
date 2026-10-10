@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -230,7 +229,6 @@ public class CsvLoaderDiscriminatorTests
 
 
 
-    [ExcludeFromCodeCoverage]
     public record LedgerRow
     {
         public string RecordType { get; set; } = string.Empty;
@@ -238,7 +236,6 @@ public class CsvLoaderDiscriminatorTests
 
 
 
-    [ExcludeFromCodeCoverage]
     public record HeaderRow : LedgerRow
     {
         public string BatchId { get; set; } = string.Empty;
@@ -250,7 +247,6 @@ public class CsvLoaderDiscriminatorTests
 
 
 
-    [ExcludeFromCodeCoverage]
     public record PaymentRow : LedgerRow
     {
         public string Account { get; set; } = string.Empty;
@@ -262,7 +258,6 @@ public class CsvLoaderDiscriminatorTests
 
 
 
-    [ExcludeFromCodeCoverage]
     public record TrailerRow : LedgerRow
     {
         public int Count { get; set; }
@@ -270,7 +265,6 @@ public class CsvLoaderDiscriminatorTests
 
 
 
-    [ExcludeFromCodeCoverage]
     public record UnmappedRow : LedgerRow
     {
         // ReSharper disable once UnusedAutoPropertyAccessor.Global
@@ -281,7 +275,6 @@ public class CsvLoaderDiscriminatorTests
 
 
 
-    [ExcludeFromCodeCoverage]
     public record ExplodingRow : LedgerRow
     {
         // Instance property (not static): the test wires a bound ExplodingRow into

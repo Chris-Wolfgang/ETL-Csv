@@ -327,11 +327,11 @@ public class CsvExtractorTests
         // check could stop us.
         var csv = "FirstName,LastName,Age\r\nAlice,Smith,30\r\nBo\"b,Jones,25\r\n";
         var stream = new MemoryStream(Encoding.UTF8.GetBytes(csv));
-        var badDataFires = 0;
+        var badData = new SyncProgress<CsvBadDataInfo>();
         var sut = new CsvExtractor<PersonRecord>(new StreamReader(stream, Encoding.UTF8))
         {
             MaximumItemCount = 1,
-            BadDataFound = _ => { badDataFires++; },
+            BadDataFound = badData.Report,
         };
 
         var results = new List<PersonRecord>();
@@ -342,7 +342,7 @@ public class CsvExtractorTests
 
         Assert.Single(results);
         Assert.Equal("Alice", results[0].FirstName);
-        Assert.Equal(0, badDataFires);   // never read past the limit, so the bad row never fires
+        Assert.Equal(0, badData.CallCount);   // never read past the limit, so the bad row never fires
     }
 
 
@@ -494,13 +494,7 @@ public class CsvExtractorTests
 
         return Assert.ThrowsAsync<CsvHelper.TypeConversion.TypeConverterException>
         (
-            async () =>
-            {
-                await foreach (var _ in sut.ExtractAsync().ConfigureAwait(false))
-                {
-                    // drain
-                }
-            }
+            async () => await sut.ExtractAsync().ToListAsync()
         );
     }
 

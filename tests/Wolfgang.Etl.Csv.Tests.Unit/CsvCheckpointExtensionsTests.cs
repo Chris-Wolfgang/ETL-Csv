@@ -174,10 +174,8 @@ public class CsvCheckpointExtensionsTests
                 Directory.Delete(path, recursive: true);
             }
 
-            if (File.Exists(path + ".tmp"))
-            {
-                File.Delete(path + ".tmp");
-            }
+            // File.Delete is a no-op when the file does not exist.
+            File.Delete(path + ".tmp");
         }
     }
 
@@ -201,9 +199,7 @@ public class CsvCheckpointExtensionsTests
             File.Delete(path);
         }
 
-        if (File.Exists(path + ".tmp"))
-        {
-            File.Delete(path + ".tmp");
-        }
+        // File.Delete is a no-op when the file does not exist.
+        File.Delete(path + ".tmp");
     }
 }
