@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -150,7 +149,6 @@ public class CsvExtractorValidationTests
 
 
 
-    [ExcludeFromCodeCoverage]
     public record Order
     {
         public string OrderNumber { get; set; } = string.Empty;

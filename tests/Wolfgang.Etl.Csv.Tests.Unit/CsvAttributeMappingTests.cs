@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -17,7 +16,6 @@ namespace Wolfgang.Etl.Csv.Tests.Unit;
 
 public class CsvAttributeMappingTests
 {
-    [ExcludeFromCodeCoverage]
     public sealed record IndexedRecord
     {
         [CsvColumn(Index = 0)]
@@ -29,7 +27,6 @@ public class CsvAttributeMappingTests
 
 
 
-    [ExcludeFromCodeCoverage]
     public sealed record PartiallyAttributedRecord
     {
         [CsvColumn(Name = "first_name")]
@@ -62,7 +59,6 @@ public class CsvAttributeMappingTests
 
 
 
-    [ExcludeFromCodeCoverage]
     public sealed record OptionalRecord
     {
         [CsvColumn(Name = "first_name")]
@@ -74,7 +70,6 @@ public class CsvAttributeMappingTests
 
 
 
-    [ExcludeFromCodeCoverage]
     public sealed record DateRecord
     {
         [CsvColumn(Name = "name")]
@@ -219,7 +214,6 @@ public class CsvAttributeMappingTests
 
 
 
-    [ExcludeFromCodeCoverage]
     public sealed record PriceRecord
     {
         public string ProductNumber { get; set; } = string.Empty;
@@ -478,13 +472,11 @@ public class CsvAttributeMappingTests
             },
         };
 
-        return Assert.ThrowsAsync<ArgumentException>(async () =>
-        {
-            await foreach (var _ in sut.ExtractAsync().ConfigureAwait(false))
-            {
-                // drain — exception fires before the first record yields
-            }
-        });
+        // drain — exception fires before the first record yields
+        return Assert.ThrowsAsync<ArgumentException>
+        (
+            async () => await sut.ExtractAsync().ToListAsync()
+        );
     }
 
 

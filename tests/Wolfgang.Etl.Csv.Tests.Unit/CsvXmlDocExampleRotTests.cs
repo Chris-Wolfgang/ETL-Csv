@@ -41,11 +41,14 @@ public class CsvXmlDocExampleRotTests
         var codeBlocks = doc
             .Descendants("example")
             .Descendants("code")
-            .Select(c => new
-            {
-                Member = c.Ancestors("member").FirstOrDefault()?.Attribute("name")?.Value ?? "(unknown member)",
-                Code = c.Value,
-            })
+            .Select
+            (
+                c =>
+                (
+                    Member: c.Ancestors("member").FirstOrDefault()?.Attribute("name")?.Value ?? "(unknown member)",
+                    Code: c.Value
+                )
+            )
             .ToList();
 
         // Sanity: we expect at least one example. If this assertion fails
@@ -53,6 +56,33 @@ public class CsvXmlDocExampleRotTests
         // the test needs an update.
         Assert.NotEmpty(codeBlocks);
 
+        var failures = FindParseFailures(codeBlocks);
+
+        Assert.True
+        (
+            failures.Count == 0,
+            "XML doc <example> block(s) failed Roslyn syntax parse:\n  - " + string.Join("\n  - ", failures)
+        );
+    }
+
+
+
+    [Fact]
+    public void FindParseFailures_when_an_example_has_a_syntax_error_reports_its_member()
+    {
+        var failures = FindParseFailures(new[] { (Member: "M:Broken.Example", Code: "var x = ;") });
+
+        var failure = Assert.Single(failures);
+        Assert.StartsWith("Member 'M:Broken.Example': example failed to parse", failure, System.StringComparison.Ordinal);
+    }
+
+
+
+    private static System.Collections.Generic.List<string> FindParseFailures
+    (
+        System.Collections.Generic.IEnumerable<(string Member, string Code)> codeBlocks
+    )
+    {
         // Parse in Regular kind with C# 10+ top-level statements semantics.
         // The file is treated as an implicit Main: top-level statements come
         // first, type declarations after — works for both kinds of examples
@@ -95,11 +125,7 @@ var __probe__ = 0;
             }
         }
 
-        Assert.True
-        (
-            failures.Count == 0,
-            "XML doc <example> block(s) failed Roslyn syntax parse:\n  - " + string.Join("\n  - ", failures)
-        );
+        return failures;
     }
 
 
