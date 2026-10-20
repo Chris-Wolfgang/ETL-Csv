@@ -152,10 +152,12 @@ public class CsvExtractorDiscriminatorTests
         var rows = await ReadAllAsync(CreateExtractor(csv, discriminator, hasHeader: true));
 
         var payment = Assert.IsType<NamedPayment>(rows[0]);
+        Assert.Equal("PMT", payment.Kind);
         Assert.Equal("ACC1", payment.Account);
         Assert.Equal(100m, payment.Amount);
 
         var trailer = Assert.IsType<NamedTrailer>(rows[1]);
+        Assert.Equal("TRL", trailer.Kind);
         Assert.Equal(7, trailer.Count);
     }
 
@@ -478,6 +480,8 @@ public class CsvExtractorDiscriminatorTests
 
     public record NamedRow
     {
+        [CsvColumn(Name = "Kind")]
+        public string Kind { get; set; } = string.Empty;
     }
 
 
