@@ -150,6 +150,104 @@ public class CsvValidatorTests
 
 
     [Fact]
+    public void MaxLength_when_limit_is_negative_reports_the_parameter_value_and_reason()
+    {
+        var ex = Assert.Throws<ArgumentOutOfRangeException>(() => CsvValidator.MaxLength<Order>(o => o.Notes, -1));
+
+        Assert.Equal("maxLength", ex.ParamName);
+        Assert.Equal(-1, ex.ActualValue);
+        Assert.StartsWith("Max length must be non-negative.", ex.Message, StringComparison.Ordinal);
+    }
+
+
+
+    [Fact]
+    public void MaxLength_when_limit_is_zero_accepts_only_empty_values()
+    {
+        var validator = CsvValidator.MaxLength<Order>(o => o.Notes, 0);
+
+        Assert.True(validator(new Order { Notes = string.Empty }).IsValid);
+        Assert.False(validator(new Order { Notes = "a" }).IsValid);
+    }
+
+
+
+    [Fact]
+    public void InRange_failure_message_names_the_member_and_both_bounds()
+    {
+        var validator = CsvValidator.InRange<Order>(o => o.Quantity, 1, 10, nameof(Order.Quantity));
+
+        var result = validator(new Order { Quantity = 11 });
+
+        Assert.Equal("Quantity must be between 1 and 10 inclusive.", Assert.Single(result.Failures));
+    }
+
+
+
+    [Fact]
+    public void MaxLength_failure_message_names_the_member_and_the_limit()
+    {
+        var validator = CsvValidator.MaxLength<Order>(o => o.Notes, 3, nameof(Order.Notes));
+
+        var result = validator(new Order { Notes = "abcd" });
+
+        Assert.Equal("Notes must be at most 3 characters.", Assert.Single(result.Failures));
+    }
+
+
+
+    [Fact]
+    public void Matches_failure_message_names_the_member_and_the_pattern()
+    {
+        var validator = CsvValidator.Matches<Order>(o => o.OrderNumber, new Regex("^A[0-9]+$", RegexOptions.None, TimeSpan.FromSeconds(1)), nameof(Order.OrderNumber));
+
+        var result = validator(new Order { OrderNumber = "B12" });
+
+        Assert.Equal("OrderNumber must match '^A[0-9]+$'.", Assert.Single(result.Failures));
+    }
+
+
+
+    [Fact]
+    public void Matches_tests_a_null_value_as_empty()
+    {
+        var validator = CsvValidator.Matches<Order>(o => o.OrderNumber, new Regex("^$", RegexOptions.None, TimeSpan.FromSeconds(1)));
+
+        Assert.True(validator(new Order { OrderNumber = null! }).IsValid);
+    }
+
+
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("   ")]
+    public void Failure_message_uses_Value_when_no_member_name_is_given(string? memberName)
+    {
+        var validator = CsvValidator.MaxLength<Order>(o => o.Notes, 1, memberName);
+
+        var result = validator(new Order { Notes = "ab" });
+
+        Assert.Equal("Value must be at most 1 characters.", Assert.Single(result.Failures));
+    }
+
+
+
+    [Fact]
+    public void InRange_when_comparand_types_are_incompatible_fails_even_though_the_bounds_would_admit_zero()
+    {
+        // TryCompareTo reports an incompatible comparison as "not compared" (false). If it reported
+        // success with a comparison of 0 instead, a value would satisfy both low >= 0 and high <= 0.
+        var validator = CsvValidator.InRange<Order>(o => o.Quantity, 0L, 0L, nameof(Order.Quantity));
+
+        var result = validator(new Order { Quantity = 0 });
+
+        Assert.Equal("Quantity must be between 0 and 0 inclusive.", Assert.Single(result.Failures));
+    }
+
+
+
+    [Fact]
     public void CsvValidationResult_Pass_is_valid_with_no_failures()
     {
         Assert.True(CsvValidationResult.Pass.IsValid);
