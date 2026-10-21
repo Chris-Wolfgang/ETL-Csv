@@ -987,6 +987,11 @@ jobs:
     if: needs.pack-and-validate.outputs.has-packages == 'true'
     runs-on: ubuntu-latest
     permissions:
+      # Accepted Scorecard TokenPermissionsID finding (#221). The release-assets endpoint
+      # (POST /repos/{owner}/{repo}/releases/{id}/assets) that softprops/action-gh-release
+      # calls has no scope narrower than contents:write, and GitHub Actions has no
+      # step-level permissions. The only narrower route is a GitHub App token with
+      # Releases-only access, which is not worth the setup for one informational alert.
       contents: write  # Required to upload assets to the GitHub Release
     steps:
       - name: Download NuGet packages artifact
