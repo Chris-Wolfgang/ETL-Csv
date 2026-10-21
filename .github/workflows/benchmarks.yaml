@@ -33,6 +33,11 @@ jobs:
 
     permissions:
       # Required to push the rendered chart + history to the gh-pages branch.
+      # Accepted Scorecard TokenPermissionsID finding (#224):
+      # benchmark-action/github-action-benchmark does its own `git push HEAD:gh-pages`
+      # to dev/bench, and there is no narrower scope for a branch push. The
+      # alternatives (an in-house chart renderer on actions/deploy-pages, or a separate
+      # branch/site for the chart) cost far more than one informational alert.
       contents: write
 
     steps:
