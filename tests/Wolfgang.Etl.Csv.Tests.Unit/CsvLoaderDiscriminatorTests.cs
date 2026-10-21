@@ -20,7 +20,7 @@ public class CsvLoaderDiscriminatorTests
         where T : notnull
     {
         var stream = new MemoryStream();
-        var writer = new StreamWriter(stream, new UTF8Encoding(false), 1024, leaveOpen: true);
+        var writer = new StreamWriter(stream, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false), 1024, leaveOpen: true);
         var sut = new CsvLoader<T>
         (
             writer,
