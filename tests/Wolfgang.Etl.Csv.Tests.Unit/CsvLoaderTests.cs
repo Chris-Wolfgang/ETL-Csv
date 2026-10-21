@@ -425,7 +425,7 @@ public class CsvLoaderTests
         Assert.Equal
         (
             ItemErrorAction.Skip,
-            sut.ErrorPolicy(new ItemErrorContext(1, new InvalidOperationException("boom")))
+            sut.ErrorPolicy(new ItemErrorContext(1, new InvalidOperationException("boom"), null))
         );
     }
 
@@ -435,8 +435,6 @@ public class CsvLoaderTests
     {
         public string Name { get; init; } = string.Empty;
 
-        // Reads Name so it stays an instance member: CsvHelper only writes instance properties,
-        // and a static Detonate would never be called.
-        public string Detonate => throw new InvalidOperationException($"boom: {Name}");
+        public string Detonate => throw new InvalidOperationException("boom");
     }
 }
