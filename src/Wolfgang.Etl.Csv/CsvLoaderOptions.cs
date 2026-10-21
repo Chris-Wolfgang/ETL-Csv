@@ -20,6 +20,14 @@ namespace Wolfgang.Etl.Csv;
 /// <see cref="ObsoleteAttribute">obsolete</see>. To write a non-default encoding, construct the
 /// <see cref="System.IO.StreamWriter"/> with the encoding you want.
 /// </para>
+/// <para>
+/// The inherited <see cref="LoaderOptions.ErrorPolicy"/> is <b>not consulted</b> by
+/// <see cref="CsvLoader{TRecord}"/>. CsvHelper writes a record's fields into the output one at a time,
+/// so a record that fails partway through cannot be withdrawn: skipping it would leave a half-written
+/// row in the file. A failure while writing a record therefore always propagates out of
+/// <c>LoadAsync</c>. To drop records before they reach the writer, use <see cref="Validators"/> with
+/// <see cref="OnValidationFailure"/> set to <see cref="CsvValidationFailureAction.Skip"/>.
+/// </para>
 /// </remarks>
 /// <typeparam name="TRecord">The record type the loader writes.</typeparam>
 public sealed record CsvLoaderOptions<TRecord> : LoaderOptions
