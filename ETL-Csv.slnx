@@ -10,6 +10,14 @@
     <File Path="LICENSE" />
     <File Path="README.md" />
     <File Path="SECURITY.md" />
+    <File Path="THIRD-PARTY-NOTICES.md" />
+    <File Path="stryker-config.json" />
+    <File Path=".globalconfig" />
+    <File Path=".gitattributes" />
+    <File Path=".gitleaks.toml" />
+  </Folder>
+  <Folder Name="/.root/.githooks/">
+    <File Path=".githooks/pre-commit" />
   </Folder>
   <Folder Name="/.root/.github/">
     <File Path=".github/actionlint.yaml" />
@@ -34,6 +42,17 @@
     <File Path=".github/workflows/release.yaml" />
     <File Path=".github/workflows/scorecard.yaml" />
     <File Path=".github/workflows/stryker.yaml" />
+    <File Path=".github/workflows/aot.yaml" />
+    <File Path=".github/workflows/cross-platform-differential.yaml" />
+    <File Path=".github/workflows/fuzz.yaml" />
+    <File Path=".github/workflows/gc-profiling.yaml" />
+    <File Path=".github/workflows/license-audit.yaml" />
+    <File Path=".github/workflows/mutation.yaml" />
+    <File Path=".github/workflows/pr-benchmarks.yaml" />
+    <File Path=".github/workflows/protected-files.yaml" />
+    <File Path=".github/workflows/semgrep.yaml" />
+    <File Path=".github/workflows/shadow.yaml" />
+    <File Path=".github/workflows/sourcelink.yaml" />
   </Folder>
   <Folder Name="/.root/docs/">
     <File Path="docs/abi-stability.md" />
@@ -43,11 +62,17 @@
     <File Path="docs/RELEASE-WORKFLOW-SETUP.md" />
     <File Path="docs/reproducible-build-verification.md" />
     <File Path="docs/WORKFLOW_SECURITY.md" />
+    <File Path="docs/pipeline-extensions.md" />
   </Folder>
   <Folder Name="/.root/docs/adr/">
     <File Path="docs/adr/0000-template.md" />
     <File Path="docs/adr/0001-csvhelper-as-internal-parser.md" />
     <File Path="docs/adr/README.md" />
+  </Folder>
+  <Folder Name="/.root/docs/cookbook/">
+    <File Path="docs/cookbook/polymorphic-rows.md" />
+    <File Path="docs/cookbook/record-validation.md" />
+    <File Path="docs/cookbook/resumable-extraction.md" />
   </Folder>
   <Folder Name="/.root/docs/migration/">
     <File Path="docs/migration/README.md" />
@@ -64,6 +89,11 @@
     <File Path="scripts/format.ps1" />
     <File Path="scripts/Setup-Labels.ps1" />
     <File Path="scripts/Validate-DocsDeploy.ps1" />
+    <File Path="scripts/Setup-GitHubPages.ps1" />
+    <File Path="scripts/Setup-Maintenance.ps1" />
+    <File Path="scripts/audit-repos.ps1" />
+    <File Path="scripts/third-party-notices.ps1" />
+    <File Path="scripts/upgrade.ps1" />
   </Folder>
   <Folder Name="/benchmarks/">
     <Project Path="benchmarks/Wolfgang.Etl.Csv.Benchmarks/Wolfgang.Etl.Csv.Benchmarks.csproj" />
