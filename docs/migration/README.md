@@ -4,7 +4,7 @@ Per-major-version upgrade guides for Wolfgang.Etl.Csv consumers.
 
 ## Status
 
-No migration guides yet — Wolfgang.Etl.Csv is at **0.1.0**, the first public release.
+No migration guides yet. Wolfgang.Etl.Csv is pre-1.0 (the current version is the `<Version>` in `src/Wolfgang.Etl.Csv/Wolfgang.Etl.Csv.csproj`); breaking changes in 0.x releases are described in `CHANGELOG.md`.
 
 The first migration guide will appear here when a 1.0 or 2.0 ships with breaking changes. Until then, this directory exists as scaffolding so the structure is in place before it's needed.
 
