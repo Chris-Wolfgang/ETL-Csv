@@ -209,6 +209,12 @@ var extractor = new CsvExtractor<Person>
 The older `BadDataFound` and `ReadingExceptionOccurred` callbacks are `[Obsolete]`. They still fire,
 but only to observe. `ErrorPolicy` decides whether a row is skipped or aborts the run.
 
+`ErrorPolicy` applies to `CsvExtractor<T>` only. `CsvLoader<T>` inherits the setting but does not
+consult it: CsvHelper writes a record's fields out one at a time, so a record that fails partway
+cannot be withdrawn without leaving a half-written row. A write failure always propagates out of
+`LoadAsync`. To drop records before they are written, use `Validators` with
+`OnValidationFailure = CsvValidationFailureAction.Skip`.
+
 ### Example: Polymorphic rows (mixed shapes in one file)
 
 Bind each row to a different concrete type chosen by a discriminator column — a header/detail/trailer
