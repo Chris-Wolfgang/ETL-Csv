@@ -409,6 +409,78 @@ public class CsvValidatorTests
 
 
 
+    [Fact]
+    public void CsvValidationException_joins_several_failures_with_a_semicolon()
+    {
+        var ex = new CsvValidationException(3, new[] { "first", "second" });
+
+        Assert.Equal("Record on line 3 failed validation: first; second", ex.Message);
+    }
+
+
+
+    [Fact]
+    public void CsvValidationException_with_no_failures_says_so_in_its_message()
+    {
+        var ex = new CsvValidationException(4, Array.Empty<string>());
+
+        Assert.Equal("Record on line 4 failed validation: (no reasons provided)", ex.Message);
+        Assert.Empty(ex.Failures);
+    }
+
+
+
+    [Fact]
+    public void CsvValidationException_with_null_failures_treats_them_as_empty()
+    {
+        var ex = new CsvValidationException(5, null!);
+
+        Assert.Equal("Record on line 5 failed validation: (no reasons provided)", ex.Message);
+        Assert.Empty(ex.Failures);
+    }
+
+
+
+    [Fact]
+    public void CsvValidationResult_failed_ctor_empty_failures_reports_parameter_and_message()
+    {
+        var ex = Assert.Throws<ArgumentException>(() => new CsvValidationResult(Array.Empty<string>()));
+
+        Assert.Equal("failures", ex.ParamName);
+        Assert.StartsWith("A failed CsvValidationResult must contain at least one failure reason.", ex.Message, StringComparison.Ordinal);
+    }
+
+
+
+    [Fact]
+    public void CsvValidationResult_Fail_empty_reasons_reports_parameter_and_message()
+    {
+        // ParamName "reasons" proves Fail throws itself rather than relying on the constructor's
+        // own check (which reports "failures").
+        var ex = Assert.Throws<ArgumentException>(() => CsvValidationResult.Fail());
+
+        Assert.Equal("reasons", ex.ParamName);
+        Assert.StartsWith("At least one reason must be provided.", ex.Message, StringComparison.Ordinal);
+    }
+
+
+
+    [Fact]
+    public void CsvValidationResult_legacy_ctor_invalid_shapes_report_parameter_and_message()
+    {
+#pragma warning disable CS0618 // legacy ctor is [Obsolete] — deliberate call under test
+        var success = Assert.Throws<ArgumentException>(() => new CsvValidationResult(IsValid: true, Failures: new[] { "impossible" }));
+        var failure = Assert.Throws<ArgumentException>(() => new CsvValidationResult(IsValid: false, Failures: Array.Empty<string>()));
+#pragma warning restore CS0618
+
+        Assert.Equal("Failures", success.ParamName);
+        Assert.StartsWith("A successful CsvValidationResult cannot carry failure reasons.", success.Message, StringComparison.Ordinal);
+        Assert.Equal("Failures", failure.ParamName);
+        Assert.StartsWith("A failed CsvValidationResult must contain at least one failure reason.", failure.Message, StringComparison.Ordinal);
+    }
+
+
+
     public record Order
     {
         public string OrderNumber { get; set; } = string.Empty;
