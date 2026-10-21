@@ -59,6 +59,6 @@ Wolfgang.Etl.Csv follows [Semantic Versioning 2.0.0](https://semver.org/spec/v2.
 
 - `<MAJOR>.<MINOR>.<PATCH>` for releases
 - Pre-release identifiers (`-alpha`, `-beta`, `-rc`) reserved for unstable previews
-- `0.x.x` — pre-1.0 development. MINOR may break ABI in this range (this is permitted by SemVer for the 0.x range, but the project chooses to honour the no-break-on-MINOR policy anyway to avoid surprising consumers).
+- `0.x.x` — pre-1.0 development. MINOR may break ABI in this range (this is permitted by SemVer for the 0.x range, but the project chooses to honour the no-break-on-MINOR policy anyway to avoid surprising consumers). The escape hatch is a deliberate, recorded break: a `CompatibilitySuppressions.xml` entry for the ABI gate plus a `CHANGELOG.md` entry that names it, as 0.9.0 did for six binary-only `CP0002` breaks.
 
 The current shipped version is reported in `src/Wolfgang.Etl.Csv/Wolfgang.Etl.Csv.csproj` `<Version>` and surfaced on NuGet.org.

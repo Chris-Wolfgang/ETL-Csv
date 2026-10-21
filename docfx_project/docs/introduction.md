@@ -4,17 +4,19 @@ Welcome to Wolfgang.Etl.Csv!
 
 ## Overview
 
-An Extractor and Loader that implement IExtract<T> and ILoadAsync<T> for use in ETLs build using Wolfgang.Etl.Abstractions
-
-<!-- Add your project overview here -->
+A `CsvExtractor<T>` and `CsvLoader<T>`, derived from `ExtractorBase<,>` and `LoaderBase<,>`, for ETLs built with
+Wolfgang.Etl.Abstractions. They stream CSV into and out of strongly-typed records, and use
+[CsvHelper](https://joshclose.github.io/CsvHelper/) internally without exposing its types.
 
 ## Key Features
 
-<!-- List the main features of your project. For example:
-- Feature 1: Description
-- Feature 2: Description
-- Feature 3: Description
--->
+- Async-first read and write of CSV streams, with cancellation throughout
+- Progress reporting with item, skip, error, line-number and bad-data counts
+- Compile-time column mapping (`[CsvColumn]`, `[CsvIgnore]`) and runtime mapping (`CsvColumnMap`)
+- Polymorphic rows via `CsvDiscriminator<TBase>`, and streaming record validation
+- `ErrorPolicy` to skip or abort on rows that fail to parse
+- Resumable extraction through checkpoints
+- Multi-targeted from net462 to net10.0
 
 ## Getting Help
 

@@ -14,7 +14,7 @@ Welcome to the Wolfgang.Etl.Csv documentation. This site contains comprehensive 
 
 ## About Wolfgang.Etl.Csv
 
-An Extractor and Loader that implement IExtract<T> and ILoadAsync<T> for use in ETLs build using Wolfgang.Etl.Abstractions
+A `CsvExtractor<T>` and `CsvLoader<T>`, derived from `ExtractorBase<,>` and `LoaderBase<,>`, for ETLs built with Wolfgang.Etl.Abstractions.
 
 ## Installation
 
