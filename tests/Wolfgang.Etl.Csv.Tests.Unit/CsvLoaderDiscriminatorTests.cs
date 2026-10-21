@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Wolfgang.Etl.Csv.Tests.Unit.TestModels;
 using Xunit;
 
 // These files still configure via the deprecated property setters in places where the value is
@@ -230,6 +231,109 @@ public class CsvLoaderDiscriminatorTests
         var ex = await Assert.ThrowsAnyAsync<Exception>(async () => await LoadAndReadAsync(sut, stream, items));
 
         Assert.IsNotType<TargetInvocationException>(ex);
+    }
+
+
+
+    [Fact]
+    public async Task LoadAsync_when_runtime_type_is_unmapped_and_action_is_Throw_names_the_type()
+    {
+        var (sut, stream) = CreateLoader(BuildByIndex());
+        var items = new LedgerRow[] { new UnmappedRow { RecordType = "XXX" } };
+
+        var ex = await Assert.ThrowsAsync<InvalidOperationException>(async () => await LoadAndReadAsync(sut, stream, items));
+
+        Assert.Equal
+        (
+            $"No discriminator value is mapped for record type '{typeof(UnmappedRow)}'.",
+            ex.Message
+        );
+    }
+
+
+
+    [Fact]
+    public async Task LoadAsync_when_runtime_type_is_unmapped_and_action_is_Skip_logs_the_skip()
+    {
+        using var stream = new MemoryStream();
+        using var writer = new StreamWriter(stream, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false), 1024, leaveOpen: true);
+        var logger = new RecordingLogger<CsvLoader<LedgerRow>>();
+        var sut = new CsvLoader<LedgerRow>
+        (
+            writer,
+            new CsvLoaderOptions<LedgerRow>
+            {
+                LeaveOpen = true,
+                Discriminator = BuildByIndex(CsvDiscriminatorAction.Skip),
+            },
+            logger
+        );
+        var items = new LedgerRow[] { new UnmappedRow { RecordType = "XXX" } };
+
+        await sut.LoadAsync(items.ToAsyncEnumerable());
+
+        Assert.Contains(logger.Entries, e => string.Equals(e.Message, "Skipped item 1 of 0.", StringComparison.Ordinal));
+    }
+
+
+
+    [Fact]
+    public async Task LoadAsync_when_Discriminator_is_direct_init_writes_each_record_by_its_runtime_type()
+    {
+        // No builder-captured writers, so this takes the reflective WriteRecord<T> fallback.
+        var discriminator = new CsvDiscriminator<LedgerRow>
+        {
+            ColumnIndex = 0,
+            Mapping = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase)
+            {
+                ["PMT"] = typeof(PaymentRow),
+                ["TRL"] = typeof(TrailerRow),
+            },
+            PerTypeColumnMaps = new Dictionary<Type, IReadOnlyList<CsvColumnMap>>
+            {
+                [typeof(PaymentRow)] = new[]
+                {
+                    new CsvColumnMap(nameof(PaymentRow.RecordType)) { Index = 0 },
+                    new CsvColumnMap(nameof(PaymentRow.Account)) { Index = 1 },
+                    new CsvColumnMap(nameof(PaymentRow.Amount)) { Index = 2 },
+                },
+                [typeof(TrailerRow)] = new[]
+                {
+                    new CsvColumnMap(nameof(TrailerRow.RecordType)) { Index = 0 },
+                    new CsvColumnMap(nameof(TrailerRow.Count)) { Index = 1 },
+                },
+            },
+        };
+        var (sut, stream) = CreateLoader(discriminator);
+        var items = new LedgerRow[]
+        {
+            new PaymentRow { RecordType = "PMT", Account = "ACC1", Amount = 100 },
+            new TrailerRow { RecordType = "TRL", Count = 1 },
+        };
+
+        var text = await LoadAndReadAsync(sut, stream, items);
+
+        Assert.Equal("PMT,ACC1,100\r\nTRL,1\r\n", text);
+    }
+
+
+
+    [Fact]
+    public async Task LoadAsync_when_direct_init_write_fails_surfaces_the_CsvHelper_exception()
+    {
+        var discriminator = new CsvDiscriminator<LedgerRow>
+        {
+            ColumnIndex = 0,
+            Mapping = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase)
+            {
+                ["BOOM"] = typeof(ExplodingRow),
+            },
+        };
+        var (sut, stream) = CreateLoader(discriminator);
+        var items = new LedgerRow[] { new ExplodingRow { RecordType = "BOOM" } };
+
+        // Exactly CsvHelper's WriterException: not the reflection wrapper, and not swallowed.
+        await Assert.ThrowsAsync<CsvHelper.WriterException>(async () => await LoadAndReadAsync(sut, stream, items));
     }
 
 
