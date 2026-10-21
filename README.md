@@ -4,7 +4,7 @@ A `CsvExtractor<T>` and `CsvLoader<T>` for streaming CSV files into and out of s
 
 [![NuGet](https://img.shields.io/nuget/v/Wolfgang.Etl.Csv.svg?logo=nuget&label=NuGet)](https://www.nuget.org/packages/Wolfgang.Etl.Csv/)
 [![Downloads](https://img.shields.io/nuget/dt/Wolfgang.Etl.Csv.svg?logo=nuget&label=downloads)](https://www.nuget.org/packages/Wolfgang.Etl.Csv/)
-[![PR build](https://img.shields.io/github/actions/workflow/status/Chris-Wolfgang/ETL-Csv/pr.yaml?event=pull_request_target&label=PR%20build&logo=github)](https://github.com/Chris-Wolfgang/ETL-Csv/actions/workflows/pr.yaml)
+[![PR build](https://img.shields.io/github/actions/workflow/status/Chris-Wolfgang/ETL-Csv/pr.yaml?event=pull_request&label=PR%20build&logo=github)](https://github.com/Chris-Wolfgang/ETL-Csv/actions/workflows/pr.yaml)
 [![release](https://img.shields.io/github/actions/workflow/status/Chris-Wolfgang/ETL-Csv/release.yaml?event=release&label=release&logo=github)](https://github.com/Chris-Wolfgang/ETL-Csv/actions/workflows/release.yaml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![.NET](https://img.shields.io/badge/.NET-Multi--Targeted-purple.svg)](https://dotnet.microsoft.com/)
@@ -19,7 +19,7 @@ A `CsvExtractor<T>` and `CsvLoader<T>` for streaming CSV files into and out of s
 dotnet add package Wolfgang.Etl.Csv
 ```
 
-**NuGet Package:** Coming soon to NuGet.org
+**NuGet Package:** [Wolfgang.Etl.Csv on NuGet.org](https://www.nuget.org/packages/Wolfgang.Etl.Csv/)
 
 ---
 
@@ -33,7 +33,7 @@ This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) f
 
 - **GitHub Repository:** [https://github.com/Chris-Wolfgang/ETL-Csv](https://github.com/Chris-Wolfgang/ETL-Csv)
 - **API Documentation:** https://Chris-Wolfgang.github.io/ETL-Csv/
-- **Formatting Guide:** [README-FORMATTING.md](README-FORMATTING.md)
+- **Formatting Guide:** [docs/README-FORMATTING.md](docs/README-FORMATTING.md)
 - **Contributing Guide:** [CONTRIBUTING.md](CONTRIBUTING.md)
 - **Cookbook — resumable extraction:** [docs/cookbook/resumable-extraction.md](docs/cookbook/resumable-extraction.md)
 - **Cookbook — polymorphic rows (mixed shapes):** [docs/cookbook/polymorphic-rows.md](docs/cookbook/polymorphic-rows.md)
@@ -104,15 +104,19 @@ That's the full surface for the simplest case. The library auto-maps record prop
 | Progress reporting with item count, skip count, line number, bad-data count | `CsvExtractorProgress`, `CsvLoaderProgress` |
 | Cancellation support throughout | `CancellationToken` on every async API |
 | Skip metadata rows / start at a specific line | `InitialRecordIndex` |
-| Limit how many records get processed | `MaxRecordCount`, `SkipRecordCount` |
+| Limit how many records get processed | `MaximumItemCount`, `SkipItemCount` (options record) |
 | Compile-time column mapping (declarative) | `[CsvColumn]`, `[CsvIgnore]` |
 | Runtime column mapping (configuration / DB-driven layouts) | `CsvColumnMap`, `ColumnMaps` property |
 | Parser-agnostic public surface (no `CsvHelper` types leaked) | `CsvTrimOptions`, `CsvBadDataInfo`, `CsvShouldQuoteContext` |
 | Custom delimiter, quote, escape, comment character | `Delimiter`, `Quote`, `Escape`, `Comment`, `AllowComments` |
-| Encoding control | `Encoding` |
 | `LeaveOpen` semantics matching .NET conventions | `LeaveOpen` |
 | Trim whitespace inside or outside quotes | `TrimOptions` |
-| Custom bad-data, parse-error, and quoting callbacks | `BadDataFound`, `ReadingExceptionOccurred`, `ShouldQuote` |
+| Skip-or-abort policy for rows that fail to parse or convert | `ErrorPolicy` (options record) |
+| Custom quoting callback | `ShouldQuote` |
+
+CSV knobs are configured through `CsvExtractorOptions<TRecord>` / `CsvLoaderOptions<TRecord>` passed to the constructor. The settable properties on the stages themselves are `[Obsolete]`.
+
+The stream's text encoding is whatever the `StreamReader` / `StreamWriter` you pass in was constructed with. The `Encoding` property is inert.
 
 ### Example: Compile-time column mapping with `[CsvColumn]`
 
@@ -177,26 +181,33 @@ await foreach (var person in extractor.ExtractAsync(progress, cancellationToken)
 
 `ReportingInterval` (inherited from `ExtractorBase`) controls how often progress is sampled.
 
-### Example: Observing bad data and parse errors
+### Example: Handling rows that fail to parse
 
-The library does **not** log CSV record contents by default — bad-data rows and
-parse exceptions can contain PII. Wire `BadDataFound` and `ReadingExceptionOccurred`
-to your own logger when you want visibility. `LogDebug` is recommended so the raw
-field values only surface when an operator explicitly turns up verbosity:
+A row that fails type conversion or mapping goes through `ErrorPolicy`, which comes from
+`ExtractorOptions` in `Wolfgang.Etl.Abstractions`. The default is fail-fast: the exception propagates
+out of `ExtractAsync`. Return `ItemErrorAction.Skip` to drop the row and keep going. Skipped rows are
+counted in `CurrentErrorItemCount` on the extractor and its progress report.
+
+The library does **not** log CSV record contents by default, because bad rows can contain PII. Log
+them from the policy yourself if you want them. `LogDebug` keeps raw values out of normal logs:
 
 ```csharp
-extractor.BadDataFound = info =>
-    _logger.LogDebug("Bad CSV data on line {Line}: {Field}", info.LineNumber, info.Field);
-
-extractor.ReadingExceptionOccurred = info =>
-    _logger.LogDebug(
-        info.Exception,
-        "Parse error on line {Line}, column '{Column}', value '{Value}'",
-        info.LineNumber, info.ColumnName, info.ColumnValue);
+var extractor = new CsvExtractor<Person>
+(
+    reader,
+    new CsvExtractorOptions<Person>
+    {
+        ErrorPolicy = context =>
+        {
+            _logger.LogDebug(context.Exception, "Skipping a CSV row that failed to parse");
+            return ItemErrorAction.Skip;
+        },
+    }
+);
 ```
 
-Both callbacks are observation-only — `ReadingExceptionOccurred` does not suppress
-the underlying exception, which still propagates out of `ExtractAsync`.
+The older `BadDataFound` and `ReadingExceptionOccurred` callbacks are `[Obsolete]`. They still fire,
+but only to observe. `ErrorPolicy` decides whether a row is skipped or aborts the run.
 
 ### Example: Polymorphic rows (mixed shapes in one file)
 
@@ -216,7 +227,7 @@ var extractor = new CsvExtractor<LedgerRow>
     reader,
     new CsvExtractorOptions<LedgerRow>
     {
-        HasHeaderRecord = false, Discriminator = discriminator 
+        HasHeaderRecord = false, Discriminator = discriminator
     }
 );
 // each yielded row is a HeaderRow / PaymentRow / TrailerRow
@@ -304,7 +315,7 @@ This library uses **`BannedSymbols.txt`** to prohibit synchronous APIs and enfor
 ## 🛠️ Building from Source
 
 ### Prerequisites
-- [.NET 10.0 SDK](https://dotnet.microsoft.com/download) — required to build the highest TFM (`net10.0`). Older TFM targets (`net462`, `netstandard2.0`/`2.1`, `net8.0`) compile through the .NET 10 SDK; you don't need additional SDKs installed.
+- [.NET 10.0 SDK](https://dotnet.microsoft.com/download) — required to build the highest TFM (`net10.0`). Older TFM targets (`net462`, `netstandard2.0`/`2.1`, `net5.0`–`net8.0`) compile through the .NET 10 SDK; you don't need additional SDKs installed.
 - Optional: [PowerShell Core](https://github.com/PowerShell/PowerShell) for formatting scripts
 
 ### Build Steps
@@ -324,7 +335,7 @@ dotnet build --configuration Release
 dotnet test --configuration Release
 
 # Run code formatting (PowerShell Core)
-pwsh ./format.ps1
+pwsh ./scripts/format.ps1
 ```
 
 ### Code Formatting
@@ -339,7 +350,7 @@ dotnet format
 dotnet format --verify-no-changes
 ```
 
-See [README-FORMATTING.md](README-FORMATTING.md) for detailed formatting guidelines.
+See [docs/README-FORMATTING.md](docs/README-FORMATTING.md) for detailed formatting guidelines.
 
 ### Building Documentation
 
@@ -354,10 +365,10 @@ cd docfx_project
 docfx metadata  # Extract API metadata from source code
 docfx build     # Build HTML documentation
 
-# Documentation is generated in the docs/ folder at the repository root
+# Documentation is generated in docfx_project/_site/
 ```
 
-The documentation is automatically built and deployed to GitHub Pages when changes are pushed to the `main` branch.
+The documentation is built and deployed to GitHub Pages when a release is published: `release.yaml` calls the reusable `docfx.yaml` workflow, which can also be run by hand (`workflow_dispatch`).
 
 **Local Preview:**
 ```bash
@@ -370,7 +381,8 @@ docfx build --serve
 
 **Documentation Structure:**
 - `docfx_project/` - DocFX configuration and source files
-- `docs/` - Generated HTML documentation (published to GitHub Pages)
+- `docfx_project/_site/` - Generated HTML documentation (published to GitHub Pages; not committed)
+- `docs/` - Hand-written docs: ADRs, cookbook, workflow notes
 - `docfx_project/index.md` - Main landing page content
 - `docfx_project/docs/` - Additional documentation articles
 - `docfx_project/api/` - Auto-generated API reference YAML files
