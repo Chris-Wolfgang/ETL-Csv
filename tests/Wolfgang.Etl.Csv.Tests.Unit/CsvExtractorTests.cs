@@ -192,9 +192,9 @@ public class CsvExtractorTests
             // drain
         }
 
-        // StreamReader liveness — implicit assertion via Peek not throwing.
-        var peeked = reader.Peek();
-        Assert.True(peeked == -1 || peeked >= 0);
+        // StreamReader liveness: Peek on a disposed reader throws ObjectDisposedException.
+        var peekException = Record.Exception(() => reader.Peek());
+        Assert.Null(peekException);
 
         // Underlying stream is also still readable.
         Assert.True(stream.CanRead);
