@@ -442,6 +442,213 @@ public class CsvExtractorDiscriminatorTests
 
 
 
+    [Fact]
+    public void CsvDiscriminatorBuilder_ctor_negative_column_index_reports_the_parameter_and_value()
+    {
+        var ex = Assert.Throws<ArgumentOutOfRangeException>(() => new CsvDiscriminatorBuilder<LedgerRow>(-2));
+
+        Assert.Equal("columnIndex", ex.ParamName);
+        Assert.Equal(-2, ex.ActualValue);
+        Assert.StartsWith("Column index must be non-negative.", ex.Message, StringComparison.Ordinal);
+    }
+
+
+
+    [Fact]
+    public void CsvDiscriminatorBuilder_ctor_blank_column_name_reports_the_parameter_and_message()
+    {
+        var ex = Assert.Throws<ArgumentException>(() => new CsvDiscriminatorBuilder<LedgerRow>(" "));
+
+        Assert.Equal("columnName", ex.ParamName);
+        Assert.StartsWith("Column name must not be empty or whitespace.", ex.Message, StringComparison.Ordinal);
+    }
+
+
+
+    [Fact]
+    public void CsvDiscriminatorBuilder_Build_by_index_keeps_the_column_index()
+    {
+        var discriminator = new CsvDiscriminatorBuilder<LedgerRow>(3)
+            .Map<PaymentRow>("PMT")
+            .Build();
+
+        Assert.Equal(3, discriminator.ColumnIndex);
+        Assert.Null(discriminator.ColumnName);
+    }
+
+
+
+    [Fact]
+    public void CsvDiscriminatorBuilder_Build_by_name_sets_the_column_index_to_zero()
+    {
+        var discriminator = new CsvDiscriminatorBuilder<LedgerRow>("Kind")
+            .Map<PaymentRow>("PMT")
+            .Build();
+
+        Assert.Equal(0, discriminator.ColumnIndex);
+        Assert.Equal("Kind", discriminator.ColumnName);
+    }
+
+
+
+    [Fact]
+    public void CsvDiscriminatorBuilder_Build_without_column_maps_leaves_PerTypeColumnMaps_null()
+    {
+        var discriminator = new CsvDiscriminatorBuilder<LedgerRow>(0)
+            .Map<PaymentRow>("PMT")
+            .Build();
+
+        Assert.Null(discriminator.PerTypeColumnMaps);
+    }
+
+
+
+    [Fact]
+    public void CsvDiscriminatorBuilder_Map_with_an_empty_column_map_list_falls_back_to_attributes()
+    {
+        // An empty list means "no runtime maps": it must not reach BuildFromColumnMaps (which
+        // rejects an empty list) and must not be recorded as a per-type column map.
+        var discriminator = new CsvDiscriminatorBuilder<LedgerRow>(0)
+            .Map<PaymentRow>("PMT", Array.Empty<CsvColumnMap>())
+            .Build();
+
+        Assert.Null(discriminator.PerTypeColumnMaps);
+    }
+
+
+
+    [Fact]
+    public void CsvDiscriminatorBuilder_Build_records_the_per_type_column_maps()
+    {
+        var columns = new[]
+        {
+            new CsvColumnMap(nameof(PaymentRow.Account)) { Index = 1 },
+        };
+
+        var discriminator = new CsvDiscriminatorBuilder<LedgerRow>(0)
+            .Map<PaymentRow>("PMT", columns)
+            .Map<TrailerRow>("TRL")
+            .Build();
+
+        var maps = Assert.Single(discriminator.PerTypeColumnMaps!);
+        Assert.Equal(typeof(PaymentRow), maps.Key);
+        Assert.Same(columns, maps.Value);
+    }
+
+
+
+    [Fact]
+    public void CsvDiscriminatorBuilder_Build_duplicate_value_names_the_value()
+    {
+        var builder = new CsvDiscriminatorBuilder<LedgerRow>(0)
+            .Map<PaymentRow>("X")
+            .Map<TrailerRow>("X");
+
+        var ex = Assert.Throws<InvalidOperationException>(() => builder.Build());
+
+        Assert.Equal("Discriminator value 'X' is mapped more than once.", ex.Message);
+    }
+
+
+
+    [Fact]
+    public void CsvDiscriminatorBuilder_Build_duplicate_type_names_the_type()
+    {
+        var builder = new CsvDiscriminatorBuilder<LedgerRow>(0)
+            .Map<PaymentRow>("A")
+            .Map<PaymentRow>("B");
+
+        var ex = Assert.Throws<InvalidOperationException>(() => builder.Build());
+
+        Assert.Equal
+        (
+            $"Type '{typeof(PaymentRow)}' is mapped to more than one discriminator value.",
+            ex.Message
+        );
+    }
+
+
+
+    [Fact]
+    public void TryGetWriter_when_built_by_the_builder_returns_the_captured_writer()
+    {
+        var discriminator = BuildByIndex();
+
+        var found = discriminator.TryGetWriter(typeof(PaymentRow), out var writer);
+
+        Assert.True(found);
+        Assert.NotNull(writer);
+    }
+
+
+
+    [Fact]
+    public void TryGetWriter_when_direct_init_returns_false()
+    {
+        var discriminator = new CsvDiscriminator<LedgerRow>
+        {
+            Mapping = new Dictionary<string, Type> { ["PMT"] = typeof(PaymentRow) },
+        };
+
+        Assert.False(discriminator.TryGetWriter(typeof(PaymentRow), out _));
+    }
+
+
+
+    [Fact]
+    public async Task ExtractAsync_when_direct_init_maps_a_non_base_type_names_both_types()
+    {
+        var discriminator = new CsvDiscriminator<LedgerRow>
+        {
+            ColumnIndex = 0,
+            Mapping = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase)
+            {
+                ["X"] = typeof(string),
+            },
+        };
+
+        var sut = CreateExtractor("X,foo\n", discriminator, hasHeader: false);
+
+        var ex = await Assert.ThrowsAsync<InvalidOperationException>(async () => await ReadAllAsync(sut));
+
+        Assert.Equal
+        (
+            $"Mapped type '{typeof(string)}' is not assignable to the discriminator base type '{typeof(LedgerRow)}'.",
+            ex.Message
+        );
+    }
+
+
+
+    [Fact]
+    public async Task ExtractAsync_when_direct_init_has_an_empty_column_map_list_uses_attribute_mapping()
+    {
+        // An empty per-type list means "no runtime maps"; it must not reach BuildFromColumnMaps,
+        // which rejects an empty list.
+        var discriminator = new CsvDiscriminator<NamedRow>
+        {
+            ColumnName = "Kind",
+            Mapping = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase)
+            {
+                ["PMT"] = typeof(NamedPayment),
+            },
+            PerTypeColumnMaps = new Dictionary<Type, IReadOnlyList<CsvColumnMap>>
+            {
+                [typeof(NamedPayment)] = Array.Empty<CsvColumnMap>(),
+            },
+        };
+
+        const string csv =
+            "Kind,Account,Amount\n" +
+            "PMT,ACC1,100\n";
+
+        var rows = await ReadAllAsync(CreateExtractor(csv, discriminator, hasHeader: true));
+
+        Assert.Equal("ACC1", Assert.IsType<NamedPayment>(Assert.Single(rows)).Account);
+    }
+
+
+
     public record LedgerRow
     {
         public string RecordType { get; set; } = string.Empty;
