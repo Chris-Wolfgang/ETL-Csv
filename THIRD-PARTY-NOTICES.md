@@ -3,17 +3,20 @@
 `Wolfgang.Etl.Csv` ships the runtime dependencies listed below.
 `license-audit.yaml` gates new dependencies against
 `licenses/allowed-licenses.json` on every PR that touches a `.csproj`, plus
-weekly. Regenerate this file's table by hand (from `dotnet-project-licenses`'s
-console output — see the commands below) and commit it whenever the dependency
-graph changes.
+weekly. This committed copy is the repository-level notice. The copy packed into the
+`.nupkg` is generated at release time by `scripts/third-party-notices.ps1`
+(see `Directory.Build.props`) and is never committed, so the package always
+matches the dependency graph it was built from. Keep this file's table in step
+by hand (from `dotnet-project-licenses`'s console output — see the commands
+below) whenever the dependency graph changes.
 
 ## Wolfgang.Etl.Csv
 
 | Package | Version | License |
 |---------|---------|---------|
 | [CsvHelper](https://www.nuget.org/packages/CsvHelper/) | 33.1.0 | [MS-PL OR Apache-2.0](https://licenses.nuget.org/MS-PL%20OR%20Apache-2.0) |
-| [Microsoft.Bcl.AsyncInterfaces](https://www.nuget.org/packages/Microsoft.Bcl.AsyncInterfaces/) | 10.0.11 | [MIT](https://licenses.nuget.org/MIT) |
-| [Microsoft.Extensions.Logging.Abstractions](https://www.nuget.org/packages/Microsoft.Extensions.Logging.Abstractions/) | 10.0.11 | [MIT](https://licenses.nuget.org/MIT) |
+| [Microsoft.Bcl.AsyncInterfaces](https://www.nuget.org/packages/Microsoft.Bcl.AsyncInterfaces/) | 10.0.13 | [MIT](https://licenses.nuget.org/MIT) |
+| [Microsoft.Extensions.Logging.Abstractions](https://www.nuget.org/packages/Microsoft.Extensions.Logging.Abstractions/) | 10.0.13 | [MIT](https://licenses.nuget.org/MIT) |
 
 > **CsvHelper is dual-licensed.** Its package metadata declares the SPDX
 > expression `MS-PL OR Apache-2.0`, meaning a consumer may take it under
