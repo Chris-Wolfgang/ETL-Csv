@@ -9,10 +9,10 @@ namespace Wolfgang.Etl.Csv;
 /// making logging decisions on the caller's behalf.
 /// </summary>
 /// <remarks>
-/// The underlying exception always propagates out of the async iterator after the
-/// callback returns — this record is purely for observation. If the caller wants
-/// extraction to continue past parse errors they must catch the exception around
-/// their <c>await foreach</c>.
+/// This record is purely for observation. Whether extraction continues is decided by the
+/// extractor's <c>ErrorPolicy</c>: under the default fail-fast policy the underlying exception
+/// propagates out of the async iterator after the callback returns; a <c>Skip</c> policy drops
+/// the row and extraction continues.
 /// </remarks>
 /// <param name="LineNumber">The 1-based file line where the exception was encountered, or <c>-1</c> if unknown.</param>
 /// <param name="ColumnNumber">The 1-based column position of the offending field, or <c>-1</c> if unknown.</param>

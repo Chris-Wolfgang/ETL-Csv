@@ -152,7 +152,7 @@ public sealed record CsvLoaderOptions<TRecord> : LoaderOptions
 
     /// <summary>
     /// Gets a value indicating whether the load runs as a dry run. When <see langword="true"/>, the
-    /// loader enumerates the source, honours <see cref="SkipRecordCount"/> / <see cref="MaxRecordCount"/>,
+    /// loader enumerates the source, honours <see cref="LoaderOptions.SkipItemCount"/> / <see cref="LoaderOptions.MaximumItemCount"/>,
     /// increments progress counters, fires progress reports and logs exactly as a real load would — but
     /// writes nothing to the underlying writer (neither the header nor any records). Use it to validate a
     /// pipeline against real data without producing output. Defaults to <see langword="false"/>.
