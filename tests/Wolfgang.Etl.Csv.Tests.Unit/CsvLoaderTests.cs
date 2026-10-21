@@ -352,4 +352,46 @@ public class CsvLoaderTests
         Assert.Equal(9, sut.MaxRecordCount);
         Assert.Equal(9, sut.MaximumItemCount);
     }
+
+
+
+    [Fact]
+    public async Task LoadAsync_when_ErrorPolicy_is_Skip_still_propagates_a_write_failure()
+    {
+        // The loader deliberately does not consult ErrorPolicy: a record that fails partway through
+        // has already written some fields, so skipping it would leave a half-written row.
+        var stream = new MemoryStream();
+        var writer = new StreamWriter(stream, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false), 1024, leaveOpen: true);
+        var sut = new CsvLoader<ExplodingRecord>
+        (
+            writer,
+            new CsvLoaderOptions<ExplodingRecord>
+            {
+                ErrorPolicy = _ => ItemErrorAction.Skip,
+            }
+        );
+        var items = new[] { new ExplodingRecord { Name = "Alice" } };
+
+        await Assert.ThrowsAnyAsync<Exception>(async () => await sut.LoadAsync(items.ToAsyncEnumerable()));
+
+        // Under a consulted Skip policy HandleItemError would have counted the row here.
+        Assert.Equal(0, sut.CurrentErrorItemCount);
+        Assert.Equal(0, sut.CurrentItemCount);
+
+        // The configured policy really is Skip, so the propagation above is the loader ignoring it.
+        Assert.Equal
+        (
+            ItemErrorAction.Skip,
+            sut.ErrorPolicy(new ItemErrorContext(1, new InvalidOperationException("boom"), null))
+        );
+    }
+
+
+
+    private sealed record ExplodingRecord
+    {
+        public string Name { get; init; } = string.Empty;
+
+        public string Detonate => throw new InvalidOperationException("boom");
+    }
 }
