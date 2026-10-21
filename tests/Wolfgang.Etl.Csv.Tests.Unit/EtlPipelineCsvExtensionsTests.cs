@@ -295,12 +295,14 @@ public sealed class EtlPipelineCsvExtensionsTests : IDisposable
 
 
     [Fact]
-    public void Configuring_a_caller_supplied_extractor_leaves_its_other_properties_alone()
+    public async Task Configuring_a_caller_supplied_extractor_leaves_its_other_properties_alone()
     {
         // Regression guard: the builder folds configuration into an options record for sources it
         // constructs, but a caller-supplied extractor is already configured. Applying the whole
         // record to it would reset every property the caller set directly - here, Quote.
-        var source = WriteTempFile("supplied.csv", "FirstName,LastName,Age\r\nAlice,Smith,30\r\n");
+        // The builder only replays its mutations when the pipeline runs, so run it.
+        var source = WriteTempFile("supplied.csv", "Alice;Smith;30\r\n");
+        var target = Path.Combine(_tempDir, "supplied-out.csv");
         using var reader = new StreamReader(source);
 
         var extractor = new CsvExtractor<PersonRecord>
@@ -313,13 +315,21 @@ public sealed class EtlPipelineCsvExtensionsTests : IDisposable
             }
         );
 
-        _ = EtlPipeline
+        await EtlPipeline
             .Create()
             .CsvExtractor(extractor)
-            .Delimiter(";");
+            .Delimiter(";")
+            .CsvLoader(target)
+            .RunAsync();
 
+        Assert.Equal(";", extractor.Delimiter);
         Assert.Equal('\'', extractor.Quote);
         Assert.False(extractor.HasHeaderRecord);
+        Assert.Equal
+        (
+            "FirstName,LastName,Age\r\nAlice,Smith,30\r\n",
+            File.ReadAllText(target)
+        );
     }
 
 
@@ -463,24 +473,28 @@ public sealed class EtlPipelineCsvExtensionsTests : IDisposable
 
 
     [Fact]
-    public async Task Extractor_BadDataFound_and_ReadingExceptionOccurred_handlers_are_accepted()
+    public async Task Extractor_BadDataFound_and_ReadingExceptionOccurred_handlers_are_invoked()
     {
-        var source = WriteTempFile("handlers.csv", "FirstName,LastName,Age\r\nAlice,Smith,30\r\n");
+        // Row 2 has a stray quote (bad data, tolerated); row 3 has an Age that does not convert,
+        // which the default fail-fast ErrorPolicy turns into an abort after the observer fires.
+        var source = WriteTempFile("handlers.csv", "FirstName,LastName,Age\r\nAl\"ice,Smith,30\r\nBob,Jones,not-a-number\r\n");
         var target = Path.Combine(_tempDir, "handlers-out.csv");
+        var badData = new SyncProgress<CsvBadDataInfo>();
+        var readingExceptions = new SyncProgress<CsvReadingExceptionInfo>();
 
-        await EtlPipeline
-            .Create()
-            .CsvExtractor<PersonRecord>(source)
-            .BadDataFound(new SyncProgress<CsvBadDataInfo>().Report)
-            .ReadingExceptionOccurred(new SyncProgress<CsvReadingExceptionInfo>().Report)
-            .CsvLoader(target)
-            .RunAsync();
-
-        Assert.Equal
+        await Assert.ThrowsAnyAsync<Exception>
         (
-            "FirstName,LastName,Age\r\nAlice,Smith,30\r\n",
-            File.ReadAllText(target)
+            async () => await EtlPipeline
+                .Create()
+                .CsvExtractor<PersonRecord>(source)
+                .BadDataFound(badData.Report)
+                .ReadingExceptionOccurred(readingExceptions.Report)
+                .CsvLoader(target)
+                .RunAsync()
         );
+
+        Assert.True(badData.CallCount > 0);
+        Assert.True(readingExceptions.CallCount > 0);
     }
 
 
