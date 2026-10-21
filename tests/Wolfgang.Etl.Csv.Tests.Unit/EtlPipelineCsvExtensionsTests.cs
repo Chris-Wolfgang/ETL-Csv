@@ -342,7 +342,7 @@ public sealed class EtlPipelineCsvExtensionsTests : IDisposable
     [Fact]
     public void Configuring_the_extractor_after_it_is_materialized_names_the_reason()
     {
-        using var source = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes("FirstName,LastName,Age\r\nAlice,Smith,30\r\n")));
+        var source = WriteTempFile("late-msg.csv", "FirstName,LastName,Age\r\nAlice,Smith,30\r\n");
 
         var builder = EtlPipeline.Create().CsvExtractor<PersonRecord>(source);
         _ = builder.Through(FilterAdults);
@@ -360,7 +360,7 @@ public sealed class EtlPipelineCsvExtensionsTests : IDisposable
     [Fact]
     public void Encoding_and_observation_callbacks_after_the_extractor_is_materialized_throw()
     {
-        using var source = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes("FirstName,LastName,Age\r\nAlice,Smith,30\r\n")));
+        var source = WriteTempFile("late-callbacks.csv", "FirstName,LastName,Age\r\nAlice,Smith,30\r\n");
 
         var builder = EtlPipeline.Create().CsvExtractor<PersonRecord>(source);
         _ = builder.Through(FilterAdults);
