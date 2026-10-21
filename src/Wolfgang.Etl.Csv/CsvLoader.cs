@@ -615,9 +615,11 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
 
     private void UpdateLineNumber(CsvWriter csvWriter)
     {
-        // Use Volatile.Write so the timer thread that calls CreateProgressReport
-        // (which uses Volatile.Read on this field) sees a consistent snapshot.
-        Volatile.Write(ref _currentLineNumber, csvWriter.Row);
+        // CsvWriter.Row is the row about to be written (it starts at 1 and NextRecord increments
+        // it), so the line just written is one less. Use Volatile.Write so the timer thread that
+        // calls CreateProgressReport (which uses Volatile.Read on this field) sees a consistent
+        // snapshot.
+        Volatile.Write(ref _currentLineNumber, csvWriter.Row - 1);
     }
 
 
