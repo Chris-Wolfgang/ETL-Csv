@@ -121,8 +121,14 @@ public class CsvCultureInvarianceTests
 
         await RunUnderCulture("ja-JP", async () =>
         {
-            var sut = new CsvLoader<AttributedPersonRecord>(writer, new CsvLoaderOptions<AttributedPersonRecord>
-        { LeaveOpen = true});
+            var sut = new CsvLoader<AttributedPersonRecord>
+            (
+                writer,
+                new CsvLoaderOptions<AttributedPersonRecord>
+                {
+                    LeaveOpen = true,
+                }
+            );
             var items = new List<AttributedPersonRecord>
             {
                 new() { FirstName = "Alice", LastName = "Smith", Age = 30 },

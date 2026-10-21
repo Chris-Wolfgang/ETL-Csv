@@ -97,8 +97,14 @@ public class CsvSnapshotTests
         using var stream = new MemoryStream();
 
         await using var writer = new StreamWriter(stream, Utf8NoBom, 1024, leaveOpen: true);
-        var loader = new CsvLoader<PersonRecord>(writer, new CsvLoaderOptions<PersonRecord>
-        { LeaveOpen = true});
+        var loader = new CsvLoader<PersonRecord>
+        (
+            writer,
+            new CsvLoaderOptions<PersonRecord>
+            {
+                LeaveOpen = true,
+            }
+        );
         configure?.Invoke(loader);
 
         await loader.LoadAsync(ToAsync(records));

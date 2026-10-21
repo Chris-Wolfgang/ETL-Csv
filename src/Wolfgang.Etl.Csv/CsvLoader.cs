@@ -144,6 +144,7 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     }
 
 
+
     /// <summary>
     /// Initializes a new instance of the <see cref="CsvLoader{TRecord}"/> class configured from an
     /// options record.
@@ -434,7 +435,7 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
         // SynchronizationContext (real deadlock risk on net462/netstandard targets
         // where sync-over-async consumers exist in the wild).
         var csvWriter = new CsvWriter(_writer, BuildConfiguration(), LeaveOpen);
-        await using var _csvWriterDisposal = csvWriter.ConfigureAwait(false);
+        await using var csvWriterDisposal = csvWriter.ConfigureAwait(false);
 
         RegisterRecordMap(csvWriter.Context);
 

@@ -14,17 +14,22 @@ const string csv =
     "A-4,7,this note is deliberately way too long for the limit\n";  // fails MaxLength
 
 using var reader = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(csv)));
-var extractor = new CsvExtractor<Order>(reader, new CsvExtractorOptions<Order>
-        {
-    Validators =
-    [
-        CsvValidator.NotNullOrEmpty<Order>(o => o.OrderNumber, nameof(Order.OrderNumber)),
-        CsvValidator.GreaterThan<Order>(o => o.Quantity, 0, nameof(Order.Quantity)),
-        CsvValidator.MaxLength<Order>(o => o.Notes, 20, nameof(Order.Notes)),
-    ],
-    OnValidationFailure = CsvValidationFailureAction.Skip,
-    InvalidRecordHandler = invalid =>
-        Console.WriteLine($"  skipped row {invalid.LineNumber}: {string.Join("; ", invalid.Failures)}"),});
+var extractor = new CsvExtractor<Order>
+(
+    reader,
+    new CsvExtractorOptions<Order>
+    {
+        Validators =
+        [
+            CsvValidator.NotNullOrEmpty<Order>(o => o.OrderNumber, nameof(Order.OrderNumber)),
+            CsvValidator.GreaterThan<Order>(o => o.Quantity, 0, nameof(Order.Quantity)),
+            CsvValidator.MaxLength<Order>(o => o.Notes, 20, nameof(Order.Notes)),
+        ],
+        OnValidationFailure = CsvValidationFailureAction.Skip,
+        InvalidRecordHandler = invalid =>
+            Console.WriteLine($"  skipped row {invalid.LineNumber}: {string.Join("; ", invalid.Failures)}"),
+    }
+);
 
 // Pass a progress sink so the invalid-count is surfaced through CsvExtractorProgress at completion.
 var progress = new LastValueProgress<CsvExtractorProgress>();

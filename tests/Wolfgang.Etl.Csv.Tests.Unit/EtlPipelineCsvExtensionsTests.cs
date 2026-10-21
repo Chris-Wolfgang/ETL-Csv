@@ -109,8 +109,14 @@ public sealed class EtlPipelineCsvExtensionsTests : IDisposable
 
         using var targetStream = new MemoryStream();
         using var targetWriter = new StreamWriter(targetStream, Utf8NoBom, 1024, leaveOpen: true);
-        var loader = new CsvLoader<PersonRecord>(targetWriter, new CsvLoaderOptions<PersonRecord>
-        { LeaveOpen = true});
+        var loader = new CsvLoader<PersonRecord>
+        (
+            targetWriter,
+            new CsvLoaderOptions<PersonRecord>
+            {
+                LeaveOpen = true,
+            }
+        );
 
         await EtlPipeline
             .Create()
@@ -297,10 +303,15 @@ public sealed class EtlPipelineCsvExtensionsTests : IDisposable
         var source = WriteTempFile("supplied.csv", "FirstName,LastName,Age\r\nAlice,Smith,30\r\n");
         using var reader = new StreamReader(source);
 
-        var extractor = new CsvExtractor<PersonRecord>(reader, new CsvExtractorOptions<PersonRecord>
-        {
-            Quote = '\'',
-            HasHeaderRecord = false});
+        var extractor = new CsvExtractor<PersonRecord>
+        (
+            reader,
+            new CsvExtractorOptions<PersonRecord>
+            {
+                Quote = '\'',
+                HasHeaderRecord = false,
+            }
+        );
 
         _ = EtlPipeline
             .Create()
@@ -351,8 +362,14 @@ public sealed class EtlPipelineCsvExtensionsTests : IDisposable
         var pipeline = EtlPipeline.Create().CsvExtractor<PersonRecord>(source);
 
         using var writer = new StreamWriter(new MemoryStream(), Utf8NoBom);
-        var loader = new CsvLoader<PersonRecord>(writer, new CsvLoaderOptions<PersonRecord>
-        { LeaveOpen = true});
+        var loader = new CsvLoader<PersonRecord>
+        (
+            writer,
+            new CsvLoaderOptions<PersonRecord>
+            {
+                LeaveOpen = true,
+            }
+        );
 
         // Null pipeline receiver — every overload.
         Assert.Throws<ArgumentNullException>(() => ((IEtlPipeline<PersonRecord>)null!).CsvLoader("x.csv"));

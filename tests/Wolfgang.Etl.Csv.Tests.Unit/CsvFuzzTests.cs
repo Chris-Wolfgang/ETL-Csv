@@ -118,8 +118,14 @@ public class CsvFuzzTests
         using var stream = new MemoryStream();
 
         using var writer = new StreamWriter(stream, Utf8NoBom, 1024, leaveOpen: true);
-        var loader = new CsvLoader<PersonRecord>(writer, new CsvLoaderOptions<PersonRecord>
-        { LeaveOpen = true});
+        var loader = new CsvLoader<PersonRecord>
+        (
+            writer,
+            new CsvLoaderOptions<PersonRecord>
+            {
+                LeaveOpen = true,
+            }
+        );
 
         loader.LoadAsync(ToAsync(records)).GetAwaiter().GetResult();
         writer.Flush();

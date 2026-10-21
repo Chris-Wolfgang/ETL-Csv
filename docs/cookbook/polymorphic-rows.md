@@ -90,7 +90,7 @@ var loader = new CsvLoader<LedgerRow>
     writer,
     new CsvLoaderOptions<LedgerRow>
     {
-        Discriminator = discriminator 
+        Discriminator = discriminator
     }
 );
 await loader.LoadAsync(rows);
