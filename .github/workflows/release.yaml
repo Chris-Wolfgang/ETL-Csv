@@ -975,6 +975,11 @@ jobs:
     name: Build & Deploy Documentation
     needs: validate-release
     permissions:
+      # Accepted Scorecard TokenPermissionsID finding (#222). A workflow_call caller's
+      # permissions are the ceiling for the called workflow's token, and docfx.yaml's
+      # build-and-deploy job pushes to the gh-pages branch, which needs contents:write.
+      # This can drop to contents:read + pages:write + id-token:write only if docfx.yaml
+      # moves to actions/deploy-pages (#223).
       contents: write  # Required by docfx.yaml to push to gh-pages branch
     uses: ./.github/workflows/docfx.yaml  # zizmor: ignore[self-repository]
     with:
