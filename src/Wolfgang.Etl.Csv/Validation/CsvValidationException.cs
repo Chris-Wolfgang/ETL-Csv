@@ -12,7 +12,7 @@ public sealed class CsvValidationException : Exception
 {
     /// <summary>Initializes a new instance of the <see cref="CsvValidationException"/> class.</summary>
     /// <param name="lineNumber">The 1-based line the failing record came from.</param>
-    /// <param name="failures">The failure reasons. A null collection is treated as empty.</param>
+    /// <param name="failures">The failure reasons. Must not be <see langword="null"/>; a <see langword="null"/> passed from code without nullable annotations is treated as empty.</param>
     public CsvValidationException(int lineNumber, IReadOnlyList<string> failures)
         : base(BuildMessage(lineNumber, failures))
     {

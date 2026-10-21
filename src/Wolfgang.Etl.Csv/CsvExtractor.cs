@@ -241,9 +241,9 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     /// </summary>
     /// <remarks>
     /// When <c>null</c> (the default), the exception is not logged by the library.
-    /// The exception always propagates out of <c>ExtractAsync</c> regardless of
-    /// the callback — this hook is for observation only. Wrap your <c>await foreach</c>
-    /// in <c>try / catch</c> if you want to swallow individual row failures.
+    /// This hook is for observation only. <see cref="ExtractorBase{TSource, TProgress}.ErrorPolicy"/>
+    /// decides skip-vs-abort: under the default fail-fast policy the exception propagates out of
+    /// <c>ExtractAsync</c>; a <c>Skip</c> policy drops the row and extraction continues.
     /// <code>
     /// extractor.ReadingExceptionOccurred = info =>
     ///     _logger.LogDebug(info.Exception, "Parse error on line {Line} column {Col}: {Value}",

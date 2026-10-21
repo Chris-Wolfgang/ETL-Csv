@@ -351,9 +351,10 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     private bool _isDryRun;
 
     /// <summary>
-    /// Gets a value indicating whether the load runs as a dry run. When <c>true</c>,
-    /// the loader enumerates the source and honors <see cref="SkipRecordCount"/> /
-    /// <see cref="MaxRecordCount"/>, increments progress counters, fires progress reports, and
+    /// Gets or sets a value indicating whether the load runs as a dry run (the setter is deprecated;
+    /// configure it through <see cref="CsvLoaderOptions{TRecord}"/>). When <c>true</c>,
+    /// the loader enumerates the source and honors <see cref="LoaderBase{TDestination, TProgress}.SkipItemCount"/> /
+    /// <see cref="LoaderBase{TDestination, TProgress}.MaximumItemCount"/>, increments progress counters, fires progress reports, and
     /// logs exactly as a real load would — but writes nothing to the underlying writer (neither
     /// the header nor any records). Use it to validate a pipeline against real data without
     /// producing output. Defaults to <c>false</c>.
