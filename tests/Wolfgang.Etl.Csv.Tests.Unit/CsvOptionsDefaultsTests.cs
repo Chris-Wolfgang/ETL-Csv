@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Text;
 using Wolfgang.Etl.Csv.Tests.Unit.TestModels;
@@ -58,5 +59,39 @@ public class CsvOptionsDefaultsTests
         Assert.Equal(int.MaxValue, sut.MaximumItemCount);
         Assert.Equal(0, sut.SkipItemCount);
         Assert.Equal(1, sut.InitialRecordIndex);
+    }
+
+
+    [Fact]
+    public void Options_records_default_to_skipping_blank_lines_and_leaving_the_stream_open()
+    {
+        var extractorOptions = new CsvExtractorOptions<PersonRecord>();
+        var loaderOptions = new CsvLoaderOptions<PersonRecord>();
+
+        Assert.True(extractorOptions.IgnoreBlankLines);
+        Assert.True(extractorOptions.LeaveOpen);
+        Assert.True(loaderOptions.LeaveOpen);
+    }
+
+
+    [Fact]
+    public void ExtractorOptions_InitialRecordIndex_accepts_one()
+    {
+        var options = new CsvExtractorOptions<PersonRecord> { InitialRecordIndex = 1 };
+
+        Assert.Equal(1, options.InitialRecordIndex);
+    }
+
+
+    [Fact]
+    public void ExtractorOptions_InitialRecordIndex_below_one_reports_the_value_and_message()
+    {
+        var ex = Assert.Throws<ArgumentOutOfRangeException>
+        (
+            () => new CsvExtractorOptions<PersonRecord> { InitialRecordIndex = 0 }
+        );
+
+        Assert.Equal(0, ex.ActualValue);
+        Assert.StartsWith("InitialRecordIndex must be 1 or greater.", ex.Message, StringComparison.Ordinal);
     }
 }

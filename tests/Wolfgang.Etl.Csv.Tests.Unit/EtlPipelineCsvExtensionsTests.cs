@@ -346,6 +346,111 @@ public sealed class EtlPipelineCsvExtensionsTests : IDisposable
 
 
     [Fact]
+    public void Configuring_the_extractor_after_it_is_materialized_names_the_reason()
+    {
+        var source = WriteTempFile("late-msg.csv", "FirstName,LastName,Age\r\nAlice,Smith,30\r\n");
+
+        var builder = EtlPipeline.Create().CsvExtractor<PersonRecord>(source);
+        _ = builder.Through(FilterAdults);
+
+        var ex = Assert.Throws<InvalidOperationException>(() => builder.Delimiter(";"));
+
+        Assert.Equal
+        (
+            "The extractor has already been materialized by a pipeline operator; configuration setters can no longer be applied.",
+            ex.Message
+        );
+    }
+
+
+    [Fact]
+    public void Encoding_and_observation_callbacks_after_the_extractor_is_materialized_throw()
+    {
+        var source = WriteTempFile("late-callbacks.csv", "FirstName,LastName,Age\r\nAlice,Smith,30\r\n");
+
+        var builder = EtlPipeline.Create().CsvExtractor<PersonRecord>(source);
+        _ = builder.Through(FilterAdults);
+
+        Assert.Throws<InvalidOperationException>(() => builder.Encoding(Encoding.UTF8));
+        Assert.Throws<InvalidOperationException>(() => builder.BadDataFound(_ => { }));
+        Assert.Throws<InvalidOperationException>(() => builder.ReadingExceptionOccurred(_ => { }));
+    }
+
+
+    [Fact]
+    public async Task Path_based_source_detects_the_encoding_from_a_byte_order_mark()
+    {
+        // The builder's default encoding is UTF-8; a UTF-16 file with a BOM still reads correctly
+        // because the reader it opens honours the BOM.
+        var source = Path.Combine(_tempDir, "utf16.csv");
+        File.WriteAllText(source, "FirstName,LastName,Age\r\nZoë,Smith,30\r\n", new UnicodeEncoding(bigEndian: false, byteOrderMark: true));
+
+        var rows = new List<PersonRecord>();
+        await foreach (var row in EtlPipeline.Create().CsvExtractor<PersonRecord>(source).AsAsyncEnumerable())
+        {
+            rows.Add(row);
+        }
+
+        var person = Assert.Single(rows);
+        Assert.Equal("Zoë", person.FirstName);
+        Assert.Equal(30, person.Age);
+    }
+
+
+    [Fact]
+    public async Task Path_based_sink_replaces_an_existing_file_instead_of_appending()
+    {
+        var target = WriteTempFile("existing-target.csv", "stale,content\r\n");
+        using var sourceReader = ReaderOver("FirstName,LastName,Age\r\nAlice,Smith,30\r\n");
+
+        await EtlPipeline
+            .Create()
+            .CsvExtractor(new CsvExtractor<PersonRecord>(sourceReader))
+            .CsvLoader(target)
+            .RunAsync();
+
+        Assert.Equal
+        (
+            "FirstName,LastName,Age\r\nAlice,Smith,30\r\n",
+            File.ReadAllText(target)
+        );
+    }
+
+
+    [Fact]
+    public async Task Configuring_a_caller_supplied_loader_applies_the_setter_to_it()
+    {
+        using var targetStream = new MemoryStream();
+        using var targetWriter = new StreamWriter(targetStream, Utf8NoBom, 1024, leaveOpen: true);
+        var loader = new CsvLoader<PersonRecord>
+        (
+            targetWriter,
+            new CsvLoaderOptions<PersonRecord>
+            {
+                LeaveOpen = true,
+            }
+        );
+        using var sourceReader = ReaderOver("FirstName,LastName,Age\r\nAlice,Smith,30\r\n");
+
+        await EtlPipeline
+            .Create()
+            .CsvExtractor(new CsvExtractor<PersonRecord>(sourceReader))
+            .CsvLoader(loader)
+            .Delimiter(";")
+            .RunAsync();
+
+        targetWriter.Flush();
+
+        Assert.Equal(";", loader.Delimiter);
+        Assert.Equal
+        (
+            "FirstName;LastName;Age\r\nAlice;Smith;30\r\n",
+            Utf8NoBom.GetString(targetStream.ToArray())
+        );
+    }
+
+
+    [Fact]
     public void CsvExtractor_factories_reject_null_arguments()
     {
         var pipeline = EtlPipeline.Create();
