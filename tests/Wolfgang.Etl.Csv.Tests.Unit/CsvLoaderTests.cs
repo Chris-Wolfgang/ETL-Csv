@@ -205,9 +205,14 @@ public class CsvLoaderTests
     {
         var stream = new MemoryStream();
         var writer = new StreamWriter(stream, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false), 1024, leaveOpen: true);
-        var sut = new CsvLoader<PersonRecord>(writer, new CsvLoaderOptions<PersonRecord>
-        {
-            LeaveOpen = true,});
+        var sut = new CsvLoader<PersonRecord>
+        (
+            writer,
+            new CsvLoaderOptions<PersonRecord>
+            {
+                LeaveOpen = true,
+            }
+        );
 
         await sut.LoadAsync(SourceItems.Take(2).ToAsyncEnumerable());
 
@@ -228,10 +233,15 @@ public class CsvLoaderTests
     {
         var stream = new MemoryStream();
         var writer = new StreamWriter(stream, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false), 1024, leaveOpen: true);
-        var sut = new CsvLoader<PersonRecord>(writer, new CsvLoaderOptions<PersonRecord>
-        {
-            HasHeaderRecord = false,
-            LeaveOpen = true,});
+        var sut = new CsvLoader<PersonRecord>
+        (
+            writer,
+            new CsvLoaderOptions<PersonRecord>
+            {
+                HasHeaderRecord = false,
+                LeaveOpen = true,
+            }
+        );
 
         await sut.LoadAsync(SourceItems.Take(1).ToAsyncEnumerable());
 
@@ -251,10 +261,15 @@ public class CsvLoaderTests
     {
         var stream = new MemoryStream();
         var writer = new StreamWriter(stream, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false), 1024, leaveOpen: true);
-        var sut = new CsvLoader<PersonRecord>(writer, new CsvLoaderOptions<PersonRecord>
-        {
-            Delimiter = "|",
-            LeaveOpen = true,});
+        var sut = new CsvLoader<PersonRecord>
+        (
+            writer,
+            new CsvLoaderOptions<PersonRecord>
+            {
+                Delimiter = "|",
+                LeaveOpen = true,
+            }
+        );
 
         await sut.LoadAsync(SourceItems.Take(1).ToAsyncEnumerable());
 
@@ -274,10 +289,15 @@ public class CsvLoaderTests
     {
         var stream = new MemoryStream();
         var writer = new StreamWriter(stream, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false), 1024, leaveOpen: true);
-        var sut = new CsvLoader<PersonRecord>(writer, new CsvLoaderOptions<PersonRecord>
-        {
-            ShouldQuote = _ => true,
-            LeaveOpen = true,});
+        var sut = new CsvLoader<PersonRecord>
+        (
+            writer,
+            new CsvLoaderOptions<PersonRecord>
+            {
+                ShouldQuote = _ => true,
+                LeaveOpen = true,
+            }
+        );
 
         await sut.LoadAsync(SourceItems.Take(1).ToAsyncEnumerable());
 

@@ -124,6 +124,7 @@ public sealed record CsvLoaderOptions<TRecord> : LoaderOptions
     public Action<CsvInvalidRecord<TRecord>>? InvalidRecordHandler { get; init; }
 
 
+
     /// <summary>
     /// Deprecated alias for <see cref="LoaderOptions.SkipItemCount"/>, which this record now inherits. Reads and writes
     /// forward to it; the two never diverge.

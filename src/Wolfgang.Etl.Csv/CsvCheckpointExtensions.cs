@@ -54,7 +54,8 @@ public static class CsvCheckpointExtensions
         }
 
         string text;
-        // FileShare.Delete lets WriteCheckpointAsync's atomic rename succeed while a reader holds the file (Windows); the reader keeps its snapshot, so no torn read.
+        // FileShare.Delete lets WriteCheckpointAsync's atomic rename succeed while a reader holds
+        // the file (Windows); the reader keeps its snapshot, so no torn read.
         using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read | FileShare.Delete, 4096, useAsync: true))
         {
             // A checkpoint holds a single small integer. Cap the size before allocating so a

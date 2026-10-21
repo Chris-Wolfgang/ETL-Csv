@@ -123,6 +123,9 @@ internal sealed class CsvLoaderBuilder<[DynamicallyAccessedMembers(DynamicallyAc
         return Set(o => o with { ColumnMaps = maps }, l => l.ColumnMaps = maps);
     }
 
+#pragma warning restore CS0618
+
+
 
     [UnconditionalSuppressMessage
     (
@@ -130,11 +133,6 @@ internal sealed class CsvLoaderBuilder<[DynamicallyAccessedMembers(DynamicallyAc
         "IL2026",
         Justification = "CsvLoader construction is unreferenced-code; the public terminator extension methods on IEtlPipeline that create this builder carry [RequiresUnreferencedCode]."
     )]
-
-
-#pragma warning restore CS0618
-
-
     public Task RunAsync
     (
         IProgress<EtlPipelineProgress>? progress = null,

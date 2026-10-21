@@ -21,10 +21,15 @@ public class CsvLoaderDiscriminatorTests
     {
         var stream = new MemoryStream();
         var writer = new StreamWriter(stream, new UTF8Encoding(false), 1024, leaveOpen: true);
-        var sut = new CsvLoader<T>(writer, new CsvLoaderOptions<T>
-        {
-            LeaveOpen = true,
-            Discriminator = discriminator,});
+        var sut = new CsvLoader<T>
+        (
+            writer,
+            new CsvLoaderOptions<T>
+            {
+                LeaveOpen = true,
+                Discriminator = discriminator,
+            }
+        );
 
         return (sut, stream);
     }

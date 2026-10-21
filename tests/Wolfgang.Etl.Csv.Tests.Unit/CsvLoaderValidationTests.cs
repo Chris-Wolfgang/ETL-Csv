@@ -31,10 +31,15 @@ public class CsvLoaderValidationTests
     private static CsvLoader<Order> CreateLoader(MemoryStream stream, out StreamWriter writer)
     {
         writer = new StreamWriter(stream, Utf8NoBom, 1024, leaveOpen: true);
-        return new CsvLoader<Order>(writer, new CsvLoaderOptions<Order>
-        {
-            LeaveOpen = true,
-            Validators = new[] { CsvValidator.GreaterThan<Order>(o => o.Quantity, 0, "Quantity") },});
+        return new CsvLoader<Order>
+        (
+            writer,
+            new CsvLoaderOptions<Order>
+            {
+                LeaveOpen = true,
+                Validators = new[] { CsvValidator.GreaterThan<Order>(o => o.Quantity, 0, "Quantity") },
+            }
+        );
     }
 
 
@@ -156,8 +161,14 @@ public class CsvLoaderValidationTests
     {
         using var stream = new MemoryStream();
         var writer = new StreamWriter(stream, Utf8NoBom, 1024, leaveOpen: true);
-        var loader = new CsvLoader<Order>(writer, new CsvLoaderOptions<Order>
-        { LeaveOpen = true});
+        var loader = new CsvLoader<Order>
+        (
+            writer,
+            new CsvLoaderOptions<Order>
+            {
+                LeaveOpen = true,
+            }
+        );
 
         var output = await LoadAndReadAsync(loader, stream, writer, Orders);
         writer.Dispose();

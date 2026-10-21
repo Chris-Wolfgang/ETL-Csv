@@ -75,8 +75,14 @@ public class CsvConcurrencyStressTests
         {
             using var stream = new MemoryStream();
             var writer = new StreamWriter(stream, Utf8NoBom, 1024, leaveOpen: true);
-            var loader = new CsvLoader<PersonRecord>(writer, new CsvLoaderOptions<PersonRecord>
-        { LeaveOpen = true});
+            var loader = new CsvLoader<PersonRecord>
+            (
+                writer,
+                new CsvLoaderOptions<PersonRecord>
+                {
+                    LeaveOpen = true,
+                }
+            );
 
             await loader.LoadAsync(ToAsync(records)).ConfigureAwait(false);
             await writer.FlushAsync().ConfigureAwait(false);
