@@ -147,7 +147,4 @@ public sealed record CsvValidationResult
 
         return new CsvValidationResult(reasons);
     }
-
-
-
 }

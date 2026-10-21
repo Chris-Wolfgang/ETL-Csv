@@ -145,6 +145,7 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     }
 
 
+
     /// <summary>
     /// Initializes a new instance of the <see cref="CsvExtractor{TRecord}"/> class configured from
     /// an options record.
@@ -307,6 +308,8 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
 
 
 
+    private int _initialRecordIndex = 1;
+
     /// <summary>
     /// Gets or sets the 1-based index of the first line the parser will consume from
     /// the source. Lines before this index are read and discarded.
@@ -333,7 +336,6 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
             _initialRecordIndex = value;
         }
     }
-    private int _initialRecordIndex = 1;
 
 
 

@@ -38,10 +38,15 @@ Console.WriteLine("Reading a mixed-shape file — each row binds to its concrete
 var rows = new List<LedgerRow>();
 using (var reader = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(csv))))
 {
-    var extractor = new CsvExtractor<LedgerRow>(reader, new CsvExtractorOptions<LedgerRow>
+    var extractor = new CsvExtractor<LedgerRow>
+    (
+        reader,
+        new CsvExtractorOptions<LedgerRow>
         {
-        HasHeaderRecord = false,
-        Discriminator = discriminator,});
+            HasHeaderRecord = false,
+            Discriminator = discriminator,
+        }
+    );
 
     await foreach (var row in extractor.ExtractAsync())
     {
@@ -55,8 +60,14 @@ Console.WriteLine("Writing them back — the loader dispatches by runtime type:"
 using var buffer = new MemoryStream();
 using (var writer = new StreamWriter(buffer, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false), 1024, leaveOpen: true))
 {
-    var loader = new CsvLoader<LedgerRow>(writer, new CsvLoaderOptions<LedgerRow>
-        { Discriminator = discriminator});
+    var loader = new CsvLoader<LedgerRow>
+    (
+        writer,
+        new CsvLoaderOptions<LedgerRow>
+        {
+            Discriminator = discriminator,
+        }
+    );
     await loader.LoadAsync(ToAsync(rows));
     await writer.FlushAsync();
 }

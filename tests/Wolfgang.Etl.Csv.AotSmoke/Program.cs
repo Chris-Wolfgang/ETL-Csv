@@ -108,8 +108,14 @@ internal static class Program
         {
             using (var writer = new StreamWriter(stream, Utf8NoBom, 1024, leaveOpen: true))
             {
-                var loader = new CsvLoader<Person>(writer, new CsvLoaderOptions<Person>
-        { LeaveOpen = true});
+                var loader = new CsvLoader<Person>
+                (
+                    writer,
+                    new CsvLoaderOptions<Person>
+                    {
+                        LeaveOpen = true,
+                    }
+                );
                 await loader.LoadAsync(ToAsync(people)).ConfigureAwait(false);
                 await writer.FlushAsync().ConfigureAwait(false);
             }
