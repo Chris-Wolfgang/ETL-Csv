@@ -103,6 +103,7 @@
     <Project Path="examples/Wolfgang.Etl.Csv.Examples.PolymorphicRows/Wolfgang.Etl.Csv.Examples.PolymorphicRows.csproj" />
     <Project Path="examples/Wolfgang.Etl.Csv.Examples.RecordValidation/Wolfgang.Etl.Csv.Examples.RecordValidation.csproj" />
     <Project Path="examples/Wolfgang.Etl.Csv.Examples.ResumableExtraction/Wolfgang.Etl.Csv.Examples.ResumableExtraction.csproj" />
+    <Project Path="examples/Wolfgang.Etl.Csv.Examples.SchemaBuilder/Wolfgang.Etl.Csv.Examples.SchemaBuilder.csproj" />
   </Folder>
   <Folder Name="/src/">
     <Project Path="src/Wolfgang.Etl.Csv/Wolfgang.Etl.Csv.csproj" />

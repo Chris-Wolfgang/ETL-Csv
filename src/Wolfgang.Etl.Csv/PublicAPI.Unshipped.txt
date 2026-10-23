@@ -1,1 +1,16 @@
 #nullable enable
+static Wolfgang.Etl.Csv.CsvSchema.For<T>() -> Wolfgang.Etl.Csv.CsvSchema!
+Wolfgang.Etl.Csv.CsvExtractor<TRecord>.Schema.get -> Wolfgang.Etl.Csv.CsvSchema?
+Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>.Schema.get -> Wolfgang.Etl.Csv.CsvSchema?
+Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>.Schema.init -> void
+Wolfgang.Etl.Csv.CsvLoader<TRecord>.Schema.get -> Wolfgang.Etl.Csv.CsvSchema?
+Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.Schema.get -> Wolfgang.Etl.Csv.CsvSchema?
+Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.Schema.init -> void
+Wolfgang.Etl.Csv.CsvSchema
+Wolfgang.Etl.Csv.CsvSchema.ColumnCount.get -> int
+Wolfgang.Etl.Csv.CsvSchema.Columns.get -> System.Collections.Generic.IReadOnlyList<Wolfgang.Etl.Csv.CsvColumnMap!>!
+Wolfgang.Etl.Csv.CsvSchema.RecordType.get -> System.Type!
+Wolfgang.Etl.Csv.CsvSchemaBuilder<T>
+Wolfgang.Etl.Csv.CsvSchemaBuilder<T>.Build() -> Wolfgang.Etl.Csv.CsvSchema!
+Wolfgang.Etl.Csv.CsvSchemaBuilder<T>.Column<TProperty>(System.Linq.Expressions.Expression<System.Func<T, TProperty>!>! selector, string? name = null, int index = -1, string? format = null, bool optional = false, string? default = null) -> Wolfgang.Etl.Csv.CsvSchemaBuilder<T>!
+Wolfgang.Etl.Csv.CsvSchemaBuilder<T>.CsvSchemaBuilder() -> void
