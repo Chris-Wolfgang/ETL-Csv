@@ -187,6 +187,8 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
             return;
         }
 
+        CsvSchema.ValidateOptions(options.Schema, options.ColumnMaps, typeof(TRecord), nameof(options));
+
         _allowComments = options.AllowComments;
         _comment = options.Comment;
         _delimiter = options.Delimiter;
@@ -197,6 +199,7 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
         _quote = options.Quote;
         _trimOptions = options.TrimOptions;
         _columnMaps = options.ColumnMaps;
+        _schema = options.Schema;
         _discriminator = options.Discriminator;
         _validators = options.Validators;
         _onValidationFailure = options.OnValidationFailure;
@@ -381,6 +384,16 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     /// only source of property-to-column bindings; attribute-based mapping is bypassed.
     /// </remarks>
     public IReadOnlyList<CsvColumnMap>? ColumnMaps { get => _columnMaps; [Obsolete("Configure ColumnMaps through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set => _columnMaps = value; }
+
+
+
+    private CsvSchema? _schema;
+
+    /// <summary>
+    /// Gets the code-first schema supplied through <see cref="CsvExtractorOptions{TRecord}.Schema"/>, or
+    /// <see langword="null"/> when mapping is driven by <see cref="ColumnMaps"/> or attributes.
+    /// </summary>
+    public CsvSchema? Schema => _schema;
 
 
 
@@ -779,13 +792,23 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
 
     private void RegisterRecordMap(CsvContext context)
     {
-        // Always register the base TRecord map (from ColumnMaps or attributes). When a discriminator
+        // Always register the base TRecord map (from Schema, ColumnMaps, or attributes). When a discriminator
         // is set this backs CsvDiscriminatorAction.YieldAsBase — GetRecord<TRecord>() then binds
         // through the intended base mapping instead of CsvHelper's default conventions. The map is
         // null for an attribute-less type with no ColumnMaps, in which case CsvHelper auto-maps.
-        var baseMap = ColumnMaps is { Count: > 0 }
-            ? CsvClassMapFactory.BuildFromColumnMaps<TRecord>(ColumnMaps)
-            : CsvClassMapFactory.GetMap<TRecord>();
+        ClassMap? baseMap;
+        if (_schema is not null)
+        {
+            baseMap = CsvClassMapFactory.BuildFromColumnMaps<TRecord>(_schema.Columns);
+        }
+        else if (ColumnMaps is { Count: > 0 })
+        {
+            baseMap = CsvClassMapFactory.BuildFromColumnMaps<TRecord>(ColumnMaps);
+        }
+        else
+        {
+            baseMap = CsvClassMapFactory.GetMap<TRecord>();
+        }
 
         if (baseMap is not null)
         {
