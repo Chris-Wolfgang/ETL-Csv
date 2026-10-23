@@ -102,6 +102,17 @@ public sealed record CsvLoaderOptions<TRecord> : LoaderOptions
 
 
     /// <summary>
+    /// Gets the code-first schema that overrides attribute mapping for this instance. Build one with
+    /// <see cref="CsvSchemaBuilder{T}"/> or reify a type's attributes with <see cref="CsvSchema.For{T}"/>.
+    /// Mutually exclusive with <see cref="ColumnMaps"/>, and must have been built for
+    /// <typeparamref name="TRecord"/> — either violation fails at construction. Defaults to
+    /// <see langword="null"/>, meaning mapping is driven by <see cref="ColumnMaps"/> or attributes.
+    /// </summary>
+    public CsvSchema? Schema { get; init; }
+
+
+
+    /// <summary>
     /// Gets the discriminator used to select a record shape per row. Defaults to
     /// <see langword="null"/>, meaning every record is written as <typeparamref name="TRecord"/>.
     /// </summary>
