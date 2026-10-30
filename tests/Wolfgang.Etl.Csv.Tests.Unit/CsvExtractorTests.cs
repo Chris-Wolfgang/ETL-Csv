@@ -52,6 +52,19 @@ public class CsvExtractorTests
 
 
 
+    private static async Task<List<PersonRecord>> ExtractAllAsync(CsvExtractor<PersonRecord> sut)
+    {
+        var results = new List<PersonRecord>();
+        await foreach (var item in sut.ExtractAsync())
+        {
+            results.Add(item);
+        }
+
+        return results;
+    }
+
+
+
     protected override CsvExtractor<PersonRecord> CreateSut(int itemCount, int maximumItemCount, int skipItemCount, int reportingInterval)
     {
         var items = ExpectedItems.Take(itemCount).ToList();
@@ -100,7 +113,7 @@ public class CsvExtractorTests
 
 
     [Fact]
-    public void Constructor_when_logger_is_null_uses_NullLogger()
+    public async Task Constructor_when_logger_is_null_extracts_every_record_without_logging()
     {
         // logger is now an optional trailing parameter; null means "no logging"
         // (NullLogger.Instance) rather than an argument error.
@@ -110,17 +123,29 @@ public class CsvExtractorTests
             logger: null
         );
 
-        Assert.NotNull(sut);
+        var results = await ExtractAllAsync(sut);
+
+        Assert.Equal
+        (
+            ExpectedItems,
+            results
+        );
     }
 
 
 
     [Fact]
-    public void Constructor_when_logger_is_omitted_uses_NullLogger()
+    public async Task Constructor_when_logger_is_omitted_extracts_every_record_without_logging()
     {
         var sut = new CsvExtractor<PersonRecord>(CreateCsvStream(ExpectedItems));
 
-        Assert.NotNull(sut);
+        var results = await ExtractAllAsync(sut);
+
+        Assert.Equal
+        (
+            ExpectedItems,
+            results
+        );
     }
 
 
@@ -158,7 +183,7 @@ public class CsvExtractorTests
 
 
     [Fact]
-    public void Internal_constructor_when_logger_is_null_does_not_throw()
+    public async Task Internal_constructor_when_logger_is_null_extracts_every_record()
     {
         var sut = new CsvExtractor<PersonRecord>
         (
@@ -167,7 +192,13 @@ public class CsvExtractorTests
             logger: null
         );
 
-        Assert.NotNull(sut);
+        var results = await ExtractAllAsync(sut);
+
+        Assert.Equal
+        (
+            ExpectedItems,
+            results
+        );
     }
 
 
@@ -439,7 +470,7 @@ public class CsvExtractorTests
 
 
     [Fact]
-    public void Constructor_with_logger_when_args_valid_returns_instance()
+    public async Task Constructor_with_logger_when_args_valid_extracts_every_record()
     {
         var sut = new CsvExtractor<PersonRecord>
         (
@@ -447,7 +478,13 @@ public class CsvExtractorTests
             NullLogger<CsvExtractor<PersonRecord>>.Instance
         );
 
-        Assert.NotNull(sut);
+        var results = await ExtractAllAsync(sut);
+
+        Assert.Equal
+        (
+            ExpectedItems,
+            results
+        );
     }
 
 
