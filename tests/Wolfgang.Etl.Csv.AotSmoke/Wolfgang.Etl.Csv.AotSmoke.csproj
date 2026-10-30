@@ -16,12 +16,15 @@
     <PublishTrimmed>true</PublishTrimmed>   <!-- implied by AOT; explicit so this reads as a trim + AOT check (#76) -->
     <InvariantGlobalization>true</InvariantGlobalization>
 
-    <!-- The library is [RequiresUnreferencedCode] (CsvHelper reflection), so
-         trim/AOT analysis warnings are EXPECTED. This smoke verifies runtime
-         behavior under AOT, not warning-freedom — don't fail the publish on the
-         warnings. The load-bearing per-call-site warnings are suppressed with
-         justification in Program.cs. -->
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <!-- The repo-wide Release TreatWarningsAsErrors applies: the library's own reflection
+         path is annotated at its public boundary ([RequiresUnreferencedCode] /
+         [RequiresDynamicCode]) and Program.cs suppresses those at its call sites, so any
+         new trim/AOT warning from Wolfgang.Etl.Csv fails the publish.
+         These codes come from CsvHelper's reflection-based mapping inside CsvHelper.dll
+         (IL2070 x7, IL2075 x2, IL3050 x5 in a win-x64 publish), not from this library;
+         they stay warnings until a compile-time class map removes the CsvHelper reflection
+         path: https://github.com/Chris-Wolfgang/ETL-Csv/issues/5 -->
+    <WarningsNotAsErrors>$(WarningsNotAsErrors);IL2070;IL2075;IL3050</WarningsNotAsErrors>
     <TrimmerSingleWarn>false</TrimmerSingleWarn>
   </PropertyGroup>
 
