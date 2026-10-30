@@ -775,6 +775,11 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
 
 
 
+    // Same seam as CsvLoader.RegisterRecordMap. The requirement cannot move further out: the only caller is
+    // ExtractWorkerAsync, an override of an unannotated ExtractorBase member, where [RequiresUnreferencedCode]
+    // would be IL2046. It is surfaced instead at every public CsvExtractor constructor (and the EtlPipeline
+    // factory extensions), so no instance reaches this method without the consumer seeing the warning.
+    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Reached only through a CsvExtractor instance, whose public constructors carry [RequiresUnreferencedCode]; TRecord is annotated with PublicProperties and CsvClassMapFactory reflects only public properties of TRecord.")]
     private void RegisterRecordMap(CsvContext context)
     {
         // Always register the base TRecord map (from ColumnMaps or attributes). When a discriminator
