@@ -87,9 +87,11 @@ internal static class CsvClassMapFactory
 
 
     // Non-generic bridge for the polymorphic direct-init path (a CsvDiscriminator built without the
-    // builder). Reflects the runtime type into the generic GetMap<T>, so it is RUC — the trim/AOT-safe
-    // path is CsvDiscriminatorBuilder.Map<T>, which calls the generic method directly.
+    // builder). Reflects the runtime type into the generic GetMap<T>, so it is RUC, and closes it with
+    // MakeGenericMethod, so it is also RequiresDynamicCode — the trim/AOT-safe path is
+    // CsvDiscriminatorBuilder.Map<T>, which calls the generic method directly.
     [RequiresUnreferencedCode("Reflects over the runtime type's public properties to build a CsvHelper ClassMap. Prefer CsvDiscriminatorBuilder for a trim/AOT-safe path.")]
+    [RequiresDynamicCode("Reflects over the runtime type's public properties to build a CsvHelper ClassMap. Prefer CsvDiscriminatorBuilder for a trim/AOT-safe path.")]
     public static ClassMap? GetMap([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] Type type)
     {
         var method = typeof(CsvClassMapFactory)
@@ -186,8 +188,10 @@ internal static class CsvClassMapFactory
     }
 
 
-    // Non-generic bridge for the polymorphic direct-init path — see GetMap(Type).
+    // Non-generic bridge for the polymorphic direct-init path — see GetMap(Type). RUC and
+    // RequiresDynamicCode for the same reasons (reflection over the runtime type + MakeGenericMethod).
     [RequiresUnreferencedCode("Reflects over the runtime type's public properties to build a CsvHelper ClassMap. Prefer CsvDiscriminatorBuilder for a trim/AOT-safe path.")]
+    [RequiresDynamicCode("Reflects over the runtime type's public properties to build a CsvHelper ClassMap. Prefer CsvDiscriminatorBuilder for a trim/AOT-safe path.")]
     public static ClassMap BuildFromColumnMaps([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] Type type, IReadOnlyList<CsvColumnMap> columnMaps)
     {
         var method = typeof(CsvClassMapFactory)

@@ -99,6 +99,19 @@ public sealed class CsvDiscriminator<TBase>
             return;
         }
 
+        RegisterReflectiveClassMaps(context);
+    }
+
+
+    // The direct init-form path: Mapping is an IReadOnlyDictionary<string, Type> whose values cannot carry
+    // [DynamicallyAccessedMembers], so the trimmer cannot see which properties each mapped type needs and
+    // CsvClassMapFactory closes its generic map builders over them with MakeGenericMethod. This is the
+    // documented reflection path, so it carries the same requirements as the factory bridges it calls;
+    // RegisterClassMaps is the seam where the builder path (pre-built maps) and this path meet.
+    [RequiresUnreferencedCode("Reflects over the runtime type's public properties to build a CsvHelper ClassMap. Prefer CsvDiscriminatorBuilder for a trim/AOT-safe path.")]
+    [RequiresDynamicCode("Reflects over the runtime type's public properties to build a CsvHelper ClassMap. Prefer CsvDiscriminatorBuilder for a trim/AOT-safe path.")]
+    private void RegisterReflectiveClassMaps(CsvContext context)
+    {
         foreach (var type in Mapping.Values.Distinct())
         {
             // The builder path guarantees this via a generic constraint; the direct-init Mapping does not,

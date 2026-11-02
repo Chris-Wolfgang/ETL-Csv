@@ -690,6 +690,8 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
 
 
 
+    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Only reached for a direct-init CsvDiscriminator (no builder-captured writer); CsvLoader is already [RequiresUnreferencedCode].")]
+    [UnconditionalSuppressMessage("AOT", "IL3050", Justification = "Only reached for a direct-init CsvDiscriminator; the builder path uses a statically-rooted write delegate and does not hit MakeGenericMethod.")]
     private void WriteRecordByRuntimeType(CsvWriter csvWriter, TRecord item)
     {
         var type = item.GetType();
@@ -708,8 +710,12 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
 
 
 
-    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Only reached for a direct-init CsvDiscriminator (no builder-captured writer); CsvLoader is already [RequiresUnreferencedCode].")]
-    [UnconditionalSuppressMessage("AOT", "IL3050", Justification = "Only reached for a direct-init CsvDiscriminator; the builder path uses a statically-rooted write delegate and does not hit MakeGenericMethod.")]
+    // The direct-init discriminator path: closes CsvWriter.WriteRecord<T> over the runtime type with
+    // MakeGenericMethod. This is the documented reflection path, so it carries the requirements itself
+    // (covering the MakeGenericMethod call inside the cache lambda); WriteRecordByRuntimeType is the seam
+    // where the builder path (captured writers) and this path meet.
+    [RequiresUnreferencedCode("CsvLoader uses CsvHelper, which reflects over TRecord's members beyond what DynamicallyAccessedMembers can express (type converter constructors, non-public getters in some flows). The library is not trim/NativeAOT safe.")]
+    [RequiresDynamicCode("CsvLoader uses CsvHelper, which reflects over TRecord's members beyond what DynamicallyAccessedMembers can express (type converter constructors, non-public getters in some flows). The library is not trim/NativeAOT safe.")]
     private static void WriteRecordByRuntimeTypeReflective(CsvWriter csvWriter, object item, Type type)
     {
         var method = WriteRecordByType.GetOrAdd(type, static t => WriteRecordMethod.MakeGenericMethod(t));
