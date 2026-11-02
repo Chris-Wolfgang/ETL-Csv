@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <!-- AOT / trim smoke consumer (#76). Deliberately OUT of ETL-Csv.slnx: it is
-       net10.0 Native-AOT only and is published+run solely by aot.yaml on Linux,
+       net10.0 Native-AOT only and is published+run solely by aot-smoke.yaml on Linux,
        so it must not join the multi-TFM solution build (which also runs on
        Windows, where the AOT toolchain is unavailable). -->
 
