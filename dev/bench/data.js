@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1793714171169,
+  "lastUpdate": 1793715907443,
   "repoUrl": "https://github.com/Chris-Wolfgang/ETL-Csv",
   "entries": {
     "BenchmarkDotNet": [
@@ -8640,6 +8640,186 @@ window.BENCHMARK_DATA = {
             "value": 454454703,
             "unit": "ns",
             "range": "± 1322263.8871038565"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "4e290fa40be9af10be62605daf87c216f14fb3e6",
+          "message": "chore(build): project-file hygiene (runner slots, duplicate ref, csproj restatements, slnx) (#482)\n\n* deps(semgrep): override mcp to 1.30.0 for GHSA-84m7-p3x7-pcfv\n\nsemgrep 1.180.0 pins mcp==1.29.0 exactly, so a plain upgrade resolves\nnothing. Add semgrep-overrides.txt (mcp==1.30.0) and recompile the\nhash-pinned semgrep.txt with --override. The workflow installs with\n--no-deps --require-hashes, so pip does not re-check semgrep's pin.\nRemove the override once a semgrep release allows mcp>=1.30.0.\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n\n* test: clear InspectCode S2094 and RedundantExplicitTupleComponentName alerts\n\n- CsvExtractorDiscriminatorTests: NamedRow was an empty base record\n  (S2094). Give it the Kind discriminator column, mirroring LedgerRow's\n  RecordType, and assert the bound value in the by-name test.\n- SourceLinkPdbTests: drop the explicit `Name:` tuple component, which\n  is inferred from `entry.Name`.\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n\n* docs(readme): fix broken links, stale status and obsolete members as primary API\n\n- Badge queries the pull_request event pr.yaml now runs on.\n- Drop \"coming soon\"; link the NuGet package.\n- README-FORMATTING.md and format.ps1 links point at docs/ and scripts/.\n- Features table: MaximumItemCount/SkipItemCount on the options record, no\n  Encoding row (inert), ErrorPolicy instead of the obsolete callbacks.\n- \"Observing bad data\" rewritten around ErrorPolicy.\n- DocFX paragraph: output is docfx_project/_site, deployed by release.yaml.\n- net5.0-net8.0 in the prerequisites note; trailing whitespace removed.\n\nRefs #463\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n\n* docs: bring the repo docs back in line with the workflows and the shipped version\n\n- WORKFLOW_SECURITY.md and RELEASE-WORKFLOW-SETUP.md take repo-template's\n  current text (pull_request + protected-files.yaml; OIDC Trusted Publishing,\n  no NUGET_API_KEY), with Setup-BranchRuleset / baseline links adjusted for a\n  repository where the setup script has already deleted itself.\n- copilot-instructions.md rewritten for ETL-Csv (it was the template's own).\n- DocFX getting-started / introduction pages filled in; index.md intro fixed.\n- migration README, pipeline-extensions loader list (IsDryRun), CONTRIBUTING\n  (8 analyzers, no StreamReader.ReadLine ban), THIRD-PARTY-NOTICES versions and\n  committed-vs-generated note, CHANGELOG duplicate refs, abi-stability escape\n  hatch, CODEOWNERS template residue.\n\nRefs #464\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n\n* docs(xml): XML doc comments and code comments match the code again\n\n- Builders' Encoding(...) docs no longer claim to set the inert Encoding\n  property.\n- \"The exception always propagates\" (CsvReadingExceptionInfo,\n  ReadingExceptionOccurred remarks, builder doc) now says ErrorPolicy decides.\n- Builder comments describe the mutation replay, not ApplyOptions.\n- IsDryRun summaries say \"Gets or sets\" and cref SkipItemCount /\n  MaximumItemCount instead of the obsolete aliases.\n- CsvValidationException failures doc, checkpoint remarks, CsvLogMessages\n  note, and the stale CS0618 boilerplate in the benchmarks Program.cs.\n\nThe two nested .editorconfig rationales are protected files and go in\ntheir own PR to main.\n\nRefs #465\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n\n* style: fix formatting and style drift against the CLAUDE.md rules\n\n- Three blank lines between members where there were one, two or five\n  (CsvExtractor/CsvLoader ctors, CsvExtractorOptions, CsvLoaderOptions);\n  trailing blank lines removed in CsvValidationResult.\n- CsvExtractor._initialRecordIndex declared above its property.\n- Allman throw in CsvDiscriminator; long comment wrapped in\n  CsvCheckpointExtensions; `_csvWriterDisposal` local renamed.\n- CsvLoaderBuilder: pragma restore moved above the RunAsync attribute so the\n  attribute sits on the method.\n- CsvExtractorBuilder: redundant nested CS0618 disable/restore pairs removed\n  (the file-wide block already covers them).\n- Collapsed `new X(arg, new Options { ... });` initializers in tests and\n  examples rewritten to the multi-line argument-list form.\n- Trailing whitespace in docs/cookbook/polymorphic-rows.md.\n\nRefs #470\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n\n* chore(build): project-file hygiene (runner slots, duplicate ref, csproj restatements, slnx)\n\n- Tests.Unit: xunit.runner.visualstudio 3.0.1 uncapped on net8.0/net9.0/\n  net10.0; 2.8.2 (capped) stays on net462-net481/net6.0/net7.0 and 2.4.5 on\n  netcoreapp3.1/net5.0.\n- Tests.Unit: drop the Microsoft.Bcl.AsyncInterfaces reference; it flows in\n  through the src ProjectReference.\n- src csproj: drop LangVersion, Nullable, Authors, Copyright and\n  RepositoryType (Directory.Build.props sets them; the copyright year is now\n  derived) and the ApplicationIcon a class library does not use.\n- ETL-Csv.slnx: add the workflows, scripts, docs and root files the solution\n  items were missing.\n- Stray double blank lines before </Project>.\n\nRefs #468\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n\n* deps(semgrep): override opentelemetry to 1.45.1 for GHSA-xcq7-p3pf-p88h\n\nFixes Dependabot alert #38 (opentelemetry-api <= 1.45.0, unbounded\ntracestate parsing) in the hash-pinned Semgrep tool tree.\n\nsemgrep pins opentelemetry-api/-sdk/-exporter-otlp-proto-http ~=1.37.0\nand the instrumentation packages ~=0.58b0, so --upgrade-package cannot\nmove them. The override moves the whole family in lockstep (1.45.1 /\n0.66b1) rather than api alone, because opentelemetry-sdk pins\nopentelemetry-api exactly and a mixed api/sdk tree is untested.\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n\n* fix(aot): annotate the reflection path at its boundary; smoke inherits Release TWAE\n\nThe native AOT publish of the smoke harness reported 7 trim/AOT diagnostics\nin library code. Each now sits under an annotation:\n\n- CsvClassMapFactory.GetMap(Type) / BuildFromColumnMaps(Type): add\n  [RequiresDynamicCode] (MakeGenericMethod) beside the existing RUC.\n- CsvDiscriminator: move the direct-init reflective branch into\n  RegisterReflectiveClassMaps, marked RUC + RequiresDynamicCode (fixes the\n  IL2072 on Mapping's unannotatable Type values).\n- CsvLoader.WriteRecordByRuntimeTypeReflective: RUC + RequiresDynamicCode\n  (covers the IL2060 in its cache lambda); the existing suppression moves\n  to the WriteRecordByRuntimeType seam.\n- CsvExtractor.RegisterRecordMap: the IL2026 suppression its CsvLoader twin\n  already carries; ExtractWorkerAsync is an override of an unannotated base\n  member, so RUC cannot move further out (IL2046) and is surfaced at the\n  public constructors.\n- RequiresDynamicCodeAttribute polyfill for net5.0/net6.0.\n\nThe smoke csproj drops TreatWarningsAsErrors=false and allows only the\nCsvHelper codes (IL2070, IL2075, IL3050) as warnings, tracked by #5.\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>\n\n* docs(changelog): add fragment for the AOT annotation change\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>\n\n* ci(aot): point the AotSmoke csproj comment at aot-smoke.yaml\n\nNon-protected half of #505, split out so #505 is protected-only and passes\nthe Protected Files Guard. #505 renames aot.yaml to aot-smoke.yaml; this is\nthe one comment in the smoke csproj that names the workflow file.\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n\n---------\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-03T09:21:25-05:00",
+          "tree_id": "1e0ed01b0274fba1c6ff308ec07db24f75591503",
+          "url": "https://github.com/Chris-Wolfgang/ETL-Csv/commit/4e290fa40be9af10be62605daf87c216f14fb3e6"
+        },
+        "date": 1793715904304,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.DateTimeBenchmarks.Extract_Memory(RecordCount: 10000)",
+            "value": 3336229.0325520835,
+            "unit": "ns",
+            "range": "± 6713.818281468846"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.DateTimeBenchmarks.Load_Memory(RecordCount: 10000)",
+            "value": 3569980.2057291665,
+            "unit": "ns",
+            "range": "± 1534.8290843001084"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.ExtractorBenchmarks.Memory_TextReader(RecordCount: 1000)",
+            "value": 701000.3919270834,
+            "unit": "ns",
+            "range": "± 14684.232197437019"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.ExtractorBenchmarks.File_TextReader_1KB(RecordCount: 1000)",
+            "value": 859989.7721354166,
+            "unit": "ns",
+            "range": "± 29869.33437457099"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.ExtractorBenchmarks.File_TextReader_64KB(RecordCount: 1000)",
+            "value": 1212340.8880208333,
+            "unit": "ns",
+            "range": "± 18072.809754902806"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.ExtractorBenchmarks.Memory_TextReader(RecordCount: 10000)",
+            "value": 2897557.8033854165,
+            "unit": "ns",
+            "range": "± 13290.833075167835"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.ExtractorBenchmarks.File_TextReader_1KB(RecordCount: 10000)",
+            "value": 3571391.1588541665,
+            "unit": "ns",
+            "range": "± 336898.7356028998"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.ExtractorBenchmarks.File_TextReader_64KB(RecordCount: 10000)",
+            "value": 2909928.6588541665,
+            "unit": "ns",
+            "range": "± 68469.69610715308"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.ExtractorBenchmarks.Memory_TextReader(RecordCount: 100000)",
+            "value": 21529402.666666668,
+            "unit": "ns",
+            "range": "± 56988.389175880846"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.ExtractorBenchmarks.File_TextReader_1KB(RecordCount: 100000)",
+            "value": 26526249.270833332,
+            "unit": "ns",
+            "range": "± 147924.09078413437"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.ExtractorBenchmarks.File_TextReader_64KB(RecordCount: 100000)",
+            "value": 24227706.197916668,
+            "unit": "ns",
+            "range": "± 127201.84214643134"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.LoaderBenchmarks.Memory_TextWriter(RecordCount: 1000)",
+            "value": 1242677.3776041667,
+            "unit": "ns",
+            "range": "± 30632.897253786345"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.LoaderBenchmarks.File_TextWriter_1KB(RecordCount: 1000)",
+            "value": 1778000.1966145833,
+            "unit": "ns",
+            "range": "± 142468.5615211693"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.LoaderBenchmarks.File_TextWriter_64KB(RecordCount: 1000)",
+            "value": 1653910.7421875,
+            "unit": "ns",
+            "range": "± 103858.94024113879"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.LoaderBenchmarks.Memory_TextWriter(RecordCount: 10000)",
+            "value": 3404984.546875,
+            "unit": "ns",
+            "range": "± 13271.957301054475"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.LoaderBenchmarks.File_TextWriter_1KB(RecordCount: 10000)",
+            "value": 5148299.885416667,
+            "unit": "ns",
+            "range": "± 662625.8738870778"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.LoaderBenchmarks.File_TextWriter_64KB(RecordCount: 10000)",
+            "value": 3983384.2395833335,
+            "unit": "ns",
+            "range": "± 117980.49114467445"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.LoaderBenchmarks.Memory_TextWriter(RecordCount: 100000)",
+            "value": 23280260.166666668,
+            "unit": "ns",
+            "range": "± 448360.6139262617"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.LoaderBenchmarks.File_TextWriter_1KB(RecordCount: 100000)",
+            "value": 37124065.166666664,
+            "unit": "ns",
+            "range": "± 1159875.4868284983"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.LoaderBenchmarks.File_TextWriter_64KB(RecordCount: 100000)",
+            "value": 30528305.25,
+            "unit": "ns",
+            "range": "± 464234.4835219531"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.MemoryDeltaBenchmarks.Extract_MemoryDelta(RecordCount: 0)",
+            "value": 288868.60628255206,
+            "unit": "ns",
+            "range": "± 2481.8743388774924"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.MemoryDeltaBenchmarks.Extract_MemoryDelta(RecordCount: 1)",
+            "value": 985099.9895833334,
+            "unit": "ns",
+            "range": "± 64987.34629795073"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.MemoryDeltaBenchmarks.Extract_MemoryDelta(RecordCount: 1000)",
+            "value": 1290334.2526041667,
+            "unit": "ns",
+            "range": "± 29907.927902252206"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.MemoryDeltaBenchmarks.Extract_MemoryDelta(RecordCount: 10000)",
+            "value": 3113516.4622395835,
+            "unit": "ns",
+            "range": "± 2812.2501455704805"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.MemoryDeltaBenchmarks.Extract_MemoryDelta(RecordCount: 100000)",
+            "value": 22543220.666666668,
+            "unit": "ns",
+            "range": "± 36916.77108534159"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.MemoryDeltaBenchmarks.Extract_MemoryDelta(RecordCount: 1000000)",
+            "value": 215546302,
+            "unit": "ns",
+            "range": "± 1586779.655053278"
           }
         ]
       }
