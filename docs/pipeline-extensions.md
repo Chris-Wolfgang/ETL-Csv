@@ -50,7 +50,7 @@ no explicit `Build()` step.
   `HasHeaderRecord`, `Encoding`, `InitialRecordIndex`, `SkipRecordCount`, `MaxRecordCount`,
   `TrimOptions`, `ColumnMaps`, `BadDataFound`, `ReadingExceptionOccurred`.
 - **Loader:** `Delimiter`, `Quote`, `Escape`, `NewLine`, `HasHeaderRecord`, `Encoding`, `TrimOptions`,
-  `ShouldQuote`, `ColumnMaps`.
+  `ShouldQuote`, `ColumnMaps`, `IsDryRun`.
 
 `Encoding(…)` binds the encoding used to open a path-based stream, so it controls the bytes actually
 read from / written to disk.

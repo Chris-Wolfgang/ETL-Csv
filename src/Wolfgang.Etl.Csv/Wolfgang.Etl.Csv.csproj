@@ -2,8 +2,6 @@
 
   <PropertyGroup>
     <TargetFrameworks>net462;netstandard2.0;netstandard2.1;net5.0;net6.0;net7.0;net8.0;net10.0</TargetFrameworks>
-    <LangVersion>latest</LangVersion>
-    <Nullable>enable</Nullable>
     <ImplicitUsings>disable</ImplicitUsings>
     <Version>0.10.0</Version>
     <!-- AssemblyVersion is derived from <Version> as 0.{Minor}.0.0 (ADR-0011 in
@@ -20,12 +18,9 @@
     <PackageValidationBaselineVersion>0.10.0</PackageValidationBaselineVersion>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <Title>Wolfgang.Etl.Csv</Title>
-    <Authors>Chris Wolfgang</Authors>
     <Description>CsvExtractor and CsvLoader implementations for reading and writing CSV files, built on Wolfgang.Etl.Abstractions and CsvHelper.</Description>
-    <Copyright>Copyright 2026 Chris Wolfgang</Copyright>
     <PackageProjectUrl>https://github.com/Chris-Wolfgang/ETL-Csv</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Chris-Wolfgang/ETL-Csv</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
@@ -33,8 +28,19 @@
     <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
     <PackageTags>ETL;Extract-Transform-Load;CSV;CsvHelper</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <ApplicationIcon>..\..\assets\icon.ico</ApplicationIcon>
     <PackageIcon>icon_256.png</PackageIcon>
+  </PropertyGroup>
+
+  <!-- Trim / AOT analyzers (repository baseline item 18). This does NOT claim the library is
+       trim-safe: CsvHelper reflects over the record type, so the extractor and loader entry points
+       carry [RequiresUnreferencedCode] / [RequiresDynamicCode]. The flags turn on the trim, AOT and
+       single-file analyzers so those annotations are verified to be complete, and mark the
+       assembly so a consumer's trimmer analyzes it instead of treating it as opaque. They only
+       apply to net8.0+ (the analyzers need a net6.0+ target; net8.0 is where IsAotCompatible is
+       supported). -->
+  <PropertyGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">
+    <IsAotCompatible>true</IsAotCompatible>
+    <IsTrimmable>true</IsTrimmable>
   </PropertyGroup>
 
   <ItemGroup>

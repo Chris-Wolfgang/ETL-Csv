@@ -127,8 +127,14 @@ public class CsvLoaderDryRunTests
         using var stream = new MemoryStream();
         using (var writer = new StreamWriter(stream, Utf8NoBom, 1024, leaveOpen: true))
         {
-            var loader = new CsvLoader<PersonRecord>(writer, new CsvLoaderOptions<PersonRecord>
-        { LeaveOpen = true});
+            var loader = new CsvLoader<PersonRecord>
+            (
+                writer,
+                new CsvLoaderOptions<PersonRecord>
+                {
+                    LeaveOpen = true,
+                }
+            );
             await loader.LoadAsync(ToAsync(People));
             await writer.FlushAsync();
         }

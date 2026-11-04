@@ -20,6 +20,14 @@ namespace Wolfgang.Etl.Csv;
 /// <see cref="ObsoleteAttribute">obsolete</see>. To write a non-default encoding, construct the
 /// <see cref="System.IO.StreamWriter"/> with the encoding you want.
 /// </para>
+/// <para>
+/// The inherited <see cref="LoaderOptions.ErrorPolicy"/> is <b>not consulted</b> by
+/// <see cref="CsvLoader{TRecord}"/>. CsvHelper writes a record's fields into the output one at a time,
+/// so a record that fails partway through cannot be withdrawn: skipping it would leave a half-written
+/// row in the file. A failure while writing a record therefore always propagates out of
+/// <c>LoadAsync</c>. To drop records before they reach the writer, use <see cref="Validators"/> with
+/// <see cref="OnValidationFailure"/> set to <see cref="CsvValidationFailureAction.Skip"/>.
+/// </para>
 /// </remarks>
 /// <typeparam name="TRecord">The record type the loader writes.</typeparam>
 public sealed record CsvLoaderOptions<TRecord> : LoaderOptions
@@ -124,6 +132,7 @@ public sealed record CsvLoaderOptions<TRecord> : LoaderOptions
     public Action<CsvInvalidRecord<TRecord>>? InvalidRecordHandler { get; init; }
 
 
+
     /// <summary>
     /// Deprecated alias for <see cref="LoaderOptions.SkipItemCount"/>, which this record now inherits. Reads and writes
     /// forward to it; the two never diverge.
@@ -152,7 +161,7 @@ public sealed record CsvLoaderOptions<TRecord> : LoaderOptions
 
     /// <summary>
     /// Gets a value indicating whether the load runs as a dry run. When <see langword="true"/>, the
-    /// loader enumerates the source, honours <see cref="SkipRecordCount"/> / <see cref="MaxRecordCount"/>,
+    /// loader enumerates the source, honours <see cref="LoaderOptions.SkipItemCount"/> / <see cref="LoaderOptions.MaximumItemCount"/>,
     /// increments progress counters, fires progress reports and logs exactly as a real load would — but
     /// writes nothing to the underlying writer (neither the header nor any records). Use it to validate a
     /// pipeline against real data without producing output. Defaults to <see langword="false"/>.

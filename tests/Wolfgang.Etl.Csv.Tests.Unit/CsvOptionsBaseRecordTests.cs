@@ -117,7 +117,7 @@ public class CsvOptionsBaseRecordTests
     public void MaxRecordCount_forwards_to_MaximumItemCount_on_both_records()
     {
         var extractorOptions = new CsvExtractorOptions<PersonRecord> { MaxRecordCount = 4 };
-        var loaderOptions = new CsvLoaderOptions<PersonRecord> { MaximumItemCount = 6 };
+        var loaderOptions = new CsvLoaderOptions<PersonRecord> { MaxRecordCount = 6 };
 
         Assert.Equal(4, extractorOptions.MaximumItemCount);
         Assert.Equal(4, extractorOptions.MaxRecordCount);

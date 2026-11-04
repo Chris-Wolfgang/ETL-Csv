@@ -38,9 +38,9 @@ internal static class CsvLogMessages
     internal static readonly Action<ILogger, int, Exception?> IgnoredRow =
         LoggerMessage.Define<int>(LogLevel.Debug, new EventId(12, nameof(IgnoredRow)), "Ignored row {RawRowIndex} before InitialRecordIndex.");
 
-    // Note: bad-data and reading-exception events are surfaced to callers via the
-    // CsvExtractor.BadDataFound and CsvExtractor.ReadingExceptionOccurred Action<>
-    // properties rather than being logged by the library. This keeps potentially-
+    // Note: bad-data and reading-exception events are not logged by the library. Callers see
+    // them through ErrorPolicy (which decides skip-vs-abort for failed rows) and the deprecated,
+    // observation-only CsvExtractor.BadDataFound / ReadingExceptionOccurred callbacks. This keeps potentially-
     // sensitive CSV record contents out of application logs unless the caller
     // explicitly opts in by wiring those callbacks to their own logger.
 

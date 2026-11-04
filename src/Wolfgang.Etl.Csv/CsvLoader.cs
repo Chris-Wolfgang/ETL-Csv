@@ -144,6 +144,7 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     }
 
 
+
     /// <summary>
     /// Initializes a new instance of the <see cref="CsvLoader{TRecord}"/> class configured from an
     /// options record.
@@ -351,9 +352,10 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     private bool _isDryRun;
 
     /// <summary>
-    /// Gets a value indicating whether the load runs as a dry run. When <c>true</c>,
-    /// the loader enumerates the source and honors <see cref="SkipRecordCount"/> /
-    /// <see cref="MaxRecordCount"/>, increments progress counters, fires progress reports, and
+    /// Gets or sets a value indicating whether the load runs as a dry run (the setter is deprecated;
+    /// configure it through <see cref="CsvLoaderOptions{TRecord}"/>). When <c>true</c>,
+    /// the loader enumerates the source and honors <see cref="LoaderBase{TDestination, TProgress}.SkipItemCount"/> /
+    /// <see cref="LoaderBase{TDestination, TProgress}.MaximumItemCount"/>, increments progress counters, fires progress reports, and
     /// logs exactly as a real load would — but writes nothing to the underlying writer (neither
     /// the header nor any records). Use it to validate a pipeline against real data without
     /// producing output. Defaults to <c>false</c>.
@@ -433,7 +435,7 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
         // SynchronizationContext (real deadlock risk on net462/netstandard targets
         // where sync-over-async consumers exist in the wild).
         var csvWriter = new CsvWriter(_writer, BuildConfiguration(), LeaveOpen);
-        await using var _csvWriterDisposal = csvWriter.ConfigureAwait(false);
+        await using var csvWriterDisposal = csvWriter.ConfigureAwait(false);
 
         RegisterRecordMap(csvWriter.Context);
 
@@ -690,6 +692,8 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
 
 
 
+    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Only reached for a direct-init CsvDiscriminator (no builder-captured writer); CsvLoader is already [RequiresUnreferencedCode].")]
+    [UnconditionalSuppressMessage("AOT", "IL3050", Justification = "Only reached for a direct-init CsvDiscriminator; the builder path uses a statically-rooted write delegate and does not hit MakeGenericMethod.")]
     private void WriteRecordByRuntimeType(CsvWriter csvWriter, TRecord item)
     {
         var type = item.GetType();
@@ -708,8 +712,12 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
 
 
 
-    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Only reached for a direct-init CsvDiscriminator (no builder-captured writer); CsvLoader is already [RequiresUnreferencedCode].")]
-    [UnconditionalSuppressMessage("AOT", "IL3050", Justification = "Only reached for a direct-init CsvDiscriminator; the builder path uses a statically-rooted write delegate and does not hit MakeGenericMethod.")]
+    // The direct-init discriminator path: closes CsvWriter.WriteRecord<T> over the runtime type with
+    // MakeGenericMethod. This is the documented reflection path, so it carries the requirements itself
+    // (covering the MakeGenericMethod call inside the cache lambda); WriteRecordByRuntimeType is the seam
+    // where the builder path (captured writers) and this path meet.
+    [RequiresUnreferencedCode("CsvLoader uses CsvHelper, which reflects over TRecord's members beyond what DynamicallyAccessedMembers can express (type converter constructors, non-public getters in some flows). The library is not trim/NativeAOT safe.")]
+    [RequiresDynamicCode("CsvLoader uses CsvHelper, which reflects over TRecord's members beyond what DynamicallyAccessedMembers can express (type converter constructors, non-public getters in some flows). The library is not trim/NativeAOT safe.")]
     private static void WriteRecordByRuntimeTypeReflective(CsvWriter csvWriter, object item, Type type)
     {
         var method = WriteRecordByType.GetOrAdd(type, static t => WriteRecordMethod.MakeGenericMethod(t));
