@@ -37,14 +37,8 @@ public sealed class EtlPipelineCsvExtensionsTests : IDisposable
 
     public void Dispose()
     {
-        try
-        {
-            Directory.Delete(_tempDir, recursive: true);
-        }
-        catch (IOException)
-        {
-            // Best-effort cleanup; a leaked handle would surface as its own test failure.
-        }
+        // No try/catch: a leaked file handle must surface as a test failure, not be swallowed.
+        Directory.Delete(_tempDir, recursive: true);
     }
 
 
@@ -285,7 +279,7 @@ public sealed class EtlPipelineCsvExtensionsTests : IDisposable
     [Fact]
     public void First_pipeline_operator_narrows_the_builder_off_the_configuration_surface()
     {
-        var source = WriteTempFile("narrow.csv", "FirstName,LastName,Age\r\nAlice,Smith,30\r\n");
+        using var source = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes("FirstName,LastName,Age\r\nAlice,Smith,30\r\n")));
 
         var builder = EtlPipeline.Create().CsvExtractor<PersonRecord>(source);
         IEtlPipeline<PersonRecord> narrowed = builder.Through(FilterAdults);
@@ -336,7 +330,7 @@ public sealed class EtlPipelineCsvExtensionsTests : IDisposable
     [Fact]
     public void Configuring_the_extractor_after_it_is_materialized_throws()
     {
-        var source = WriteTempFile("late.csv", "FirstName,LastName,Age\r\nAlice,Smith,30\r\n");
+        using var source = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes("FirstName,LastName,Age\r\nAlice,Smith,30\r\n")));
 
         var builder = EtlPipeline.Create().CsvExtractor<PersonRecord>(source);
         _ = builder.Through(FilterAdults);
@@ -348,7 +342,7 @@ public sealed class EtlPipelineCsvExtensionsTests : IDisposable
     [Fact]
     public void Configuring_the_extractor_after_it_is_materialized_names_the_reason()
     {
-        var source = WriteTempFile("late-msg.csv", "FirstName,LastName,Age\r\nAlice,Smith,30\r\n");
+        using var source = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes("FirstName,LastName,Age\r\nAlice,Smith,30\r\n")));
 
         var builder = EtlPipeline.Create().CsvExtractor<PersonRecord>(source);
         _ = builder.Through(FilterAdults);
@@ -366,7 +360,7 @@ public sealed class EtlPipelineCsvExtensionsTests : IDisposable
     [Fact]
     public void Encoding_and_observation_callbacks_after_the_extractor_is_materialized_throw()
     {
-        var source = WriteTempFile("late-callbacks.csv", "FirstName,LastName,Age\r\nAlice,Smith,30\r\n");
+        using var source = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes("FirstName,LastName,Age\r\nAlice,Smith,30\r\n")));
 
         var builder = EtlPipeline.Create().CsvExtractor<PersonRecord>(source);
         _ = builder.Through(FilterAdults);
