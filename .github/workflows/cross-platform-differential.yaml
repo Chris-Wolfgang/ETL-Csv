@@ -114,7 +114,9 @@ jobs:
           for f in manifests/manifest-*.txt; do
             name=$(basename "$f" .txt); name=${name#manifest-}
             [ "$name" = "linux-x64" ] && continue
-            if ! diff -u "$baseline" "$f" > "/tmp/$name.diff"; then
+            # pwsh's Out-File writes CRLF on the Windows runner and LF elsewhere, so
+            # compare with the line terminator ignored; every other byte still counts.
+            if ! diff -u --strip-trailing-cr "$baseline" "$f" > "/tmp/$name.diff"; then
               echo "::error::$name diverges from linux-x64:"
               cat "/tmp/$name.diff"
               status=1
