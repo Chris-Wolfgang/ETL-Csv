@@ -50,7 +50,9 @@ public sealed class CsvSchemaBuilder<T>
     /// method, nested/chained member, or computed expression.
     /// </param>
     /// <param name="name">
-    /// The CSV column name to bind to. Ignored when <paramref name="index"/> is non-negative.
+    /// The CSV column name to bind to. Must not be blank, and must not be combined with a
+    /// non-negative <paramref name="index"/> (a column binds by name or by index, not both).
+    /// Leave it <c>null</c> to bind by the property's own name.
     /// </param>
     /// <param name="index">The 0-based column index; <c>-1</c> (default) binds by name only.</param>
     /// <param name="format">Parse/format string (e.g. <c>"yyyy-MM-dd"</c>).</param>
@@ -58,7 +60,11 @@ public sealed class CsvSchemaBuilder<T>
     /// <param name="default">Default value used when the column is absent or empty during reading.</param>
     /// <returns>The same builder instance, for chaining.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="selector"/> is <c>null</c>.</exception>
-    /// <exception cref="ArgumentException"><paramref name="selector"/> does not reference a public property of <typeparamref name="T"/>.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="selector"/> does not reference a public property of <typeparamref name="T"/>;
+    /// <paramref name="name"/> is not <c>null</c> but is empty or whitespace; or both
+    /// <paramref name="name"/> and a non-negative <paramref name="index"/> were supplied.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> is less than <c>-1</c>.</exception>
     public CsvSchemaBuilder<T> Column<TProperty>
     (
@@ -79,6 +85,24 @@ public sealed class CsvSchemaBuilder<T>
                 nameof(index),
                 index,
                 "Index must be -1 (bind by name) or a non-negative column index."
+            );
+        }
+
+        if (name is not null && string.IsNullOrWhiteSpace(name))
+        {
+            throw new ArgumentException
+            (
+                "Name must be null (bind by the property's own name) or a non-blank column name.",
+                nameof(name)
+            );
+        }
+
+        if (name is not null && index >= 0)
+        {
+            throw new ArgumentException
+            (
+                "A column binds by name or by index, not both; pass either name or a non-negative index.",
+                nameof(name)
             );
         }
 

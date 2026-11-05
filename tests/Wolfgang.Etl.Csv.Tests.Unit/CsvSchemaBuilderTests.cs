@@ -105,6 +105,61 @@ public class CsvSchemaBuilderTests
 
 
     [Theory]
+    [InlineData("")]
+    [InlineData(" ")]
+    [InlineData("	")]
+    public void Column_when_name_is_blank_throws_ArgumentException(string name)
+    {
+        var ex = Assert.Throws<ArgumentException>
+        (
+            () => new CsvSchemaBuilder<PersonRecord>().Column(p => p.FirstName, name: name)
+        );
+
+        Assert.Equal("name", ex.ParamName);
+    }
+
+
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(3)]
+    public void Column_when_name_and_a_non_negative_index_are_both_supplied_throws_ArgumentException(int index)
+    {
+        var ex = Assert.Throws<ArgumentException>
+        (
+            () => new CsvSchemaBuilder<PersonRecord>().Column(p => p.FirstName, name: "first_name", index: index)
+        );
+
+        Assert.Equal("name", ex.ParamName);
+    }
+
+
+
+    [Fact]
+    public void Column_when_neither_name_nor_index_is_supplied_binds_by_the_property_name()
+    {
+        var schema = new CsvSchemaBuilder<PersonRecord>()
+            .Column(p => p.FirstName)
+            .Build();
+
+        Assert.Equal(new CsvColumnMap("FirstName"), schema.Columns[0]);
+    }
+
+
+
+    [Fact]
+    public void Column_when_only_a_non_negative_index_is_supplied_binds_by_index()
+    {
+        var schema = new CsvSchemaBuilder<PersonRecord>()
+            .Column(p => p.FirstName, index: 0)
+            .Build();
+
+        Assert.Equal(new CsvColumnMap("FirstName") { Index = 0 }, schema.Columns[0]);
+    }
+
+
+
+    [Theory]
     [MemberData(nameof(InvalidSelectors))]
     public void Column_when_selector_is_not_a_direct_property_throws_ArgumentException(Action act)
     {
