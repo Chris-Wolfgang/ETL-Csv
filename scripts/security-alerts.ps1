@@ -213,6 +213,58 @@ function Get-TrackedIssues
 
 
 
+function Test-TransientGhFailure
+{
+    # GitHub-side hiccups worth retrying. A validation or permission error will fail the same way
+    # again, so it is reported on the first attempt.
+    param([string]$Output)
+
+    return $Output -match '(?i)\b50[234]\b|Bad Gateway|Service Unavailable|Gateway Time-?out|Something went wrong|TLS handshake timeout|connection reset|unexpected EOF|i/o timeout'
+}
+
+
+
+function Invoke-GhWrite
+{
+    # Runs a gh write command, retrying transient failures. $LASTEXITCODE reflects the final attempt.
+    # A 5xx does not prove the write failed, so a non-idempotent caller passes -FindExisting: it runs
+    # before each retry, and anything it returns is taken as the result instead of writing twice.
+    param([string[]]$GhArgs, [scriptblock]$FindExisting, [int]$MaxAttempts = 3, [int]$DelaySeconds = 5)
+
+    for ($attempt = 1; ; $attempt++)
+    {
+        $out = & gh @GhArgs 2>&1
+        $code = $LASTEXITCODE
+        if ($code -eq 0 -or $attempt -ge $MaxAttempts -or -not (Test-TransientGhFailure "$out"))
+        {
+            $global:LASTEXITCODE = $code
+            return $out
+        }
+        Write-Warning "gh $($GhArgs[0]) $($GhArgs[1]) attempt $attempt of $MaxAttempts failed, retrying: $out"
+        Start-Sleep -Seconds ($DelaySeconds * $attempt)
+        if ($FindExisting)
+        {
+            $existing = & $FindExisting
+            if ($existing) { $global:LASTEXITCODE = 0; return $existing }
+        }
+    }
+}
+
+
+
+function Find-OpenIssueUrl
+{
+    # The URL of the open labelled issue satisfying $Match, or $null. Reads the issue list rather
+    # than search, because the search index can lag a write that just landed.
+    param([scriptblock]$Match)
+
+    $raw = & gh issue list -R $Repository --label $label --state open --limit 1000 --json url,title,body 2>$null
+    if ($LASTEXITCODE -ne 0 -or -not $raw) { return $null }
+    return @($raw | ConvertFrom-Json | Where-Object $Match | Select-Object -First 1 -ExpandProperty url)[0]
+}
+
+
+
 function New-AlertIssue
 {
     param([pscustomobject]$Alert, [switch]$Bypass)
@@ -237,7 +289,9 @@ $(if ($Bypass) { "**Push protection was bypassed** for this secret. Review who b
 _Opened automatically by the security-alerts workflow. It closes when the alert is closed and reopens if the alert comes back._
 "@
     if ($DryRun) { Write-Host "DRY-RUN create: $title"; return $null }
-    $url = & gh issue create -R $Repository --title $title --body $body --label $label 2>&1
+    $markerComment = "<!-- security-alert: $marker -->"
+    $url = Invoke-GhWrite -GhArgs @('issue', 'create', '-R', $Repository, '--title', $title, '--body', $body, '--label', $label) `
+        -FindExisting { Find-OpenIssueUrl { $_.body -like "*$markerComment*" } }
     if ($LASTEXITCODE -ne 0) { Write-Warning "create failed for ${title}: $url"; $script:failures++; return $null }
     Write-Host "opened: $url  [$title]"
     return ($url | Select-String -Pattern '/issues/(\d+)' | ForEach-Object { [int]$_.Matches[0].Groups[1].Value })
@@ -250,7 +304,7 @@ function Close-AlertIssue
     param([pscustomobject]$Issue, [string]$Reason)
 
     if ($DryRun) { Write-Host "DRY-RUN close #$($Issue.number): $Reason"; return }
-    $out = & gh issue close $Issue.number -R $Repository --comment "Closing: $Reason" 2>&1
+    $out = Invoke-GhWrite -GhArgs @('issue', 'close', "$($Issue.number)", '-R', $Repository, '--comment', "Closing: $Reason")
     if ($LASTEXITCODE -ne 0) { Write-Warning "close of #$($Issue.number) failed: $out"; $script:failures++; return }
     Write-Host "closed #$($Issue.number): $Reason"
 }
@@ -276,7 +330,7 @@ function Reopen-AlertIssue
     param([pscustomobject]$Issue, [string]$Reason)
 
     if ($DryRun) { Write-Host "DRY-RUN reopen #$($Issue.number): $Reason"; return }
-    $out = & gh issue reopen $Issue.number -R $Repository --comment "Reopening: $Reason" 2>&1
+    $out = Invoke-GhWrite -GhArgs @('issue', 'reopen', "$($Issue.number)", '-R', $Repository, '--comment', "Reopening: $Reason")
     if ($LASTEXITCODE -ne 0) { Write-Warning "reopen of #$($Issue.number) failed: $out"; $script:failures++; return }
     Write-Host "reopened #$($Issue.number): $Reason"
 }
@@ -321,7 +375,7 @@ if ($RequestAutofix)
         $issue = $tracked["code-scanning#$n"]
         if ($issue -and -not $DryRun)
         {
-            $out = & gh issue comment $issue.number -R $Repository --body $result 2>&1
+            $out = Invoke-GhWrite -GhArgs @('issue', 'comment', "$($issue.number)", '-R', $Repository, '--body', $result)
             if ($LASTEXITCODE -ne 0) { Write-Warning "comment on #$($issue.number) failed: $out"; $autofixFailures++ }
         }
     }
@@ -420,7 +474,7 @@ _Updated weekly by the security-alerts workflow._
             if ($DryRun) { Write-Host "DRY-RUN comment on summary #$($summaryIssue.number)" }
             else
             {
-                $out = & gh issue comment $summaryIssue.number -R $Repository --body $text 2>&1
+                $out = Invoke-GhWrite -GhArgs @('issue', 'comment', "$($summaryIssue.number)", '-R', $Repository, '--body', $text)
                 if ($LASTEXITCODE -ne 0) { Write-Warning "summary comment failed: $out"; $script:failures++ } else { Write-Host "updated summary #$($summaryIssue.number)" }
             }
         }
@@ -430,7 +484,8 @@ _Updated weekly by the security-alerts workflow._
             if ($DryRun) { Write-Host "DRY-RUN create summary: $title" }
             else
             {
-                $u = & gh issue create -R $Repository --title $title --body $text --label $label 2>&1
+                $u = Invoke-GhWrite -GhArgs @('issue', 'create', '-R', $Repository, '--title', $title, '--body', $text, '--label', $label) `
+                    -FindExisting { Find-OpenIssueUrl { $_.title -ceq $title } }
                 if ($LASTEXITCODE -ne 0) { Write-Warning "summary create failed: $u"; $script:failures++ } else { Write-Host "opened summary: $u" }
             }
         }
