@@ -39,8 +39,6 @@ public sealed record CsvExtractorOptions<TRecord> : ExtractorOptions
 
 
 
-
-
     /// <summary>
     /// Gets the character that marks a comment line when <see cref="AllowComments"/> is
     /// <see langword="true"/>. Defaults to <c>'#'</c>.
@@ -139,6 +137,7 @@ public sealed record CsvExtractorOptions<TRecord> : ExtractorOptions
     /// <see langword="null"/>, meaning no callback.
     /// </summary>
     public Action<CsvInvalidRecord<TRecord>>? InvalidRecordHandler { get; init; }
+
 
 
     /// <summary>

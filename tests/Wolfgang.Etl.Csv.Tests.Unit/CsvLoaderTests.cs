@@ -36,6 +36,25 @@ public class CsvLoaderTests
 
 
 
+    private static readonly string[] ExpectedCsvLines =
+    {
+        "FirstName,LastName,Age",
+        "Alice,Smith,30",
+        "Bob,Jones,25",
+        "Carol,White,35",
+        "Dave,Brown,40",
+        "Eve,Davis,28",
+    };
+
+
+
+    private static string[] ReadCsvLines(MemoryStream stream) =>
+        Encoding.UTF8
+            .GetString(stream.ToArray())
+            .Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+
+
+
     private static CsvLoader<PersonRecord> CreateLoader(int maximumItemCount = int.MaxValue, int skipItemCount = 0, int reportingInterval = 1_000)
     {
         var stream = new MemoryStream();
@@ -91,7 +110,7 @@ public class CsvLoaderTests
 
 
     [Fact]
-    public void Constructor_when_logger_is_null_uses_NullLogger()
+    public async Task Constructor_when_logger_is_null_loads_every_record_without_logging()
     {
         // logger is now an optional trailing parameter; null means "no logging"
         // (NullLogger.Instance) rather than an argument error.
@@ -104,20 +123,32 @@ public class CsvLoaderTests
             logger: null
         );
 
-        Assert.NotNull(sut);
+        await sut.LoadAsync(SourceItems.ToAsyncEnumerable());
+
+        Assert.Equal
+        (
+            ExpectedCsvLines,
+            ReadCsvLines(stream)
+        );
     }
 
 
 
     [Fact]
-    public void Constructor_when_logger_is_omitted_uses_NullLogger()
+    public async Task Constructor_when_logger_is_omitted_loads_every_record_without_logging()
     {
         var stream = new MemoryStream();
         var writer = new StreamWriter(stream, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false), 1024, leaveOpen: true);
 
         var sut = new CsvLoader<PersonRecord>(writer);
 
-        Assert.NotNull(sut);
+        await sut.LoadAsync(SourceItems.ToAsyncEnumerable());
+
+        Assert.Equal
+        (
+            ExpectedCsvLines,
+            ReadCsvLines(stream)
+        );
     }
 
 
@@ -158,7 +189,7 @@ public class CsvLoaderTests
 
 
     [Fact]
-    public void Internal_constructor_when_logger_is_null_does_not_throw()
+    public async Task Internal_constructor_when_logger_is_null_loads_every_record()
     {
         var stream = new MemoryStream();
         var writer = new StreamWriter(stream, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false), 1024, leaveOpen: true);
@@ -170,7 +201,13 @@ public class CsvLoaderTests
             logger: null
         );
 
-        Assert.NotNull(sut);
+        await sut.LoadAsync(SourceItems.ToAsyncEnumerable());
+
+        Assert.Equal
+        (
+            ExpectedCsvLines,
+            ReadCsvLines(stream)
+        );
     }
 
 
@@ -205,9 +242,14 @@ public class CsvLoaderTests
     {
         var stream = new MemoryStream();
         var writer = new StreamWriter(stream, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false), 1024, leaveOpen: true);
-        var sut = new CsvLoader<PersonRecord>(writer, new CsvLoaderOptions<PersonRecord>
-        {
-            LeaveOpen = true,});
+        var sut = new CsvLoader<PersonRecord>
+        (
+            writer,
+            new CsvLoaderOptions<PersonRecord>
+            {
+                LeaveOpen = true,
+            }
+        );
 
         await sut.LoadAsync(SourceItems.Take(2).ToAsyncEnumerable());
 
@@ -228,10 +270,15 @@ public class CsvLoaderTests
     {
         var stream = new MemoryStream();
         var writer = new StreamWriter(stream, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false), 1024, leaveOpen: true);
-        var sut = new CsvLoader<PersonRecord>(writer, new CsvLoaderOptions<PersonRecord>
-        {
-            HasHeaderRecord = false,
-            LeaveOpen = true,});
+        var sut = new CsvLoader<PersonRecord>
+        (
+            writer,
+            new CsvLoaderOptions<PersonRecord>
+            {
+                HasHeaderRecord = false,
+                LeaveOpen = true,
+            }
+        );
 
         await sut.LoadAsync(SourceItems.Take(1).ToAsyncEnumerable());
 
@@ -251,10 +298,15 @@ public class CsvLoaderTests
     {
         var stream = new MemoryStream();
         var writer = new StreamWriter(stream, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false), 1024, leaveOpen: true);
-        var sut = new CsvLoader<PersonRecord>(writer, new CsvLoaderOptions<PersonRecord>
-        {
-            Delimiter = "|",
-            LeaveOpen = true,});
+        var sut = new CsvLoader<PersonRecord>
+        (
+            writer,
+            new CsvLoaderOptions<PersonRecord>
+            {
+                Delimiter = "|",
+                LeaveOpen = true,
+            }
+        );
 
         await sut.LoadAsync(SourceItems.Take(1).ToAsyncEnumerable());
 
@@ -274,10 +326,15 @@ public class CsvLoaderTests
     {
         var stream = new MemoryStream();
         var writer = new StreamWriter(stream, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false), 1024, leaveOpen: true);
-        var sut = new CsvLoader<PersonRecord>(writer, new CsvLoaderOptions<PersonRecord>
-        {
-            ShouldQuote = _ => true,
-            LeaveOpen = true,});
+        var sut = new CsvLoader<PersonRecord>
+        (
+            writer,
+            new CsvLoaderOptions<PersonRecord>
+            {
+                ShouldQuote = _ => true,
+                LeaveOpen = true,
+            }
+        );
 
         await sut.LoadAsync(SourceItems.Take(1).ToAsyncEnumerable());
 
@@ -293,7 +350,7 @@ public class CsvLoaderTests
 
 
     [Fact]
-    public void Constructor_with_logger_when_args_valid_returns_instance()
+    public async Task Constructor_with_logger_when_args_valid_loads_every_record()
     {
         var stream = new MemoryStream();
         var writer = new StreamWriter(stream, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false), 1024, leaveOpen: true);
@@ -304,7 +361,13 @@ public class CsvLoaderTests
             NullLogger<CsvLoader<PersonRecord>>.Instance
         );
 
-        Assert.NotNull(sut);
+        await sut.LoadAsync(SourceItems.ToAsyncEnumerable());
+
+        Assert.Equal
+        (
+            ExpectedCsvLines,
+            ReadCsvLines(stream)
+        );
     }
 
 
@@ -331,5 +394,49 @@ public class CsvLoaderTests
 
         Assert.Equal(9, sut.MaxRecordCount);
         Assert.Equal(9, sut.MaximumItemCount);
+    }
+
+
+
+    [Fact]
+    public async Task LoadAsync_when_ErrorPolicy_is_Skip_still_propagates_a_write_failure()
+    {
+        // The loader deliberately does not consult ErrorPolicy: a record that fails partway through
+        // has already written some fields, so skipping it would leave a half-written row.
+        var stream = new MemoryStream();
+        var writer = new StreamWriter(stream, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false), 1024, leaveOpen: true);
+        var sut = new CsvLoader<ExplodingRecord>
+        (
+            writer,
+            new CsvLoaderOptions<ExplodingRecord>
+            {
+                ErrorPolicy = _ => ItemErrorAction.Skip,
+            }
+        );
+        var items = new[] { new ExplodingRecord { Name = "Alice" } };
+
+        await Assert.ThrowsAnyAsync<Exception>(async () => await sut.LoadAsync(items.ToAsyncEnumerable()));
+
+        // Under a consulted Skip policy HandleItemError would have counted the row here.
+        Assert.Equal(0, sut.CurrentErrorItemCount);
+        Assert.Equal(0, sut.CurrentItemCount);
+
+        // The configured policy really is Skip, so the propagation above is the loader ignoring it.
+        Assert.Equal
+        (
+            ItemErrorAction.Skip,
+            sut.ErrorPolicy(new ItemErrorContext(1, new InvalidOperationException("boom")))
+        );
+    }
+
+
+
+    private sealed record ExplodingRecord
+    {
+        public string Name { get; init; } = string.Empty;
+
+        // Reads Name so it stays an instance member: CsvHelper only writes instance properties,
+        // and a static Detonate would never be called.
+        public string Detonate => throw new InvalidOperationException($"boom: {Name}");
     }
 }

@@ -137,8 +137,14 @@ public class CsvAllocationProfileTests
     {
         var stream = new MemoryStream();
         var writer = new StreamWriter(stream, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false), 1024, leaveOpen: true);
-        var sut = new CsvLoader<PersonRecord>(writer, new CsvLoaderOptions<PersonRecord>
-        { LeaveOpen = true});
+        var sut = new CsvLoader<PersonRecord>
+        (
+            writer,
+            new CsvLoaderOptions<PersonRecord>
+            {
+                LeaveOpen = true,
+            }
+        );
         var items = new List<PersonRecord>
         {
             new() { FirstName = "Alice", LastName = "Smith", Age = 30 },

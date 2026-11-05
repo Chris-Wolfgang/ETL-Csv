@@ -145,6 +145,7 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     }
 
 
+
     /// <summary>
     /// Initializes a new instance of the <see cref="CsvExtractor{TRecord}"/> class configured from
     /// an options record.
@@ -241,9 +242,9 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     /// </summary>
     /// <remarks>
     /// When <c>null</c> (the default), the exception is not logged by the library.
-    /// The exception always propagates out of <c>ExtractAsync</c> regardless of
-    /// the callback — this hook is for observation only. Wrap your <c>await foreach</c>
-    /// in <c>try / catch</c> if you want to swallow individual row failures.
+    /// This hook is for observation only. <see cref="ExtractorBase{TSource, TProgress}.ErrorPolicy"/>
+    /// decides skip-vs-abort: under the default fail-fast policy the exception propagates out of
+    /// <c>ExtractAsync</c>; a <c>Skip</c> policy drops the row and extraction continues.
     /// <code>
     /// extractor.ReadingExceptionOccurred = info =>
     ///     _logger.LogDebug(info.Exception, "Parse error on line {Line} column {Col}: {Value}",
@@ -307,6 +308,8 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
 
 
 
+    private int _initialRecordIndex = 1;
+
     /// <summary>
     /// Gets or sets the 1-based index of the first line the parser will consume from
     /// the source. Lines before this index are read and discarded.
@@ -333,7 +336,6 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
             _initialRecordIndex = value;
         }
     }
-    private int _initialRecordIndex = 1;
 
 
 
@@ -775,6 +777,11 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
 
 
 
+    // Same seam as CsvLoader.RegisterRecordMap. The requirement cannot move further out: the only caller is
+    // ExtractWorkerAsync, an override of an unannotated ExtractorBase member, where [RequiresUnreferencedCode]
+    // would be IL2046. It is surfaced instead at every public CsvExtractor constructor (and the EtlPipeline
+    // factory extensions), so no instance reaches this method without the consumer seeing the warning.
+    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Reached only through a CsvExtractor instance, whose public constructors carry [RequiresUnreferencedCode]; TRecord is annotated with PublicProperties and CsvClassMapFactory reflects only public properties of TRecord.")]
     private void RegisterRecordMap(CsvContext context)
     {
         // Always register the base TRecord map (from ColumnMaps or attributes). When a discriminator

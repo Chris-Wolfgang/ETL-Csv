@@ -123,9 +123,8 @@ internal sealed class CsvExtractorBuilder<[DynamicallyAccessedMembers(Dynamicall
             throw new ArgumentNullException(nameof(handler));
         }
 
-#pragma warning disable CS0618 // forwards to the deprecated observation callback for back-compat.
+        // Forwards to the deprecated observation callback for back-compat.
         return Configure(e => e.BadDataFound = handler);
-#pragma warning restore CS0618
     }
 
 
@@ -136,9 +135,8 @@ internal sealed class CsvExtractorBuilder<[DynamicallyAccessedMembers(Dynamicall
             throw new ArgumentNullException(nameof(handler));
         }
 
-#pragma warning disable CS0618 // forwards to the deprecated observation callback for back-compat.
+        // Forwards to the deprecated observation callback for back-compat.
         return Configure(e => e.ReadingExceptionOccurred = handler);
-#pragma warning restore CS0618
     }
 
 
@@ -233,7 +231,7 @@ internal sealed class CsvExtractorBuilder<[DynamicallyAccessedMembers(Dynamicall
         if (_existing is not null)
         {
             // The instance already exists, so options cannot travel through its constructor;
-            // apply them through the same code path the constructor uses.
+            // the recorded fluent mutations are replayed onto it below (see Set).
             extractor = _existing;
         }
         else if (_reader is not null)

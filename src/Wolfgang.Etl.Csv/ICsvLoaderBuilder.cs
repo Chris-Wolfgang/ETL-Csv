@@ -61,8 +61,9 @@ public interface ICsvLoaderBuilder<T> : IEtlPipelineSink
 
 
     /// <summary>
-    /// Sets <see cref="CsvLoader{TRecord}.Encoding"/> and the encoding used to open a path-based
-    /// sink. Default: <see cref="System.Text.Encoding.UTF8"/>.
+    /// Sets the encoding used to open a path-based sink. Default: <see cref="System.Text.Encoding.UTF8"/>.
+    /// The inert <see cref="CsvLoader{TRecord}.Encoding"/> property is not set; for a caller-supplied
+    /// writer the encoding is whatever the <see cref="System.IO.StreamWriter"/> was constructed with.
     /// </summary>
     /// <exception cref="ArgumentNullException"><paramref name="encoding"/> is <see langword="null"/>.</exception>
     ICsvLoaderBuilder<T> Encoding(Encoding encoding);

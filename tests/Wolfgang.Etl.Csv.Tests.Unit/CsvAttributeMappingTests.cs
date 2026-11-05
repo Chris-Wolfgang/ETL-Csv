@@ -191,9 +191,14 @@ public class CsvAttributeMappingTests
     {
         var stream = new MemoryStream();
         var writer = new StreamWriter(stream, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false), 1024, leaveOpen: true);
-        var sut = new CsvLoader<AttributedPersonRecord>(writer, new CsvLoaderOptions<AttributedPersonRecord>
-        {
-            LeaveOpen = true,});
+        var sut = new CsvLoader<AttributedPersonRecord>
+        (
+            writer,
+            new CsvLoaderOptions<AttributedPersonRecord>
+            {
+                LeaveOpen = true,
+            }
+        );
 
         var items = new List<AttributedPersonRecord>
         {
@@ -486,9 +491,14 @@ public class CsvAttributeMappingTests
     {
         var stream = new MemoryStream();
         var writer = new StreamWriter(stream, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false), 1024, leaveOpen: true);
-        var sut = new CsvLoader<DateRecord>(writer, new CsvLoaderOptions<DateRecord>
-        {
-            LeaveOpen = true,});
+        var sut = new CsvLoader<DateRecord>
+        (
+            writer,
+            new CsvLoaderOptions<DateRecord>
+            {
+                LeaveOpen = true,
+            }
+        );
 
         var items = new List<DateRecord>
         {
