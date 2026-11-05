@@ -31,6 +31,18 @@
     <PackageIcon>icon_256.png</PackageIcon>
   </PropertyGroup>
 
+  <!-- Trim / AOT analyzers (repository baseline item 18). This does NOT claim the library is
+       trim-safe: CsvHelper reflects over the record type, so the extractor and loader entry points
+       carry [RequiresUnreferencedCode] / [RequiresDynamicCode]. The flags turn on the trim, AOT and
+       single-file analyzers so those annotations are verified to be complete, and mark the
+       assembly so a consumer's trimmer analyzes it instead of treating it as opaque. They only
+       apply to net8.0+ (the analyzers need a net6.0+ target; net8.0 is where IsAotCompatible is
+       supported). -->
+  <PropertyGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">
+    <IsAotCompatible>true</IsAotCompatible>
+    <IsTrimmable>true</IsTrimmable>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Include="..\..\assets\icon_256.png">
       <Pack>True</Pack>

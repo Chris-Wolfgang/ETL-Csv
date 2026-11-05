@@ -37,14 +37,8 @@ public sealed class EtlPipelineCsvExtensionsTests : IDisposable
 
     public void Dispose()
     {
-        try
-        {
-            Directory.Delete(_tempDir, recursive: true);
-        }
-        catch (IOException)
-        {
-            // Best-effort cleanup; a leaked handle would surface as its own test failure.
-        }
+        // No try/catch: a leaked file handle must surface as a test failure, not be swallowed.
+        Directory.Delete(_tempDir, recursive: true);
     }
 
 
@@ -285,7 +279,7 @@ public sealed class EtlPipelineCsvExtensionsTests : IDisposable
     [Fact]
     public void First_pipeline_operator_narrows_the_builder_off_the_configuration_surface()
     {
-        var source = WriteTempFile("narrow.csv", "FirstName,LastName,Age\r\nAlice,Smith,30\r\n");
+        using var source = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes("FirstName,LastName,Age\r\nAlice,Smith,30\r\n")));
 
         var builder = EtlPipeline.Create().CsvExtractor<PersonRecord>(source);
         IEtlPipeline<PersonRecord> narrowed = builder.Through(FilterAdults);
@@ -295,12 +289,14 @@ public sealed class EtlPipelineCsvExtensionsTests : IDisposable
 
 
     [Fact]
-    public void Configuring_a_caller_supplied_extractor_leaves_its_other_properties_alone()
+    public async Task Configuring_a_caller_supplied_extractor_leaves_its_other_properties_alone()
     {
         // Regression guard: the builder folds configuration into an options record for sources it
         // constructs, but a caller-supplied extractor is already configured. Applying the whole
         // record to it would reset every property the caller set directly - here, Quote.
-        var source = WriteTempFile("supplied.csv", "FirstName,LastName,Age\r\nAlice,Smith,30\r\n");
+        // The builder only replays its mutations when the pipeline runs, so run it.
+        var source = WriteTempFile("supplied.csv", "Alice;Smith;30\r\n");
+        var target = Path.Combine(_tempDir, "supplied-out.csv");
         using var reader = new StreamReader(source);
 
         var extractor = new CsvExtractor<PersonRecord>
@@ -313,25 +309,138 @@ public sealed class EtlPipelineCsvExtensionsTests : IDisposable
             }
         );
 
-        _ = EtlPipeline
+        await EtlPipeline
             .Create()
             .CsvExtractor(extractor)
-            .Delimiter(";");
+            .Delimiter(";")
+            .CsvLoader(target)
+            .RunAsync();
 
+        Assert.Equal(";", extractor.Delimiter);
         Assert.Equal('\'', extractor.Quote);
         Assert.False(extractor.HasHeaderRecord);
+        Assert.Equal
+        (
+            "FirstName,LastName,Age\r\nAlice,Smith,30\r\n",
+            File.ReadAllText(target)
+        );
     }
 
 
     [Fact]
     public void Configuring_the_extractor_after_it_is_materialized_throws()
     {
-        var source = WriteTempFile("late.csv", "FirstName,LastName,Age\r\nAlice,Smith,30\r\n");
+        using var source = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes("FirstName,LastName,Age\r\nAlice,Smith,30\r\n")));
 
         var builder = EtlPipeline.Create().CsvExtractor<PersonRecord>(source);
         _ = builder.Through(FilterAdults);
 
         Assert.Throws<InvalidOperationException>(() => builder.Delimiter(";"));
+    }
+
+
+    [Fact]
+    public void Configuring_the_extractor_after_it_is_materialized_names_the_reason()
+    {
+        using var source = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes("FirstName,LastName,Age\r\nAlice,Smith,30\r\n")));
+
+        var builder = EtlPipeline.Create().CsvExtractor<PersonRecord>(source);
+        _ = builder.Through(FilterAdults);
+
+        var ex = Assert.Throws<InvalidOperationException>(() => builder.Delimiter(";"));
+
+        Assert.Equal
+        (
+            "The extractor has already been materialized by a pipeline operator; configuration setters can no longer be applied.",
+            ex.Message
+        );
+    }
+
+
+    [Fact]
+    public void Encoding_and_observation_callbacks_after_the_extractor_is_materialized_throw()
+    {
+        using var source = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes("FirstName,LastName,Age\r\nAlice,Smith,30\r\n")));
+
+        var builder = EtlPipeline.Create().CsvExtractor<PersonRecord>(source);
+        _ = builder.Through(FilterAdults);
+
+        Assert.Throws<InvalidOperationException>(() => builder.Encoding(Encoding.UTF8));
+        Assert.Throws<InvalidOperationException>(() => builder.BadDataFound(_ => { }));
+        Assert.Throws<InvalidOperationException>(() => builder.ReadingExceptionOccurred(_ => { }));
+    }
+
+
+    [Fact]
+    public async Task Path_based_source_detects_the_encoding_from_a_byte_order_mark()
+    {
+        // The builder's default encoding is UTF-8; a UTF-16 file with a BOM still reads correctly
+        // because the reader it opens honours the BOM.
+        var source = Path.Combine(_tempDir, "utf16.csv");
+        File.WriteAllText(source, "FirstName,LastName,Age\r\nZoë,Smith,30\r\n", new UnicodeEncoding(bigEndian: false, byteOrderMark: true));
+
+        var rows = new List<PersonRecord>();
+        await foreach (var row in EtlPipeline.Create().CsvExtractor<PersonRecord>(source).AsAsyncEnumerable())
+        {
+            rows.Add(row);
+        }
+
+        var person = Assert.Single(rows);
+        Assert.Equal("Zoë", person.FirstName);
+        Assert.Equal(30, person.Age);
+    }
+
+
+    [Fact]
+    public async Task Path_based_sink_replaces_an_existing_file_instead_of_appending()
+    {
+        var target = WriteTempFile("existing-target.csv", "stale,content\r\n");
+        using var sourceReader = ReaderOver("FirstName,LastName,Age\r\nAlice,Smith,30\r\n");
+
+        await EtlPipeline
+            .Create()
+            .CsvExtractor(new CsvExtractor<PersonRecord>(sourceReader))
+            .CsvLoader(target)
+            .RunAsync();
+
+        Assert.Equal
+        (
+            "FirstName,LastName,Age\r\nAlice,Smith,30\r\n",
+            File.ReadAllText(target)
+        );
+    }
+
+
+    [Fact]
+    public async Task Configuring_a_caller_supplied_loader_applies_the_setter_to_it()
+    {
+        using var targetStream = new MemoryStream();
+        using var targetWriter = new StreamWriter(targetStream, Utf8NoBom, 1024, leaveOpen: true);
+        var loader = new CsvLoader<PersonRecord>
+        (
+            targetWriter,
+            new CsvLoaderOptions<PersonRecord>
+            {
+                LeaveOpen = true,
+            }
+        );
+        using var sourceReader = ReaderOver("FirstName,LastName,Age\r\nAlice,Smith,30\r\n");
+
+        await EtlPipeline
+            .Create()
+            .CsvExtractor(new CsvExtractor<PersonRecord>(sourceReader))
+            .CsvLoader(loader)
+            .Delimiter(";")
+            .RunAsync();
+
+        targetWriter.Flush();
+
+        Assert.Equal(";", loader.Delimiter);
+        Assert.Equal
+        (
+            "FirstName;LastName;Age\r\nAlice;Smith;30\r\n",
+            Utf8NoBom.GetString(targetStream.ToArray())
+        );
     }
 
 
@@ -463,24 +572,28 @@ public sealed class EtlPipelineCsvExtensionsTests : IDisposable
 
 
     [Fact]
-    public async Task Extractor_BadDataFound_and_ReadingExceptionOccurred_handlers_are_accepted()
+    public async Task Extractor_BadDataFound_and_ReadingExceptionOccurred_handlers_are_invoked()
     {
-        var source = WriteTempFile("handlers.csv", "FirstName,LastName,Age\r\nAlice,Smith,30\r\n");
+        // Row 2 has a stray quote (bad data, tolerated); row 3 has an Age that does not convert,
+        // which the default fail-fast ErrorPolicy turns into an abort after the observer fires.
+        var source = WriteTempFile("handlers.csv", "FirstName,LastName,Age\r\nAl\"ice,Smith,30\r\nBob,Jones,not-a-number\r\n");
         var target = Path.Combine(_tempDir, "handlers-out.csv");
+        var badData = new SyncProgress<CsvBadDataInfo>();
+        var readingExceptions = new SyncProgress<CsvReadingExceptionInfo>();
 
-        await EtlPipeline
-            .Create()
-            .CsvExtractor<PersonRecord>(source)
-            .BadDataFound(new SyncProgress<CsvBadDataInfo>().Report)
-            .ReadingExceptionOccurred(new SyncProgress<CsvReadingExceptionInfo>().Report)
-            .CsvLoader(target)
-            .RunAsync();
-
-        Assert.Equal
+        await Assert.ThrowsAnyAsync<Exception>
         (
-            "FirstName,LastName,Age\r\nAlice,Smith,30\r\n",
-            File.ReadAllText(target)
+            async () => await EtlPipeline
+                .Create()
+                .CsvExtractor<PersonRecord>(source)
+                .BadDataFound(badData.Report)
+                .ReadingExceptionOccurred(readingExceptions.Report)
+                .CsvLoader(target)
+                .RunAsync()
         );
+
+        Assert.True(badData.CallCount > 0);
+        Assert.True(readingExceptions.CallCount > 0);
     }
 
 
