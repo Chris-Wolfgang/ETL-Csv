@@ -40,7 +40,6 @@ resharper_condition_is_always_true_or_false_according_to_nullable_api_contract_h
 dotnet_diagnostic.S8969.severity = none
 
 [CsvValidationResult.cs]
-resharper_null_coalescing_condition_is_always_not_null_according_to_api_contract_highlighting = none
 # The legacy positional constructor is intentionally kept and marked
 # [Obsolete] to preserve the 0.6.x shipped API. Removal is a breaking
 # change reserved for a future MAJOR bump (see the [Obsolete] message on

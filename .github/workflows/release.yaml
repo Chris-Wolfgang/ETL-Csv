@@ -9,7 +9,9 @@ permissions:
   contents: read  # Default to read-only; individual jobs declare write where required
 
 env:
-  CODECOV_MINIMUM: 90
+  # Matches pr.yaml's CODECOV_MINIMUM, so a release cannot fail a gate its PRs passed
+  # (or pass one they would have failed).
+  CODECOV_MINIMUM: 95
 
 concurrency:
   # Serialize releases so a duplicate / re-published Release event can't run two
@@ -223,6 +225,7 @@ jobs:
                   --no-build `
                   --no-restore `
                   --collect:"XPlat Code Coverage" `
+                  --settings coverlet.runsettings `
                   --results-directory "./TestResults" `
                   --logger "console;verbosity=minimal"
 
@@ -244,6 +247,7 @@ jobs:
                   --no-build `
                   --no-restore `
                   --collect:"XPlat Code Coverage" `
+                  --settings coverlet.runsettings `
                   --results-directory "./TestResults" `
                   --logger "console;verbosity=minimal"
               } else {
@@ -277,7 +281,7 @@ jobs:
           $coverageFiles = Get-ChildItem -Path "TestResults" -Recurse -Filter "coverage.cobertura.xml" -ErrorAction SilentlyContinue
 
           if ($coverageFiles.Count -eq 0) {
-            Write-Error "❌ No coverage files found - coverage data is required to enforce the 90% threshold"
+            Write-Error "❌ No coverage files found - coverage data is required to enforce the CODECOV_MINIMUM threshold"
             exit 1
           }
 
@@ -975,6 +979,11 @@ jobs:
     name: Build & Deploy Documentation
     needs: validate-release
     permissions:
+      # Accepted Scorecard TokenPermissionsID finding (#222). A workflow_call caller's
+      # permissions are the ceiling for the called workflow's token, and docfx.yaml's
+      # build-and-deploy job pushes to the gh-pages branch, which needs contents:write.
+      # This can drop to contents:read + pages:write + id-token:write only if docfx.yaml
+      # moves to actions/deploy-pages (#223).
       contents: write  # Required by docfx.yaml to push to gh-pages branch
     uses: ./.github/workflows/docfx.yaml  # zizmor: ignore[self-repository]
     with:
@@ -987,6 +996,11 @@ jobs:
     if: needs.pack-and-validate.outputs.has-packages == 'true'
     runs-on: ubuntu-latest
     permissions:
+      # Accepted Scorecard TokenPermissionsID finding (#221). The release-assets endpoint
+      # (POST /repos/{owner}/{repo}/releases/{id}/assets) that softprops/action-gh-release
+      # calls has no scope narrower than contents:write, and GitHub Actions has no
+      # step-level permissions. The only narrower route is a GitHub App token with
+      # Releases-only access, which is not worth the setup for one informational alert.
       contents: write  # Required to upload assets to the GitHub Release
     steps:
       - name: Download NuGet packages artifact
