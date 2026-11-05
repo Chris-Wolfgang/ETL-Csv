@@ -1,0 +1,91 @@
+name: Workflow failure watchdog
+
+# Nothing gates a PR on a scheduled or push-to-main run, so a red result on main reports to nobody:
+# the cross-platform differential failed on every weekly run for at least six weeks, and Semgrep
+# failed on main for days, without anyone being told. This opens one issue per failing workflow,
+# comments on it while the workflow keeps failing, and closes it on the next successful run.
+#
+# Runs from the default branch's copy of this file and never checks out or executes code from the
+# triggering run; it only reads that run's metadata through env, so workflow_run is safe here.
+# `workflows:` matches the `name:` of each workflow, so renaming one means updating this list.
+# Release is omitted on purpose: it runs on a tag rather than main and already fails visibly.
+
+on:
+  workflow_run:  # zizmor: ignore[dangerous-triggers]
+    workflows:
+      - Actions Audit
+      - AOT smoke
+      - Benchmarks
+      - CodeQL Security Analysis
+      - Cross-platform differential
+      - Deploy DocFX Pages
+      - Fuzz
+      - GC profiling
+      - License Audit
+      - Mutation testing
+      - OSSF Scorecard
+      - PR Checks v3 (Gated)
+      - SAST (Semgrep)
+      - SBOM
+      - Security Alert Triage
+      - Shadow testing
+      - SourceLink
+      - Stryker (mutation testing)
+    types: [completed]
+    branches: [main]
+
+permissions:
+  contents: read
+
+# One at a time per watched workflow, so two quick failures cannot open two issues.
+concurrency:
+  group: watchdog-${{ github.event.workflow_run.name }}
+  cancel-in-progress: false
+
+jobs:
+  report:
+    name: Track workflow health
+    # A PR run whose head branch is called main is not a run on main. A cancelled run says nothing
+    # about health (superseded runs are cancelled by design), so it neither opens nor closes.
+    if: >-
+      github.event.workflow_run.event != 'pull_request'
+      && contains(fromJSON('["success","failure","timed_out","startup_failure"]'), github.event.workflow_run.conclusion)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      issues: write  # open, comment on and close the tracking issue
+    steps:
+      - name: Open, update or close the tracking issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          WORKFLOW_NAME: ${{ github.event.workflow_run.name }}
+          CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+          RUN_URL: ${{ github.event.workflow_run.html_url }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          RUN_EVENT: ${{ github.event.workflow_run.event }}
+        run: |
+          set -euo pipefail
+
+          label='workflow-failure'
+          export TITLE="Workflow failing on main: ${WORKFLOW_NAME}"
+          detail="\`${WORKFLOW_NAME}\` concluded \`${CONCLUSION}\` on \`${HEAD_SHA}\` (${RUN_EVENT}): ${RUN_URL}"
+
+          existing=$(gh issue list --state open --label "$label" --limit 100 --json number,title \
+            --jq '[.[] | select(.title == env.TITLE)][0].number // empty')
+
+          if [ "$CONCLUSION" = 'success' ]; then
+            if [ -n "$existing" ]; then
+              gh issue close "$existing" --comment "Resolved: $detail"
+              echo "closed #$existing"
+            else
+              echo "healthy, nothing open"
+            fi
+          elif [ -n "$existing" ]; then
+            gh issue comment "$existing" --body "Still failing: $detail"
+            echo "updated #$existing"
+          else
+            gh label create "$label" --color B60205 \
+              --description 'A workflow is failing on main' --force
+            gh issue create --title "$TITLE" --label "$label" --body "$detail"
+          fi
