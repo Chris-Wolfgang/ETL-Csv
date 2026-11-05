@@ -147,12 +147,16 @@ public class CsvLoaderWorkerTests
                 HasHeaderRecord = false,
             }
         );
-        var items = new PersonRecord[] { new EmployeeRecord { FirstName = "Dan", LastName = "Green", Age = 40, Badge = "B7" } };
+        var employee = new EmployeeRecord { FirstName = "Dan", LastName = "Green", Age = 40, Badge = "B7" };
+        var items = new PersonRecord[] { employee };
 
         await sut.LoadAsync(items.ToAsyncEnumerable());
         await writer.FlushAsync();
 
         Assert.Equal("Dan,Green,40\r\n", Utf8NoBom.GetString(stream.ToArray()));
+
+        // The derived property held data; the loader still wrote only the declared TRecord columns.
+        Assert.Equal("B7", employee.Badge);
     }
 
 
