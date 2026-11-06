@@ -9,6 +9,346 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+
+
+## [0.10.0] - 2026-09-22
+
+### Added
+
+- Built against `Wolfgang.Etl.Abstractions` 0.25.0 (and TestKit / TestKit.Xunit 0.25.0): the base-stage `ReportingInterval` / `MaximumItemCount` / `SkipItemCount` setters are deprecated fleet-wide in favour of the options record, and `IncrementCurrentItemCount(int)` / `IncrementCurrentSkippedItemCount(int)` are available to derived stages. No change to this package's own API.
+
+### Fixed
+
+- Packages ship one `THIRD-PARTY-NOTICES.md` - the per-package file generated from each project's own NuGet closure - instead of failing to pack (`NU5118`) because the repository-wide file was still added alongside it.
+
+### Documentation
+
+- `THIRD-PARTY-NOTICES.md` is packed unconditionally: a missing file now fails `dotnet pack` instead of silently shipping a package without its licence notices. (#268)
+
+### Internal
+
+- Built against Wolfgang.Etl.Abstractions / ErrorPolicies / TestKit / TestKit.Xunit 0.26.0 (trim- and native-AOT-compatible on net8.0+; no API change from 0.25.0), so the package now requires Abstractions 0.26.0 or later.
+- CheckNamespace: the six `Mapping/*` types carry a documented `ReSharper disable once` — the public surface is one flat `Wolfgang.Etl.Csv` namespace and the folder is organisational.
+- `CsvExtractor` / `CsvLoader` constructor chains: the `(ILogger?)` casts are gone (the named `options:` argument already disambiguates) the `(reader/writer, logger = null)` overloads keep their default for now — dropping it (S3427; the single-argument constructor already wins `new X(reader)`) changes the recorded public signature and is scheduled for the 2026-12-15 wave (#379).
+- Test added: `CsvLoaderOptions<T>.InvalidRecordHandler` configured through the record (the loader-side twin of the extractor's record test).
+- S1133 ("remove this deprecated code someday") is excluded per file for `CsvLoader.cs`, `CsvExtractorOptions.cs` and `CsvLoaderOptions.cs` (joining `CsvExtractor.cs`) in the nested `src/.editorconfig`: their `[Obsolete]` setters and record aliases are the deliberate markers for the 2026-12-15 removal wave (#283).
+- `AssemblyVersion` is now derived from `<Version>` as `0.{Minor}.0.0` instead of hand-pinned, so it can no longer fall behind on a minor bump.
+- The options constructor assigns the stage's backing fields directly instead of going through the deprecated setters, so the `CS0618` suppressions that covered those writes are gone. The `InitialRecordIndex` guard (must be 1 or greater) now also runs on `CsvExtractorOptions<TRecord>.InitialRecordIndex`'s init accessor, with a test. (#339)
+- The `(reader|writer, logger = null)` constructor defaults on `CsvExtractor` / `CsvLoader` stay as shipped in 0.9; their removal (S3427) is scheduled for the 2026-12-15 wave (#379), with the rule silenced for those two files until then, so this release carries no public-signature change.
+- Record the compiler-synthesized `<Clone>$` members of the shipped records in per-TFM `PublicAPI` files (covariant on net5.0+); they were public all along, no surface change.
+
+## [0.9.0] - 2026-09-16
+
+### Added
+
+- `CsvExtractorOptions<TRecord>` now inherits `ExtractorOptions` and `CsvLoaderOptions<TRecord>` inherits `LoaderOptions`
+  (Wolfgang.Etl.Abstractions 0.24.0, ADR-0009): `ReportingInterval`, `ErrorPolicy`, `SkipItemCount` and `MaximumItemCount` are
+  configured through the same record as every CSV setting and applied by the base constructor, so one object configures the
+  whole stage. `ReportingInterval` and `ErrorPolicy` were previously reachable only through the stage's properties.
+- `CsvLoaderOptions<TRecord>.IsDryRun` (`{ get; init; }`) — dry run is now configured through the options
+  record like every other loader setting, per ADR-0009 (Chris-Wolfgang/ETL-Abstractions#455).
+- `ICsvLoaderBuilder<T>.IsDryRun(bool)` — dry run through the fluent builder, which previously had no way
+  to set it (the private mutation hook reserved for it was never wired up and is gone).
+
+### Changed
+
+- **New target frameworks `net5.0`, `net6.0` and `net7.0`.** `Wolfgang.Etl.Abstractions` ships per-runtime assemblies, and an
+  `init`-only setter's `IsExternalInit` modreq has a different identity in its `netstandard2.0` and `net5.0+` builds. Now that the
+  options records inherit `ExtractorOptions` / `LoaderOptions`, a `netstandard`-compiled Wolfgang.Etl.Csv running on .NET 5–7
+  threw `MissingMethodException` from `SkipRecordCount` / `MaxRecordCount` (record aliases and builder methods) when it set the
+  inherited property. The new assemblies are compiled against the matching Abstractions assembly, so the signatures agree.
+
+- `Wolfgang.Etl.Abstractions` 0.23.4 → 0.24.0 (and `Wolfgang.Etl.TestKit` / `.TestKit.Xunit` for the test project).
+- **Binary-only break on `net462`, `netstandard2.0` and `netstandard2.1`:** because the options records now have a base
+  record, the compiler-synthesized `<Clone>$` method (what a `with` expression calls) returns the base record type on
+  targets without covariant returns. Source compiles unchanged; an assembly compiled against 0.8.0 on one of those
+  targets that uses `with` on an options record must be rebuilt (`CompatibilitySuppressions.xml`, CP0002 ×6).
+- The single-argument constructors `CsvExtractor<TRecord>(StreamReader)` and `CsvLoader<TRecord>(StreamWriter)` are
+  hidden from IntelliSense (`[EditorBrowsable(Never)]`) and retained permanently for binary compatibility, the same
+  rule ETL-Abstractions applies to its hidden base constructors (Chris-Wolfgang/ETL-Abstractions#461). Not `[Obsolete]`:
+  `new CsvExtractor<T>(reader)` binds to this overload by exact match, so a warning could only be silenced by writing
+  `logger: null`, which the optional-logger overload makes redundant. Nothing changes for callers; the planned removal
+  (#250) is withdrawn.
+- `ICsvLoaderBuilder<T>` gained a member (`IsDryRun`). Anyone implementing the interface themselves must add
+  it; the builder returned by `EtlPipeline.CsvLoader(...)` is the only implementation in the family.
+
+### Deprecated
+
+- `SkipRecordCount` and `MaxRecordCount` on both options records — they duplicate the inherited `SkipItemCount` and
+  `MaximumItemCount` under a second name. They now forward to the inherited members (reads and `init` writes), so the two
+  can never disagree, and will be removed with the other deprecated members (#283).
+- `CsvLoader<TRecord>.IsDryRun`'s setter, the last live setter on the loader — configure it through
+  `CsvLoaderOptions<TRecord>` instead. Marked on the accessor like the other 37; reads stay warning-free.
+
+### Removed
+
+- `CsvLoader<TRecord>` no longer implements `ISupportDryRun`. ETL-Abstractions removes the interface in its
+  next release (Chris-Wolfgang/ETL-Abstractions#457); no consumer in the family used it. `IsDryRun` itself
+  is unchanged for readers.
+
+## [0.8.0] - 2026-08-29
+
+### Added
+
+- **Configuration via options records (#258).** `CsvExtractor<T>` and `CsvLoader<T>` gained
+  constructors taking `CsvExtractorOptions<TRecord>` / `CsvLoaderOptions<TRecord>`, so configuration
+  travels through the constructor instead of post-construction property assignment. Defaults live on
+  the records' property initializers, so no constructor can diverge from them.
+
+  Purely additive — every existing constructor and property still works exactly as before.
+
+  Five members are deliberately **absent** from the records. `Encoding` is inert: it never controlled
+  how bytes are decoded or encoded (the `StreamReader`/`StreamWriter` you supply is authoritative),
+  so there is nothing to migrate to. `BadDataFound` and `ReadingExceptionOccurred` were already
+  obsolete, superseded by the unified error policy. `IsDryRun` implements
+  `ISupportDryRun.IsDryRun`, which declares a `set` accessor and so cannot become `init`-only while
+  that interface stands; set it on the loader after construction as before.
+
+- **Third-party notices and a license-audit gate (#253).** `THIRD-PARTY-NOTICES.md` records every
+  shipped runtime dependency with its version and license, and is packed into the NuGet output
+  alongside `README.md`. A new `license-audit.yaml` workflow runs `dotnet-project-licenses` against
+  the `src/` dependency graph on every PR touching a `.csproj`, plus weekly, gating against
+  `licenses/allowed-licenses.json`.
+
+  The allowlist carries the literal SPDX expression `MS-PL OR Apache-2.0` alongside the individual
+  identifiers. CsvHelper is dual-licensed and declares that compound expression, which
+  `dotnet-project-licenses` compares as text — an allowlist holding only `Apache-2.0` would fail the
+  audit on it despite one of its alternatives being allowed. This package consumes CsvHelper under
+  Apache-2.0.
+
+  Analyzer packages are out of scope: they are `PrivateAssets=all` and never distributed.
+
+### Changed
+
+- **`Wolfgang.Etl.Abstractions`, `Wolfgang.Etl.TestKit` and `Wolfgang.Etl.TestKit.Xunit` moved to
+  0.23.4.** No runtime API change on their side — 0.23.4 is CI, test-coverage and packaging work —
+  and the shipped dependency floors are unchanged from 0.23.3
+  (`Microsoft.Bcl.AsyncInterfaces` 10.0.11, `System.ComponentModel.Annotations` 5.0.0), so this
+  introduces no transitive movement for consumers.
+
+- **`logger` is now an optional trailing constructor parameter on `CsvExtractor<T>` and
+  `CsvLoader<T>`.** `ILogger<T> logger` became `ILogger<T>? logger = null`, and passing `null` (or
+  omitting it) now resolves to `NullLogger.Instance` instead of throwing `ArgumentNullException`.
+  This aligns both types with the fleet-wide constructor convention — logger always last, always
+  optional — already followed by `Etl-DbClient`.
+
+  Not a breaking change: the parameter list is unchanged, so the emitted signature is identical and
+  PackageValidation against the published baseline passes. Only the nullability annotation and the
+  default were added. Existing calls that pass a logger continue to bind exactly as before.
+
+  The single-argument `CsvExtractor(StreamReader)` / `CsvLoader(StreamWriter)` constructors are now
+  redundant but are **deliberately retained** — deleting them would be a binary breaking change for
+  already-compiled consumers, because optional-argument defaults are baked in at the caller's
+  compile time. They are scheduled for `[Obsolete]` in the next minor and removal in the one after.
+
+- **`CsvExtractor<T>` and `CsvLoader<T>` now have a single initialization path.** All three
+  constructors previously assigned `_reader`/`_writer` and `_logger` independently — three copies of
+  the same setup, each free to drift from the others. They now chain into one private constructor
+  that assigns the shared fields in exactly one place.
+
+  No API or behavior change: the signatures, the `ArgumentNullException` for a null reader/writer,
+  and the order in which arguments are validated are all unchanged.
+
+  This is a defect-prevention change. The identical triplicated-assignment shape produced two
+  shipped bugs elsewhere in the fleet — a `LeaveOpen` flag one ETL-Xml constructor set and another
+  didn't, and an ETL-FixedWidth internal constructor that hard-coded UTF-8 while its public
+  counterpart honored the caller's encoding. In both cases the constructor that was easiest to
+  overlook was the one that got it wrong.
+
+### Deprecated
+
+- **The mutable configuration setters on `CsvExtractor<T>` and `CsvLoader<T>` (#259).** 34 property
+  setters are now `[Obsolete]`, pointing at the options records above. Configure through the
+  constructor instead.
+
+  Only the **setter accessor** is marked, not the whole property — reading these properties stays
+  warning-free, and object-initializer syntax now warns because it calls the same setter.
+
+  `Encoding` carries a different message from the rest: rather than pointing at an options record it
+  states that the property is inert and directs you to the `StreamReader`/`StreamWriter`, since the
+  records deliberately omit it.
+
+  Nothing is removed in this release. Under `TreatWarningsAsErrors` these warnings become build
+  errors, so migrate configuration to the options records at your convenience before the removal
+  release; the setters continue to work until then.
+
+### Fixed
+
+- **`netcoreapp3.1` and `net5.0` were running zero tests.** Both slots reported
+  *"No test is available"* and contributed nothing, while `dotnet test` exited non-zero with **no
+  reported failures** — so a green-looking local run said nothing about those two frameworks.
+
+  `xunit.runner.visualstudio` **2.8.2 ships `build`/`lib` assets for `net462` and `net6.0` only**, so
+  neither slot resolved a test adapter. The runner is now pinned per slot: **2.4.5** (the newest 2.x
+  that still ships a `netcoreapp3.1` asset, which `net5.0` also consumes) for those two frameworks,
+  2.8.2 everywhere else, both capped below `3.0.0` since runner 3.x drops these frameworks outright.
+
+  Restores **313** tests on `netcoreapp3.1` and **315** on `net5.0`. Test-infrastructure only — no
+  product code, no API change.
+
+### Internal
+
+- **The internal test-injection constructors now take the logger last (#251).** `CsvExtractor<T>`
+  and `CsvLoader<T>` previously accepted `(reader, logger, timer)`; they now accept
+  `(reader, timer, logger)` with the logger optional, matching the fleet convention that the logger
+  is always the trailing parameter. These constructors are `internal` and visible only to
+  `Wolfgang.Etl.Csv.Tests.Unit`, so there is no consumer-visible change and no binary-compatibility
+  consequence.
+
+- **122 public API symbols were recorded that the analyzer had never reported (#261).** `RS0016`
+  defaults below warning on PublicApiAnalyzers 5.x and was not raised for `src/`, so public surface
+  could go unrecorded through a fully green build. 30 record-synthesized members that shipped in
+  0.7.1 were added to `PublicAPI.Shipped.txt`, and 82 entries for the new options records and their
+  constructors to `PublicAPI.Unshipped.txt`. No API changed — this only records what already exists.
+
+## [0.7.1] - 2026-08-23
+
+Analyzer-noise cleanup release. Zero consumer-visible API or behavior changes —
+drop-in replacement for 0.7.0.
+
+### Changed
+
+- `CsvClassMapFactory` internal per-column configuration guards rewritten from
+  `!string.IsNullOrEmpty(x) + x!` to `x is not null && x.Length > 0`, eliminating
+  the null-forgiving operators without any suppression. Same semantic; behavior
+  unchanged. Retires 4 SonarAnalyzer S8969 findings at the source. (#241)
+- `CsvValidationResult` legacy `[Obsolete]` positional constructor now validates
+  its inputs inline (the `ValidateFailures` helper was the only call site and was
+  inlined). Same throw behavior; no consumer-visible change. (#240)
+- Six record-synthesized members already present on the shipped assembly are now
+  declared in `PublicAPI.Shipped.txt` — `operator ==` for `CsvBadDataInfo`,
+  `CsvColumnMap`, `CsvReadingExceptionInfo`, `CsvShouldQuoteContext`; and
+  `PrintMembers(StringBuilder)` for `CsvExtractorProgress`, `CsvLoaderProgress`.
+  Documentation catch-up only — these members were callable in 0.7.0. (#239)
+
+### Internal
+
+- `.zizmor.yml` moved to `.github/zizmor.yml` (zizmor 1.5.2 auto-discovers only
+  the `.github/` location) and rewritten to the schema version 1.5.2 requires.
+  The existing `dangerous-triggers: ignore: [pr.yaml]` documented-suppression
+  rule now actually takes effect. Retires 1 zizmor alert. (#242)
+- `.github/workflows/scorecard.yaml` SARIF filter step extended to strip 9
+  additional accepted-as-intentional Scorecard findings: `PinnedDependenciesID`
+  for `dotnet`/`pip` invocations (no first-class hash-pin verify for either),
+  and the four solo-maintainer structural rules `BranchProtectionID`,
+  `CIIBestPracticesID`, `CodeReviewID`, `FuzzingID`. Full rationale documented
+  inline. Existing `DangerousWorkflowID` filter for pr.yaml unchanged. (#243)
+- `Validation/.editorconfig` gains three narrow file-scoped suppressions on
+  `CsvValidationResult.cs` — S1133 on the `[Obsolete]` ctor and
+  ParameterHidesMember on the explicit `Deconstruct(out bool IsValid, ...)` out
+  params — both required to preserve the shipped API surface. Rationale
+  documented alongside each entry. (#240)
+
+Part of umbrella #201.
+
+## [0.7.0] - 2026-08-22
+
+### Added
+
+- **`CsvValidationResult` two-constructor API**: two new explicit constructors
+  that make illegal states (successful-with-failures, failed-without-failures,
+  null failures) unrepresentable at the call site:
+  - `new CsvValidationResult()` — successful result, no failures
+  - `new CsvValidationResult(IReadOnlyList<string> failures)` — failed result;
+    throws `ArgumentNullException` on null or `ArgumentException` on empty
+
+  Recommended over the legacy positional constructor. `Pass` and `Fail(params)`
+  are unchanged and still the shortest paths.
+
+### Deprecated
+
+- **`CsvValidationResult.CsvValidationResult(bool IsValid, IReadOnlyList<string> Failures)`**
+  (the record's positional primary constructor) is marked `[Obsolete]`. It
+  still works — and now validates its inputs, throwing on inconsistent state
+  (previously any combination was silently accepted, including the `null!`
+  bypass) — but the two named constructors above are the recommended path.
+  Will be removed in a future major version. `Deconstruct` is not obsoleted;
+  it's the standard record-synthesized shape and stays available.
+
+  **Migration**:
+  - `new CsvValidationResult(true, someList)` → `CsvValidationResult.Pass` or `new CsvValidationResult()`
+  - `new CsvValidationResult(false, failuresList)` → `new CsvValidationResult(failuresList)`
+  - `var (isValid, failures) = result` → `result.IsValid` and `result.Failures`
+  - `CsvValidationResult.Fail("reason")` — unchanged
+
+  No public API is removed in this release — consumers of the record's
+  value-equality surface (`Equals`, `==`, `GetHashCode`, `IEquatable<T>`,
+  `ToString`), `with` expressions, `Deconstruct`, and the legacy positional
+  constructor all continue to work; the two deprecations only surface
+  compile-time warnings pointing at the new constructors.
+
+### Changed
+
+- Retired the remaining ~26 Code Scanning alerts left after the 0.6.1 `#201`
+  sweep. Two alerts became real code fixes (deleted dead `count` in
+  `MemoryDeltaBenchmarks.cs`; moved internal `CsvClassMapFactory.cs` to root
+  so folder matches the flat `Wolfgang.Etl.Csv` namespace). Remaining
+  suppressions on the `Properties/*.cs` polyfills are now per-line
+  `// ReSharper disable` comments at each site with rationale, replacing the
+  earlier folder-scoped `.editorconfig`. Nothing hidden in an `.editorconfig`
+  block.
+- `CsvExtractor.TryValidate` drops the defensive `if (result.Failures is not null)`
+  wrapper — the ctor guards make the check unreachable. This retires the last
+  `ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract` suppression from
+  Group A.
+
+## [0.6.1] - 2026-08-19
+
+### Security
+
+- Adopted `Wolfgang.Etl.Abstractions` / `Wolfgang.Etl.TestKit` / `Wolfgang.Etl.TestKit.Xunit`
+  **0.23.2**, which carries the ETL-Abstractions fleet security fixes from ETL-Abstractions#361.
+  No behavioural or API change in ETL-Csv itself.
+- Retired ~700 Code Scanning alerts across `InspectCode` / `zizmor` / `Scorecard` via the
+  `#201` umbrella:
+  - `PublicApiAnalyzer` is now gated on `Exists('PublicAPI.*.txt')` at `Directory.Build.props`
+    so `RS0016 / RS0017 / RS0037` no longer flood `tests/` / `benchmarks/` / `examples/`.
+  - Every GitHub Actions `uses:` is SHA-pinned with a `# vMAJOR.MINOR.PATCH` note (retires
+    all `unpinned-uses` / `PinnedDependenciesID` findings).
+  - `codeql.yaml` reads step outputs from an `env:` block instead of interpolating into the
+    shell body (retires the `template-injection` findings).
+  - `semgrep.yaml` / `pr-benchmarks.yaml` / `scorecard.yaml` narrow `security-events: write`,
+    `pull-requests: write`, and `read-all` from workflow-level to job-level scope.
+  - Repo-root `.zizmor.yml` documents the one accepted `pull_request_target` finding on
+    `pr.yaml` with rationale.
+- **New**: pin `<AssemblyVersion>` to `0.6.0.0` for the whole 0.6.x line and derive
+  `<FileVersion>` from `<Version>` — so .NET Framework consumers no longer need a binding
+  redirect between PATCH bumps. Before this change, `AssemblyVersion` was SDK-derived from
+  `<Version>` and shifted on every release. Consumers who added a binding redirect after
+  upgrading from earlier 0.x versions can leave it in place; new consumers on 0.6.1+ will
+  not need one.
+
+### Changed
+
+- Adopted `Microsoft.Bcl.AsyncInterfaces` / `Microsoft.Extensions.Logging.Abstractions` 10.0.11.
+- Bumped test-side deps: `Microsoft.NET.Test.Sdk` 18.9.0 (modern-TFM branch), `Microsoft.CodeAnalysis.CSharp` 5.9.0, `CsCheck` 4.8.0, `Roslynator.Analyzers` 4.16.1, `Meziantou.Analyzer` 3.0.163, `SonarAnalyzer.CSharp` 10.32.0.713, `Microsoft.SourceLink.GitHub` 10.0.400.
+
+## [0.6.0] - 2026-08-13
+
+### Changed
+
+- Adopted **ETL core 0.22.0** — `Wolfgang.Etl.Abstractions` 0.21.0 -> 0.22.0, along with the
+  test-only `Wolfgang.Etl.TestKit` / `Wolfgang.Etl.TestKit.Xunit` references. 0.22.0 is the release in
+  which the TestKit packages were folded into the ETL-Abstractions repository and now build and ship
+  from there. The public API of all four core packages is unchanged.
+- Inherited from Abstractions 0.22.0: the `await foreach` sites in `ExtractorBase` and
+  `TransformerBase` now use `ConfigureAwait(false)`, removing a sync-over-async deadlock risk for
+  consumers on the `net462` and `netstandard2.0` targets that drive the pipeline from a
+  synchronization context. No behavioural change on the modern targets.
+
+## [0.5.0] - 2026-08-11
+
+### Added
+
 - Polymorphic extraction — a `CsvExtractor<TRecord>` can now bind each row to a different concrete
   type chosen by a discriminator column, so a single file can mix record shapes (#12). Set
   `Discriminator` to a `CsvDiscriminator<TBase>` built with `CsvDiscriminatorBuilder<TBase>` — a
@@ -31,14 +371,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The same validation trio (`Validators`, `OnValidationFailure`, `InvalidRecordHandler`) and
   `CsvLoaderProgress.CurrentInvalidItemCount` on `CsvLoader<TRecord>`, validating each record before
   it is written (#8).
-- Schema inference (#7). `CsvSchema.InferAsync(reader, options, ct)` samples a CSV and returns a
-  `CsvSchema` of `CsvColumnInfo` (name, index, inferred CLR type, nullability, and a date format when
-  one matches). Types are classified down a ladder — `bool → int → long → decimal → DateTime → Guid →
-  string` (most-restrictive that fits every sampled value; mixed columns fall through to `string`). The
-  delimiter is auto-detected (comma/tab/pipe/semicolon) when not supplied, and the encoding comes from
-  the reader (BOM-aware). `schema.ToColumnMaps()` seeds a `CsvExtractor<TRecord>`; `schema.ToJson()` /
-  `CsvSchema.FromJson(json)` persist and restore it. Inference is reflection-free; only the JSON helpers
-  carry a trim/AOT warning.
+- Runnable examples and cookbook docs for the new features: `examples/…PolymorphicRows` and
+  `…RecordValidation`, with matching guides under `docs/cookbook/` (`polymorphic-rows.md`,
+  `record-validation.md`) linked from the README.
 
 ## [0.4.0] - 2026-08-09
 

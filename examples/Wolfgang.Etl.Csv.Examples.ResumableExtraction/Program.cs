@@ -29,7 +29,9 @@ static async Task ProcessAsync(string csvPath, string checkpointPath, int stopAf
     using var reader = new StreamReader(csvPath);
     var extractor = new CsvExtractor<OrderRow>(reader);
 
-    // Sets SkipRecordCount to the persisted count so already-processed rows are skipped.
+    // Compatibility helper for an already-constructed extractor: reads the persisted count and
+    // applies it as the skip count. When you control construction, pass SkipItemCount on the
+    // options record instead (see the cookbook).
     var alreadyDone = await extractor.ResumeFromCheckpointAsync(checkpointPath);
     if (alreadyDone > 0)
     {

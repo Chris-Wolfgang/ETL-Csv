@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Wolfgang.Etl.Csv.Tests.Unit.TestModels;
 
@@ -7,7 +6,6 @@ namespace Wolfgang.Etl.Csv.Tests.Unit.TestModels;
 /// A synchronous <see cref="IProgress{T}"/> capture, useful in tests where the
 /// async dispatch of <see cref="Progress{T}"/> would race with assertions.
 /// </summary>
-[ExcludeFromCodeCoverage]
 internal sealed class SyncProgress<T> : IProgress<T>
 {
     public T? LastValue { get; private set; }

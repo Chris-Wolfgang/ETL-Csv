@@ -3,6 +3,10 @@
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 
+// ReSharper disable once CheckNamespace
+// Polyfill for IsExternalInit — MUST declare System.Runtime.CompilerServices
+// because the compiler looks for the marker type by that fully-qualified name
+// to enable `init`-only setters. Folder location doesn't apply to polyfills.
 namespace System.Runtime.CompilerServices;
 
 /// <summary>

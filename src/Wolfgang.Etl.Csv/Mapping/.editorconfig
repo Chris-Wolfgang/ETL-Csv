@@ -1,0 +1,13 @@
+# Per-file analyzer suppression for the Mapping surface. Every entry is
+# documented and scoped to a single file; remove the entry rather than
+# expanding its scope if the underlying code changes.
+
+# CsvDiscriminator's TryResolveType / TryGetWriter use the standard
+# `TryGetValue(key, out value!)` workaround for the
+# `IReadOnlyDictionary<TKey, TValue>` out-parameter, which lacks
+# `[MaybeNullWhen(false)]` on every TFM this library targets (verified
+# by removing the `!` locally on net8.0 / net10.0 — the compiler emits
+# CS8601 "Possible null reference assignment"). The `!` is required
+# for the code to build; S8969 misreads it as redundant.
+[CsvDiscriminator.cs]
+dotnet_diagnostic.S8969.severity = none

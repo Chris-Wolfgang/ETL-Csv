@@ -27,6 +27,10 @@ namespace Wolfgang.Etl.Csv.Tests.Unit;
 /// (top allocation sites, per-type heap census) is heavier Windows-only tooling left as a
 /// follow-up.
 /// </summary>
+// Two execution modes by design: the fast PR pass (default) and the isolated high-volume pass that
+// gc-profiling.yaml runs with GC_PROFILE_ISOLATED=true / GC_PROFILE_RECORDS set, where no coverage is
+// collected. The isolated-only gen2 assertion and the per-record guard live in helpers that
+// CsvSustainedLoadGcHelperTests (below, not in the GcProfile category) drive directly.
 [Trait("Category", "GcProfile")]
 public class CsvSustainedLoadGcTests
 {
@@ -77,10 +81,7 @@ public class CsvSustainedLoadGcTests
             await foreach (var record in extractor.ExtractAsync().ConfigureAwait(false))
             {
                 // Touch a field so the JIT can't elide the mapping, then discard.
-                if (record.Age < 0)
-                {
-                    throw new InvalidOperationException("unexpected");
-                }
+                EnsureMapped(record);
 
                 count++;
             }
@@ -103,6 +104,28 @@ public class CsvSustainedLoadGcTests
         // Streaming must not retain: gen2 (and any LOH growth that would trigger it) stays flat
         // no matter the volume. A spike means rows are being kept alive somewhere. Only checked
         // in isolation (see the note above) since GC.CollectionCount is process-wide.
+        AssertGen2Flat(isolatedRun, gen2Delta, records);
+
+        // Generous per-record regression alarm (not a contract): CsvHelper allocates per row by design.
+        Assert.True
+        (
+            perRecord < 2048,
+            $"per-record allocation {perRecord:F0}B exceeds the 2KB regression ceiling over {records:N0} records."
+        );
+    }
+
+
+    internal static void EnsureMapped(PersonRecord record)
+    {
+        if (record.Age < 0)
+        {
+            throw new InvalidOperationException("unexpected");
+        }
+    }
+
+
+    internal static void AssertGen2Flat(bool isolatedRun, int gen2Delta, int records)
+    {
         if (isolatedRun)
         {
             Assert.True
@@ -111,13 +134,6 @@ public class CsvSustainedLoadGcTests
                 $"gen2 collections spiked ({gen2Delta}) over {records:N0} records — the streaming path may be retaining rows."
             );
         }
-
-        // Generous per-record regression alarm (not a contract): CsvHelper allocates per row by design.
-        Assert.True
-        (
-            perRecord < 2048,
-            $"per-record allocation {perRecord:F0}B exceeds the 2KB regression ceiling over {records:N0} records."
-        );
     }
 
 
@@ -139,6 +155,40 @@ public class CsvSustainedLoadGcTests
         }
 
         return builder.ToString();
+    }
+}
+
+
+
+/// <summary>
+/// Drives the <see cref="CsvSustainedLoadGcTests"/> helpers whose failing / isolated-only branches the
+/// profiling test itself never reaches in a PR run. Not in the GcProfile category, so gc-profiling.yaml's
+/// isolated run still executes the profiling test alone.
+/// </summary>
+public class CsvSustainedLoadGcHelperTests
+{
+    [Fact]
+    public void EnsureMapped_when_Age_is_negative_throws()
+    {
+        Assert.Throws<InvalidOperationException>(() => CsvSustainedLoadGcTests.EnsureMapped(new PersonRecord { Age = -1 }));
+    }
+
+
+
+    [Fact]
+    public void AssertGen2Flat_when_isolated_and_gen2_flat_passes()
+    {
+        var exception = Record.Exception(() => CsvSustainedLoadGcTests.AssertGen2Flat(isolatedRun: true, gen2Delta: 1, records: 10));
+
+        Assert.Null(exception);
+    }
+
+
+
+    [Fact]
+    public void AssertGen2Flat_when_isolated_and_gen2_spiked_fails()
+    {
+        Assert.ThrowsAny<Xunit.Sdk.XunitException>(() => CsvSustainedLoadGcTests.AssertGen2Flat(isolatedRun: true, gen2Delta: 2, records: 10));
     }
 }
 

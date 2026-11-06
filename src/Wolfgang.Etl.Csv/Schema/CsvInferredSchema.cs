@@ -18,7 +18,7 @@ namespace Wolfgang.Etl.Csv;
 /// header flag, and encoding detected while reading. Produce one with <see cref="InferAsync"/>, then feed
 /// it to an existing extractor via <see cref="ToColumnMaps"/>, or persist it as JSON.
 /// </summary>
-public sealed record CsvSchema
+public sealed record CsvInferredSchema
 {
     private static readonly JsonSerializerOptions JsonOptions = CreateJsonOptions();
 
@@ -64,9 +64,9 @@ public sealed record CsvSchema
     /// <param name="reader">The reader to sample. Its <c>CurrentEncoding</c> (if a <see cref="StreamReader"/>) becomes the schema's encoding.</param>
     /// <param name="options">Inference options. When <c>null</c>, defaults are used.</param>
     /// <param name="cancellationToken">A token to cancel the read.</param>
-    /// <returns>The inferred <see cref="CsvSchema"/>.</returns>
+    /// <returns>The inferred <see cref="CsvInferredSchema"/>.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="reader"/> is <c>null</c>.</exception>
-    public static async Task<CsvSchema> InferAsync
+    public static async Task<CsvInferredSchema> InferAsync
     (
         TextReader reader,
         CsvSchemaInferenceOptions? options = null,
@@ -85,7 +85,7 @@ public sealed record CsvSchema
         var delimiter = options.Delimiter ?? DetectDelimiter(lines);
         var rows = await ParseRowsAsync(lines, delimiter, options.Culture).ConfigureAwait(false);
 
-        return new CsvSchema
+        return new CsvInferredSchema
         {
             Columns = BuildColumns(rows, options),
             Delimiter = delimiter,
@@ -108,7 +108,7 @@ public sealed record CsvSchema
 
 
     /// <summary>Serializes the schema to JSON. Inferred types persist as short tokens and encoding as its web name.</summary>
-    [RequiresUnreferencedCode("JSON serialization of CsvSchema uses System.Text.Json reflection and is not trim/AOT-safe. Schema inference itself is unaffected.")]
+    [RequiresUnreferencedCode("JSON serialization of CsvInferredSchema uses System.Text.Json reflection and is not trim/AOT-safe. Schema inference itself is unaffected.")]
     public string ToJson() => JsonSerializer.Serialize(this, JsonOptions);
 
 
@@ -116,8 +116,8 @@ public sealed record CsvSchema
     /// <summary>Deserializes a schema previously produced by <see cref="ToJson"/>.</summary>
     /// <exception cref="ArgumentNullException"><paramref name="json"/> is null.</exception>
     /// <exception cref="FormatException"><paramref name="json"/> does not represent a schema.</exception>
-    [RequiresUnreferencedCode("JSON deserialization of CsvSchema uses System.Text.Json reflection and is not trim/AOT-safe. Schema inference itself is unaffected.")]
-    public static CsvSchema FromJson(string json)
+    [RequiresUnreferencedCode("JSON deserialization of CsvInferredSchema uses System.Text.Json reflection and is not trim/AOT-safe. Schema inference itself is unaffected.")]
+    public static CsvInferredSchema FromJson(string json)
     {
         if (json is null)
         {
@@ -126,13 +126,13 @@ public sealed record CsvSchema
 
         try
         {
-            return JsonSerializer.Deserialize<CsvSchema>(json, JsonOptions)
-                ?? throw new FormatException("The JSON did not represent a CsvSchema.");
+            return JsonSerializer.Deserialize<CsvInferredSchema>(json, JsonOptions)
+                ?? throw new FormatException("The JSON did not represent a CsvInferredSchema.");
         }
         catch (JsonException ex)
         {
             // Normalize malformed-JSON failures to the documented FormatException contract.
-            throw new FormatException("The JSON did not represent a CsvSchema.", ex);
+            throw new FormatException("The JSON did not represent a CsvInferredSchema.", ex);
         }
     }
 
@@ -273,11 +273,16 @@ public sealed record CsvSchema
 
     private static bool TryParseAs(string value, Type type, CultureInfo culture)
     {
-        if (type == typeof(bool)) { return bool.TryParse(value, out _); }
-        if (type == typeof(int)) { return int.TryParse(value, NumberStyles.Integer, culture, out _); }
-        if (type == typeof(long)) { return long.TryParse(value, NumberStyles.Integer, culture, out _); }
-        if (type == typeof(decimal)) { return decimal.TryParse(value, NumberStyles.Number, culture, out _); }
-        if (type == typeof(DateTime)) { return DateTime.TryParse(value, culture, DateTimeStyles.None, out _); }
+        if (type == typeof(bool))
+        { return bool.TryParse(value, out _); }
+        if (type == typeof(int))
+        { return int.TryParse(value, NumberStyles.Integer, culture, out _); }
+        if (type == typeof(long))
+        { return long.TryParse(value, NumberStyles.Integer, culture, out _); }
+        if (type == typeof(decimal))
+        { return decimal.TryParse(value, NumberStyles.Number, culture, out _); }
+        if (type == typeof(DateTime))
+        { return DateTime.TryParse(value, culture, DateTimeStyles.None, out _); }
 
         // The ladder's last rung — ClassifyColumn only ever passes a ladder type here.
         return Guid.TryParse(value, out _);

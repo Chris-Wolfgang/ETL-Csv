@@ -5,6 +5,7 @@ using System.Linq;
 using CsvHelper;
 using CsvHelper.Configuration;
 
+// ReSharper disable once CheckNamespace -- the public surface is one flat namespace; Mapping/ is organisational
 namespace Wolfgang.Etl.Csv;
 
 /// <summary>
@@ -51,10 +52,29 @@ public sealed class CsvDiscriminator<TBase>
     internal IReadOnlyList<ClassMap>? PrebuiltClassMaps { get; init; }
 
 
+    // Per-type write delegates captured AOT-safely by the builder (CsvWriter.WriteRecord<T> rooted at a
+    // compile-time T). Null for the direct init-form, where the loader falls back to reflective dispatch.
+    internal IReadOnlyDictionary<Type, Action<CsvWriter, object>>? PrebuiltWriters { get; init; }
+
+
     internal bool TryResolveType(string value, out Type type)
     {
         _typeByValue ??= BuildTypeByValue();
         return _typeByValue.TryGetValue(value, out type!);
+    }
+
+
+    // A builder-captured writer for the runtime type, if any. The direct-init form has none and the
+    // loader falls back to reflective WriteRecord dispatch.
+    internal bool TryGetWriter(Type type, out Action<CsvWriter, object> writer)
+    {
+        if (PrebuiltWriters is not null)
+        {
+            return PrebuiltWriters.TryGetValue(type, out writer!);
+        }
+
+        writer = null!;
+        return false;
     }
 
 
@@ -79,8 +99,31 @@ public sealed class CsvDiscriminator<TBase>
             return;
         }
 
+        RegisterReflectiveClassMaps(context);
+    }
+
+
+    // The direct init-form path: Mapping is an IReadOnlyDictionary<string, Type> whose values cannot carry
+    // [DynamicallyAccessedMembers], so the trimmer cannot see which properties each mapped type needs and
+    // CsvClassMapFactory closes its generic map builders over them with MakeGenericMethod. This is the
+    // documented reflection path, so it carries the same requirements as the factory bridges it calls;
+    // RegisterClassMaps is the seam where the builder path (pre-built maps) and this path meet.
+    [RequiresUnreferencedCode("Reflects over the runtime type's public properties to build a CsvHelper ClassMap. Prefer CsvDiscriminatorBuilder for a trim/AOT-safe path.")]
+    [RequiresDynamicCode("Reflects over the runtime type's public properties to build a CsvHelper ClassMap. Prefer CsvDiscriminatorBuilder for a trim/AOT-safe path.")]
+    private void RegisterReflectiveClassMaps(CsvContext context)
+    {
         foreach (var type in Mapping.Values.Distinct())
         {
+            // The builder path guarantees this via a generic constraint; the direct-init Mapping does not,
+            // so validate here for a clear failure instead of a later InvalidCastException while reading.
+            if (!typeof(TBase).IsAssignableFrom(type))
+            {
+                throw new InvalidOperationException
+                (
+                    $"Mapped type '{type}' is not assignable to the discriminator base type '{typeof(TBase)}'."
+                );
+            }
+
             var columns = PerTypeColumnMaps is not null && PerTypeColumnMaps.TryGetValue(type, out var maps)
                 ? maps
                 : null;

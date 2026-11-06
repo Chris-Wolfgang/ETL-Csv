@@ -33,16 +33,21 @@ jobs:
 
     permissions:
       # Required to push the rendered chart + history to the gh-pages branch.
+      # Accepted Scorecard TokenPermissionsID finding (#224):
+      # benchmark-action/github-action-benchmark does its own `git push HEAD:gh-pages`
+      # to dev/bench, and there is no narrower scope for a branch push. The
+      # alternatives (an in-house chart renderer on actions/deploy-pages, or a separate
+      # branch/site for the chart) cost far more than one informational alert.
       contents: write
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v6
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
         with:
           dotnet-version: |
             10.0.x
@@ -88,7 +93,7 @@ jobs:
       - name: Publish chart to gh-pages
         # Pinned to v1.22.1 commit per repo convention (third-party actions
         # publishing to gh-pages are pinned by SHA, not mutable tag).
-        uses: benchmark-action/github-action-benchmark@52576c92bccf6ac60c8223ec7eb2565637cae9ba  # v1.22.1
+        uses: benchmark-action/github-action-benchmark@4322e5726e6334590d251fc4f92bec0efafc45dc  # v1.22.2
         with:
           name: BenchmarkDotNet
           tool: 'benchmarkdotnet'

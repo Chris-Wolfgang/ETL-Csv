@@ -14,7 +14,10 @@ namespace Wolfgang.Etl.Csv;
 /// </summary>
 /// <remarks>
 /// This is <b>not</b> a resumable-extraction feature — it is thin sugar over the existing
-/// <see cref="CsvExtractor{TRecord}.SkipRecordCount"/> control. All the policy (when to
+/// <see cref="CsvExtractor{TRecord}.SkipRecordCount"/> control. When you construct the extractor yourself,
+/// prefer reading the checkpoint and passing it as <c>SkipItemCount</c> on
+/// <see cref="CsvExtractorOptions{TRecord}"/>; <c>Resume</c> exists for an already-constructed extractor.
+/// All the policy (when to
 /// checkpoint, where to persist, exactly-once vs at-least-once semantics) remains the
 /// caller's responsibility. The one mechanical piece worth not hand-rolling is the atomic
 /// write, so a crash mid-checkpoint never leaves a torn counter file.
@@ -51,7 +54,8 @@ public static class CsvCheckpointExtensions
         }
 
         string text;
-        // FileShare.Delete lets WriteCheckpointAsync's atomic rename succeed while a reader holds the file (Windows); the reader keeps its snapshot, so no torn read.
+        // FileShare.Delete lets WriteCheckpointAsync's atomic rename succeed while a reader holds
+        // the file (Windows); the reader keeps its snapshot, so no torn read.
         using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read | FileShare.Delete, 4096, useAsync: true))
         {
             // A checkpoint holds a single small integer. Cap the size before allocating so a
@@ -195,7 +199,10 @@ public static class CsvCheckpointExtensions
         }
 
         var count = await ReadCheckpointAsync(path, token).ConfigureAwait(false);
+#pragma warning disable CS0618 // Resume operates on an already-constructed extractor, so the
+        // skip count cannot travel through its constructor.
         extractor.SkipRecordCount = count;
+#pragma warning restore CS0618
         return count;
     }
 }

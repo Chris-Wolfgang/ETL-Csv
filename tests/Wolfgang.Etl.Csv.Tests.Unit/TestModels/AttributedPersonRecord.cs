@@ -1,8 +1,5 @@
-using System.Diagnostics.CodeAnalysis;
-
 namespace Wolfgang.Etl.Csv.Tests.Unit.TestModels;
 
-[ExcludeFromCodeCoverage]
 public record AttributedPersonRecord
 {
     [CsvColumn(Name = "first_name")]

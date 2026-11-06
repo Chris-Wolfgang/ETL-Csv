@@ -3,7 +3,7 @@ using System.Globalization;
 namespace Wolfgang.Etl.Csv;
 
 /// <summary>
-/// Options controlling <see cref="CsvSchema.InferAsync"/>.
+/// Options controlling <see cref="CsvInferredSchema.InferAsync"/>.
 /// </summary>
 public sealed class CsvSchemaInferenceOptions
 {

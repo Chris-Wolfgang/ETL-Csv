@@ -3,7 +3,7 @@ using System;
 namespace Wolfgang.Etl.Csv;
 
 /// <summary>
-/// A single column of an inferred <see cref="CsvSchema"/>: its name, position, best-guess CLR type, and
+/// A single column of an inferred <see cref="CsvInferredSchema"/>: its name, position, best-guess CLR type, and
 /// (for dates) the format string that matched every sampled value.
 /// </summary>
 public sealed record CsvColumnInfo

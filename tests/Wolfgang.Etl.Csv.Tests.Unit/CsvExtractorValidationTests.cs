@@ -1,11 +1,15 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using Wolfgang.Etl.Csv.Tests.Unit.TestModels;
 using Xunit;
+
+// These files still configure via the deprecated property setters in places where the value is
+// applied after construction, so it cannot travel through the options constructor without
+// restructuring the test. They keep exercising the setter path until the setters are removed.
+#pragma warning disable CS0618
 
 namespace Wolfgang.Etl.Csv.Tests.Unit;
 
@@ -57,20 +61,12 @@ public class CsvExtractorValidationTests
 
 
 
-    [Fact]
-    public async Task ExtractAsync_tolerates_a_validator_that_returns_null_failures()
-    {
-        var stream = new MemoryStream(Encoding.UTF8.GetBytes("OrderNumber,Quantity,Notes\nA1,5,ok\n"));
-        var sut = new CsvExtractor<Order>(new StreamReader(stream, Encoding.UTF8))
-        {
-            OnValidationFailure = CsvValidationFailureAction.Skip,
-            Validators = new CsvValidator<Order>[] { _ => new CsvValidationResult(false, null!) },
-        };
-
-        var rows = await ReadAllAsync(sut);
-
-        Assert.Empty(rows);   // record failed (and was skipped) without an NRE from null Failures
-    }
+    // The prior "tolerates a validator that returns null failures" test is gone: the
+    // CsvValidationResult ctors (both the recommended two-arg pair and the legacy positional
+    // one, now marked [Obsolete]) all throw on null / empty / mismatched failures at
+    // construction. A validator returning `new CsvValidationResult(false, null!)` throws
+    // inside the validator delegate before the extractor sees a result. See
+    // CsvValidatorTests for the ctor-guard tests.
 
 
 
@@ -88,7 +84,7 @@ public class CsvExtractorValidationTests
         Assert.Equal(new[] { "A1", "A3" }, rows.ConvertAll(o => o.OrderNumber));
         Assert.Equal(1, progress.LastValue!.CurrentInvalidItemCount);
         Assert.NotNull(captured);
-        Assert.Equal("A2", captured!.Record.OrderNumber);
+        Assert.Equal("A2", captured.Record.OrderNumber);
         Assert.Contains("Quantity", Assert.Single(captured.Failures));
     }
 
@@ -148,12 +144,11 @@ public class CsvExtractorValidationTests
 
         Assert.Empty(rows);
         Assert.NotNull(captured);
-        Assert.Equal(3, captured!.Failures.Count);
+        Assert.Equal(3, captured.Failures.Count);
     }
 
 
 
-    [ExcludeFromCodeCoverage]
     public record Order
     {
         public string OrderNumber { get; set; } = string.Empty;

@@ -36,7 +36,7 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout code
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
@@ -48,12 +48,26 @@ jobs:
       - name: Restore tools
         run: dotnet tool restore
 
+      - name: Restore packages for every target framework
+        # dotnet-stryker 5.0.0 analyses each project with a design-time build and, when the
+        # packages are not already restored, restores on the fly per target framework. On this
+        # repo that on-the-fly restore intermittently fails for the net462/netstandard2.x/net8.0
+        # frames ("simulated build failed again ... Analysis of project src/... failed for
+        # frameworks net462,netstandard2.0,netstandard2.1,net8.0"), after which every mutant
+        # compiles against unresolved package references (CS0234 on Wolfgang.Etl.Abstractions)
+        # and the run aborts with a 0 % score. Three of four 5.0.0 runs on 2026-09-11/15 died
+        # this way; the fourth passed at 69 %. Restoring up front removes the race.
+        run: dotnet restore
+
       - name: Run Stryker
         # The break threshold in stryker-config.json fails this step on a score
         # regression. break_at (dispatch input) overrides it via env, never inlined
         # into the shell (injection-safe).
         env:
           BREAK_AT: ${{ github.event.inputs.break_at }}
+          # vstest gives its test host 90 s to connect by default; a slow runner misses that
+          # with four parallel sessions and the whole run dies with no mutation score.
+          VSTEST_CONNECTION_TIMEOUT: '300'
         run: |
           args=()
           if [ -n "$BREAK_AT" ]; then
@@ -63,7 +77,7 @@ jobs:
 
       - name: Upload mutation report
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: mutation-report
           path: StrykerOutput/**/reports/mutation-report.*

@@ -1,24 +1,26 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net462;netstandard2.0;netstandard2.1;net8.0;net10.0</TargetFrameworks>
-    <LangVersion>latest</LangVersion>
-    <Nullable>enable</Nullable>
+    <TargetFrameworks>net462;netstandard2.0;netstandard2.1;net5.0;net6.0;net7.0;net8.0;net10.0</TargetFrameworks>
     <ImplicitUsings>disable</ImplicitUsings>
-    <Version>0.4.0</Version>
+    <Version>0.10.0</Version>
+    <!-- AssemblyVersion is derived from <Version> as 0.{Minor}.0.0 (ADR-0011 in
+         ETL-Abstractions): the minor is SemVer's breaking position pre-1.0 and
+         AssemblyVersion is bind-time identity on .NET Framework, so it must move
+         with every minor. Deriving it means a release-prep PR cannot forget it,
+         and PATCH bumps keep the same identity (no binding-redirect churn). -->
+    <AssemblyVersion>0.$([System.Version]::Parse($(Version.Split('-')[0])).Minor).0.0</AssemblyVersion>
+    <FileVersion>$(Version).0</FileVersion>
     <!-- PackageValidation (#156): fail the pack if the public surface breaks binary/source
          compatibility against the last published release. Bump the baseline to each newly
          shipped version as part of release prep. -->
     <EnablePackageValidation>true</EnablePackageValidation>
-    <PackageValidationBaselineVersion>0.4.0</PackageValidationBaselineVersion>
+    <PackageValidationBaselineVersion>0.10.0</PackageValidationBaselineVersion>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <Title>Wolfgang.Etl.Csv</Title>
-    <Authors>Chris Wolfgang</Authors>
     <Description>CsvExtractor and CsvLoader implementations for reading and writing CSV files, built on Wolfgang.Etl.Abstractions and CsvHelper.</Description>
-    <Copyright>Copyright 2026 Chris Wolfgang</Copyright>
     <PackageProjectUrl>https://github.com/Chris-Wolfgang/ETL-Csv</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Chris-Wolfgang/ETL-Csv</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
@@ -26,8 +28,19 @@
     <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
     <PackageTags>ETL;Extract-Transform-Load;CSV;CsvHelper</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <ApplicationIcon>..\..\assets\icon.ico</ApplicationIcon>
     <PackageIcon>icon_256.png</PackageIcon>
+  </PropertyGroup>
+
+  <!-- Trim / AOT analyzers (repository baseline item 18). This does NOT claim the library is
+       trim-safe: CsvHelper reflects over the record type, so the extractor and loader entry points
+       carry [RequiresUnreferencedCode] / [RequiresDynamicCode]. The flags turn on the trim, AOT and
+       single-file analyzers so those annotations are verified to be complete, and mark the
+       assembly so a consumer's trimmer analyzes it instead of treating it as opaque. They only
+       apply to net8.0+ (the analyzers need a net6.0+ target; net8.0 is where IsAotCompatible is
+       supported). -->
+  <PropertyGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">
+    <IsAotCompatible>true</IsAotCompatible>
+    <IsTrimmable>true</IsTrimmable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -42,14 +55,28 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Wolfgang.Etl.Abstractions" Version="0.21.0" />
+    <PackageReference Include="Wolfgang.Etl.Abstractions" Version="0.26.1" />
     <PackageReference Include="CsvHelper" Version="33.1.0" />
-    <PackageReference Include="System.Text.Json" Version="10.0.10" />
-    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="10.0.10" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.10" />
+    <PackageReference Include="System.Text.Json" Version="10.0.14" />
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="10.0.14" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.14" />
   </ItemGroup>
 
   <!-- Analyzer PackageReferences are centralized in Directory.Build.props -->
 
+  <!-- PublicApiAnalyzers: the public surface diverges by TFM. Every options/report record derives from an
+       Abstractions record, and its compiler-synthesized <Clone>$ has a covariant return (the derived type) on
+       net5.0+ but returns the base type on net462 / netstandard2.0. The shared PublicAPI.Shipped.txt (wired in
+       Directory.Build.props) holds the TFM-invariant surface; these per-TFM files carry the divergent entries. -->
+  <ItemGroup>
+    <AdditionalFiles Include="PublicApi\modern\PublicAPI.Shipped.txt"
+                     Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net5.0'))" />
+    <AdditionalFiles Include="PublicApi\modern\PublicAPI.Unshipped.txt"
+                     Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net5.0'))" />
+    <AdditionalFiles Include="PublicApi\legacy\PublicAPI.Shipped.txt"
+                     Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net5.0'))" />
+    <AdditionalFiles Include="PublicApi\legacy\PublicAPI.Unshipped.txt"
+                     Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net5.0'))" />
+  </ItemGroup>
 
 </Project>

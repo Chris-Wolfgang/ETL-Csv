@@ -1,0 +1,65 @@
+# Per-file / per-folder analyzer suppressions for the Validation surface.
+# Every entry is documented: the warning is a genuine false positive
+# (or a design decision the analyzer can't see), and the suppression is
+# scoped to the smallest reasonable target — this folder, or a single
+# file within it. If the underlying code changes so the warning becomes
+# actionable, remove the entry rather than expanding its scope.
+
+# All Validation/ types (CsvValidator, CsvValidationResult,
+# CsvValidationFailureAction, CsvValidationException, CsvInvalidRecord)
+# live under this folder but ship under the flat Wolfgang.Etl.Csv
+# namespace (see PublicAPI.Shipped.txt — 0 entries under
+# `Wolfgang.Etl.Csv.Validation.*`). Renaming would be a breaking API
+# change for every consumer. CheckNamespace can't see PublicAPI, so it
+# fires per file. Silence at folder scope with the design rationale.
+[*.cs]
+resharper_check_namespace_highlighting = none
+
+# The validator surface defends against user selectors and validator
+# implementations that ignore the nullable annotations at the API
+# boundary (custom selectors returning null despite a non-null-annotated
+# T, custom validators returning a CsvValidationResult with null
+# Failures). Removing the runtime `is not null` / `??` checks to
+# satisfy the compile-time contract would introduce
+# NullReferenceException at exactly the boundary the checks exist to
+# prevent.
+#
+# Additionally, CsvValidator.Label uses
+# `string.IsNullOrWhiteSpace(memberName) ? "Value" : memberName!` — the
+# `!` is redundant only on TFMs where `string.IsNullOrWhiteSpace`
+# carries `[NotNullWhen(false)]` (net5.0+). On net462 / netstandard2.0
+# the attribute is unavailable, the compiler cannot flow-narrow, and
+# dropping the `!` produces CS8603 "Possible null reference return"
+# (verified locally by removing the bang and building net462). The file
+# already carries a `// ReSharper disable once
+# RedundantSuppressNullableWarningExpression` explaining this to
+# InspectCode, but S8969 (SonarAnalyzer) doesn't observe ReSharper
+# directives — it needs its own severity override.
+[CsvValidator.cs]
+resharper_condition_is_always_true_or_false_according_to_nullable_api_contract_highlighting = none
+dotnet_diagnostic.S8969.severity = none
+
+[CsvValidationResult.cs]
+# The legacy positional constructor is intentionally kept and marked
+# [Obsolete] to preserve the 0.6.x shipped API. Removal is a breaking
+# change reserved for a future MAJOR bump (see the [Obsolete] message on
+# the ctor for the migration path). S1133 flags every [Obsolete] as
+# "remove someday" — accurate but redundant with the ctor's own message.
+dotnet_diagnostic.S1133.severity = none
+# The Deconstruct method's out parameters are named `IsValid` and
+# `Failures` (PascalCase) to match the shipped Deconstruct signature that
+# the record-positional primary ctor would have synthesized. The
+# positional primary ctor is gone (kept only as an [Obsolete] manual
+# ctor above), so we declare Deconstruct explicitly to preserve the
+# exact shipped parameter names. camelCase renames would break
+# consumers using named-argument deconstruction.
+resharper_parameter_hides_member_highlighting = none
+# CsvValidationException intentionally exposes only the
+# (int lineNumber, IReadOnlyList<string> failures) constructor because
+# both pieces of state are required to build a meaningful message.
+# Adding the standard `()`, `(string)`, `(string, Exception)` overloads
+# is a MINOR-bump surface add and is deferred to a fleet-wide decision
+# on the exception-constructor pattern (see #201 acceptance criteria).
+[CsvValidationException.cs]
+resharper_null_coalescing_condition_is_always_not_null_according_to_api_contract_highlighting = none
+dotnet_diagnostic.RCS1194.severity = none

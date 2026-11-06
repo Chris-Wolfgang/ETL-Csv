@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -8,11 +7,15 @@ using System.Threading.Tasks;
 using Wolfgang.Etl.Csv.Tests.Unit.TestModels;
 using Xunit;
 
+// These files still configure via the deprecated property setters in places where the value is
+// applied after construction, so it cannot travel through the options constructor without
+// restructuring the test. They keep exercising the setter path until the setters are removed.
+#pragma warning disable CS0618
+
 namespace Wolfgang.Etl.Csv.Tests.Unit;
 
 public class CsvAttributeMappingTests
 {
-    [ExcludeFromCodeCoverage]
     public sealed record IndexedRecord
     {
         [CsvColumn(Index = 0)]
@@ -24,7 +27,6 @@ public class CsvAttributeMappingTests
 
 
 
-    [ExcludeFromCodeCoverage]
     public sealed record PartiallyAttributedRecord
     {
         [CsvColumn(Name = "first_name")]
@@ -57,7 +59,6 @@ public class CsvAttributeMappingTests
 
 
 
-    [ExcludeFromCodeCoverage]
     public sealed record OptionalRecord
     {
         [CsvColumn(Name = "first_name")]
@@ -69,7 +70,6 @@ public class CsvAttributeMappingTests
 
 
 
-    [ExcludeFromCodeCoverage]
     public sealed record DateRecord
     {
         [CsvColumn(Name = "name")]
@@ -191,10 +191,14 @@ public class CsvAttributeMappingTests
     {
         var stream = new MemoryStream();
         var writer = new StreamWriter(stream, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false), 1024, leaveOpen: true);
-        var sut = new CsvLoader<AttributedPersonRecord>(writer)
-        {
-            LeaveOpen = true,
-        };
+        var sut = new CsvLoader<AttributedPersonRecord>
+        (
+            writer,
+            new CsvLoaderOptions<AttributedPersonRecord>
+            {
+                LeaveOpen = true,
+            }
+        );
 
         var items = new List<AttributedPersonRecord>
         {
@@ -215,7 +219,6 @@ public class CsvAttributeMappingTests
 
 
 
-    [ExcludeFromCodeCoverage]
     public sealed record PriceRecord
     {
         public string ProductNumber { get; set; } = string.Empty;
@@ -474,13 +477,11 @@ public class CsvAttributeMappingTests
             },
         };
 
-        return Assert.ThrowsAsync<ArgumentException>(async () =>
-        {
-            await foreach (var _ in sut.ExtractAsync().ConfigureAwait(false))
-            {
-                // drain — exception fires before the first record yields
-            }
-        });
+        // drain — exception fires before the first record yields
+        return Assert.ThrowsAsync<ArgumentException>
+        (
+            async () => await sut.ExtractAsync().ToListAsync()
+        );
     }
 
 
@@ -490,10 +491,14 @@ public class CsvAttributeMappingTests
     {
         var stream = new MemoryStream();
         var writer = new StreamWriter(stream, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false), 1024, leaveOpen: true);
-        var sut = new CsvLoader<DateRecord>(writer)
-        {
-            LeaveOpen = true,
-        };
+        var sut = new CsvLoader<DateRecord>
+        (
+            writer,
+            new CsvLoaderOptions<DateRecord>
+            {
+                LeaveOpen = true,
+            }
+        );
 
         var items = new List<DateRecord>
         {

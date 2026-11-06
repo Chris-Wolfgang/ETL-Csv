@@ -16,7 +16,7 @@ public class SnapshotBaselineHygieneTests
     [Fact]
     public void Verify_snapshot_baselines_are_stored_without_a_utf8_bom()
     {
-        var snapshots = LocateSnapshotsDirectory();
+        var snapshots = LocateSnapshotsDirectory(AppContext.BaseDirectory);
         var baselines = Directory.GetFiles(snapshots, "*.verified.txt");
 
         Assert.NotEmpty(baselines);
@@ -33,12 +33,30 @@ public class SnapshotBaselineHygieneTests
     }
 
 
+    [Fact]
+    public void LocateSnapshotsDirectory_when_no_ancestor_holds_baselines_throws_DirectoryNotFoundException()
+    {
+        var orphan = Path.Combine(Path.GetTempPath(), "csv-snapshot-hygiene-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(orphan);
+        try
+        {
+            var ex = Assert.Throws<DirectoryNotFoundException>(() => LocateSnapshotsDirectory(orphan));
+            Assert.Contains(orphan, ex.Message, StringComparison.Ordinal);
+        }
+        finally
+        {
+            Directory.Delete(orphan);
+        }
+    }
+
+
+
     // Walk up from the test assembly's location (always present at runtime) to the project
     // directory that holds Snapshots/. Deterministic in CI, unlike [CallerFilePath], which
     // bakes in the compile-time source path.
-    private static string LocateSnapshotsDirectory()
+    private static string LocateSnapshotsDirectory(string start)
     {
-        for (var dir = new DirectoryInfo(AppContext.BaseDirectory); dir is not null; dir = dir.Parent)
+        for (var dir = new DirectoryInfo(start); dir is not null; dir = dir.Parent)
         {
             var candidate = Path.Combine(dir.FullName, "Snapshots");
             if (Directory.Exists(candidate) && Directory.GetFiles(candidate, "*.verified.txt").Length > 0)
@@ -49,7 +67,7 @@ public class SnapshotBaselineHygieneTests
 
         throw new DirectoryNotFoundException
         (
-            "Could not locate the Snapshots directory walking up from " + AppContext.BaseDirectory
+            "Could not locate the Snapshots directory walking up from " + start
         );
     }
 

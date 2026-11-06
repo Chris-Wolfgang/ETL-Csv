@@ -201,6 +201,12 @@ public static class CsvValidator
 
 
 
+    // ReSharper disable once RedundantSuppressNullableWarningExpression
+    // Reason: the `!` is redundant only on TFMs where string.IsNullOrWhiteSpace
+    // carries [NotNullWhen(false)] (net5.0+). On net462 / netstandard2.0 the
+    // attribute is unavailable, the compiler cannot flow-narrow, and dropping
+    // the `!` produces CS8603. Keep the `!` — R# InspectCode is analysing the
+    // single-TFM view where it looks redundant.
     private static string Label(string? memberName) =>
         string.IsNullOrWhiteSpace(memberName) ? "Value" : memberName!;
 }

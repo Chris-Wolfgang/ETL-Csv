@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
@@ -50,16 +51,22 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     /// <summary>
     /// Initializes a new instance of the <see cref="CsvExtractor{TRecord}"/> class.
     /// </summary>
+    /// <remarks>
+    /// Retained for binary compatibility with assemblies compiled before the optional-logger overload existed:
+    /// <c>new CsvExtractor&lt;T&gt;(streamReader)</c> in such an assembly is bound to this exact signature, and removing it
+    /// would fail at runtime with <see cref="MissingMethodException"/> with no compile-time signal. Hidden from IntelliSense;
+    /// source code binds here too, so nothing changes for callers. New code has no reason to name this overload.
+    /// </remarks>
     /// <param name="streamReader">The <see cref="StreamReader"/> to read CSV data from.</param>
     /// <exception cref="ArgumentNullException"><paramref name="streamReader"/> is <c>null</c>.</exception>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     [RequiresUnreferencedCode("CsvExtractor uses CsvHelper, which reflects over TRecord's members beyond what DynamicallyAccessedMembers can express (type converter constructors, non-public setters in some flows). The library is not trim/NativeAOT safe.")]
     public CsvExtractor
     (
         StreamReader streamReader
     )
+        : this(streamReader, logger: null, options: null)
     {
-        _reader = streamReader ?? throw new ArgumentNullException(nameof(streamReader));
-        _logger = NullLogger.Instance;
     }
 
 
@@ -68,19 +75,21 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     /// Initializes a new instance of the <see cref="CsvExtractor{TRecord}"/> class with diagnostic logging.
     /// </summary>
     /// <param name="streamReader">The <see cref="StreamReader"/> to read CSV data from.</param>
-    /// <param name="logger">The logger instance for diagnostic output.</param>
+    /// <param name="logger">
+    /// An optional logger instance for diagnostic output. When <c>null</c> — or omitted —
+    /// <see cref="NullLogger.Instance"/> is used and logging is disabled.
+    /// </param>
     /// <exception cref="ArgumentNullException">
-    /// <paramref name="streamReader"/> or <paramref name="logger"/> is <c>null</c>.
+    /// <paramref name="streamReader"/> is <c>null</c>.
     /// </exception>
     [RequiresUnreferencedCode("CsvExtractor uses CsvHelper, which reflects over TRecord's members beyond what DynamicallyAccessedMembers can express (type converter constructors, non-public setters in some flows). The library is not trim/NativeAOT safe.")]
     public CsvExtractor
     (
         StreamReader streamReader,
-        ILogger<CsvExtractor<TRecord>> logger
+        ILogger<CsvExtractor<TRecord>>? logger = null
     )
+        : this(streamReader, logger, options: null)
     {
-        _reader = streamReader ?? throw new ArgumentNullException(nameof(streamReader));
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
 
@@ -90,24 +99,120 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     /// injected progress timer for testing.
     /// </summary>
     /// <param name="streamReader">The <see cref="StreamReader"/> to read CSV data from.</param>
-    /// <param name="logger">An optional logger instance for diagnostic output.</param>
     /// <param name="timer">The progress timer to inject.</param>
+    /// <param name="logger">
+    /// An optional logger instance for diagnostic output. When <c>null</c> — or omitted —
+    /// <see cref="NullLogger.Instance"/> is used and logging is disabled.
+    /// </param>
     internal CsvExtractor
     (
         StreamReader streamReader,
-        ILogger? logger,
-        IProgressTimer timer
+        IProgressTimer timer,
+        ILogger? logger = null
     )
+        : this(streamReader, logger, options: null)
     {
-        _reader = streamReader ?? throw new ArgumentNullException(nameof(streamReader));
-        _logger = logger ?? (ILogger)NullLogger.Instance;
         _progressTimer = timer ?? throw new ArgumentNullException(nameof(timer));
     }
 
 
 
+    /// <summary>
+    /// The single initialization path for <see cref="CsvExtractor{TRecord}"/>. Every other
+    /// constructor chains into this one, so the shared fields are assigned in exactly one place.
+    /// </summary>
+    /// <param name="streamReader">The <see cref="StreamReader"/> to read CSV data from.</param>
+    /// <param name="logger">
+    /// The logger to use, or <c>null</c> for <see cref="NullLogger.Instance"/>.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="streamReader"/> is <c>null</c>.
+    /// </exception>
+    /// <param name="options">
+    /// The options record forwarded to the base constructor, which applies the inherited
+    /// <see cref="ExtractorOptions"/> settings before this class applies its own; <c>null</c> keeps the defaults.
+    /// </param>
+    private CsvExtractor
+    (
+        StreamReader streamReader,
+        ILogger? logger,
+        CsvExtractorOptions<TRecord>? options
+    )
+        : base(options)
+    {
+        _reader = streamReader ?? throw new ArgumentNullException(nameof(streamReader));
+        _logger = logger ?? NullLogger.Instance;
+    }
+
+
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CsvExtractor{TRecord}"/> class configured from
+    /// an options record.
+    /// </summary>
+    /// <param name="streamReader">The <see cref="StreamReader"/> to read CSV data from.</param>
+    /// <param name="options">
+    /// The configuration to apply. When <c>null</c>, the documented defaults apply.
+    /// </param>
+    /// <param name="logger">
+    /// An optional logger instance for diagnostic output. When <c>null</c> — or omitted —
+    /// <see cref="NullLogger.Instance"/> is used and logging is disabled.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="streamReader"/> is <c>null</c>.
+    /// </exception>
+    [RequiresUnreferencedCode("CsvExtractor uses CsvHelper, which reflects over TRecord's members beyond what DynamicallyAccessedMembers can express (type converter constructors, non-public setters in some flows). The library is not trim/NativeAOT safe.")]
+    public CsvExtractor
+    (
+        StreamReader streamReader,
+        CsvExtractorOptions<TRecord>? options,
+        ILogger<CsvExtractor<TRecord>>? logger = null
+    )
+        : this(streamReader, logger, options)
+    {
+        ApplyOptions(options);
+    }
+
+
+
+    /// <summary>
+    /// Copies <paramref name="options"/> onto this instance. A <c>null</c> options object leaves
+    /// every property at its default.
+    /// </summary>
+    /// <param name="options">The configuration to apply, or <c>null</c>.</param>
+    internal void ApplyOptions(CsvExtractorOptions<TRecord>? options)
+    {
+        if (options is null)
+        {
+            return;
+        }
+
+        CsvSchema.ValidateOptions(options.Schema, options.ColumnMaps, typeof(TRecord), nameof(options));
+
+        _allowComments = options.AllowComments;
+        _comment = options.Comment;
+        _delimiter = options.Delimiter;
+        _escape = options.Escape;
+        _hasHeaderRecord = options.HasHeaderRecord;
+        _ignoreBlankLines = options.IgnoreBlankLines;
+        _leaveOpen = options.LeaveOpen;
+        _quote = options.Quote;
+        _trimOptions = options.TrimOptions;
+        _columnMaps = options.ColumnMaps;
+        _schema = options.Schema;
+        _discriminator = options.Discriminator;
+        _validators = options.Validators;
+        _onValidationFailure = options.OnValidationFailure;
+        _invalidRecordHandler = options.InvalidRecordHandler;
+        _initialRecordIndex = options.InitialRecordIndex;
+    }
+
+
+
+    private bool _allowComments;
+
     /// <summary>Gets or sets a value indicating whether comment lines are allowed.</summary>
-    public bool AllowComments { get; set; }
+    public bool AllowComments { get => _allowComments; [Obsolete("Configure AllowComments through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set => _allowComments = value; }
 
 
 
@@ -140,9 +245,9 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     /// </summary>
     /// <remarks>
     /// When <c>null</c> (the default), the exception is not logged by the library.
-    /// The exception always propagates out of <c>ExtractAsync</c> regardless of
-    /// the callback — this hook is for observation only. Wrap your <c>await foreach</c>
-    /// in <c>try / catch</c> if you want to swallow individual row failures.
+    /// This hook is for observation only. <see cref="ExtractorBase{TSource, TProgress}.ErrorPolicy"/>
+    /// decides skip-vs-abort: under the default fail-fast policy the exception propagates out of
+    /// <c>ExtractAsync</c>; a <c>Skip</c> policy drops the row and extraction continues.
     /// <code>
     /// extractor.ReadingExceptionOccurred = info =>
     ///     _logger.LogDebug(info.Exception, "Parse error on line {Line} column {Col}: {Value}",
@@ -154,20 +259,28 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
 
 
 
+    private char _comment = '#';
+
     /// <summary>Gets or sets the character used to mark a comment line.</summary>
-    public char Comment { get; set; } = '#';
+    public char Comment { get => _comment; [Obsolete("Configure Comment through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set => _comment = value; }
 
 
+
+    private string _delimiter = ",";
 
     /// <summary>Gets or sets the field delimiter. Default is <c>","</c>.</summary>
-    public string Delimiter { get; set; } = ",";
+    public string Delimiter { get => _delimiter; [Obsolete("Configure Delimiter through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set => _delimiter = value; }
 
 
+
+    private char _escape = '"';
 
     /// <summary>Gets or sets the character used to escape the quote character within a field.</summary>
-    public char Escape { get; set; } = '"';
+    public char Escape { get => _escape; [Obsolete("Configure Escape through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set => _escape = value; }
 
 
+
+    private Encoding _encoding = Encoding.UTF8;
 
     /// <summary>
     /// Gets or sets the encoding forwarded to the underlying parser configuration.
@@ -180,19 +293,25 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     /// is authoritative. To read a non-default encoding, construct the
     /// <see cref="StreamReader"/> with the encoding you want and ignore this property.
     /// </remarks>
-    public Encoding Encoding { get; set; } = Encoding.UTF8;
+    public Encoding Encoding { get => _encoding; [Obsolete("This property is inert - it never controlled how bytes are decoded or encoded. Construct the StreamReader with the encoding you want. This setter will be removed in a future release.")] set => _encoding = value; }
 
 
+
+    private bool _hasHeaderRecord = true;
 
     /// <summary>Gets or sets a value indicating whether the CSV has a header record.</summary>
-    public bool HasHeaderRecord { get; set; } = true;
+    public bool HasHeaderRecord { get => _hasHeaderRecord; [Obsolete("Configure HasHeaderRecord through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set => _hasHeaderRecord = value; }
 
 
+
+    private bool _ignoreBlankLines = true;
 
     /// <summary>Gets or sets a value indicating whether blank lines are skipped.</summary>
-    public bool IgnoreBlankLines { get; set; } = true;
+    public bool IgnoreBlankLines { get => _ignoreBlankLines; [Obsolete("Configure IgnoreBlankLines through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set => _ignoreBlankLines = value; }
 
 
+
+    private int _initialRecordIndex = 1;
 
     /// <summary>
     /// Gets or sets the 1-based index of the first line the parser will consume from
@@ -209,6 +328,7 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     public int InitialRecordIndex
     {
         get => _initialRecordIndex;
+        [Obsolete("Configure InitialRecordIndex through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")]
         set
         {
             if (value < 1)
@@ -219,9 +339,10 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
             _initialRecordIndex = value;
         }
     }
-    private int _initialRecordIndex = 1;
 
 
+
+    private bool _leaveOpen = true;
 
     /// <summary>
     /// Gets or sets a value indicating whether the underlying stream should be left open
@@ -231,19 +352,25 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     /// Defaults to <c>true</c> because the caller owns the <see cref="StreamReader"/>
     /// passed into the constructor.
     /// </remarks>
-    public bool LeaveOpen { get; set; } = true;
+    public bool LeaveOpen { get => _leaveOpen; [Obsolete("Configure LeaveOpen through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set => _leaveOpen = value; }
 
 
+
+    private char _quote = '"';
 
     /// <summary>Gets or sets the quote character used to wrap fields.</summary>
-    public char Quote { get; set; } = '"';
+    public char Quote { get => _quote; [Obsolete("Configure Quote through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set => _quote = value; }
 
 
+
+    private CsvTrimOptions _trimOptions = CsvTrimOptions.None;
 
     /// <summary>Gets or sets the trimming options applied while reading.</summary>
-    public CsvTrimOptions TrimOptions { get; set; } = CsvTrimOptions.None;
+    public CsvTrimOptions TrimOptions { get => _trimOptions; [Obsolete("Configure TrimOptions through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set => _trimOptions = value; }
 
 
+
+    private IReadOnlyList<CsvColumnMap>? _columnMaps;
 
     /// <summary>
     /// Gets or sets a runtime column-map collection that overrides any
@@ -256,9 +383,21 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     /// database "template" row. When non-null and non-empty, the runtime maps are the
     /// only source of property-to-column bindings; attribute-based mapping is bypassed.
     /// </remarks>
-    public IReadOnlyList<CsvColumnMap>? ColumnMaps { get; set; }
+    public IReadOnlyList<CsvColumnMap>? ColumnMaps { get => _columnMaps; [Obsolete("Configure ColumnMaps through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set => _columnMaps = value; }
 
 
+
+    private CsvSchema? _schema;
+
+    /// <summary>
+    /// Gets the code-first schema supplied through <see cref="CsvExtractorOptions{TRecord}.Schema"/>, or
+    /// <see langword="null"/> when mapping is driven by <see cref="ColumnMaps"/> or attributes.
+    /// </summary>
+    public CsvSchema? Schema => _schema;
+
+
+
+    private CsvDiscriminator<TRecord>? _discriminator;
 
     /// <summary>
     /// When set, each row is bound to a concrete record type chosen by a discriminator column, so a
@@ -267,32 +406,38 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     /// are tolerated so narrower row shapes bind cleanly, and an unmapped discriminator value is handled
     /// per <see cref="CsvDiscriminator{TBase}.UnknownDiscriminator"/>.
     /// </summary>
-    public CsvDiscriminator<TRecord>? Discriminator { get; set; }
+    public CsvDiscriminator<TRecord>? Discriminator { get => _discriminator; [Obsolete("Configure Discriminator through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set => _discriminator = value; }
 
 
+
+    private IReadOnlyList<CsvValidator<TRecord>>? _validators;
 
     /// <summary>
     /// Optional per-record validators run after each row is bound. A record that fails one or more of
     /// them is counted in <see cref="CsvExtractorProgress.CurrentInvalidItemCount"/>, passed to
     /// <see cref="InvalidRecordHandler"/>, and then handled per <see cref="OnValidationFailure"/>.
     /// </summary>
-    public IReadOnlyList<CsvValidator<TRecord>>? Validators { get; set; }
+    public IReadOnlyList<CsvValidator<TRecord>>? Validators { get => _validators; [Obsolete("Configure Validators through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set => _validators = value; }
 
 
+
+    private CsvValidationFailureAction _onValidationFailure = CsvValidationFailureAction.Stop;
 
     /// <summary>
     /// How a record that fails validation is handled. Defaults to <see cref="CsvValidationFailureAction.Stop"/>
     /// (the first invalid record raises a <see cref="CsvValidationException"/>).
     /// </summary>
-    public CsvValidationFailureAction OnValidationFailure { get; set; } = CsvValidationFailureAction.Stop;
+    public CsvValidationFailureAction OnValidationFailure { get => _onValidationFailure; [Obsolete("Configure OnValidationFailure through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set => _onValidationFailure = value; }
 
 
+
+    private Action<CsvInvalidRecord<TRecord>>? _invalidRecordHandler;
 
     /// <summary>
     /// Optional callback invoked for each record that fails validation, before <see cref="OnValidationFailure"/>
     /// is applied. Use it to log or quarantine invalid rows.
     /// </summary>
-    public Action<CsvInvalidRecord<TRecord>>? InvalidRecordHandler { get; set; }
+    public Action<CsvInvalidRecord<TRecord>>? InvalidRecordHandler { get => _invalidRecordHandler; [Obsolete("Configure InvalidRecordHandler through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set => _invalidRecordHandler = value; }
 
 
 
@@ -303,6 +448,7 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     public int SkipRecordCount
     {
         get => SkipItemCount;
+        [Obsolete("Configure SkipRecordCount through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")]
         set => SkipItemCount = value;
     }
 
@@ -315,6 +461,7 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     public int MaxRecordCount
     {
         get => MaximumItemCount;
+        [Obsolete("Configure MaxRecordCount through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")]
         set => MaximumItemCount = value;
     }
 
@@ -339,6 +486,9 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
             Escape = Escape,
             Encoding = Encoding,
             HasHeaderRecord = HasHeaderRecord,
+            // A polymorphic file's header describes the discriminator column, not the base type's members,
+            // and each row is bound per concrete type — so don't validate the header against TRecord.
+            HeaderValidated = Discriminator is not null ? null : ConfigurationFunctions.HeaderValidated,
             IgnoreBlankLines = IgnoreBlankLines,
             // A polymorphic file mixes row shapes of differing widths; tolerate missing trailing
             // fields so a narrower concrete type binds without tripping CsvHelper's default throw.
@@ -640,15 +790,30 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
 
 
 
+    // Same seam as CsvLoader.RegisterRecordMap. The requirement cannot move further out: the only caller is
+    // ExtractWorkerAsync, an override of an unannotated ExtractorBase member, where [RequiresUnreferencedCode]
+    // would be IL2046. It is surfaced instead at every public CsvExtractor constructor (and the EtlPipeline
+    // factory extensions), so no instance reaches this method without the consumer seeing the warning.
+    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Reached only through a CsvExtractor instance, whose public constructors carry [RequiresUnreferencedCode]; TRecord is annotated with PublicProperties and CsvClassMapFactory reflects only public properties of TRecord.")]
     private void RegisterRecordMap(CsvContext context)
     {
-        // Always register the base TRecord map (from ColumnMaps or attributes). When a discriminator
+        // Always register the base TRecord map (from Schema, ColumnMaps, or attributes). When a discriminator
         // is set this backs CsvDiscriminatorAction.YieldAsBase — GetRecord<TRecord>() then binds
         // through the intended base mapping instead of CsvHelper's default conventions. The map is
         // null for an attribute-less type with no ColumnMaps, in which case CsvHelper auto-maps.
-        var baseMap = ColumnMaps is { Count: > 0 }
-            ? CsvClassMapFactory.BuildFromColumnMaps<TRecord>(ColumnMaps)
-            : CsvClassMapFactory.GetMap<TRecord>();
+        ClassMap? baseMap;
+        if (_schema is not null)
+        {
+            baseMap = CsvClassMapFactory.BuildFromColumnMaps<TRecord>(_schema.Columns);
+        }
+        else if (ColumnMaps is { Count: > 0 })
+        {
+            baseMap = CsvClassMapFactory.BuildFromColumnMaps<TRecord>(ColumnMaps);
+        }
+        else
+        {
+            baseMap = CsvClassMapFactory.GetMap<TRecord>();
+        }
 
         if (baseMap is not null)
         {
@@ -694,10 +859,7 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
             if (!result.IsValid)
             {
                 failures ??= new List<string>();
-                if (result.Failures is not null)
-                {
-                    failures.AddRange(result.Failures);
-                }
+                failures.AddRange(result.Failures);
             }
         }
 

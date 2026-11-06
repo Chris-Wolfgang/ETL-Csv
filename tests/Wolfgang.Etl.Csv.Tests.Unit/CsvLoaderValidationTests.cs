@@ -1,12 +1,15 @@
-using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Wolfgang.Etl.Csv.Tests.Unit.TestModels;
 using Xunit;
+
+// These files still configure via the deprecated property setters in places where the value is
+// applied after construction, so it cannot travel through the options constructor without
+// restructuring the test. They keep exercising the setter path until the setters are removed.
+#pragma warning disable CS0618
 
 namespace Wolfgang.Etl.Csv.Tests.Unit;
 
@@ -28,11 +31,15 @@ public class CsvLoaderValidationTests
     private static CsvLoader<Order> CreateLoader(MemoryStream stream, out StreamWriter writer)
     {
         writer = new StreamWriter(stream, Utf8NoBom, 1024, leaveOpen: true);
-        return new CsvLoader<Order>(writer)
-        {
-            LeaveOpen = true,
-            Validators = new[] { CsvValidator.GreaterThan<Order>(o => o.Quantity, 0, "Quantity") },
-        };
+        return new CsvLoader<Order>
+        (
+            writer,
+            new CsvLoaderOptions<Order>
+            {
+                LeaveOpen = true,
+                Validators = new[] { CsvValidator.GreaterThan<Order>(o => o.Quantity, 0, "Quantity") },
+            }
+        );
     }
 
 
@@ -64,7 +71,31 @@ public class CsvLoaderValidationTests
         Assert.DoesNotContain("A2", output);
         Assert.Equal(2, loader.CurrentItemCount);
         Assert.NotNull(captured);
-        Assert.Equal("A2", captured!.Record.OrderNumber);
+        Assert.Equal("A2", captured.Record.OrderNumber);
+    }
+
+
+
+    [Fact]
+    public async Task LoadAsync_when_InvalidRecordHandler_is_configured_through_the_options_record_receives_the_invalid_record()
+    {
+        using var stream = new MemoryStream();
+        var writer = new StreamWriter(stream, Utf8NoBom, 1024, leaveOpen: true);
+        CsvInvalidRecord<Order>? captured = null;
+        var loader = new CsvLoader<Order>(writer, new CsvLoaderOptions<Order>
+        {
+            LeaveOpen = true,
+            Validators = new[] { CsvValidator.GreaterThan<Order>(o => o.Quantity, 0, "Quantity") },
+            OnValidationFailure = CsvValidationFailureAction.Skip,
+            InvalidRecordHandler = invalid => captured = invalid,
+        });
+
+        var output = await LoadAndReadAsync(loader, stream, writer, Orders);
+        writer.Dispose();
+
+        Assert.DoesNotContain("A2", output);
+        Assert.NotNull(captured);
+        Assert.Equal("A2", captured.Record.OrderNumber);
     }
 
 
@@ -130,7 +161,14 @@ public class CsvLoaderValidationTests
     {
         using var stream = new MemoryStream();
         var writer = new StreamWriter(stream, Utf8NoBom, 1024, leaveOpen: true);
-        var loader = new CsvLoader<Order>(writer) { LeaveOpen = true };
+        var loader = new CsvLoader<Order>
+        (
+            writer,
+            new CsvLoaderOptions<Order>
+            {
+                LeaveOpen = true,
+            }
+        );
 
         var output = await LoadAndReadAsync(loader, stream, writer, Orders);
         writer.Dispose();
@@ -170,7 +208,6 @@ public class CsvLoaderValidationTests
 
 
 
-    [ExcludeFromCodeCoverage]
     public record Order
     {
         public string OrderNumber { get; set; } = string.Empty;

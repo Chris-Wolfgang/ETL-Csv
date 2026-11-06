@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using CsvHelper;
 using CsvHelper.Configuration;
 
+// ReSharper disable once CheckNamespace -- the public surface is one flat namespace; Mapping/ is organisational
 namespace Wolfgang.Etl.Csv;
 
 /// <summary>
@@ -72,7 +74,12 @@ public sealed class CsvDiscriminatorBuilder<TBase>
             ? CsvClassMapFactory.BuildFromColumnMaps<T>(columnMaps)
             : CsvClassMapFactory.GetMap<T>();
 
-        _entries.Add(new Entry(discriminatorValue, typeof(T), map, columnMaps));
+        // Capture a statically-rooted CsvWriter.WriteRecord<T> — because T is a compile-time type
+        // parameter here, the closed generic is reachable to the trimmer/AOT compiler, so the loader
+        // can write by runtime type without the non-AOT-safe MakeGenericMethod path.
+        Action<CsvWriter, object> writer = static (csvWriter, record) => csvWriter.WriteRecord((T)record);
+
+        _entries.Add(new Entry(discriminatorValue, typeof(T), map, columnMaps, writer));
 
         return this;
     }
@@ -96,15 +103,33 @@ public sealed class CsvDiscriminatorBuilder<TBase>
 
 
     /// <summary>Builds the immutable <see cref="CsvDiscriminator{TBase}"/>.</summary>
+    /// <exception cref="InvalidOperationException">
+    /// The same discriminator value, or the same concrete type, was mapped more than once.
+    /// </exception>
     public CsvDiscriminator<TBase> Build()
     {
         var mapping = new Dictionary<string, Type>(_comparer);
         var perTypeColumnMaps = new Dictionary<Type, IReadOnlyList<CsvColumnMap>>();
         var classMaps = new List<ClassMap>();
+        var writers = new Dictionary<Type, Action<CsvWriter, object>>();
+        var seenTypes = new HashSet<Type>();
 
         foreach (var entry in _entries)
         {
+            // Reject ambiguous mappings up front: a value mapped twice, or a type mapped to two values
+            // (which would make the loader's reverse type -> value lookup non-deterministic).
+            if (mapping.ContainsKey(entry.Value))
+            {
+                throw new InvalidOperationException($"Discriminator value '{entry.Value}' is mapped more than once.");
+            }
+
+            if (!seenTypes.Add(entry.Type))
+            {
+                throw new InvalidOperationException($"Type '{entry.Type}' is mapped to more than one discriminator value.");
+            }
+
             mapping[entry.Value] = entry.Type;
+            writers[entry.Type] = entry.Writer;
 
             if (entry.Columns is { Count: > 0 })
             {
@@ -126,9 +151,10 @@ public sealed class CsvDiscriminatorBuilder<TBase>
             Comparer = _comparer,
             PerTypeColumnMaps = perTypeColumnMaps.Count > 0 ? perTypeColumnMaps : null,
             PrebuiltClassMaps = classMaps,
+            PrebuiltWriters = writers,
         };
     }
 
 
-    private sealed record Entry(string Value, Type Type, ClassMap? Map, IReadOnlyList<CsvColumnMap>? Columns);
+    private sealed record Entry(string Value, Type Type, ClassMap? Map, IReadOnlyList<CsvColumnMap>? Columns, Action<CsvWriter, object> Writer);
 }

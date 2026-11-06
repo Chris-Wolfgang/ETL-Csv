@@ -4,11 +4,12 @@ A `CsvExtractor<T>` and `CsvLoader<T>` for streaming CSV files into and out of s
 
 [![NuGet](https://img.shields.io/nuget/v/Wolfgang.Etl.Csv.svg?logo=nuget&label=NuGet)](https://www.nuget.org/packages/Wolfgang.Etl.Csv/)
 [![Downloads](https://img.shields.io/nuget/dt/Wolfgang.Etl.Csv.svg?logo=nuget&label=downloads)](https://www.nuget.org/packages/Wolfgang.Etl.Csv/)
-[![PR build](https://img.shields.io/github/actions/workflow/status/Chris-Wolfgang/ETL-Csv/pr.yaml?event=pull_request_target&label=PR%20build&logo=github)](https://github.com/Chris-Wolfgang/ETL-Csv/actions/workflows/pr.yaml)
+[![PR build](https://img.shields.io/github/actions/workflow/status/Chris-Wolfgang/ETL-Csv/pr.yaml?event=pull_request&label=PR%20build&logo=github)](https://github.com/Chris-Wolfgang/ETL-Csv/actions/workflows/pr.yaml)
 [![release](https://img.shields.io/github/actions/workflow/status/Chris-Wolfgang/ETL-Csv/release.yaml?event=release&label=release&logo=github)](https://github.com/Chris-Wolfgang/ETL-Csv/actions/workflows/release.yaml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![.NET](https://img.shields.io/badge/.NET-Multi--Targeted-purple.svg)](https://dotnet.microsoft.com/)
 [![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?logo=github)](https://github.com/Chris-Wolfgang/ETL-Csv)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/Chris-Wolfgang/ETL-Csv/badge)](https://scorecard.dev/viewer/?uri=github.com/Chris-Wolfgang/ETL-Csv)
 
 ---
 
@@ -18,7 +19,7 @@ A `CsvExtractor<T>` and `CsvLoader<T>` for streaming CSV files into and out of s
 dotnet add package Wolfgang.Etl.Csv
 ```
 
-**NuGet Package:** Coming soon to NuGet.org
+**NuGet Package:** [Wolfgang.Etl.Csv on NuGet.org](https://www.nuget.org/packages/Wolfgang.Etl.Csv/)
 
 ---
 
@@ -32,9 +33,11 @@ This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) f
 
 - **GitHub Repository:** [https://github.com/Chris-Wolfgang/ETL-Csv](https://github.com/Chris-Wolfgang/ETL-Csv)
 - **API Documentation:** https://Chris-Wolfgang.github.io/ETL-Csv/
-- **Formatting Guide:** [README-FORMATTING.md](README-FORMATTING.md)
+- **Formatting Guide:** [docs/README-FORMATTING.md](docs/README-FORMATTING.md)
 - **Contributing Guide:** [CONTRIBUTING.md](CONTRIBUTING.md)
 - **Cookbook — resumable extraction:** [docs/cookbook/resumable-extraction.md](docs/cookbook/resumable-extraction.md)
+- **Cookbook — polymorphic rows (mixed shapes):** [docs/cookbook/polymorphic-rows.md](docs/cookbook/polymorphic-rows.md)
+- **Cookbook — streaming record validation:** [docs/cookbook/record-validation.md](docs/cookbook/record-validation.md)
 
 ---
 
@@ -101,15 +104,20 @@ That's the full surface for the simplest case. The library auto-maps record prop
 | Progress reporting with item count, skip count, line number, bad-data count | `CsvExtractorProgress`, `CsvLoaderProgress` |
 | Cancellation support throughout | `CancellationToken` on every async API |
 | Skip metadata rows / start at a specific line | `InitialRecordIndex` |
-| Limit how many records get processed | `MaxRecordCount`, `SkipRecordCount` |
+| Limit how many records get processed | `MaximumItemCount`, `SkipItemCount` (options record) |
 | Compile-time column mapping (declarative) | `[CsvColumn]`, `[CsvIgnore]` |
 | Runtime column mapping (configuration / DB-driven layouts) | `CsvColumnMap`, `ColumnMaps` property |
+| Type-safe code-first schema (undecorated / generated types) | `CsvSchemaBuilder<T>`, `CsvSchema`, `Schema` option |
 | Parser-agnostic public surface (no `CsvHelper` types leaked) | `CsvTrimOptions`, `CsvBadDataInfo`, `CsvShouldQuoteContext` |
 | Custom delimiter, quote, escape, comment character | `Delimiter`, `Quote`, `Escape`, `Comment`, `AllowComments` |
-| Encoding control | `Encoding` |
 | `LeaveOpen` semantics matching .NET conventions | `LeaveOpen` |
 | Trim whitespace inside or outside quotes | `TrimOptions` |
-| Custom bad-data, parse-error, and quoting callbacks | `BadDataFound`, `ReadingExceptionOccurred`, `ShouldQuote` |
+| Skip-or-abort policy for rows that fail to parse or convert | `ErrorPolicy` (options record) |
+| Custom quoting callback | `ShouldQuote` |
+
+CSV knobs are configured through `CsvExtractorOptions<TRecord>` / `CsvLoaderOptions<TRecord>` passed to the constructor. The settable properties on the stages themselves are `[Obsolete]`.
+
+The stream's text encoding is whatever the `StreamReader` / `StreamWriter` you pass in was constructed with. The `Encoding` property is inert.
 
 ### Example: Compile-time column mapping with `[CsvColumn]`
 
@@ -141,20 +149,41 @@ When column positions come from configuration or a database — for example, sev
 ```csharp
 var template = LoadTemplateFromDb("supplier-a"); // 1-based positions per the user's domain
 
-var extractor = new CsvExtractor<ProductRecord>(reader)
-{
-    InitialRecordIndex = template.StartRow,
-    HasHeaderRecord = false,
-    ColumnMaps = new[]
+var extractor = new CsvExtractor<ProductRecord>
+(
+    reader,
+    new CsvExtractorOptions<ProductRecord>
     {
-        new CsvColumnMap(nameof(ProductRecord.ProductNumber)) { Index = template.ProductNumberColumn - 1 },
-        new CsvColumnMap(nameof(ProductRecord.RetailPrice))   { Index = template.RetailPriceColumn   - 1 },
-        new CsvColumnMap(nameof(ProductRecord.MSRP))          { Index = template.MsrpColumn          - 1 },
-    },
-};
+        InitialRecordIndex = template.StartRow,
+        HasHeaderRecord = false,
+        ColumnMaps = new[]
+        {
+            new CsvColumnMap(nameof(ProductRecord.ProductNumber)) { Index = template.ProductNumberColumn - 1 },
+            new CsvColumnMap(nameof(ProductRecord.RetailPrice))   { Index = template.RetailPriceColumn   - 1 },
+            new CsvColumnMap(nameof(ProductRecord.MSRP))          { Index = template.MsrpColumn          - 1 },
+        },
+    }
+);
 ```
 
 When `ColumnMaps` is non-null and non-empty, runtime maps override any attribute-based mapping for that instance. See the runnable example under [`examples/Wolfgang.Etl.Csv.Examples.DynamicTemplates/`](examples/Wolfgang.Etl.Csv.Examples.DynamicTemplates/).
+
+### Example: Type-safe schema builder (for records you can't decorate)
+
+When the record is a third-party or generated type you can't put `[CsvColumn]` on — or you'd rather keep the layout in code — describe it with `CsvSchemaBuilder<T>`. Property selectors are compile-time checked and survive a rename, and `.Build()` produces a `CsvSchema` that is applied through the same mapping path as attributes, so a code-built schema behaves identically to the equivalent attributed record:
+
+```csharp
+var schema = new CsvSchemaBuilder<Order>()
+    .Column(o => o.Id,       name: "order_id")
+    .Column(o => o.PlacedOn, name: "placed_at", format: "yyyy-MM-dd")
+    .Column(o => o.Total,    name: "amount",    format: "0.00")
+    .Build();
+
+var extractor = new CsvExtractor<Order>(reader, new CsvExtractorOptions<Order> { Schema = schema });
+var loader    = new CsvLoader<Order>(writer,    new CsvLoaderOptions<Order>    { Schema = schema });
+```
+
+`.Column(selector, name, index, format, optional, default)` mirrors every `[CsvColumn]` / `CsvColumnMap` field. A column binds by name or by index, not both: passing a non-blank `name` together with a non-negative `index`, or a blank `name`, throws `ArgumentException` (stricter than `[CsvColumn]`, which tolerates both); pass neither to bind by the property's own name. `Schema` overrides attribute resolution for that instance and is mutually exclusive with `ColumnMaps`; leaving both unset keeps attribute behaviour. A schema is bound to the record type it was built for — an extractor or loader for a different type rejects it at construction. `CsvSchema.For<T>()` reifies a type's attribute-resolved mapping as a `CsvSchema` you can inspect (`RecordType`, `Columns`). See the runnable example under [`examples/Wolfgang.Etl.Csv.Examples.SchemaBuilder/`](examples/Wolfgang.Etl.Csv.Examples.SchemaBuilder/).
 
 ### Example: Progress reporting
 
@@ -170,26 +199,86 @@ await foreach (var person in extractor.ExtractAsync(progress, cancellationToken)
 
 `ReportingInterval` (inherited from `ExtractorBase`) controls how often progress is sampled.
 
-### Example: Observing bad data and parse errors
+### Example: Handling rows that fail to parse
 
-The library does **not** log CSV record contents by default — bad-data rows and
-parse exceptions can contain PII. Wire `BadDataFound` and `ReadingExceptionOccurred`
-to your own logger when you want visibility. `LogDebug` is recommended so the raw
-field values only surface when an operator explicitly turns up verbosity:
+A row that fails type conversion or mapping goes through `ErrorPolicy`, which comes from
+`ExtractorOptions` in `Wolfgang.Etl.Abstractions`. The default is fail-fast: the exception propagates
+out of `ExtractAsync`. Return `ItemErrorAction.Skip` to drop the row and keep going. Skipped rows are
+counted in `CurrentErrorItemCount` on the extractor and its progress report.
+
+The library does **not** log CSV record contents by default, because bad rows can contain PII. Log
+them from the policy yourself if you want them. `LogDebug` keeps raw values out of normal logs:
 
 ```csharp
-extractor.BadDataFound = info =>
-    _logger.LogDebug("Bad CSV data on line {Line}: {Field}", info.LineNumber, info.Field);
-
-extractor.ReadingExceptionOccurred = info =>
-    _logger.LogDebug(
-        info.Exception,
-        "Parse error on line {Line}, column '{Column}', value '{Value}'",
-        info.LineNumber, info.ColumnName, info.ColumnValue);
+var extractor = new CsvExtractor<Person>
+(
+    reader,
+    new CsvExtractorOptions<Person>
+    {
+        ErrorPolicy = context =>
+        {
+            _logger.LogDebug(context.Exception, "Skipping a CSV row that failed to parse");
+            return ItemErrorAction.Skip;
+        },
+    }
+);
 ```
 
-Both callbacks are observation-only — `ReadingExceptionOccurred` does not suppress
-the underlying exception, which still propagates out of `ExtractAsync`.
+The older `BadDataFound` and `ReadingExceptionOccurred` callbacks are `[Obsolete]`. They still fire,
+but only to observe. `ErrorPolicy` decides whether a row is skipped or aborts the run.
+
+`ErrorPolicy` applies to `CsvExtractor<T>` only. `CsvLoader<T>` inherits the setting but does not
+consult it: CsvHelper writes a record's fields out one at a time, so a record that fails partway
+cannot be withdrawn without leaving a half-written row. A write failure always propagates out of
+`LoadAsync`. To drop records before they are written, use `Validators` with
+`OnValidationFailure = CsvValidationFailureAction.Skip`.
+
+### Example: Polymorphic rows (mixed shapes in one file)
+
+Bind each row to a different concrete type chosen by a discriminator column — a header/detail/trailer
+file, for instance. Build a `CsvDiscriminator<TBase>` and set it on the extractor (and the loader, to
+write the shapes back). Full walkthrough: [docs/cookbook/polymorphic-rows.md](docs/cookbook/polymorphic-rows.md).
+
+```csharp
+var discriminator = new CsvDiscriminatorBuilder<LedgerRow>(columnIndex: 0)
+    .Map<HeaderRow>("HDR", headerColumns)
+    .Map<PaymentRow>("PMT", paymentColumns)
+    .Map<TrailerRow>("TRL", trailerColumns)
+    .Build();
+
+var extractor = new CsvExtractor<LedgerRow>
+(
+    reader,
+    new CsvExtractorOptions<LedgerRow>
+    {
+        HasHeaderRecord = false, Discriminator = discriminator
+    }
+);
+// each yielded row is a HeaderRow / PaymentRow / TrailerRow
+```
+
+### Example: Streaming record validation
+
+Run per-record validators after each row binds and choose a failure policy — `Skip` drops dirty rows,
+counts them, and reports each, instead of aborting the batch. The same trio works on `CsvLoader<TRecord>`.
+Full walkthrough: [docs/cookbook/record-validation.md](docs/cookbook/record-validation.md).
+
+```csharp
+var extractor = new CsvExtractor<Order>
+(
+    reader,
+    new CsvExtractorOptions<Order>
+    {
+        Validators =
+        [
+            CsvValidator.NotNullOrEmpty<Order>(o => o.OrderNumber, nameof(Order.OrderNumber)),
+            CsvValidator.GreaterThan<Order>(o => o.Quantity, 0, nameof(Order.Quantity)),
+        ],
+        OnValidationFailure = CsvValidationFailureAction.Skip,
+        InvalidRecordHandler = bad => _logger.LogWarning("Row {Line}: {Why}", bad.LineNumber, string.Join("; ", bad.Failures)),
+    }
+);
+```
 
 ---
 
@@ -199,7 +288,9 @@ This library targets:
 
 - **.NET Framework:** 4.6.2
 - **.NET Standard:** 2.0, 2.1
-- **.NET:** 8.0, 10.0
+- **.NET:** 5.0, 6.0, 7.0, 8.0, 10.0
+
+The out-of-support 5.0–7.0 targets exist for binary compatibility with `Wolfgang.Etl.Abstractions`, which ships per-runtime assemblies: an `init`-only setter's `IsExternalInit` modreq has a different identity in its `netstandard2.0` and `net5.0+` builds, so a `netstandard`-compiled Wolfgang.Etl.Csv running on .NET 5–7 would fail with `MissingMethodException` when it sets an inherited option (for example `SkipRecordCount` forwarding to `SkipItemCount`). Each Wolfgang.Etl.Csv assembly is compiled against the matching Abstractions assembly instead.
 
 See the [NuGet package page](https://www.nuget.org/packages/Wolfgang.Etl.Csv/) for the authoritative per-TFM compatibility matrix.
 
@@ -216,7 +307,7 @@ The public `CsvExtractor` and `CsvLoader` constructors are annotated `[RequiresU
 
 ## 🔍 Code Quality & Static Analysis
 
-This project enforces **strict code quality standards** through **7 specialized analyzers** and custom async-first rules:
+This project enforces **strict code quality standards** through **8 specialized analyzers** and custom async-first rules:
 
 ### Analyzers in Use
 
@@ -227,6 +318,7 @@ This project enforces **strict code quality standards** through **7 specialized 
 5. **Microsoft.CodeAnalysis.BannedApiAnalyzers** - Prevents usage of banned synchronous APIs
 6. **Meziantou.Analyzer** - Comprehensive code quality rules
 7. **SonarAnalyzer.CSharp** - Industry-standard code analysis
+8. **Microsoft.CodeAnalysis.PublicApiAnalyzers** - Tracks the shipped public surface (RS0016/RS0017)
 
 ### Async-First Enforcement
 
@@ -247,7 +339,7 @@ This library uses **`BannedSymbols.txt`** to prohibit synchronous APIs and enfor
 ## 🛠️ Building from Source
 
 ### Prerequisites
-- [.NET 10.0 SDK](https://dotnet.microsoft.com/download) — required to build the highest TFM (`net10.0`). Older TFM targets (`net462`, `netstandard2.0`/`2.1`, `net8.0`) compile through the .NET 10 SDK; you don't need additional SDKs installed.
+- [.NET 10.0 SDK](https://dotnet.microsoft.com/download) — required to build the highest TFM (`net10.0`). Older TFM targets (`net462`, `netstandard2.0`/`2.1`, `net5.0`–`net8.0`) compile through the .NET 10 SDK; you don't need additional SDKs installed.
 - Optional: [PowerShell Core](https://github.com/PowerShell/PowerShell) for formatting scripts
 
 ### Build Steps
@@ -267,7 +359,7 @@ dotnet build --configuration Release
 dotnet test --configuration Release
 
 # Run code formatting (PowerShell Core)
-pwsh ./format.ps1
+pwsh ./scripts/format.ps1
 ```
 
 ### Code Formatting
@@ -282,7 +374,7 @@ dotnet format
 dotnet format --verify-no-changes
 ```
 
-See [README-FORMATTING.md](README-FORMATTING.md) for detailed formatting guidelines.
+See [docs/README-FORMATTING.md](docs/README-FORMATTING.md) for detailed formatting guidelines.
 
 ### Building Documentation
 
@@ -297,10 +389,10 @@ cd docfx_project
 docfx metadata  # Extract API metadata from source code
 docfx build     # Build HTML documentation
 
-# Documentation is generated in the docs/ folder at the repository root
+# Documentation is generated in docfx_project/_site/
 ```
 
-The documentation is automatically built and deployed to GitHub Pages when changes are pushed to the `main` branch.
+The documentation is built and deployed to GitHub Pages when a release is published: `release.yaml` calls the reusable `docfx.yaml` workflow, which can also be run by hand (`workflow_dispatch`).
 
 **Local Preview:**
 ```bash
@@ -313,7 +405,8 @@ docfx build --serve
 
 **Documentation Structure:**
 - `docfx_project/` - DocFX configuration and source files
-- `docs/` - Generated HTML documentation (published to GitHub Pages)
+- `docfx_project/_site/` - Generated HTML documentation (published to GitHub Pages; not committed)
+- `docs/` - Hand-written docs: ADRs, cookbook, workflow notes
 - `docfx_project/index.md` - Main landing page content
 - `docfx_project/docs/` - Additional documentation articles
 - `docfx_project/api/` - Auto-generated API reference YAML files

@@ -7,6 +7,11 @@ updates:
     open-pull-requests-limit: 10
     labels:
       - "dependencies"
+    # CsvHelper 34 is a breaking API rewrite, so a grouped PR carrying it fails to build and
+    # holds back every other bump in the group. Remove this when #514 does the migration.
+    ignore:
+      - dependency-name: "CsvHelper"
+        update-types: ["version-update:semver-major"]
     groups:
       dotnet-dependencies:
         patterns:
@@ -22,5 +27,21 @@ updates:
       - "dependencies"
     groups:
       github-actions:
+        patterns:
+          - "*"
+
+  # Keep the hash-pinned pip tooling (zizmor, semgrep) under .github/requirements
+  # up to date. Without this the --require-hashes pins never move, leaving both
+  # tools frozen at whatever version was current when they were pinned;
+  # Dependabot regenerates the hashes along with the versions.
+  - package-ecosystem: "pip"
+    directory: "/.github/requirements"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+    groups:
+      pip-tooling:
         patterns:
           - "*"

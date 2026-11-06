@@ -52,30 +52,37 @@ public class CsvExtractorTests
 
 
 
-    protected override CsvExtractor<PersonRecord> CreateSut(int itemCount)
+    private static async Task<List<PersonRecord>> ExtractAllAsync(CsvExtractor<PersonRecord> sut)
+    {
+        var results = new List<PersonRecord>();
+        await foreach (var item in sut.ExtractAsync())
+        {
+            results.Add(item);
+        }
+
+        return results;
+    }
+
+
+
+    protected override CsvExtractor<PersonRecord> CreateSut(int itemCount, int maximumItemCount, int skipItemCount, int reportingInterval)
     {
         var items = ExpectedItems.Take(itemCount).ToList();
-        return new CsvExtractor<PersonRecord>(CreateCsvStream(items));
+        return new CsvExtractor<PersonRecord>
+        (
+            CreateCsvStream(items),
+            new CsvExtractorOptions<PersonRecord>
+            {
+                MaximumItemCount = maximumItemCount,
+                SkipItemCount = skipItemCount,
+                ReportingInterval = reportingInterval,
+            }
+        );
     }
 
 
 
     protected override IReadOnlyList<PersonRecord> CreateExpectedItems() => ExpectedItems;
-
-
-
-    protected override CsvExtractor<PersonRecord> CreateSutWithTimer
-    (
-        IProgressTimer timer
-    )
-    {
-        return new CsvExtractor<PersonRecord>
-        (
-            CreateCsvStream(ExpectedItems),
-            NullLogger<CsvExtractor<PersonRecord>>.Instance,
-            timer
-        );
-    }
 
 
 
@@ -106,15 +113,38 @@ public class CsvExtractorTests
 
 
     [Fact]
-    public void Constructor_with_logger_when_logger_is_null_throws_ArgumentNullException()
+    public async Task Constructor_when_logger_is_null_extracts_every_record_without_logging()
     {
-        Assert.Throws<ArgumentNullException>
+        // logger is now an optional trailing parameter; null means "no logging"
+        // (NullLogger.Instance) rather than an argument error.
+        var sut = new CsvExtractor<PersonRecord>
         (
-            () => new CsvExtractor<PersonRecord>
-            (
-                CreateCsvStream(ExpectedItems),
-                logger: null!
-            )
+            CreateCsvStream(ExpectedItems),
+            logger: null
+        );
+
+        var results = await ExtractAllAsync(sut);
+
+        Assert.Equal
+        (
+            ExpectedItems,
+            results
+        );
+    }
+
+
+
+    [Fact]
+    public async Task Constructor_when_logger_is_omitted_extracts_every_record_without_logging()
+    {
+        var sut = new CsvExtractor<PersonRecord>(CreateCsvStream(ExpectedItems));
+
+        var results = await ExtractAllAsync(sut);
+
+        Assert.Equal
+        (
+            ExpectedItems,
+            results
         );
     }
 
@@ -128,8 +158,8 @@ public class CsvExtractorTests
             () => new CsvExtractor<PersonRecord>
             (
                 CreateCsvStream(ExpectedItems),
-                NullLogger<CsvExtractor<PersonRecord>>.Instance,
-                null!
+                (IProgressTimer)null!,
+                NullLogger<CsvExtractor<PersonRecord>>.Instance
             )
         );
     }
@@ -144,8 +174,8 @@ public class CsvExtractorTests
             () => new CsvExtractor<PersonRecord>
             (
                 null!,
-                NullLogger<CsvExtractor<PersonRecord>>.Instance,
-                new ManualProgressTimer()
+                new ManualProgressTimer(),
+                NullLogger<CsvExtractor<PersonRecord>>.Instance
             )
         );
     }
@@ -153,16 +183,22 @@ public class CsvExtractorTests
 
 
     [Fact]
-    public void Internal_constructor_when_logger_is_null_does_not_throw()
+    public async Task Internal_constructor_when_logger_is_null_extracts_every_record()
     {
         var sut = new CsvExtractor<PersonRecord>
         (
             CreateCsvStream(ExpectedItems),
-            logger: null,
-            new ManualProgressTimer()
+            new ManualProgressTimer(),
+            logger: null
         );
 
-        Assert.NotNull(sut);
+        var results = await ExtractAllAsync(sut);
+
+        Assert.Equal
+        (
+            ExpectedItems,
+            results
+        );
     }
 
 
@@ -187,9 +223,9 @@ public class CsvExtractorTests
             // drain
         }
 
-        // StreamReader liveness — implicit assertion via Peek not throwing.
-        var peeked = reader.Peek();
-        Assert.True(peeked == -1 || peeked >= 0);
+        // StreamReader liveness: Peek on a disposed reader throws ObjectDisposedException.
+        var peekException = Record.Exception(() => reader.Peek());
+        Assert.Null(peekException);
 
         // Underlying stream is also still readable.
         Assert.True(stream.CanRead);
@@ -206,6 +242,18 @@ public class CsvExtractorTests
         (
             () => sut.InitialRecordIndex = 0
         );
+    }
+
+
+    [Fact]
+    public void CsvExtractorOptions_InitialRecordIndex_when_init_to_zero_throws_ArgumentOutOfRangeException()
+    {
+        var exception = Assert.Throws<ArgumentOutOfRangeException>
+        (
+            () => new CsvExtractorOptions<PersonRecord> { InitialRecordIndex = 0 }
+        );
+
+        Assert.Equal("value", exception.ParamName);
     }
 
 
@@ -310,11 +358,11 @@ public class CsvExtractorTests
         // check could stop us.
         var csv = "FirstName,LastName,Age\r\nAlice,Smith,30\r\nBo\"b,Jones,25\r\n";
         var stream = new MemoryStream(Encoding.UTF8.GetBytes(csv));
-        var badDataFires = 0;
+        var badData = new SyncProgress<CsvBadDataInfo>();
         var sut = new CsvExtractor<PersonRecord>(new StreamReader(stream, Encoding.UTF8))
         {
             MaximumItemCount = 1,
-            BadDataFound = _ => { badDataFires++; },
+            BadDataFound = badData.Report,
         };
 
         var results = new List<PersonRecord>();
@@ -325,7 +373,7 @@ public class CsvExtractorTests
 
         Assert.Single(results);
         Assert.Equal("Alice", results[0].FirstName);
-        Assert.Equal(0, badDataFires);   // never read past the limit, so the bad row never fires
+        Assert.Equal(0, badData.CallCount);   // never read past the limit, so the bad row never fires
     }
 
 
@@ -345,7 +393,7 @@ public class CsvExtractorTests
         }
 
         Assert.NotNull(progress.LastValue);
-        Assert.True(progress.LastValue!.CurrentBadDataCount >= 1);
+        Assert.True(progress.LastValue.CurrentBadDataCount >= 1);
     }
 
 
@@ -422,7 +470,7 @@ public class CsvExtractorTests
 
 
     [Fact]
-    public void Constructor_with_logger_when_args_valid_returns_instance()
+    public async Task Constructor_with_logger_when_args_valid_extracts_every_record()
     {
         var sut = new CsvExtractor<PersonRecord>
         (
@@ -430,7 +478,13 @@ public class CsvExtractorTests
             NullLogger<CsvExtractor<PersonRecord>>.Instance
         );
 
-        Assert.NotNull(sut);
+        var results = await ExtractAllAsync(sut);
+
+        Assert.Equal
+        (
+            ExpectedItems,
+            results
+        );
     }
 
 
@@ -440,7 +494,7 @@ public class CsvExtractorTests
     {
         var sut = new CsvExtractor<PersonRecord>(CreateCsvStream(ExpectedItems))
         {
-            SkipRecordCount = 7,
+            SkipItemCount = 7,
         };
 
         Assert.Equal(7, sut.SkipRecordCount);
@@ -454,7 +508,7 @@ public class CsvExtractorTests
     {
         var sut = new CsvExtractor<PersonRecord>(CreateCsvStream(ExpectedItems))
         {
-            MaxRecordCount = 11,
+            MaximumItemCount = 11,
         };
 
         Assert.Equal(11, sut.MaxRecordCount);
@@ -477,13 +531,7 @@ public class CsvExtractorTests
 
         return Assert.ThrowsAsync<CsvHelper.TypeConversion.TypeConverterException>
         (
-            async () =>
-            {
-                await foreach (var _ in sut.ExtractAsync().ConfigureAwait(false))
-                {
-                    // drain
-                }
-            }
+            async () => await sut.ExtractAsync().ToListAsync()
         );
     }
 
@@ -515,7 +563,7 @@ public class CsvExtractorTests
         );
 
         Assert.NotNull(captured);
-        Assert.NotNull(captured!.Exception);
+        Assert.NotNull(captured.Exception);
         Assert.Equal(2, captured.LineNumber);
         Assert.Equal(3, captured.ColumnNumber);
         Assert.Equal("Age", captured.ColumnName);

@@ -14,18 +14,38 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="coverlet.collector" Version="10.0.1">
+    <PackageReference Include="coverlet.collector" Version="10.1.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="10.0.10" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.3.0" Condition="!$(TargetFramework.StartsWith('net5.')) AND !$(TargetFramework.StartsWith('net6.')) AND !$(TargetFramework.StartsWith('net7.')) AND !$(TargetFramework.StartsWith('netcoreapp'))" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.9.0" Condition="!$(TargetFramework.StartsWith('net5.')) AND !$(TargetFramework.StartsWith('net6.')) AND !$(TargetFramework.StartsWith('net7.')) AND !$(TargetFramework.StartsWith('netcoreapp'))" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" Condition="$(TargetFramework.StartsWith('net5.')) OR $(TargetFramework.StartsWith('net6.')) OR $(TargetFramework.StartsWith('net7.')) OR $(TargetFramework.StartsWith('netcoreapp'))" />
     <PackageReference Include="System.Linq.Async" Version="7.0.1" />
-    <PackageReference Include="Wolfgang.Etl.TestKit" Version="0.14.0" />
-    <PackageReference Include="Wolfgang.Etl.TestKit.Xunit" Version="0.14.0" />
+    <PackageReference Include="Wolfgang.Etl.TestKit" Version="0.26.1" />
+    <PackageReference Include="Wolfgang.Etl.TestKit.Xunit" Version="0.26.1" />
     <PackageReference Include="xunit" Version="2.9.3" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" NoWarn="NU1701">
+    <!--
+      xunit.runner.visualstudio 2.8.2 ships build/lib assets for net462 and net6.0 ONLY, so the
+      netcoreapp3.1 and net5.0 slots resolve no test adapter and report "No test is available".
+      2.4.5 is the newest 2.x that still ships a netcoreapp3.1 asset, which net5.0 also consumes.
+      The net462-net481 / net6.0 / net7.0 slots take 2.8.2. All of these are capped below 3.0.0:
+      runner 3.x drops those target frameworks entirely. The modern slot (net8.0+) takes 3.0.1
+      uncapped, which runs xunit v2 tests fine (fleet convention, verified on ETL-Abstractions #414).
+    -->
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5" NoWarn="NU1701"
+                      Condition="'$(TargetFramework)' == 'netcoreapp3.1' Or '$(TargetFramework)' == 'net5.0'"
+                      allowedVersions="(,3.0.0)">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" NoWarn="NU1701"
+                      Condition="'$(TargetFramework)' != 'netcoreapp3.1' And '$(TargetFramework)' != 'net5.0' And '$(TargetFramework)' != 'net8.0' And '$(TargetFramework)' != 'net9.0' And '$(TargetFramework)' != 'net10.0'"
+                      allowedVersions="(,3.0.0)">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.0.1"
+                      Condition="'$(TargetFramework)' == 'net8.0' Or '$(TargetFramework)' == 'net9.0' Or '$(TargetFramework)' == 'net10.0'">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
@@ -35,7 +55,7 @@
        check (CsvXmlDocExampleRotTests). Restricted to modern TFMs because
        the Roslyn analyzers require .NET 8+ to load cleanly. -->
   <ItemGroup Condition="'$(TargetFramework)' == 'net8.0' OR '$(TargetFramework)' == 'net9.0' OR '$(TargetFramework)' == 'net10.0'">
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.6.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.9.0" />
   </ItemGroup>
 
   <!-- CsCheck property/fuzz testing (CsvFuzzTests, #62). net8.0+ only (CsCheck
@@ -43,7 +63,7 @@
        default pass in PR CI and a long pass in fuzz.yaml, which scales the case
        count via the CsCheck_Time / CsCheck_Iter environment variables. -->
   <ItemGroup Condition="'$(TargetFramework)' == 'net8.0' OR '$(TargetFramework)' == 'net9.0' OR '$(TargetFramework)' == 'net10.0'">
-    <PackageReference Include="CsCheck" Version="4.7.0" />
+    <PackageReference Include="CsCheck" Version="4.8.0" />
   </ItemGroup>
 
   <!-- Verify snapshot/approval testing (CsvSnapshotTests, #73). Restricted to
@@ -55,6 +75,5 @@
   </ItemGroup>
 
   <!-- Analyzer PackageReferences are centralized in Directory.Build.props -->
-
 
 </Project>

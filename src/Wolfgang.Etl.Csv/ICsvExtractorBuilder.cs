@@ -69,8 +69,9 @@ public interface ICsvExtractorBuilder<T> : IEtlPipeline<T>
 
 
     /// <summary>
-    /// Sets <see cref="CsvExtractor{TRecord}.Encoding"/> and the encoding used to open a
-    /// path-based source. Default: <see cref="System.Text.Encoding.UTF8"/>.
+    /// Sets the encoding used to open a path-based source. Default: <see cref="System.Text.Encoding.UTF8"/>.
+    /// The inert <see cref="CsvExtractor{TRecord}.Encoding"/> property is not set; for a caller-supplied
+    /// reader the encoding is whatever the <see cref="System.IO.StreamReader"/> was constructed with.
     /// </summary>
     /// <exception cref="ArgumentNullException"><paramref name="encoding"/> is <see langword="null"/>.</exception>
     ICsvExtractorBuilder<T> Encoding(Encoding encoding);
@@ -121,7 +122,8 @@ public interface ICsvExtractorBuilder<T> : IEtlPipeline<T>
 
     /// <summary>
     /// Sets <see cref="CsvExtractor{TRecord}.ReadingExceptionOccurred"/> — a callback invoked when
-    /// the parser raises a recoverable parse exception. The exception still propagates.
+    /// the parser raises a recoverable parse exception. Observation only: under the default fail-fast
+    /// <c>ErrorPolicy</c> the exception propagates; a <c>Skip</c> policy drops the row instead.
     /// </summary>
     /// <exception cref="ArgumentNullException"><paramref name="handler"/> is <see langword="null"/>.</exception>
     ICsvExtractorBuilder<T> ReadingExceptionOccurred(Action<CsvReadingExceptionInfo> handler);

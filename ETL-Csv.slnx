@@ -1,7 +1,6 @@
 <Solution>
   <Folder Name="/.root/">
     <File Path=".gitignore" />
-    <File Path=".zizmor.yml" />
     <File Path="BannedSymbols.txt" />
     <File Path="CHANGELOG.md" />
     <File Path="CODE_OF_CONDUCT.md" />
@@ -10,8 +9,15 @@
     <File Path="Directory.Build.props" />
     <File Path="LICENSE" />
     <File Path="README.md" />
-    <File Path="REPO-INSTRUCTIONS.md" />
     <File Path="SECURITY.md" />
+    <File Path="THIRD-PARTY-NOTICES.md" />
+    <File Path="stryker-config.json" />
+    <File Path=".globalconfig" />
+    <File Path=".gitattributes" />
+    <File Path=".gitleaks.toml" />
+  </Folder>
+  <Folder Name="/.root/.githooks/">
+    <File Path=".githooks/pre-commit" />
   </Folder>
   <Folder Name="/.root/.github/">
     <File Path=".github/actionlint.yaml" />
@@ -25,6 +31,9 @@
     <File Path=".github/ISSUE_TEMPLATE/feature_request.yaml" />
   </Folder>
   <Folder Name="/.root/.github/workflows/">
+    <File Path=".github/workflows/security-alerts.yml" />
+    <File Path=".github/workflows/sbom.yaml" />
+    <File Path=".github/workflows/actions-audit.yaml" />
     <File Path=".github/workflows/benchmarks.yaml" />
     <File Path=".github/workflows/build-all-versions.yaml" />
     <File Path=".github/workflows/codeql.yaml" />
@@ -33,45 +42,74 @@
     <File Path=".github/workflows/release.yaml" />
     <File Path=".github/workflows/scorecard.yaml" />
     <File Path=".github/workflows/stryker.yaml" />
-    <File Path=".github/workflows/workflow-security.yaml" />
+    <File Path=".github/workflows/aot.yaml" />
+    <File Path=".github/workflows/cross-platform-differential.yaml" />
+    <File Path=".github/workflows/fuzz.yaml" />
+    <File Path=".github/workflows/gc-profiling.yaml" />
+    <File Path=".github/workflows/license-audit.yaml" />
+    <File Path=".github/workflows/mutation.yaml" />
+    <File Path=".github/workflows/pr-benchmarks.yaml" />
+    <File Path=".github/workflows/protected-files.yaml" />
+    <File Path=".github/workflows/semgrep.yaml" />
+    <File Path=".github/workflows/shadow.yaml" />
+    <File Path=".github/workflows/sourcelink.yaml" />
   </Folder>
   <Folder Name="/.root/docs/">
     <File Path="docs/abi-stability.md" />
-    <File Path="docs/disaster-recovery.md" />
     <File Path="docs/DOCFX-VERSION-PICKER.md" />
     <File Path="docs/license-audit.md" />
     <File Path="docs/README-FORMATTING.md" />
     <File Path="docs/RELEASE-WORKFLOW-SETUP.md" />
     <File Path="docs/reproducible-build-verification.md" />
     <File Path="docs/WORKFLOW_SECURITY.md" />
+    <File Path="docs/pipeline-extensions.md" />
   </Folder>
   <Folder Name="/.root/docs/adr/">
     <File Path="docs/adr/0000-template.md" />
     <File Path="docs/adr/0001-csvhelper-as-internal-parser.md" />
     <File Path="docs/adr/README.md" />
   </Folder>
+  <Folder Name="/.root/docs/cookbook/">
+    <File Path="docs/cookbook/polymorphic-rows.md" />
+    <File Path="docs/cookbook/record-validation.md" />
+    <File Path="docs/cookbook/resumable-extraction.md" />
+  </Folder>
   <Folder Name="/.root/docs/migration/">
     <File Path="docs/migration/README.md" />
   </Folder>
   <Folder Name="/.root/scripts/">
+    <File Path="scripts/tfm-parity.ps1" />
+    <File Path="scripts/security-alerts.ps1" />
+    <File Path="scripts/restack.ps1" />
+    <File Path="scripts/pin-actions.ps1" />
+    <File Path="scripts/changelog.ps1" />
     <File Path="scripts/build-pr.ps1" />
     <File Path="scripts/check-api-compat.ps1" />
     <File Path="scripts/Fix-BranchRuleset.ps1" />
     <File Path="scripts/format.ps1" />
     <File Path="scripts/Setup-Labels.ps1" />
-    <File Path="scripts/Validate-DocsDeploy.sh" />
+    <File Path="scripts/Validate-DocsDeploy.ps1" />
+    <File Path="scripts/Setup-GitHubPages.ps1" />
+    <File Path="scripts/Setup-Maintenance.ps1" />
+    <File Path="scripts/audit-repos.ps1" />
+    <File Path="scripts/third-party-notices.ps1" />
+    <File Path="scripts/upgrade.ps1" />
   </Folder>
   <Folder Name="/benchmarks/">
     <Project Path="benchmarks/Wolfgang.Etl.Csv.Benchmarks/Wolfgang.Etl.Csv.Benchmarks.csproj" />
   </Folder>
   <Folder Name="/examples/">
     <Project Path="examples/Wolfgang.Etl.Csv.Examples.DynamicTemplates/Wolfgang.Etl.Csv.Examples.DynamicTemplates.csproj" />
+    <Project Path="examples/Wolfgang.Etl.Csv.Examples.PolymorphicRows/Wolfgang.Etl.Csv.Examples.PolymorphicRows.csproj" />
+    <Project Path="examples/Wolfgang.Etl.Csv.Examples.RecordValidation/Wolfgang.Etl.Csv.Examples.RecordValidation.csproj" />
     <Project Path="examples/Wolfgang.Etl.Csv.Examples.ResumableExtraction/Wolfgang.Etl.Csv.Examples.ResumableExtraction.csproj" />
+    <Project Path="examples/Wolfgang.Etl.Csv.Examples.SchemaBuilder/Wolfgang.Etl.Csv.Examples.SchemaBuilder.csproj" />
   </Folder>
   <Folder Name="/src/">
     <Project Path="src/Wolfgang.Etl.Csv/Wolfgang.Etl.Csv.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Wolfgang.Etl.Csv.Tests.Unit/Wolfgang.Etl.Csv.Tests.Unit.csproj" />
+    <Project Path="tests/Wolfgang.Etl.Csv.Tests.SourceLink/Wolfgang.Etl.Csv.Tests.SourceLink.csproj" />
   </Folder>
 </Solution>

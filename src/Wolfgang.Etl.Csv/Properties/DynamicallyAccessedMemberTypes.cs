@@ -2,6 +2,10 @@
 
 using System.ComponentModel;
 
+// ReSharper disable once CheckNamespace
+// Polyfill of the BCL enum — MUST declare System.Diagnostics.CodeAnalysis so
+// [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.X)] binds to
+// the enum consumer code and analyzers expect. Folder location doesn't apply.
 namespace System.Diagnostics.CodeAnalysis;
 
 /// <summary>

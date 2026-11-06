@@ -9,7 +9,9 @@ permissions:
   contents: read  # Default to read-only; individual jobs declare write where required
 
 env:
-  CODECOV_MINIMUM: 90
+  # Matches pr.yaml's CODECOV_MINIMUM, so a release cannot fail a gate its PRs passed
+  # (or pass one they would have failed).
+  CODECOV_MINIMUM: 95
 
 concurrency:
   # Serialize releases so a duplicate / re-published Release event can't run two
@@ -26,7 +28,7 @@ jobs:
     if: github.repository != 'Chris-Wolfgang/repo-template'
     steps:
       - name: Checkout code
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
@@ -85,7 +87,7 @@ jobs:
           }
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v6
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
         with:
           dotnet-version: |
             3.1.x
@@ -106,17 +108,17 @@ jobs:
         shell: pwsh
         run: |
           $testProjects = Get-ChildItem -Path './tests' -Recurse -Filter '*Test*.csproj'
-          
+
           if ($testProjects.Count -eq 0) {
             Write-Error "❌ No test projects found - release requires tests to validate quality"
             exit 1
           }
-          
+
           foreach ($testProj in $testProjects) {
             Write-Host "==========================================" -ForegroundColor Cyan
             Write-Host "Testing project: $($testProj.Name)" -ForegroundColor Cyan
             Write-Host "==========================================" -ForegroundColor Cyan
-            
+
             # Parse the project file to extract target frameworks
             try {
               [xml]$projectXml = Get-Content $testProj.FullName
@@ -124,7 +126,7 @@ jobs:
               Write-Error "❌ Failed to parse project file $($testProj.Name): $_"
               exit 1
             }
-            
+
             # Search all PropertyGroup elements for TargetFramework(s)
             $targetFramework = $null
             $targetFrameworks = $null
@@ -137,7 +139,7 @@ jobs:
                 break
               }
             }
-            
+
             # Determine which frameworks this project targets
             $frameworks = @()
             if ($targetFrameworks) {
@@ -158,7 +160,7 @@ jobs:
               # If no TargetFramework/TargetFrameworks are defined directly in the project file,
               # attempt to resolve them via MSBuild (to account for Directory.Build.props, imports, etc.).
               Write-Host "No TargetFramework or TargetFrameworks found directly in $($testProj.Name); querying MSBuild..." -ForegroundColor Yellow
-              
+
               $msbuildOutput = @()
               $msbuildExitCode = 0
               foreach ($prop in @("TargetFrameworks", "TargetFramework")) {
@@ -170,7 +172,7 @@ jobs:
                   $msbuildOutput += $result
                 }
               }
-              
+
               if ($msbuildExitCode -ne 0) {
                 # MSBuild query failed, fall back to running tests without explicit --framework
                 Write-Warning "MSBuild query failed for $($testProj.Name). Tests will run without explicit --framework."
@@ -182,7 +184,7 @@ jobs:
                   if ([string]::IsNullOrWhiteSpace($line)) {
                     continue
                   }
-                  
+
                   # Expect lines like "TargetFrameworks=net7.0;net8.0" or "TargetFramework=net8.0"
                   # Support both '=' and ':' separators for different MSBuild output formats
                   if ($line -match '^\s*TargetFrameworks\s*[:=]\s*(.+)$') {
@@ -194,13 +196,13 @@ jobs:
                     if ($propertyValue) {
                       $resolvedFrameworks = @($propertyValue)
                     }
-                    
+
                     if ($resolvedFrameworks.Count -gt 0) {
                       break
                     }
                   }
                 }
-                
+
                 if ($resolvedFrameworks.Count -gt 0) {
                   $frameworks = $resolvedFrameworks
                 } else {
@@ -209,13 +211,13 @@ jobs:
                 }
               }
             }
-            
+
             Write-Host "Detected frameworks: $($frameworks -join ', ')" -ForegroundColor Cyan
-            
+
             foreach ($fw in $frameworks) {
               if ([string]::IsNullOrWhiteSpace($fw)) {
                 Write-Host "Testing project $($testProj.Name) without explicit --framework (using SDK/MSBuild defaults)" -ForegroundColor Yellow
-                
+
                 # When framework cannot be determined, run tests once without specifying --framework.
                 # Collect coverage in this case to avoid missing data due to unknown TFM.
                 dotnet test $testProj.FullName `
@@ -223,19 +225,20 @@ jobs:
                   --no-build `
                   --no-restore `
                   --collect:"XPlat Code Coverage" `
+                  --settings coverlet.runsettings `
                   --results-directory "./TestResults" `
                   --logger "console;verbosity=minimal"
-                
+
                 if ($LASTEXITCODE -ne 0) {
                   Write-Error "❌ Tests failed (no explicit TargetFramework) in $($testProj.Name)"
                   exit $LASTEXITCODE
                 }
-                
+
                 continue
               }
-              
+
               Write-Host "Testing framework: $fw" -ForegroundColor Yellow
-              
+
               # Collect coverage only for .NET 5.0+ TFMs; still run tests for all frameworks
               if ($fw -match '^net([5-9]|[1-9][0-9]+)\.') {
                 dotnet test $testProj.FullName `
@@ -244,6 +247,7 @@ jobs:
                   --no-build `
                   --no-restore `
                   --collect:"XPlat Code Coverage" `
+                  --settings coverlet.runsettings `
                   --results-directory "./TestResults" `
                   --logger "console;verbosity=minimal"
               } else {
@@ -256,7 +260,7 @@ jobs:
                   --results-directory "./TestResults" `
                   --logger "console;verbosity=minimal"
               }
-              
+
               if ($LASTEXITCODE -ne 0) {
                 if ($fw) {
                   Write-Error "❌ Tests failed for $fw in $($testProj.Name)"
@@ -275,40 +279,40 @@ jobs:
         run: |
           # Check if coverage files exist
           $coverageFiles = Get-ChildItem -Path "TestResults" -Recurse -Filter "coverage.cobertura.xml" -ErrorAction SilentlyContinue
-          
+
           if ($coverageFiles.Count -eq 0) {
-            Write-Error "❌ No coverage files found - coverage data is required to enforce the 90% threshold"
+            Write-Error "❌ No coverage files found - coverage data is required to enforce the CODECOV_MINIMUM threshold"
             exit 1
           }
-          
-          dotnet tool install -g dotnet-reportgenerator-globaltool
-          
-          reportgenerator `
+
+          dotnet tool restore
+
+          dotnet reportgenerator `
             -reports:"TestResults/**/coverage.cobertura.xml" `
             -targetdir:"CoverageReport" `
             -reporttypes:"TextSummary;Html"
-          
+
           Write-Host "==========================================" -ForegroundColor Cyan
           Write-Host "Coverage Summary:" -ForegroundColor Cyan
           Write-Host "==========================================" -ForegroundColor Cyan
           Get-Content CoverageReport/Summary.txt
           Write-Host ""
-          
+
           # Parse coverage and enforce threshold per module (matching pr.yaml)
           $summaryContent = Get-Content CoverageReport/Summary.txt
           $threshold = if ($env:CODECOV_MINIMUM) { [int]$env:CODECOV_MINIMUM } else { 90 }
           $failedModules = @()
           $coverageFound = $false
-          
+
           foreach ($line in $summaryContent) {
             # Match lines with module names and percentages (skip Summary line)
             if ($line -match '^([^ ]+)\s+.*\s+(\d+(?:\.\d+)?)%$' -and $line -notmatch '^Summary') {
               $coverageFound = $true
               $module = $matches[1]
               $coverage = [decimal]$matches[2]
-              
+
               Write-Host "Checking module: '$module' - Coverage: ${coverage}%" -ForegroundColor Cyan
-              
+
               if ($coverage -lt $threshold) {
                 Write-Host "  ❌ FAIL: Below ${threshold}% threshold" -ForegroundColor Red
                 $failedModules += "$module (${coverage}%)"
@@ -317,13 +321,13 @@ jobs:
               }
             }
           }
-          
+
           # Ensure we found and parsed coverage data
           if (-not $coverageFound) {
             Write-Error "❌ Failed to parse coverage data from Summary.txt - cannot enforce threshold"
             exit 1
           }
-          
+
           if ($failedModules.Count -gt 0) {
             Write-Host ""
             Write-Host "==========================================" -ForegroundColor Red
@@ -332,7 +336,7 @@ jobs:
             Write-Host "Modules below ${threshold}% coverage: $($failedModules -join ', ')" -ForegroundColor Red
             exit 1
           }
-          
+
           Write-Host ""
           Write-Host "==========================================" -ForegroundColor Green
           Write-Host "✅ All modules meet ${threshold}% coverage threshold" -ForegroundColor Green
@@ -340,10 +344,18 @@ jobs:
 
       - name: Upload coverage report
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: release-coverage
           path: CoverageReport/
+
+  # Native AOT smoke from the tagged commit: the same job the PRs run (aot-smoke.yaml)
+  aot-smoke:
+    name: AOT smoke
+    needs: validate-release
+    permissions:
+      contents: read
+    uses: ./.github/workflows/aot-smoke.yaml  # zizmor: ignore[self-repository]
 
   # Pack and validate NuGet package
   pack-and-validate:
@@ -354,12 +366,12 @@ jobs:
       has-packages: ${{ steps.check-packages.outputs.has-packages }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v6
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
         with:
           dotnet-version: |
             3.1.x
@@ -375,6 +387,13 @@ jobs:
           dotnet restore
           dotnet build --no-restore --configuration Release
 
+      # Renders each src project's transitive NuGet closure to obj/THIRD-PARTY-NOTICES.md;
+      # Directory.Build.props packs it at the package root. Runs from the tag, after
+      # restore (nuget-license reads project.assets.json) and before pack.
+      - name: Generate third-party notices
+        shell: pwsh
+        run: pwsh ./scripts/third-party-notices.ps1
+
       - name: Pack NuGet packages
         id: check-packages
         shell: pwsh
@@ -385,7 +404,7 @@ jobs:
 
           # Find all .csproj files in the src directory recursively
           $projects = Get-ChildItem -Path 'src' -Recurse -Filter '*.csproj'
-          
+
           # Handle case when no projects are found (e.g., template repository)
           if ($projects.Count -eq 0) {
             Write-Warning "No projects found in src/ directory - skipping package creation"
@@ -396,28 +415,28 @@ jobs:
             "has-packages=false" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
             exit 0
           }
-          
+
           # Iterate through each project and create NuGet package
           foreach ($proj in $projects) {
             Write-Host "📦 Packing $($proj.Name)" -ForegroundColor Cyan
             dotnet pack $proj.FullName --no-build --configuration Release --output $packagesPath
-            
+
             # Check if pack operation failed and exit with error
             if ($LASTEXITCODE -ne 0) {
               Write-Error "❌ Pack failed for $($proj.Name)"
               exit $LASTEXITCODE
             }
           }
-          
+
           # Check whether any .nupkg files were actually created
           $packages = Get-ChildItem -Path $packagesPath -Filter '*.nupkg' -ErrorAction SilentlyContinue
-          
+
           if ($packages.Count -eq 0) {
             Write-Warning "No .nupkg files were produced during packing - downstream publish and release jobs will be skipped"
             "has-packages=false" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
             exit 0
           }
-          
+
           # At least one package was created successfully
           Write-Host "✅ NuGet packages created successfully" -ForegroundColor Green
           "has-packages=true" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
@@ -426,12 +445,12 @@ jobs:
         shell: pwsh
         run: |
           $packages = Get-ChildItem -Path 'nuget-packages' -Filter '*.nupkg' -ErrorAction SilentlyContinue
-          
+
           if ($packages.Count -eq 0) {
             Write-Warning "No .nupkg files found - skipping smoke test"
             exit 0
           }
-          
+
           # Helper to read package ID and version from the .nuspec inside a .nupkg
           Add-Type -AssemblyName System.IO.Compression.FileSystem
           function Get-PackageMetadata {
@@ -471,7 +490,7 @@ jobs:
               $zip.Dispose()
             }
           }
-          
+
           # Create temporary test project
           $testDir = Join-Path $PWD 'package-smoke-test'
           New-Item -ItemType Directory -Force -Path $testDir | Out-Null
@@ -494,40 +513,40 @@ jobs:
             '</configuration>'
           )
           $nugetConfigContent | Set-Content -Path $nugetConfigPath -Encoding UTF8
-          
+
           Push-Location $testDir
           try {
             dotnet new console -n SmokeTest -f net8.0
-            
+
             # Try to install the newly created package(s)
             foreach ($package in $packages) {
               Write-Host "🧪 Smoke testing package: $($package.Name)" -ForegroundColor Yellow
-              
+
               $metadata = Get-PackageMetadata -NupkgPath $package.FullName
               $packageId = $metadata.Id
               $packageVersion = $metadata.Version
-              
+
               dotnet add SmokeTest/SmokeTest.csproj package $packageId --version $packageVersion --source '../nuget-packages'
-              
+
               if ($LASTEXITCODE -ne 0) {
                 Write-Error "❌ Failed to install package $($package.Name)"
                 exit $LASTEXITCODE
               }
-              
+
               Write-Host "✅ Package $($package.Name) installed successfully" -ForegroundColor Green
             }
-            
+
             # Try to build the test project with the package
             Write-Host "Building smoke test project..." -ForegroundColor Yellow
             dotnet build SmokeTest/SmokeTest.csproj
-            
+
             if ($LASTEXITCODE -ne 0) {
               Write-Error "❌ Smoke test project failed to build with installed packages"
               exit $LASTEXITCODE
             }
-            
+
             Write-Host "✅ Smoke test passed - packages are installable and buildable" -ForegroundColor Green
-            
+
           } finally {
             Pop-Location
           }
@@ -536,7 +555,7 @@ jobs:
         if: steps.check-packages.outputs.has-packages == 'true'
         shell: pwsh
         run: |
-          dotnet tool install --global CycloneDX
+          dotnet tool restore
 
           $sbomDir = Join-Path $PWD 'nuget-packages'
           $srcProjects = Get-ChildItem -Path 'src' -Filter '*.csproj' -Recurse -ErrorAction SilentlyContinue
@@ -561,7 +580,7 @@ jobs:
           }
 
       - name: Upload NuGet packages
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: nuget-packages
           path: ./nuget-packages/
@@ -585,7 +604,7 @@ jobs:
       attestations: write
     steps:
       - name: Download packages
-        uses: actions/download-artifact@v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: nuget-packages
           path: ./nuget-packages
@@ -593,7 +612,7 @@ jobs:
       - name: Attest build provenance
         # Pinned to the v4.1.1 COMMIT — attest actions publish annotated tags
         # that break tag-pin verification.
-        uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373 # v4.1.1
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
         with:
           subject-path: 'nuget-packages/*.nupkg'
 
@@ -609,7 +628,7 @@ jobs:
     if: github.repository != 'Chris-Wolfgang/repo-template'
     steps:
       - name: Checkout code
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
@@ -626,7 +645,7 @@ jobs:
 
       - name: Setup .NET
         if: steps.check.outputs.found == 'true'
-        uses: actions/setup-dotnet@v6
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
         with:
           # Install the same SDK set as validate-release so dotnet build can
           # compile every TFM the solution targets (some test projects span
@@ -668,16 +687,16 @@ jobs:
       - name: Install DocFX
         if: steps.check.outputs.found == 'true'
         shell: pwsh
-        run: dotnet tool update docfx --global || dotnet tool install docfx --global
+        run: dotnet tool restore
 
       - name: Build DocFX metadata
         if: steps.check.outputs.found == 'true'
-        run: docfx metadata
+        run: dotnet docfx metadata
         working-directory: docfx_project
 
       - name: Build documentation (no deploy)
         if: steps.check.outputs.found == 'true'
-        run: docfx build
+        run: dotnet docfx build
         working-directory: docfx_project
 
       - name: Verify documentation output
@@ -695,9 +714,98 @@ jobs:
           Write-Host "Documentation built successfully - release may proceed"
 
   # Publish to NuGet (only if validation passed)
+  sourcelink-snupkg:
+    name: SourceLink structural verify (.snupkg)
+    needs: pack-and-validate
+    if: needs.pack-and-validate.outputs.has-packages == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Download packed artifacts
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: nuget-packages
+          path: ./packages
+
+      - name: Verify .snupkg carries portable PDBs
+        shell: bash
+        run: |
+          set -euo pipefail
+          snupkgs=$(find packages -maxdepth 1 -name '*.snupkg' || true)
+          if [ -z "$snupkgs" ]; then
+            echo "::error::No .snupkg in ./packages - SourceLink verification cannot run."
+            ls -la packages/ || true
+            exit 1
+          fi
+
+          fail=0
+          for snupkg in $snupkgs; do
+            echo "::group::$snupkg"
+            work=$(mktemp -d)
+            unzip -q "$snupkg" -d "$work"
+
+            # Every shipped assembly on every runtime TFM must have a PDB, so the
+            # expected set is DERIVED from the runtime .nupkg rather than assumed:
+            # each lib/<tfm>/<assembly>.dll must have a matching .pdb in the
+            # .snupkg. Merely asserting "at least one PDB exists" passes while a
+            # single TFM is silently missing its symbols, and consumers on exactly
+            # that TFM get decompiled placeholders. Comparing <tfm>/<assembly>
+            # pairs also covers repos that ship more than one package.
+            nupkg="${snupkg%.snupkg}.nupkg"
+            if [ ! -f "$nupkg" ]; then
+              echo "::error::No runtime .nupkg beside $snupkg - cannot derive the expected set."
+              fail=1
+              echo "::endgroup::"
+              rm -rf "$work"
+              continue
+            fi
+
+            expected=$(unzip -Z1 "$nupkg" | awk -F/ '$1=="lib" && $3 ~ /[.]dll$/ {print $2"/"substr($3,1,length($3)-4)}' | sort -u)
+            actual=$(unzip -Z1 "$snupkg" | awk -F/ '$1=="lib" && $3 ~ /[.]pdb$/ {print $2"/"substr($3,1,length($3)-4)}' | sort -u)
+
+            if [ -z "$expected" ]; then
+              echo "::error::No lib/<tfm>/<assembly>.dll in $nupkg - nothing to verify against."
+              fail=1
+              echo "::endgroup::"
+              rm -rf "$work"
+              continue
+            fi
+
+            missing=$(comm -23 <(echo "$expected") <(echo "$actual"))
+            if [ -n "$missing" ]; then
+              echo "::error::.snupkg is missing a PDB for:"
+              echo "$missing"
+              fail=1
+            fi
+            echo "expected:"
+            echo "$expected"
+            echo "present:"
+            echo "$actual"
+
+            for pdb in $(find "$work/lib" -name '*.pdb' | sort); do
+              tfm=$(basename "$(dirname "$pdb")")
+              # Portable-PDB magic = 'B','S','J','B' (0x42 0x53 0x4A 0x42) in the
+              # first four bytes. A full-format Windows PDB starts with
+              # "Microsoft C/C++ MSF 7.00" and is an immediate fail.
+              magic=$(head -c 4 "$pdb" | od -An -tx1 | tr -d '[:space:]')
+              if [ "$magic" != "42534a42" ]; then
+                echo "::error::PDB is NOT portable (magic=0x$magic, expected 42534A42) - $tfm/$(basename "$pdb")"
+                fail=1
+              else
+                echo "$tfm/$(basename "$pdb") - portable PDB (magic BSJB)"
+              fi
+            done
+
+            echo "::endgroup::"
+            rm -rf "$work"
+          done
+
+          exit $fail
+
   publish-nuget:
     name: Publish to NuGet.org
-    needs: [pack-and-validate, verify-docs-build]
+    needs: [pack-and-validate, verify-docs-build, sourcelink-snupkg, aot-smoke]
     if: needs.pack-and-validate.outputs.has-packages == 'true'
     runs-on: windows-latest
     # NuGet Trusted Publishing (OIDC) — no long-lived NUGET_API_KEY secret. The
@@ -708,7 +816,7 @@ jobs:
       contents: read
     steps:
       - name: Setup .NET
-        uses: actions/setup-dotnet@v6
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
         with:
           dotnet-version: |
             3.1.x
@@ -720,13 +828,13 @@ jobs:
             10.0.x
 
       - name: Download packages
-        uses: actions/download-artifact@v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: nuget-packages
           path: ./packages
 
       - name: NuGet login (OIDC → temporary API key)
-        uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841 # v1
+        uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841 # v1.2.0
         id: nuget-login
         with:
           user: Chris-Wolfgang
@@ -737,29 +845,29 @@ jobs:
           NUGET_API_KEY: ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
         run: |
           $packages = Get-ChildItem -Path './packages' -Filter '*.nupkg' -ErrorAction SilentlyContinue
-          
+
           if ($packages.Count -eq 0) {
             Write-Warning "No .nupkg files found - nothing to publish"
             exit 0
           }
-          
+
           foreach ($package in $packages) {
             Write-Host "📤 Publishing $($package.Name) to NuGet.org" -ForegroundColor Cyan
-            
+
             dotnet nuget push $package.FullName `
               --api-key $env:NUGET_API_KEY `
               --source https://api.nuget.org/v3/index.json `
               --skip-duplicate
-            
+
             # Exit code 0 = success, 409 would be duplicate (handled by --skip-duplicate flag)
             if ($LASTEXITCODE -ne 0) {
               Write-Error "❌ Failed to publish $($package.Name)"
               exit $LASTEXITCODE
             }
-            
+
             Write-Host "✅ Successfully published $($package.Name)" -ForegroundColor Green
           }
-          
+
           Write-Host ""
           Write-Host "==========================================" -ForegroundColor Green
           Write-Host "✅ All packages published to NuGet.org" -ForegroundColor Green
@@ -767,12 +875,125 @@ jobs:
 
   # Build and deploy versioned documentation via the shared docfx workflow
   # Note: reusable workflow jobs called via `uses:` do not require `runs-on` in the caller
+  sourcelink-symbol-server-smoke:
+    name: SourceLink symbol-server smoke (post-publish)
+    needs: publish-nuget
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Check out the tool manifest
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Download packed artifacts
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: nuget-packages
+          path: ./packages
+
+      - name: Restore CI tools (dotnet-symbol)
+        # Pinned in .config/dotnet-tools.json, never installed unversioned: an
+        # upstream release could otherwise change CLI behaviour mid-release.
+        run: dotnet tool restore
+
+      - name: Collect one probe DLL per shipped package
+        shell: bash
+        run: |
+          set -euo pipefail
+          nupkgs=$(find packages -maxdepth 1 -name '*.nupkg' ! -name '*.symbols.nupkg' | sort)
+          if [ -z "$nupkgs" ]; then
+            echo "::error::No runtime .nupkg to probe."
+            exit 1
+          fi
+
+          : > probe-dlls.txt
+          for nupkg in $nupkgs; do
+            work=$(mktemp -d)
+            unzip -q "$nupkg" -d "$work"
+            # Any TFM's assembly will do: the symbol server is queried by the
+            # signature embedded in the DLL, not by target framework. One probe
+            # PER PACKAGE though -- ingestion happens per symbol package, so
+            # probing a single package would leave the others unverified in a
+            # repo that ships several.
+            dll=$(find "$work/lib" -name '*.dll' | sort | head -1)
+            if [ -z "$dll" ]; then
+              echo "::error::No runtime DLL under lib/ in $nupkg."
+              exit 1
+            fi
+            echo "$dll" >> probe-dlls.txt
+            echo "will probe: $dll"
+          done
+
+      - name: Poll symbol server for every published PDB
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          # nuget.org's SSQP endpoint. dotnet-symbol defaults to
+          # msdl.microsoft.com, so the server path must be overridden.
+          server='https://symbols.nuget.org/download/symbols/'
+
+          # NuGet symbol ingestion is typically 5-30 min. All packages share one
+          # 30-minute budget rather than each getting its own, so adding packages
+          # does not multiply the worst-case wall clock.
+          out=$(mktemp -d)
+          attempts=30
+          mapfile -t pending < probe-dlls.txt
+
+          for i in $(seq 1 "$attempts"); do
+            echo "Attempt $i/$attempts - ${#pending[@]} package(s) outstanding"
+            still=()
+            for dll in "${pending[@]}"; do
+              # The output dir is emptied before each probe: otherwise a PDB
+              # fetched for an EARLIER package would make this check pass for
+              # every package after it.
+              rm -rf "${out:?}"/*
+              served=0
+              # `dotnet dotnet-symbol`, not bare `dotnet-symbol`: `dotnet tool
+              # restore` installs into the manifest, which is NOT on PATH.
+              if dotnet dotnet-symbol --symbols --server-path "$server" --output "$out" "$dll"; then
+                if find "$out" -name '*.pdb' | grep -q .; then
+                  served=1
+                fi
+              fi
+              if [ "$served" -eq 1 ]; then
+                echo "  served: $(basename "$dll")"
+              else
+                still+=("$dll")
+              fi
+            done
+
+            pending=("${still[@]}")
+            if [ "${#pending[@]}" -eq 0 ]; then
+              echo "Symbol server served every package's PDB on attempt $i."
+              exit 0
+            fi
+            echo "  outstanding: ${pending[*]}"
+            echo "  not-yet - sleeping 60s"
+            sleep 60
+          done
+
+          echo "::error::Symbol server did not serve: ${pending[*]}"
+          exit 1
+
   trigger-docs:
     name: Build & Deploy Documentation
     needs: validate-release
     permissions:
+      # Accepted Scorecard TokenPermissionsID finding (#222). A workflow_call caller's
+      # permissions are the ceiling for the called workflow's token, and docfx.yaml's
+      # build-and-deploy job pushes to the gh-pages branch, which needs contents:write.
+      # This can drop to contents:read + pages:write + id-token:write only if docfx.yaml
+      # moves to actions/deploy-pages (#223).
       contents: write  # Required by docfx.yaml to push to gh-pages branch
-    uses: ./.github/workflows/docfx.yaml
+    uses: ./.github/workflows/docfx.yaml  # zizmor: ignore[self-repository]
     with:
       version: ${{ github.event.release.tag_name }}
 
@@ -783,16 +1004,21 @@ jobs:
     if: needs.pack-and-validate.outputs.has-packages == 'true'
     runs-on: ubuntu-latest
     permissions:
+      # Accepted Scorecard TokenPermissionsID finding (#221). The release-assets endpoint
+      # (POST /repos/{owner}/{repo}/releases/{id}/assets) that softprops/action-gh-release
+      # calls has no scope narrower than contents:write, and GitHub Actions has no
+      # step-level permissions. The only narrower route is a GitHub App token with
+      # Releases-only access, which is not worth the setup for one informational alert.
       contents: write  # Required to upload assets to the GitHub Release
     steps:
       - name: Download NuGet packages artifact
-        uses: actions/download-artifact@v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: nuget-packages
           path: ./nuget-packages
 
       - name: Download coverage report artifact
-        uses: actions/download-artifact@v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: release-coverage
           path: ./release-coverage
@@ -800,13 +1026,15 @@ jobs:
       - name: Zip coverage report
         run: zip -r release-coverage.zip ./release-coverage
 
+      # `gh` is pre-installed on the runner, so no third-party action is needed
+      # to upload release assets (zizmor superfluous-actions).
       - name: Attach artifacts to release
-        uses: softprops/action-gh-release@3d0d9888cb7fd7b750713d6e236d1fcb99157228  # v3.0.2
-        with:
-          tag_name: ${{ github.event.release.tag_name }}
-          files: |
-            ./nuget-packages/*.nupkg
-            ./nuget-packages/*.snupkg
-            ./nuget-packages/*.bom.json
-            release-coverage.zip
-
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TAG_NAME: ${{ github.event.release.tag_name }}
+        run: |
+          shopt -s nullglob
+          files=(./nuget-packages/*.nupkg ./nuget-packages/*.snupkg ./nuget-packages/*.bom.json release-coverage.zip)
+          echo "Uploading ${#files[@]} asset(s) to release $TAG_NAME"
+          gh release upload "$TAG_NAME" "${files[@]}" --clobber
