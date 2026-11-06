@@ -7,6 +7,11 @@ updates:
     open-pull-requests-limit: 10
     labels:
       - "dependencies"
+    # CsvHelper 34 is a breaking API rewrite, so a grouped PR carrying it fails to build and
+    # holds back every other bump in the group. Remove this when #514 does the migration.
+    ignore:
+      - dependency-name: "CsvHelper"
+        update-types: ["version-update:semver-major"]
     groups:
       dotnet-dependencies:
         patterns:
