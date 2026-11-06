@@ -8,7 +8,7 @@ namespace Wolfgang.Etl.Csv;
 /// not, the human-readable reasons it failed. Illegal states (successful-with-failures, failed-without-
 /// failures, null failures) throw at construction — the two named constructors below are the recommended
 /// path; the legacy positional constructor is retained for source-compat and marked
-/// <see cref="ObsoleteAttribute"/>.
+/// <see cref="T:System.ObsoleteAttribute"/>.
 /// </summary>
 public sealed record CsvValidationResult
 {
