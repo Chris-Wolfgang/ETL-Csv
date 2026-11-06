@@ -65,6 +65,9 @@ jobs:
         # into the shell (injection-safe).
         env:
           BREAK_AT: ${{ github.event.inputs.break_at }}
+          # vstest gives its test host 90 s to connect by default; a slow runner misses that
+          # with four parallel sessions and the whole run dies with no mutation score.
+          VSTEST_CONNECTION_TIMEOUT: '300'
         run: |
           args=()
           if [ -n "$BREAK_AT" ]; then
