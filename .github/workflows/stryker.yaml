@@ -181,6 +181,9 @@ jobs:
         id: run
         env:
           MODE: ${{ needs.detect.outputs.mode }}
+          # vstest gives its test host 90 s to connect by default; a slow runner misses that
+          # with four parallel sessions and the whole run dies with no mutation score.
+          VSTEST_CONNECTION_TIMEOUT: '300'
         shell: bash
         run: |
           # pipefail so the gate is preserved: `dotnet stryker` exits non-zero when the
