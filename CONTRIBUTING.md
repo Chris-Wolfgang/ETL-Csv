@@ -179,8 +179,8 @@ dotnet build --configuration Release
 # Run all unit tests
 dotnet test --configuration Release
 
-# Run with coverage (if configured)
-dotnet test --collect:"XPlat Code Coverage"
+# Run with coverage (the settings file CI passes)
+dotnet test --collect:"XPlat Code Coverage" --settings coverlet.runsettings
 ```
 
 ### Code Formatting

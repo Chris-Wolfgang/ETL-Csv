@@ -72,6 +72,6 @@ The reproducibility check is most valuable when run by a **different party than 
 
 If we ever adopt a third-party reproducibility verifier (e.g. `r-b.org` for .NET libraries — equivalent of reproducible-builds.org for Debian), wire it up at that point.
 
-## SLSA + SBOM tracking
+## SLSA + SBOM
 
-Build provenance attestation (SLSA Level 3) and SBOM generation are tracked separately in #71 (supply-chain hardening). This document is the lightweight starting point; #71's scope is the full supply-chain story.
+Both ship today: `release.yaml`'s `attest-provenance` job signs a SLSA build-provenance attestation for every `.nupkg` (verify with `gh attestation verify`), and `pack-and-validate` generates a CycloneDX SBOM (`*.bom.json`) per package, attached to the GitHub Release. This document covers only the reproducibility half of that story.

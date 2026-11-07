@@ -50,14 +50,10 @@ Define a record type, then read or write CSV with a single `await foreach` / `aw
 
 ```csharp
 using System.IO;
+using System.Threading;
 using Wolfgang.Etl.Csv;
 
-public sealed record Person
-{
-    public string FirstName { get; set; } = string.Empty;
-    public string LastName  { get; set; } = string.Empty;
-    public int    Age       { get; set; }
-}
+var cancellationToken = CancellationToken.None; // or a token from your host
 
 using var reader = new StreamReader("people.csv");
 var extractor = new CsvExtractor<Person>(reader);
@@ -65,6 +61,14 @@ var extractor = new CsvExtractor<Person>(reader);
 await foreach (var person in extractor.ExtractAsync(cancellationToken))
 {
     Console.WriteLine($"{person.FirstName} {person.LastName} ({person.Age})");
+}
+
+// Type declarations follow the top-level statements in a single-file program.
+public sealed record Person
+{
+    public string FirstName { get; set; } = string.Empty;
+    public string LastName  { get; set; } = string.Empty;
+    public int    Age       { get; set; }
 }
 ```
 
@@ -202,7 +206,7 @@ await foreach (var person in extractor.ExtractAsync(progress, cancellationToken)
 }
 ```
 
-`ReportingInterval` (inherited from `ExtractorBase`) controls how often progress is sampled.
+`ReportingInterval` on `CsvExtractorOptions<TRecord>` / `CsvLoaderOptions<TRecord>` controls how often progress is sampled (the setter inherited from `ExtractorBase` / `LoaderBase` is deprecated).
 
 ### Example: Handling rows that fail to parse
 
@@ -307,6 +311,8 @@ The public `CsvExtractor` and `CsvLoader` constructors are annotated `[RequiresU
 - Suppress at the call site (acknowledges the risk), or
 - Annotate the calling method `[RequiresUnreferencedCode]` (propagates the contract), or
 - Avoid trimming for assemblies that use this library.
+
+A Native AOT publish (`PublishAot=true`) additionally reports `IL3050` (`[RequiresDynamicCode]`) warnings; they come from CsvHelper itself. The library's own reflection paths carry `[RequiresDynamicCode]` internally, so the public constructors surface only `IL2026`.
 
 ---
 
