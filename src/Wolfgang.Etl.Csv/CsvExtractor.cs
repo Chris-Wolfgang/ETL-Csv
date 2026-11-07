@@ -584,6 +584,8 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     {
         CsvLogMessages.StartingOperation(_logger, OperationName, null);
 
+        ResetRunCounters();
+
         var configuration = BuildConfiguration();
 
         using var csvReader = new CsvReader(_reader, configuration, LeaveOpen);
@@ -832,6 +834,19 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
         }
 
         Discriminator?.RegisterClassMaps(context);
+    }
+
+
+
+    /// <summary>
+    /// Zeroes the CSV-specific per-run counters so a reused instance starts every run from zero,
+    /// matching the base class counters, instead of accumulating across runs.
+    /// </summary>
+    private void ResetRunCounters()
+    {
+        Volatile.Write(ref _currentLineNumber, 0);
+        Volatile.Write(ref _currentBadDataCount, 0);
+        Volatile.Write(ref _currentInvalidItemCount, 0);
     }
 
 
