@@ -325,7 +325,9 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     /// <see cref="CsvExtractor{TRecord}.Discriminator"/>. Build one with
     /// <see cref="CsvDiscriminatorBuilder{TBase}"/> (trim/AOT-safe). No header row is written while a
     /// discriminator is set (the shapes have no common header); a record whose runtime type is not
-    /// mapped is handled per <see cref="CsvDiscriminator{TBase}.UnknownDiscriminator"/>.
+    /// mapped is handled per <see cref="CsvDiscriminator{TBase}.UnknownDiscriminator"/>. The discriminator
+    /// value is not written for you: only the columns the concrete type maps are written, so map the
+    /// discriminator column as a property of each concrete type if the file must round-trip.
     /// </summary>
     public CsvDiscriminator<TRecord>? Discriminator { get => _discriminator; [Obsolete("Configure Discriminator through CsvLoaderOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set => _discriminator = value; }
 
