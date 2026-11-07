@@ -82,6 +82,7 @@ public interface ICsvExtractorBuilder<T> : IEtlPipeline<T>
     /// Sets <see cref="CsvExtractor{TRecord}.InitialRecordIndex"/> — the 1-based line treated as
     /// the first line read. Default: <c>1</c>.
     /// </summary>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="oneBasedIndex"/> is less than 1.</exception>
     ICsvExtractorBuilder<T> InitialRecordIndex(int oneBasedIndex);
 
 
