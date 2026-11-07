@@ -38,6 +38,7 @@ This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) f
 - **Cookbook — resumable extraction:** [docs/cookbook/resumable-extraction.md](docs/cookbook/resumable-extraction.md)
 - **Cookbook — polymorphic rows (mixed shapes):** [docs/cookbook/polymorphic-rows.md](docs/cookbook/polymorphic-rows.md)
 - **Cookbook — streaming record validation:** [docs/cookbook/record-validation.md](docs/cookbook/record-validation.md)
+- **Pipeline extensions (`EtlPipeline` CSV source / sink builders):** [docs/pipeline-extensions.md](docs/pipeline-extensions.md)
 
 ---
 
@@ -114,6 +115,7 @@ That's the full surface for the simplest case. The library auto-maps record prop
 | Trim whitespace inside or outside quotes | `TrimOptions` |
 | Skip-or-abort policy for rows that fail to parse or convert | `ErrorPolicy` (options record) |
 | Custom quoting callback | `ShouldQuote` |
+| Fluent `EtlPipeline` source / sink builders (see [pipeline extensions](docs/pipeline-extensions.md)) | `EtlPipelineCsvExtensions.CsvExtractor<T>(…)` / `CsvLoader<T>(…)`, `ICsvExtractorBuilder<T>`, `ICsvLoaderBuilder<T>` |
 
 CSV knobs are configured through `CsvExtractorOptions<TRecord>` / `CsvLoaderOptions<TRecord>` passed to the constructor. The settable properties on the stages themselves are `[Obsolete]`.
 
