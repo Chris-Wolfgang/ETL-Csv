@@ -67,10 +67,14 @@ public class CsvBadDataInfoTests
 
 
     [Fact]
-    public void ToString_when_called_returns_non_empty_value()
+    public void ToString_when_called_renders_the_type_name_and_values()
     {
         var info = new CsvBadDataInfo(5, 2, "bad", "row");
 
-        Assert.False(string.IsNullOrEmpty(info.ToString()));
+        var text = info.ToString();
+
+        Assert.StartsWith($"{nameof(CsvBadDataInfo)} {{", text, StringComparison.Ordinal);
+        Assert.Contains("bad", text, StringComparison.Ordinal);
+        Assert.Contains("row", text, StringComparison.Ordinal);
     }
 }
