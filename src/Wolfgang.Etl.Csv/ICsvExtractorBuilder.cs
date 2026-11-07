@@ -21,6 +21,11 @@ namespace Wolfgang.Etl.Csv;
 /// effect when the pipeline is first enumerated. Stream ownership is decided by the factory
 /// overload, not a setter: a path-based source owns and disposes the file it opens, while a
 /// caller-supplied <see cref="System.IO.StreamReader"/> is left open for the caller to dispose.
+/// <para>
+/// Once any pipeline operator has run (which materializes the extractor), every configuration
+/// setter on this interface throws <see cref="InvalidOperationException"/>: configure the
+/// extractor completely before appending the first operator.
+/// </para>
 /// </remarks>
 public interface ICsvExtractorBuilder<T> : IEtlPipeline<T>
     where T : notnull
