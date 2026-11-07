@@ -11,7 +11,7 @@ it nightly to catch performance / allocation regressions before release.
 | --- | --- |
 | `round_trip_mixed` | extract → materialize → load → re-extract, over rows of varied width |
 | `concurrent_streaming` | N extractors streaming concurrently (parallel request load) |
-| `windowed_paging` | paging a large file in fixed windows via `SkipRecordCount` + `MaxRecordCount` |
+| `windowed_paging` | paging a large file in fixed windows via `SkipItemCount` + `MaximumItemCount` |
 | `bursty_small` | many tiny back-to-back extract+load cycles (per-call fixed overhead) |
 
 ## Running it
