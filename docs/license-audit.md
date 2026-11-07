@@ -1,6 +1,8 @@
 # Transitive License Audit
 
-Per-release sweep of `Wolfgang.Etl.Csv`'s transitive NuGet dependencies' licenses, to verify nothing in the dependency closure imposes obligations that conflict with this library's **MIT** distribution.
+How `Wolfgang.Etl.Csv`'s transitive NuGet dependencies' licenses are checked, to verify nothing in the dependency closure imposes obligations that conflict with this library's **MIT** distribution.
+
+**The live sources are automated, not this page:** `.github/workflows/license-audit.yaml` audits every `src/` project's full dependency closure against `.github/license-audit/` on every PR, every push to `main` and weekly, and fails on a disallowed license; `THIRD-PARTY-NOTICES.md` lists the shipped runtime dependencies. The table further down is a one-off snapshot from the 0.1.0 release, kept for history; it is not updated per release.
 
 ## Recipe
 
@@ -14,12 +16,9 @@ dotnet nuget-license -i src/Wolfgang.Etl.Csv/Wolfgang.Etl.Csv.csproj -t \
   -o Table
 ```
 
-This is the command `license-audit.yaml` runs. The table below is the 0.1.0 sweep, made with the
-`dotnet-project-licenses` tool the workflow used at the time.
+This is the command `license-audit.yaml` runs; run it locally to see the current closure.
 
-Run after every release. Update the table below.
-
-## Last audited
+## Historical snapshot (0.1.0, not maintained)
 
 - **Date:** 2026-06-20
 - **Version:** 0.1.0
