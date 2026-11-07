@@ -428,5 +428,5 @@ Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for:
 
 - [**CsvHelper**](https://joshclose.github.io/CsvHelper/) by Josh Close — the underlying CSV parser and writer. Dual-licensed under MS-PL and Apache 2.0; both are MIT-compatible.
 - [**Wolfgang.Etl.Abstractions**](https://github.com/Chris-Wolfgang/ETL-Abstractions) — the `ExtractorBase<T, TProgress>` / `LoaderBase<T, TProgress>` contracts this library implements.
-- [**Wolfgang.Etl.TestKit.Xunit**](https://github.com/Chris-Wolfgang/ETL-Test-Kit) — provides the `ExtractorBaseContractTests` / `LoaderBaseContractTests` used to verify behavioural conformance.
+- [**Wolfgang.Etl.TestKit.Xunit**](https://github.com/Chris-Wolfgang/ETL-Abstractions) — provides the `ExtractorBaseContractTests` / `LoaderBaseContractTests` used to verify behavioural conformance.
 
