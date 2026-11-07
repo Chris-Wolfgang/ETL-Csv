@@ -31,7 +31,7 @@ public sealed class CsvDiscriminator<TBase>
     public string? ColumnName { get; init; }
 
 
-    /// <summary>Maps each discriminator value to the concrete record type. Every value type must derive from / implement <typeparamref name="TBase"/>.</summary>
+    /// <summary>Maps each discriminator value to the concrete record type. Every value type must derive from / implement <typeparamref name="TBase"/>; when the dictionary is set directly (not through <see cref="CsvDiscriminatorBuilder{TBase}"/>), a type that does not is reported as an <see cref="InvalidOperationException"/> at the start of the first extract or load, not at initialization.</summary>
     public IReadOnlyDictionary<string, Type> Mapping { get; init; } = new Dictionary<string, Type>();
 
 

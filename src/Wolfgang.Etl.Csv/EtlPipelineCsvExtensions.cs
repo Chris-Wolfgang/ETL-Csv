@@ -16,7 +16,8 @@ namespace Wolfgang.Etl.Csv;
 /// failure). Factories that accept a caller-supplied <see cref="StreamReader"/>,
 /// <see cref="StreamWriter"/>, or a pre-built extractor/loader do not dispose it — the caller owns
 /// the lifecycle. The fluent configuration setters returned by these factories map 1:1 to the
-/// underlying <c>CsvExtractor&lt;T&gt;</c> / <c>CsvLoader&lt;T&gt;</c> properties.
+/// underlying <c>CsvExtractor&lt;T&gt;</c> / <c>CsvLoader&lt;T&gt;</c> properties, except
+/// <c>Encoding(...)</c>, which only selects how a path-based source or sink is opened.
 /// </remarks>
 public static class EtlPipelineCsvExtensions
 {
