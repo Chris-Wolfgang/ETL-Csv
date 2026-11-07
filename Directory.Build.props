@@ -127,6 +127,15 @@
     <None Include="$(MSBuildProjectDirectory)/obj/THIRD-PARTY-NOTICES.md" Pack="true" PackagePath="\" Visible="false" />
   </ItemGroup>
 
+  <!-- The item above is conditional so a local `dotnet pack` works without the generator. A release
+       pack passes -p:RequireThirdPartyNotices=true (release.yaml), and then a missing file fails the
+       pack instead of shipping a package without its licence notices (#268, #594). -->
+  <Target Name="RequireThirdPartyNotices"
+          BeforeTargets="GenerateNuspec"
+          Condition="'$(RequireThirdPartyNotices)' == 'true' and $(_RelativeProjectDir.StartsWith('src/')) and !Exists('$(MSBuildProjectDirectory)/obj/THIRD-PARTY-NOTICES.md')">
+    <Error Text="$(MSBuildProjectDirectory)/obj/THIRD-PARTY-NOTICES.md is missing. Run scripts/third-party-notices.ps1 after restore and before pack." />
+  </Target>
+
   <ItemGroup>
     <!-- SourceLink: embed source provenance into PDBs so debuggers can step
          into NuGet package code from GitHub. -->
