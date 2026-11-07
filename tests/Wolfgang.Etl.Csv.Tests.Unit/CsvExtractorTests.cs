@@ -609,4 +609,60 @@ public class CsvExtractorTests
 
         Assert.Equal(0, sut.CurrentErrorItemCount);   // fail-fast aborts rather than counting a skip
     }
+
+
+
+    private static async Task<List<PersonRecord>> ExtractWithOptionsAsync(string csv, CsvExtractorOptions<PersonRecord> options)
+    {
+        var sut = new CsvExtractor<PersonRecord>(new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(csv)), Encoding.UTF8), options);
+        var list = new List<PersonRecord>();
+        await foreach (var item in sut.ExtractAsync())
+        {
+            list.Add(item);
+        }
+
+        return list;
+    }
+
+
+
+    [Fact]
+    public async Task ExtractAsync_when_Quote_is_a_single_quote_keeps_a_delimiter_inside_single_quoted_fields()
+    {
+        var rows = await ExtractWithOptionsAsync
+        (
+            "FirstName,LastName,Age\r\n'Smith, Jr',Alice,30\r\n",
+            new CsvExtractorOptions<PersonRecord> { Quote = '\'' }
+        );
+
+        Assert.Equal("Smith, Jr", Assert.Single(rows).FirstName);
+    }
+
+
+
+    [Fact]
+    public async Task ExtractAsync_when_Escape_is_a_backslash_unescapes_backslash_quoted_quotes()
+    {
+        var rows = await ExtractWithOptionsAsync
+        (
+            "FirstName,LastName,Age\r\n\"Al\\\"ice\",Smith,30\r\n",
+            new CsvExtractorOptions<PersonRecord> { Escape = '\\' }
+        );
+
+        Assert.Equal("Al\"ice", Assert.Single(rows).FirstName);
+    }
+
+
+
+    [Fact]
+    public async Task ExtractAsync_when_Comment_is_a_semicolon_skips_semicolon_comment_lines()
+    {
+        var rows = await ExtractWithOptionsAsync
+        (
+            "FirstName,LastName,Age\r\n;a comment line\r\nAlice,Smith,30\r\n",
+            new CsvExtractorOptions<PersonRecord> { AllowComments = true, Comment = ';' }
+        );
+
+        Assert.Equal("Alice", Assert.Single(rows).FirstName);
+    }
 }
