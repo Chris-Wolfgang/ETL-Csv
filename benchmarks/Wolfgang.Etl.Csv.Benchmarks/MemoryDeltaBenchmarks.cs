@@ -16,7 +16,7 @@ namespace Wolfgang.Etl.Csv.Benchmarks;
 [MemoryDiagnoser]
 public class MemoryDeltaBenchmarks
 {
-    private byte[][] _dataBySize = Array.Empty<byte[]>();
+    private byte[] _data = Array.Empty<byte>();
 
 
 
@@ -28,8 +28,7 @@ public class MemoryDeltaBenchmarks
     [GlobalSetup]
     public void Setup()
     {
-        _dataBySize = new byte[1][];
-        _dataBySize[0] = BuildData(RecordCount);
+        _data = BuildData(RecordCount);
     }
 
 
@@ -53,7 +52,7 @@ public class MemoryDeltaBenchmarks
     {
         var before = GC.GetTotalAllocatedBytes(precise: true);
 
-        using var reader = new StreamReader(new MemoryStream(_dataBySize[0]), Encoding.UTF8);
+        using var reader = new StreamReader(new MemoryStream(_data), Encoding.UTF8);
         var extractor = new CsvExtractor<BenchmarkRecord>(reader);
 
         await foreach (var _ in extractor.ExtractAsync())
