@@ -15,6 +15,8 @@
     <File Path=".globalconfig" />
     <File Path=".gitattributes" />
     <File Path=".gitleaks.toml" />
+    <File Path=".editorconfig" />
+    <File Path=".template-version" />
   </Folder>
   <Folder Name="/.root/.githooks/">
     <File Path=".githooks/pre-commit" />
@@ -25,10 +27,29 @@
     <File Path=".github/copilot-instructions.md" />
     <File Path=".github/dependabot.yml" />
     <File Path=".github/pull_request_template.md" />
+    <File Path=".github/zizmor.yml" />
   </Folder>
   <Folder Name="/.root/.github/ISSUE_TEMPLATE/">
     <File Path=".github/ISSUE_TEMPLATE/BUG_REPORT.yaml" />
     <File Path=".github/ISSUE_TEMPLATE/feature_request.yaml" />
+    <File Path=".github/ISSUE_TEMPLATE/maintenance-task.yaml" />
+  </Folder>
+  <Folder Name="/.root/.github/license-audit/">
+    <File Path=".github/license-audit/allowed-licenses.json" />
+    <File Path=".github/license-audit/ignored-packages.json" />
+    <File Path=".github/license-audit/package-overrides.json" />
+    <File Path=".github/license-audit/url-license-mappings.json" />
+  </Folder>
+  <Folder Name="/.root/.github/requirements/">
+    <File Path=".github/requirements/semgrep-overrides.txt" />
+    <File Path=".github/requirements/semgrep.in" />
+    <File Path=".github/requirements/semgrep.txt" />
+    <File Path=".github/requirements/zizmor.in" />
+    <File Path=".github/requirements/zizmor.txt" />
+  </Folder>
+  <Folder Name="/.root/.github/scripts/">
+    <File Path=".github/scripts/bdn_delta.py" />
+    <File Path=".github/scripts/shadow_delta.py" />
   </Folder>
   <Folder Name="/.root/.github/workflows/">
     <File Path=".github/workflows/security-alerts.yml" />
@@ -42,7 +63,7 @@
     <File Path=".github/workflows/release.yaml" />
     <File Path=".github/workflows/scorecard.yaml" />
     <File Path=".github/workflows/stryker.yaml" />
-    <File Path=".github/workflows/aot.yaml" />
+    <File Path=".github/workflows/aot-smoke.yaml" />
     <File Path=".github/workflows/cross-platform-differential.yaml" />
     <File Path=".github/workflows/fuzz.yaml" />
     <File Path=".github/workflows/gc-profiling.yaml" />
@@ -53,6 +74,7 @@
     <File Path=".github/workflows/semgrep.yaml" />
     <File Path=".github/workflows/shadow.yaml" />
     <File Path=".github/workflows/sourcelink.yaml" />
+    <File Path=".github/workflows/workflow-failure-watchdog.yaml" />
   </Folder>
   <Folder Name="/.root/docs/">
     <File Path="docs/abi-stability.md" />
@@ -77,6 +99,9 @@
   <Folder Name="/.root/docs/migration/">
     <File Path="docs/migration/README.md" />
   </Folder>
+  <Folder Name="/.root/licenses/">
+    <File Path="licenses/allowed-licenses.json" />
+  </Folder>
   <Folder Name="/.root/scripts/">
     <File Path="scripts/tfm-parity.ps1" />
     <File Path="scripts/security-alerts.ps1" />
@@ -94,6 +119,9 @@
     <File Path="scripts/audit-repos.ps1" />
     <File Path="scripts/third-party-notices.ps1" />
     <File Path="scripts/upgrade.ps1" />
+  </Folder>
+  <Folder Name="/.root/scripts/templates/">
+    <File Path="scripts/templates/maintenance-parent-body.md" />
   </Folder>
   <Folder Name="/benchmarks/">
     <Project Path="benchmarks/Wolfgang.Etl.Csv.Benchmarks/Wolfgang.Etl.Csv.Benchmarks.csproj" />
