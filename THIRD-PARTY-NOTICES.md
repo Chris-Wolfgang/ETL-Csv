@@ -1,13 +1,13 @@
 # Third-Party Notices
 
 `Wolfgang.Etl.Csv` ships the runtime dependencies listed below.
-`license-audit.yaml` gates new dependencies against
-`licenses/allowed-licenses.json` on every PR that touches a `.csproj`, plus
-weekly. This committed copy is the repository-level notice. The copy packed into the
+`license-audit.yaml` gates the dependency graph against the policy in
+`.github/license-audit/` (allow-list, URL mappings, overrides, ignored packages)
+on every PR and push to `main`, plus weekly. This committed copy is the repository-level notice. The copy packed into the
 `.nupkg` is generated at release time by `scripts/third-party-notices.ps1`
 (see `Directory.Build.props`) and is never committed, so the package always
 matches the dependency graph it was built from. Keep this file's table in step
-by hand (from `dotnet-project-licenses`'s console output — see the commands
+by hand (from `nuget-license`'s console output — see the commands
 below) whenever the dependency graph changes.
 
 ## Wolfgang.Etl.Csv
@@ -22,11 +22,8 @@ below) whenever the dependency graph changes.
 > expression `MS-PL OR Apache-2.0`, meaning a consumer may take it under
 > either. This package consumes it under **Apache-2.0**.
 >
-> The allowlist therefore contains the literal string `MS-PL OR Apache-2.0`
-> rather than `Apache-2.0` alone: `dotnet-project-licenses` compares the
-> declared expression as text, so an allowlist holding only the individual
-> licence identifiers would fail the audit on a compound expression even
-> though one of its alternatives is allowed.
+> `nuget-license` evaluates the expression, so the allow-list only needs to hold
+> one of its alternatives (both `MS-PL` and `Apache-2.0` are on it).
 
 > Microsoft.Bcl.AsyncInterfaces supplies `IAsyncEnumerable<T>` /
 > `IAsyncDisposable` on the down-level targets; on net8.0+ those types are part
@@ -49,7 +46,13 @@ it is recorded here for completeness rather than listed in the table above.
 Generated from:
 
 ```
-dotnet-project-licenses --input src/Wolfgang.Etl.Csv/Wolfgang.Etl.Csv.csproj
+dotnet tool restore
+dotnet nuget-license -i src/Wolfgang.Etl.Csv/Wolfgang.Etl.Csv.csproj -t \
+  -a .github/license-audit/allowed-licenses.json \
+  -ignore .github/license-audit/ignored-packages.json \
+  -mapping .github/license-audit/url-license-mappings.json \
+  -override .github/license-audit/package-overrides.json \
+  -o Table
 ```
 
 against the src project's shipped (non-analyzer, non-test) dependency graph.
