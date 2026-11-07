@@ -177,6 +177,10 @@ public static class CsvCheckpointExtensions
     /// <see cref="CsvExtractor{TRecord}.SkipRecordCount"/> on <paramref name="extractor"/> to that
     /// value, so the next extraction resumes past the already-acknowledged records.
     /// </summary>
+    /// <remarks>
+    /// Like <see cref="ReadCheckpointAsync"/>, a checkpoint file larger than 64 bytes is reported as a
+    /// <see cref="FormatException"/>.
+    /// </remarks>
     /// <typeparam name="TRecord">The extractor's record type.</typeparam>
     /// <param name="extractor">The extractor to resume.</param>
     /// <param name="path">The checkpoint file path.</param>

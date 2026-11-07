@@ -23,6 +23,13 @@ namespace Wolfgang.Etl.Csv;
 /// using <see href="https://joshclose.github.io/CsvHelper/">CsvHelper</see>.
 /// </summary>
 /// <typeparam name="TRecord">The type of records to load. Must be <c>notnull</c>.</typeparam>
+/// <remarks>
+/// <c>LoadAsync</c> can throw: <see cref="CsvValidationException"/> when a record fails a validator and
+/// <c>OnValidationFailure</c> is <see cref="CsvValidationFailureAction.Stop"/> (the default);
+/// <see cref="InvalidOperationException"/> for a record whose runtime type is not mapped when the
+/// discriminator's <c>OnUnknown</c> is <see cref="CsvDiscriminatorAction.Throw"/>; and CsvHelper's own
+/// exception when a record cannot be written.
+/// </remarks>
 /// <example>
 /// <code>
 /// using var writer = new StreamWriter("people.csv");
@@ -369,9 +376,9 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     /// configure it through <see cref="CsvLoaderOptions{TRecord}"/>). When <c>true</c>,
     /// the loader enumerates the source and honors <see cref="LoaderBase{TDestination, TProgress}.SkipItemCount"/> /
     /// <see cref="LoaderBase{TDestination, TProgress}.MaximumItemCount"/>, increments progress counters, fires progress reports, and
-    /// logs exactly as a real load would — but writes nothing to the underlying writer (neither
-    /// the header nor any records). Use it to validate a pipeline against real data without
-    /// producing output. Defaults to <c>false</c>.
+    /// logs as a real load would — but writes nothing to the underlying writer (neither
+    /// the header nor any records), so <see cref="CsvLoaderProgress.CurrentLineNumber"/> stays <c>0</c>.
+    /// Use it to validate a pipeline against real data without producing output. Defaults to <c>false</c>.
     /// </summary>
     public bool IsDryRun { get => _isDryRun; [Obsolete("Configure IsDryRun through CsvLoaderOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set => _isDryRun = value; }
 
