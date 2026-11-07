@@ -11,7 +11,10 @@ namespace Wolfgang.Etl.Csv;
 /// <summary>
 /// Describes how a single CSV file mixes multiple record shapes, keyed by a discriminator column, so a
 /// <see cref="CsvExtractor{TRecord}"/> binds each row to the right concrete type and a
-/// <see cref="CsvLoader{TRecord}"/> writes each record's type and columns. Build one with
+/// <see cref="CsvLoader{TRecord}"/> writes each record with its concrete type's own column mapping. The
+/// loader does not emit the discriminator value itself: only the columns the concrete type maps are written,
+/// so a file that round-trips needs the discriminator column mapped as a property of each concrete type.
+/// Build one with
 /// <see cref="CsvDiscriminatorBuilder{TBase}"/> — that path is trim/AOT-safe. Constructing it directly
 /// from a <see cref="Mapping"/> dictionary is supported but reflects over the mapped types at run time.
 /// </summary>
