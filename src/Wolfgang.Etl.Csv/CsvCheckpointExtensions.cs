@@ -125,10 +125,17 @@ public static class CsvCheckpointExtensions
         var temporaryPath = path + ".tmp";
         var bytes = Encoding.UTF8.GetBytes(count.ToString(CultureInfo.InvariantCulture));
 
-        using (var stream = new FileStream(temporaryPath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, useAsync: true))
+        try
         {
+            using var stream = new FileStream(temporaryPath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, useAsync: true);
             await stream.WriteAsync(bytes, 0, bytes.Length, token).ConfigureAwait(false);
             await stream.FlushAsync(token).ConfigureAwait(false);
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or OperationCanceledException)
+        {
+            // Best effort: a failed or cancelled write must not leave a partial temp file behind either.
+            TryDeleteTemporaryFile(temporaryPath);
+            throw;
         }
 
         // Atomic replace. File.Move's overwrite overload is only on the modern runtime targets;
