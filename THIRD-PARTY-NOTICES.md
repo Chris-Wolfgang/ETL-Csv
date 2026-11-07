@@ -26,8 +26,8 @@ below) whenever the dependency graph changes.
 > one of its alternatives (both `MS-PL` and `Apache-2.0` are on it).
 
 > Microsoft.Bcl.AsyncInterfaces supplies `IAsyncEnumerable<T>` /
-> `IAsyncDisposable` on the down-level targets; on net8.0+ those types are part
-> of the framework.
+> `IAsyncDisposable` on the down-level targets (net462, netstandard2.0); from
+> netstandard2.1 / netcoreapp3.0 on those types are part of the framework.
 
 ## First-party dependencies
 
