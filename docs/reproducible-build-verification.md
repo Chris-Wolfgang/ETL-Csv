@@ -17,7 +17,7 @@ The relevant MSBuild properties are set in `Directory.Build.props`:
 
 Plus `Microsoft.SourceLink.GitHub` which embeds the commit SHA into PDBs (separate property, also in `Directory.Build.props`).
 
-`release.yaml`'s `pack-and-validate` job runs on a clean GitHub-hosted Ubuntu runner, so the build environment is well-defined.
+`release.yaml`'s `pack-and-validate` job runs on a clean GitHub-hosted Windows runner (`windows-latest`), so the build environment is well-defined.
 
 ## Verification recipe (one-shot, run by hand)
 
