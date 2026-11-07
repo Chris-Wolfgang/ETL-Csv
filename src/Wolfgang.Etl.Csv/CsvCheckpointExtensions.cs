@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -201,7 +202,7 @@ public static class CsvCheckpointExtensions
     /// <exception cref="ArgumentNullException"><paramref name="extractor"/> or <paramref name="path"/> is <c>null</c>.</exception>
     /// <exception cref="ArgumentException"><paramref name="path"/> is empty or whitespace.</exception>
     /// <exception cref="FormatException">The checkpoint file exists but does not contain a valid integer.</exception>
-    public static async ValueTask<int> ResumeFromCheckpointAsync<TRecord>
+    public static async ValueTask<int> ResumeFromCheckpointAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TRecord>
     (
         this CsvExtractor<TRecord> extractor,
         string path,
