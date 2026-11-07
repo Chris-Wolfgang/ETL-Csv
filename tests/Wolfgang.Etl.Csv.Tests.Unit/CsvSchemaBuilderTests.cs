@@ -76,9 +76,14 @@ public class CsvSchemaBuilderTests
     {
         var schema = new CsvSchemaBuilder<DerivedRecord>()
             .Column(d => d.BaseName, name: "base_name")
+            .Column(d => d.Id, name: "id")
             .Build();
 
-        Assert.Equal("BaseName", schema.Columns[0].PropertyName);
+        Assert.Equal
+        (
+            new[] { "BaseName", "Id" },
+            schema.Columns.Select(c => c.PropertyName).ToArray()
+        );
     }
 
 
