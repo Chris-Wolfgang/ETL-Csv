@@ -104,12 +104,15 @@ That's the full surface for the simplest case. The library auto-maps record prop
 | Progress reporting with item count, skip count, line number, bad-data count | `CsvExtractorProgress`, `CsvLoaderProgress` |
 | Cancellation support throughout | `CancellationToken` on every async API |
 | Skip metadata rows / start at a specific line | `InitialRecordIndex` |
+| Resume an interrupted extraction from a checkpoint file ([cookbook](docs/cookbook/resumable-extraction.md)) | `CsvCheckpointExtensions`: `ReadCheckpointAsync`, `WriteCheckpointAsync`, `ResumeFromCheckpointAsync` |
 | Limit how many records get processed | `MaximumItemCount`, `SkipItemCount` (options record) |
+| Dry-run a load: enumerate, count and report progress, write nothing | `IsDryRun` (loader options record) |
 | Compile-time column mapping (declarative) | `[CsvColumn]`, `[CsvIgnore]` |
 | Runtime column mapping (configuration / DB-driven layouts) | `CsvColumnMap`, `ColumnMaps` property |
 | Type-safe code-first schema (undecorated / generated types) | `CsvSchemaBuilder<T>`, `CsvSchema`, `Schema` option |
 | Parser-agnostic public surface (no `CsvHelper` types leaked) | `CsvTrimOptions`, `CsvBadDataInfo`, `CsvShouldQuoteContext` |
 | Custom delimiter, quote, escape, comment character | `Delimiter`, `Quote`, `Escape`, `Comment`, `AllowComments` |
+| Line terminator for written records; skip or surface blank lines when reading | `NewLine` (loader), `IgnoreBlankLines` (extractor) |
 | `LeaveOpen` semantics matching .NET conventions | `LeaveOpen` |
 | Trim whitespace inside or outside quotes | `TrimOptions` |
 | Skip-or-abort policy for rows that fail to parse or convert | `ErrorPolicy` (options record) |
