@@ -24,6 +24,12 @@ namespace Wolfgang.Etl.Csv;
 /// </remarks>
 public static class CsvCheckpointExtensions
 {
+    // The largest checkpoint file ReadCheckpointAsync accepts, in bytes. Internal so tests can
+    // build files exactly at and one past the cap.
+    internal const int MaxCheckpointBytes = 64;
+
+
+
     /// <summary>
     /// Reads a 32-bit integer counter from <paramref name="path"/>, returning <c>0</c> when the
     /// file does not exist.
@@ -61,8 +67,7 @@ public static class CsvCheckpointExtensions
             // A checkpoint holds a single small integer. Cap the size before allocating so a
             // corrupt or accidentally-huge file surfaces as a clean FormatException instead of an
             // int-overflow cast or a giant allocation. (int.MinValue is 11 chars; 64 is generous.)
-            const int maxCheckpointBytes = 64;
-            if (stream.Length > maxCheckpointBytes)
+            if (stream.Length > MaxCheckpointBytes)
             {
                 throw new FormatException
                 (

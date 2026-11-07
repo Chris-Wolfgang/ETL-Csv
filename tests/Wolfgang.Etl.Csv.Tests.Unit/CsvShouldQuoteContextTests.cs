@@ -54,10 +54,13 @@ public class CsvShouldQuoteContextTests
 
 
     [Fact]
-    public void ToString_when_called_returns_non_empty_value()
+    public void ToString_when_called_renders_the_type_name_and_values()
     {
         var ctx = new CsvShouldQuoteContext("v", typeof(int));
 
-        Assert.False(string.IsNullOrEmpty(ctx.ToString()));
+        var text = ctx.ToString();
+
+        Assert.StartsWith($"{nameof(CsvShouldQuoteContext)} {{", text, StringComparison.Ordinal);
+        Assert.Contains(typeof(int).ToString(), text, StringComparison.Ordinal);
     }
 }
