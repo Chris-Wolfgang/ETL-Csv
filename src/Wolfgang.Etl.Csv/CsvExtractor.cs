@@ -161,6 +161,10 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     /// <exception cref="ArgumentNullException">
     /// <paramref name="streamReader"/> is <c>null</c>.
     /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="options"/> sets both <c>Schema</c> and a non-empty <c>ColumnMaps</c>, or its
+    /// <c>Schema</c> was built for a record type other than <typeparamref name="TRecord"/>.
+    /// </exception>
     [RequiresUnreferencedCode("CsvExtractor uses CsvHelper, which reflects over TRecord's members beyond what DynamicallyAccessedMembers can express (type converter constructors, non-public setters in some flows). The library is not trim/NativeAOT safe.")]
     public CsvExtractor
     (
