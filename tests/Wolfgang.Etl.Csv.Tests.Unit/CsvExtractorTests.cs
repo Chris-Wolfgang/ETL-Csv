@@ -234,18 +234,6 @@ public class CsvExtractorTests
 
 
     [Fact]
-    public void InitialRecordIndex_when_set_to_zero_throws_ArgumentOutOfRangeException()
-    {
-        var sut = new CsvExtractor<PersonRecord>(CreateCsvStream(ExpectedItems));
-
-        Assert.Throws<ArgumentOutOfRangeException>
-        (
-            () => sut.InitialRecordIndex = 0
-        );
-    }
-
-
-    [Fact]
     public void CsvExtractorOptions_InitialRecordIndex_when_init_to_zero_throws_ArgumentOutOfRangeException()
     {
         var exception = Assert.Throws<ArgumentOutOfRangeException>

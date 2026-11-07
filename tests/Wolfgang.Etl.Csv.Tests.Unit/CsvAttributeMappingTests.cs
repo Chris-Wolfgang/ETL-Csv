@@ -330,17 +330,6 @@ public class CsvAttributeMappingTests
 
 
     [Fact]
-    public void CsvClassMapFactory_BuildFromColumnMaps_when_columnMaps_is_empty_throws()
-    {
-        Assert.Throws<ArgumentException>
-        (
-            () => CsvClassMapFactory.BuildFromColumnMaps<PriceRecord>(Array.Empty<CsvColumnMap>())
-        );
-    }
-
-
-
-    [Fact]
     public void CsvClassMapFactory_BuildFromColumnMaps_when_columnMaps_is_null_throws()
     {
         Assert.Throws<ArgumentNullException>

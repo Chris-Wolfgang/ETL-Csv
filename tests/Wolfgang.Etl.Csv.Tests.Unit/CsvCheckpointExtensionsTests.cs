@@ -10,6 +10,13 @@ namespace Wolfgang.Etl.Csv.Tests.Unit;
 
 public class CsvCheckpointExtensionsTests
 {
+    public static TheoryData<string> BlankPaths => new()
+    {
+        string.Empty,
+        "   ",
+    };
+
+
     [Fact]
     public async Task ReadCheckpointAsync_when_the_file_is_missing_returns_zero()
     {
@@ -108,18 +115,6 @@ public class CsvCheckpointExtensionsTests
     }
 
 
-    [Theory]
-    [InlineData("")]
-    [InlineData("   ")]
-    public async Task ReadCheckpointAsync_when_path_is_empty_or_whitespace_throws_ArgumentException(string path)
-    {
-        await Assert.ThrowsAsync<ArgumentException>
-        (
-            async () => await CsvCheckpointExtensions.ReadCheckpointAsync(path)
-        );
-    }
-
-
     [Fact]
     public async Task ReadCheckpointAsync_when_the_file_is_too_large_throws_FormatException()
     {
@@ -183,8 +178,7 @@ public class CsvCheckpointExtensionsTests
 
 
     [Theory]
-    [InlineData("")]
-    [InlineData("   ")]
+    [MemberData(nameof(BlankPaths))]
     public async Task ReadCheckpointAsync_when_path_is_empty_or_whitespace_reports_the_path_parameter(string path)
     {
         var ex = await Assert.ThrowsAsync<ArgumentException>
@@ -312,8 +306,7 @@ public class CsvCheckpointExtensionsTests
 
 
     [Theory]
-    [InlineData("")]
-    [InlineData("   ")]
+    [MemberData(nameof(BlankPaths))]
     public async Task WriteCheckpointAsync_when_path_is_empty_or_whitespace_throws_ArgumentException(string path)
     {
         var ex = await Assert.ThrowsAsync<ArgumentException>
