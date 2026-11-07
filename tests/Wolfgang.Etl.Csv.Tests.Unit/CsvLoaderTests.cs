@@ -415,7 +415,7 @@ public class CsvLoaderTests
         );
         var items = new[] { new ExplodingRecord { Name = "Alice" } };
 
-        await Assert.ThrowsAnyAsync<Exception>(async () => await sut.LoadAsync(items.ToAsyncEnumerable()));
+        await Assert.ThrowsAsync<CsvHelper.WriterException>(async () => await sut.LoadAsync(items.ToAsyncEnumerable()));
 
         // Under a consulted Skip policy HandleItemError would have counted the row here.
         Assert.Equal(0, sut.CurrentErrorItemCount);
