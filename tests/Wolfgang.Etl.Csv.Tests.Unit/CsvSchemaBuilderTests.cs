@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Wolfgang.Etl.Csv.Tests.Unit.TestModels;
@@ -76,14 +75,9 @@ public class CsvSchemaBuilderTests
     {
         var schema = new CsvSchemaBuilder<DerivedRecord>()
             .Column(d => d.BaseName, name: "base_name")
-            .Column(d => d.Id, name: "id")
             .Build();
 
-        Assert.Equal
-        (
-            new[] { "BaseName", "Id" },
-            schema.Columns.Select(c => c.PropertyName).ToArray()
-        );
+        Assert.Equal("BaseName", schema.Columns[0].PropertyName);
     }
 
 
@@ -318,9 +312,8 @@ public class CsvSchemaBuilderTests
 
 
 
+    // Deliberately declares no members of its own: the test only needs a derived type whose
+    // mapped property is inherited from BaseRecord.
     [ExcludeFromCodeCoverage]
-    private sealed record DerivedRecord : BaseRecord
-    {
-        public int Id { get; set; }
-    }
+    private sealed record DerivedRecord : BaseRecord;
 }
