@@ -158,7 +158,10 @@ internal static class CsvClassMapFactory
     /// <typeparam name="T">The record type being mapped.</typeparam>
     /// <param name="columnMaps">Runtime column descriptors. Must be non-empty.</param>
     /// <exception cref="ArgumentNullException"><paramref name="columnMaps"/> is <c>null</c>.</exception>
-    /// <exception cref="ArgumentException">A descriptor names a property that doesn't exist on <typeparamref name="T"/>.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="columnMaps"/> is empty, two descriptors name the same property or the same
+    /// non-negative index, or a descriptor names a property that doesn't exist on <typeparamref name="T"/>.
+    /// </exception>
     [RequiresUnreferencedCode("Reflects over the public properties of T to build a CsvHelper ClassMap from runtime column descriptors.")]
     public static ClassMap<T> BuildFromColumnMaps<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>
     (

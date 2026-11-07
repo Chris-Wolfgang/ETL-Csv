@@ -15,7 +15,8 @@ namespace Wolfgang.Etl.Csv;
 /// </summary>
 /// <typeparam name="T">The record type produced by the extractor.</typeparam>
 /// <remarks>
-/// Each setter maps 1:1 to a public property on <see cref="CsvExtractor{TRecord}"/>; no new
+/// Each setter maps 1:1 to a public property on <see cref="CsvExtractor{TRecord}"/>, except
+/// <c>Encoding(...)</c>, which only selects how a path-based source is opened; no other new
 /// configuration surface is introduced. Setters return the builder for chaining and take
 /// effect when the pipeline is first enumerated. Stream ownership is decided by the factory
 /// overload, not a setter: a path-based source owns and disposes the file it opens, while a
