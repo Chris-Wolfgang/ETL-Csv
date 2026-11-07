@@ -340,6 +340,28 @@ public sealed class EtlPipelineCsvExtensionsTests : IDisposable
 
 
     [Fact]
+    public async Task Configuring_the_loader_after_it_has_run_throws_and_names_the_reason()
+    {
+        var source = WriteTempFile("guard.csv", "FirstName,LastName,Age\r\nAlice,Smith,30\r\n");
+        var target = Path.Combine(_tempDir, "guard-out.csv");
+
+        var builder = EtlPipeline
+            .Create()
+            .CsvExtractor<PersonRecord>(source)
+            .CsvLoader(target);
+        await builder.RunAsync();
+
+        var ex = Assert.Throws<InvalidOperationException>(() => builder.Delimiter(";"));
+        Assert.Equal
+        (
+            "The loader has already been run; configuration setters can no longer be applied.",
+            ex.Message
+        );
+        Assert.Throws<InvalidOperationException>(() => builder.Encoding(Encoding.Unicode));
+    }
+
+
+    [Fact]
     public void Configuring_the_extractor_after_it_is_materialized_names_the_reason()
     {
         using var source = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes("FirstName,LastName,Age\r\nAlice,Smith,30\r\n")));
