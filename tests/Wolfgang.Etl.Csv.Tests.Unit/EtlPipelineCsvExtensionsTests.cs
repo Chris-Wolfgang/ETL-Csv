@@ -582,7 +582,7 @@ public sealed class EtlPipelineCsvExtensionsTests : IDisposable
         var badData = new SyncProgress<CsvBadDataInfo>();
         var readingExceptions = new SyncProgress<CsvReadingExceptionInfo>();
 
-        await Assert.ThrowsAnyAsync<Exception>
+        await Assert.ThrowsAsync<CsvHelper.TypeConversion.TypeConverterException>
         (
             async () => await EtlPipeline
                 .Create()
@@ -593,8 +593,8 @@ public sealed class EtlPipelineCsvExtensionsTests : IDisposable
                 .RunAsync()
         );
 
-        Assert.True(badData.CallCount > 0);
-        Assert.True(readingExceptions.CallCount > 0);
+        Assert.Equal(1, badData.CallCount);
+        Assert.Equal(1, readingExceptions.CallCount);
     }
 
 
