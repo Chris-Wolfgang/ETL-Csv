@@ -610,7 +610,7 @@ jobs:
           path: ./nuget-packages
 
       - name: Attest build provenance
-        # Pinned to the v4.1.1 COMMIT — attest actions publish annotated tags
+        # Pinned to the v4.2.2 COMMIT — attest actions publish annotated tags
         # that break tag-pin verification.
         uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
         with:
