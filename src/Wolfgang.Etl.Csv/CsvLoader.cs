@@ -43,6 +43,14 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
 {
     private static readonly string OperationName = $"CSV loading of {typeof(TRecord).Name}";
 
+    // CsvWriter.WriteRecord<T> binds the map from the static T, so writing a mixed file requires
+    // dispatching to the record's runtime type. Cache the open generic method once, and each closed
+    // generic per runtime type so high-volume loads don't re-pay MakeGenericMethod per row.
+    private static readonly MethodInfo WriteRecordMethod =
+        typeof(CsvWriter).GetMethod(nameof(CsvWriter.WriteRecord))!;
+
+    private static readonly ConcurrentDictionary<Type, MethodInfo> WriteRecordByType = new();
+
     private readonly StreamWriter _writer;
     private readonly ILogger _logger;
     private readonly IProgressTimer? _progressTimer;
@@ -463,7 +471,7 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
 
         // Honor a token that is already cancelled before we pull the first record
         // from the source — mirrors CsvExtractor's top-of-loop check so a
-        // pre-cancelled load reads nothing (LoaderBase contract, TestKit 0.13).
+        // pre-cancelled load reads nothing (LoaderBase contract).
         token.ThrowIfCancellationRequested();
 
         await foreach (var item in items.WithCancellation(token).ConfigureAwait(false))
@@ -538,7 +546,7 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
         }
 
         _ = Interlocked.Increment(ref _currentInvalidItemCount);
-        InvalidRecordHandler?.Invoke(invalid!);
+        InvalidRecordHandler?.Invoke(invalid);
 
         switch (OnValidationFailure)
         {
@@ -546,7 +554,7 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
                 return false;
 
             case CsvValidationFailureAction.Stop:
-                throw new CsvValidationException(invalid!.LineNumber, invalid.Failures);
+                throw new CsvValidationException(invalid.LineNumber, invalid.Failures);
 
             default:
                 return true;
@@ -580,7 +588,7 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
 
     // Runs every configured validator against the record, aggregating failures. Returns true when
     // the record is valid (or no validators are configured); otherwise false with the failure detail.
-    private bool TryValidate(TRecord item, int recordNumber, out CsvInvalidRecord<TRecord>? invalid)
+    private bool TryValidate(TRecord item, int recordNumber, [NotNullWhen(false)] out CsvInvalidRecord<TRecord>? invalid)
     {
         invalid = null;
 
@@ -711,16 +719,6 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
                 );
         }
     }
-
-
-
-    // CsvWriter.WriteRecord<T> binds the map from the static T, so writing a mixed file requires
-    // dispatching to the record's runtime type. Cache the open generic method once, and each closed
-    // generic per runtime type so high-volume loads don't re-pay MakeGenericMethod per row.
-    private static readonly MethodInfo WriteRecordMethod =
-        typeof(CsvWriter).GetMethod(nameof(CsvWriter.WriteRecord))!;
-
-    private static readonly ConcurrentDictionary<Type, MethodInfo> WriteRecordByType = new();
 
 
 

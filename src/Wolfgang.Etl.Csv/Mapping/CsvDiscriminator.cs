@@ -145,7 +145,14 @@ public sealed class CsvDiscriminator<TBase>
         var lookup = new Dictionary<string, Type>(Comparer);
         foreach (var pair in Mapping)
         {
-            lookup[pair.Key] = pair.Value;
+            // Mapping may use a different comparer than Comparer, so two of its keys can collide here.
+            // Reject that like CsvDiscriminatorBuilder.Build does instead of letting the last one win.
+            if (lookup.ContainsKey(pair.Key))
+            {
+                throw new InvalidOperationException($"Discriminator value '{pair.Key}' is mapped more than once under the configured Comparer.");
+            }
+
+            lookup.Add(pair.Key, pair.Value);
         }
 
         return lookup;
@@ -157,7 +164,14 @@ public sealed class CsvDiscriminator<TBase>
         var lookup = new Dictionary<Type, string>();
         foreach (var pair in Mapping)
         {
-            lookup[pair.Value] = pair.Key;
+            // A type mapped to two values would make the loader's type -> value lookup depend on
+            // dictionary order; reject it like CsvDiscriminatorBuilder.Build does.
+            if (lookup.ContainsKey(pair.Value))
+            {
+                throw new InvalidOperationException($"Type '{pair.Value}' is mapped to more than one discriminator value.");
+            }
+
+            lookup.Add(pair.Value, pair.Key);
         }
 
         return lookup;
