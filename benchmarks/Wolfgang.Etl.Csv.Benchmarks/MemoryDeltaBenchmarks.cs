@@ -7,10 +7,11 @@ using BenchmarkDotNet.Attributes;
 namespace Wolfgang.Etl.Csv.Benchmarks;
 
 /// <summary>
-/// Measures the GC.GetTotalMemory delta between just before extraction starts and
-/// just after the final record is yielded. This is a "memory pressure" / steady-state
-/// retention proxy, not a true peak — peak transient allocations are reported by
-/// the BenchmarkDotNet <c>MemoryDiagnoser</c> attribute (see "Allocated" column).
+/// Measures the bytes allocated (process-wide, <see cref="GC.GetTotalAllocatedBytes(bool)"/>)
+/// between just before extraction starts and just after the final record is yielded.
+/// No collection is forced inside the timed body, so the Mean column reflects extraction
+/// alone; the BenchmarkDotNet <c>MemoryDiagnoser</c> attribute reports the same allocation
+/// per operation in its "Allocated" column.
 /// </summary>
 [MemoryDiagnoser]
 public class MemoryDeltaBenchmarks
@@ -50,18 +51,18 @@ public class MemoryDeltaBenchmarks
     [Benchmark]
     public async Task<long> Extract_MemoryDelta()
     {
-        var before = GC.GetTotalMemory(forceFullCollection: true);
+        var before = GC.GetTotalAllocatedBytes(precise: true);
 
         using var reader = new StreamReader(new MemoryStream(_dataBySize[0]), Encoding.UTF8);
         var extractor = new CsvExtractor<BenchmarkRecord>(reader);
 
         await foreach (var _ in extractor.ExtractAsync())
         {
-            // Drain the enumerable to force all extraction allocations into the
-            // GC.GetTotalMemory measurement window; the row isn't otherwise consumed.
+            // Drain the enumerable so every extraction allocation falls inside the
+            // measurement window; the row isn't otherwise consumed.
         }
 
-        var after = GC.GetTotalMemory(forceFullCollection: true);
+        var after = GC.GetTotalAllocatedBytes(precise: true);
         return after - before;
     }
 }
