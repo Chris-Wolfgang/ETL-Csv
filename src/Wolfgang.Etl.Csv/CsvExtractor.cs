@@ -21,6 +21,13 @@ namespace Wolfgang.Etl.Csv;
 /// using <see href="https://joshclose.github.io/CsvHelper/">CsvHelper</see>.
 /// </summary>
 /// <typeparam name="TRecord">The type of records to extract. Must be <c>notnull</c>.</typeparam>
+/// <remarks>
+/// Enumerating <c>ExtractAsync</c> can throw: <see cref="CsvValidationException"/> when a record fails a
+/// validator and <c>OnValidationFailure</c> is <see cref="CsvValidationFailureAction.Stop"/> (the default);
+/// <see cref="InvalidOperationException"/> for an unmapped discriminator value when the discriminator's
+/// <c>OnUnknown</c> is <see cref="CsvDiscriminatorAction.Throw"/>; and CsvHelper's own parse or
+/// conversion exception when a row fails under the default fail-fast <c>ErrorPolicy</c>.
+/// </remarks>
 /// <example>
 /// <code>
 /// using var reader = new StreamReader("people.csv");
