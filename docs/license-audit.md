@@ -5,12 +5,17 @@ Per-release sweep of `Wolfgang.Etl.Csv`'s transitive NuGet dependencies' license
 ## Recipe
 
 ```bash
-dotnet tool install -g dotnet-project-licenses
-dotnet-project-licenses \
-  --input src/Wolfgang.Etl.Csv/Wolfgang.Etl.Csv.csproj \
-  --include-transitive \
-  --use-project-assets-json
+dotnet tool restore
+dotnet nuget-license -i src/Wolfgang.Etl.Csv/Wolfgang.Etl.Csv.csproj -t \
+  -a .github/license-audit/allowed-licenses.json \
+  -ignore .github/license-audit/ignored-packages.json \
+  -mapping .github/license-audit/url-license-mappings.json \
+  -override .github/license-audit/package-overrides.json \
+  -o Table
 ```
+
+This is the command `license-audit.yaml` runs. The table below is the 0.1.0 sweep, made with the
+`dotnet-project-licenses` tool the workflow used at the time.
 
 Run after every release. Update the table below.
 
