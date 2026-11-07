@@ -241,6 +241,25 @@ public sealed class EtlPipelineCsvExtensionsTests : IDisposable
 
 
     [Fact]
+    public void Materializing_a_caller_supplied_extractor_surfaces_a_throwing_replayed_mutation()
+    {
+        using var reader = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes("FirstName,LastName,Age\r\n")));
+        var extractor = new CsvExtractor<PersonRecord>(reader);
+
+        // For a caller-supplied extractor the setter is recorded and replayed at materialization,
+        // where the extractor's own InitialRecordIndex setter rejects 0.
+        var builder = EtlPipeline
+            .Create()
+            .CsvExtractor(extractor)
+            .InitialRecordIndex(0);
+
+        var exception = Assert.Throws<ArgumentOutOfRangeException>(() => builder.AsAsyncEnumerable());
+        Assert.Equal("value", exception.ParamName);
+    }
+
+
+
+    [Fact]
     public async Task Path_based_source_releases_its_file_handle_after_a_faulted_run()
     {
         var source = WriteTempFile("fault.csv", "FirstName,LastName,Age\r\nAlice,Smith,30\r\n");
