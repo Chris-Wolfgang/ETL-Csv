@@ -241,6 +241,25 @@ View the complete configuration in [.editorconfig](.editorconfig).
 - Keep changes focused and atomic - one feature/fix per PR.
 - Update documentation if you change public APIs.
 
+### PR gates
+
+Besides the build, tests and analyzers, three gates catch most first-time PRs:
+
+- **Changelog fragment.** A PR that changes anything under `src/` must add one fragment file to
+  `changelog/unreleased/` (or carry the `no-changelog` label); the *Changelog Fragment Check* in `pr.yaml`
+  fails otherwise. Release entries in `CHANGELOG.md` are assembled from fragments, not written by hand. See
+  [changelog/unreleased/README.md](changelog/unreleased/README.md) for the format and
+  `pwsh ./scripts/changelog.ps1 check` to run the check locally.
+- **Protected files.** Analyzer and build configuration (`.editorconfig`, `Directory.Build.*`,
+  `BannedSymbols.txt`, `*.globalconfig`, `*.ruleset`, ...), the workflow files and the scripts CI runs
+  (`scripts/build-pr.ps1`, `scripts/changelog.ps1`, ...) are guarded by
+  `protected-files.yaml`: a PR that changes one of them must change nothing else, so split such changes into
+  their own PR. The authoritative list and the review process are in
+  [docs/WORKFLOW_SECURITY.md](docs/WORKFLOW_SECURITY.md#2-protected-files-guard).
+- **Local reproduction.** `pwsh ./scripts/build-pr.ps1` runs the Windows stage of `pr.yaml` locally: Release
+  build, tests on every target framework, the coverage gates (95 % for `src/`, 100 % for `tests/`), DevSkim and
+  gitleaks. Run it before pushing.
+
 ---
 
 ## Code of Conduct
