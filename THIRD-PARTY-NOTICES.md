@@ -15,8 +15,8 @@ below) whenever the dependency graph changes.
 | Package | Version | License |
 |---------|---------|---------|
 | [CsvHelper](https://www.nuget.org/packages/CsvHelper/) | 33.1.0 | [MS-PL OR Apache-2.0](https://licenses.nuget.org/MS-PL%20OR%20Apache-2.0) |
-| [Microsoft.Bcl.AsyncInterfaces](https://www.nuget.org/packages/Microsoft.Bcl.AsyncInterfaces/) | 10.0.13 | [MIT](https://licenses.nuget.org/MIT) |
-| [Microsoft.Extensions.Logging.Abstractions](https://www.nuget.org/packages/Microsoft.Extensions.Logging.Abstractions/) | 10.0.13 | [MIT](https://licenses.nuget.org/MIT) |
+| [Microsoft.Bcl.AsyncInterfaces](https://www.nuget.org/packages/Microsoft.Bcl.AsyncInterfaces/) | 10.0.14 | [MIT](https://licenses.nuget.org/MIT) |
+| [Microsoft.Extensions.Logging.Abstractions](https://www.nuget.org/packages/Microsoft.Extensions.Logging.Abstractions/) | 10.0.14 | [MIT](https://licenses.nuget.org/MIT) |
 
 > **CsvHelper is dual-licensed.** Its package metadata declares the SPDX
 > expression `MS-PL OR Apache-2.0`, meaning a consumer may take it under
@@ -34,7 +34,7 @@ below) whenever the dependency graph changes.
 
 ## First-party dependencies
 
-`Wolfgang.Etl.Abstractions` (MIT) is also a shipped runtime dependency, but it
+`Wolfgang.Etl.Abstractions` 0.26.1 (MIT) is also a shipped runtime dependency, but it
 is authored and published by this project's owner rather than a third party, so
 it is recorded here for completeness rather than listed in the table above.
 
