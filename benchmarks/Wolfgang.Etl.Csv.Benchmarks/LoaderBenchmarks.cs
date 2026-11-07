@@ -62,7 +62,7 @@ public class LoaderBenchmarks
         using var writer = new StreamWriter(stream, leaveOpen: true);
         var loader = new CsvLoader<BenchmarkRecord>(writer);
 
-        await loader.LoadAsync(ToAsyncEnumerable(_records));
+        await loader.LoadAsync(BenchmarkAsync.ToAsyncEnumerable(_records));
         await writer.FlushAsync();
     }
 
@@ -75,11 +75,11 @@ public class LoaderBenchmarks
     [Benchmark]
     public async Task File_TextWriter_1KB()
     {
-        using var stream = new FileStream(_filePath, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize: 4096);
+        using var stream = new FileStream(_filePath, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize: 1024);
         using var writer = new StreamWriter(stream, bufferSize: 1024);
         var loader = new CsvLoader<BenchmarkRecord>(writer);
 
-        await loader.LoadAsync(ToAsyncEnumerable(_records));
+        await loader.LoadAsync(BenchmarkAsync.ToAsyncEnumerable(_records));
         await writer.FlushAsync();
     }
 
@@ -92,19 +92,7 @@ public class LoaderBenchmarks
         using var writer = new StreamWriter(stream, bufferSize: 65536);
         var loader = new CsvLoader<BenchmarkRecord>(writer);
 
-        await loader.LoadAsync(ToAsyncEnumerable(_records));
+        await loader.LoadAsync(BenchmarkAsync.ToAsyncEnumerable(_records));
         await writer.FlushAsync();
-    }
-
-
-
-    private static async IAsyncEnumerable<T> ToAsyncEnumerable<T>(IEnumerable<T> source)
-    {
-        foreach (var item in source)
-        {
-            yield return item;
-        }
-
-        await Task.CompletedTask;
     }
 }
