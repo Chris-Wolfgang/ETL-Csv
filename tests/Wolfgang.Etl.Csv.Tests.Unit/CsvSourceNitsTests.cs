@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Wolfgang.Etl.Abstractions;
@@ -182,11 +183,11 @@ public sealed class CsvSourceNitsTests
             }
         );
 
-        await foreach (var _ in extractor.ExtractAsync())
-        {
-            Assert.Fail("The invalid record should have been skipped.");
-        }
+        var yielded = await extractor
+            .ExtractAsync()
+            .ToListAsync();
 
+        Assert.Empty(yielded);
         var record = Assert.Single(invalid);
         Assert.Empty(record.Failures);
     }
