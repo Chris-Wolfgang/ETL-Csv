@@ -141,35 +141,53 @@ internal sealed class CsvLoaderBuilder<[DynamicallyAccessedMembers(DynamicallyAc
     {
         CsvLoader<T> loader;
         StreamWriter? owned = null;
+        IEtlPipelineSink sink;
 
-        if (_existing is not null)
+        try
         {
-            // The instance already exists, so options cannot travel through its constructor;
-            // the recorded fluent mutations are replayed onto it below (see Set).
-            loader = _existing;
-        }
-        else if (_writer is not null)
-        {
-            loader = new CsvLoader<T>(_writer, _options);
-        }
-        else
-        {
-            // Path-based sink: the builder owns the writer it opens and disposes it after the run
-            // (success or failure) via DisposingOwned, flushing the file to disk.
-            owned = new StreamWriter(_path!, append: false, _encoding);
-            loader = new CsvLoader<T>(owned, _options);
-        }
+            if (_existing is not null)
+            {
+                // The instance already exists, so options cannot travel through its constructor;
+                // the recorded fluent mutations are replayed onto it below (see Set).
+                loader = _existing;
+            }
+            else if (_writer is not null)
+            {
+                loader = new CsvLoader<T>(_writer, _options);
+            }
+            else
+            {
+                // Validate before opening: StreamWriter(append: false) truncates the target file, so
+                // options the constructor would reject must not cost the caller the file's contents.
+                CsvSchema.ValidateOptions(_options.Schema, _options.ColumnMaps, typeof(T), "options");
 
-        foreach (var mutation in _mutations)
-        {
-            mutation(loader);
+                // Path-based sink: the builder owns the writer it opens and disposes it after the run
+                // (success or failure) via DisposingOwned, flushing the file to disk.
+                owned = new StreamWriter(_path!, append: false, _encoding);
+                loader = new CsvLoader<T>(owned, _options);
+            }
+
+            foreach (var mutation in _mutations)
+            {
+                mutation(loader);
+            }
+
+            sink = _pipeline.To(loader);
+
+            if (owned is not null)
+            {
+                sink = sink.DisposingOwned(owned);
+            }
         }
-
-        var sink = _pipeline.To(loader);
-
-        if (owned is not null)
+        catch
         {
-            sink = sink.DisposingOwned(owned);
+            // DisposingOwned has not taken the writer yet, so a throw above must release it here.
+            // Nothing has been written to it, so the synchronous Dispose has no buffer to flush,
+            // and this method is not async (DisposeAsync is also missing on net462/netstandard2.0).
+#pragma warning disable CA1849
+            owned?.Dispose();
+#pragma warning restore CA1849
+            throw;
         }
 
         return sink.RunAsync(progress, token);
