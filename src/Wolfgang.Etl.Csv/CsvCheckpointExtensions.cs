@@ -25,6 +25,12 @@ namespace Wolfgang.Etl.Csv;
 /// </remarks>
 public static class CsvCheckpointExtensions
 {
+    // The largest checkpoint file ReadCheckpointAsync accepts, in bytes. Internal so tests can
+    // build files exactly at and one past the cap.
+    internal const int MaxCheckpointBytes = 64;
+
+
+
     /// <summary>
     /// Reads a 32-bit integer counter from <paramref name="path"/>, returning <c>0</c> when the
     /// file does not exist.
@@ -62,8 +68,7 @@ public static class CsvCheckpointExtensions
             // A checkpoint holds a single small integer. Cap the size before allocating so a
             // corrupt or accidentally-huge file surfaces as a clean FormatException instead of an
             // int-overflow cast or a giant allocation. (int.MinValue is 11 chars; 64 is generous.)
-            const int maxCheckpointBytes = 64;
-            if (stream.Length > maxCheckpointBytes)
+            if (stream.Length > MaxCheckpointBytes)
             {
                 throw new FormatException
                 (
@@ -126,10 +131,17 @@ public static class CsvCheckpointExtensions
         var temporaryPath = path + ".tmp";
         var bytes = Encoding.UTF8.GetBytes(count.ToString(CultureInfo.InvariantCulture));
 
-        using (var stream = new FileStream(temporaryPath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, useAsync: true))
+        try
         {
+            using var stream = new FileStream(temporaryPath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, useAsync: true);
             await stream.WriteAsync(bytes, 0, bytes.Length, token).ConfigureAwait(false);
             await stream.FlushAsync(token).ConfigureAwait(false);
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or OperationCanceledException)
+        {
+            // Best effort: a failed or cancelled write must not leave a partial temp file behind either.
+            TryDeleteTemporaryFile(temporaryPath);
+            throw;
         }
 
         // Atomic replace. File.Move's overwrite overload is only on the modern runtime targets;
@@ -178,6 +190,10 @@ public static class CsvCheckpointExtensions
     /// <see cref="CsvExtractor{TRecord}.SkipRecordCount"/> on <paramref name="extractor"/> to that
     /// value, so the next extraction resumes past the already-acknowledged records.
     /// </summary>
+    /// <remarks>
+    /// Like <see cref="ReadCheckpointAsync"/>, a checkpoint file larger than 64 bytes is reported as a
+    /// <see cref="FormatException"/>.
+    /// </remarks>
     /// <typeparam name="TRecord">The extractor's record type.</typeparam>
     /// <param name="extractor">The extractor to resume.</param>
     /// <param name="path">The checkpoint file path.</param>

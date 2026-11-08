@@ -30,6 +30,12 @@
     Defaults to 100 — test code that never executes has no purpose. Mirrors
     CODECOV_TEST_MINIMUM in pr.yaml.
 
+.PARAMETER SkipChangelog
+    Skip the changelog fragment check (scripts/changelog.ps1 check against origin/main).
+
+.PARAMETER Labels
+    Comma-separated PR labels passed to the changelog check; "no-changelog" waives the fragment.
+
 .EXAMPLE
     pwsh ./scripts/build-pr.ps1
     pwsh ./scripts/build-pr.ps1 -SkipSecurity
@@ -40,7 +46,9 @@ param(
     [switch]$SkipCoverage,
     [switch]$SkipSecurity,
     [int]$CoverageThreshold = 95,
-    [int]$TestCoverageThreshold = 100
+    [int]$TestCoverageThreshold = 100,
+    [switch]$SkipChangelog,
+    [string]$Labels = ''
 )
 
 $ErrorActionPreference = 'Stop'
@@ -436,6 +444,23 @@ if (-not $SkipSecurity) {
     }
     else {
         Write-Pass "No secrets detected"
+    }
+}
+
+# ============================================================================
+# STEP 6: Changelog fragment check (the same script pr.yaml runs)
+# ============================================================================
+if (-not $SkipChangelog) {
+    Write-Step "Step 6: Changelog fragment check"
+
+    # Compares against origin/main like CI; pass -Labels no-changelog for a PR that carries that label.
+    & pwsh -NoProfile -File (Join-Path $PSScriptRoot 'changelog.ps1') check -Labels $Labels
+    if ($LASTEXITCODE -ne 0) {
+        Write-Fail "Changelog fragment check failed (add changelog/unreleased/<name>.md, or pass -Labels no-changelog)"
+        $failed += "Changelog"
+    }
+    else {
+        Write-Pass "Changelog fragment check passed"
     }
 }
 

@@ -316,6 +316,9 @@ jobs:
             printf '%s\n' "$survivors"
           } >> "$GITHUB_STEP_SUMMARY"
 
+          # The label usually exists already, so a create failure is expected and ignored. The issue
+          # edit/create below is the only notification path, so its failures surface as warnings
+          # (visible on the run) instead of failing the mutation gate itself.
           gh label create "kind:mutation-survives" --repo "$GITHUB_REPOSITORY" \
             --color BFD4F2 --description "A mutant survived - a test gap to close" 2>/dev/null || true
           title="Mutation survivors (${count}) - kill these to raise the score"
@@ -324,10 +327,12 @@ jobs:
           existing=$(gh issue list --repo "$GITHUB_REPOSITORY" --label "kind:mutation-survives" \
                        --state open --json number --jq '.[0].number' 2>/dev/null || true)
           if [ -n "$existing" ]; then
-            gh issue edit "$existing" --repo "$GITHUB_REPOSITORY" --title "$title" --body "$body" || true
+            gh issue edit "$existing" --repo "$GITHUB_REPOSITORY" --title "$title" --body "$body" \
+              || echo "::warning::Could not update survivor issue #$existing"
           else
             gh issue create --repo "$GITHUB_REPOSITORY" --title "$title" --body "$body" \
-              --label "kind:mutation-survives" || true
+              --label "kind:mutation-survives" \
+              || echo "::warning::Could not create the survivor issue"
           fi
 
       - name: Upload Stryker report
