@@ -21,9 +21,10 @@ internal sealed class NotNullWhenAttribute : Attribute
         ReturnValue = returnValue;
     }
 
-    // ReSharper disable once UnusedAutoPropertyAccessor.Global
     // Mirrors the BCL attribute API; read by the compiler, never by our own code.
+    // ReSharper disable UnusedAutoPropertyAccessor.Global
     public bool ReturnValue { get; }
+    // ReSharper restore UnusedAutoPropertyAccessor.Global
 }
 
 #endif

@@ -866,6 +866,9 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
             if (!result.IsValid)
             {
                 failures ??= new List<string>();
+                // Failures is non-nullable, but a validator can still return `with { Failures = null! }`;
+                // skip it rather than throw from AddRange.
+                // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
                 if (result.Failures is not null)
                 {
                     failures.AddRange(result.Failures);
