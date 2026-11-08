@@ -73,18 +73,7 @@ public class DateTimeBenchmarks
         using var stream = new MemoryStream();
         using var writer = new StreamWriter(stream, leaveOpen: true);
         var loader = new CsvLoader<BenchmarkRecordWithDate>(writer);
-        await loader.LoadAsync(ToAsyncEnumerable(_records));
+        await loader.LoadAsync(BenchmarkAsync.ToAsyncEnumerable(_records));
         await writer.FlushAsync();
-    }
-
-
-
-    private static async IAsyncEnumerable<T> ToAsyncEnumerable<T>(IEnumerable<T> source)
-    {
-        foreach (var item in source)
-        {
-            yield return item;
-        }
-        await Task.CompletedTask;
     }
 }

@@ -16,7 +16,8 @@ namespace Wolfgang.Etl.Csv;
 /// failure). Factories that accept a caller-supplied <see cref="StreamReader"/>,
 /// <see cref="StreamWriter"/>, or a pre-built extractor/loader do not dispose it — the caller owns
 /// the lifecycle. The fluent configuration setters returned by these factories map 1:1 to the
-/// underlying <c>CsvExtractor&lt;T&gt;</c> / <c>CsvLoader&lt;T&gt;</c> properties.
+/// underlying <c>CsvExtractor&lt;T&gt;</c> / <c>CsvLoader&lt;T&gt;</c> properties, except
+/// <c>Encoding(...)</c>, which only selects how a path-based source or sink is opened.
 /// </remarks>
 public static class EtlPipelineCsvExtensions
 {
@@ -29,6 +30,7 @@ public static class EtlPipelineCsvExtensions
     /// <param name="path">The path of the CSV file to read.</param>
     /// <returns>An <see cref="ICsvExtractorBuilder{T}"/> for inline configuration and chaining.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="pipeline"/> or <paramref name="path"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="path"/> is empty or whitespace.</exception>
     [RequiresUnreferencedCode("CsvExtractor uses CsvHelper, which reflects over T's members. The library is not trim/NativeAOT safe.")]
     public static ICsvExtractorBuilder<T> CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>
     (
@@ -45,6 +47,11 @@ public static class EtlPipelineCsvExtensions
         if (path is null)
         {
             throw new ArgumentNullException(nameof(path));
+        }
+
+        if (string.IsNullOrWhiteSpace(path))
+        {
+            throw new ArgumentException("Path must not be empty or whitespace.", nameof(path));
         }
 
         return CsvExtractorBuilder<T>.FromPath(path);
@@ -123,6 +130,7 @@ public static class EtlPipelineCsvExtensions
     /// <returns>An <see cref="ICsvLoaderBuilder{T}"/> for inline configuration; call
     /// <see cref="IEtlPipelineSink.RunAsync(IProgress{EtlPipelineProgress}, System.Threading.CancellationToken)"/> to run.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="pipeline"/> or <paramref name="path"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="path"/> is empty or whitespace.</exception>
     [RequiresUnreferencedCode("CsvLoader uses CsvHelper, which reflects over T's members. The library is not trim/NativeAOT safe.")]
     public static ICsvLoaderBuilder<T> CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>
     (
@@ -139,6 +147,11 @@ public static class EtlPipelineCsvExtensions
         if (path is null)
         {
             throw new ArgumentNullException(nameof(path));
+        }
+
+        if (string.IsNullOrWhiteSpace(path))
+        {
+            throw new ArgumentException("Path must not be empty or whitespace.", nameof(path));
         }
 
         return CsvLoaderBuilder<T>.FromPath(pipeline, path);

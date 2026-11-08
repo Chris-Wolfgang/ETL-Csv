@@ -15,11 +15,17 @@ namespace Wolfgang.Etl.Csv;
 /// </summary>
 /// <typeparam name="T">The record type produced by the extractor.</typeparam>
 /// <remarks>
-/// Each setter maps 1:1 to a public property on <see cref="CsvExtractor{TRecord}"/>; no new
+/// Each setter maps 1:1 to a public property on <see cref="CsvExtractor{TRecord}"/>, except
+/// <c>Encoding(...)</c>, which only selects how a path-based source is opened; no other new
 /// configuration surface is introduced. Setters return the builder for chaining and take
 /// effect when the pipeline is first enumerated. Stream ownership is decided by the factory
 /// overload, not a setter: a path-based source owns and disposes the file it opens, while a
 /// caller-supplied <see cref="System.IO.StreamReader"/> is left open for the caller to dispose.
+/// <para>
+/// Once any pipeline operator has run (which materializes the extractor), every configuration
+/// setter on this interface throws <see cref="InvalidOperationException"/>: configure the
+/// extractor completely before appending the first operator.
+/// </para>
 /// </remarks>
 public interface ICsvExtractorBuilder<T> : IEtlPipeline<T>
     where T : notnull
@@ -81,6 +87,7 @@ public interface ICsvExtractorBuilder<T> : IEtlPipeline<T>
     /// Sets <see cref="CsvExtractor{TRecord}.InitialRecordIndex"/> — the 1-based line treated as
     /// the first line read. Default: <c>1</c>.
     /// </summary>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="oneBasedIndex"/> is less than 1.</exception>
     ICsvExtractorBuilder<T> InitialRecordIndex(int oneBasedIndex);
 
 
