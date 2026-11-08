@@ -55,8 +55,10 @@ jobs:
                 # -i: Windows (and ReSharper on it) resolve names case-insensitively, so
                 # foo.dotsettings is as live as foo.DotSettings. The license-audit policy
                 # files are read from main by license-audit.yaml, so a change to them is
-                # configuration the PR cannot test - same rule as the workflows.
-                if echo "$file" | grep -qiE '(\.(globalconfig|ruleset|DotSettings|editorconfig)|^\.github/workflows/.*\.ya?ml|^\.github/license-audit/.*\.json)$'; then protected+=("$file"); else other+=("$file"); fi ;;
+                # configuration the PR cannot test - same rule as the workflows. The pip
+                # requirement files under .github/requirements/ are installed and executed by
+                # CI, and their hashes live in the same file, so they are guarded too.
+                if echo "$file" | grep -qiE '(\.(globalconfig|ruleset|DotSettings|editorconfig)|^\.github/workflows/.*\.ya?ml|^\.github/license-audit/.*\.json|^\.github/requirements/.*)$'; then protected+=("$file"); else other+=("$file"); fi ;;
             esac
           done
 

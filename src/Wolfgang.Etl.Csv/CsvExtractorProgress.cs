@@ -7,8 +7,10 @@ namespace Wolfgang.Etl.Csv;
 /// </summary>
 /// <remarks>
 /// Extends <see cref="Report"/> with the count of items skipped during extraction,
-/// the 1-based line number currently being read, and the count of bad-data events
-/// observed so far.
+/// the 1-based line number currently being read, the count of bad-data events
+/// observed so far, and the counts of rows that failed to parse or convert
+/// (<see cref="CurrentErrorItemCount"/>) and records that failed validation
+/// (<see cref="CurrentInvalidItemCount"/>).
 /// </remarks>
 public record CsvExtractorProgress : Report
 {

@@ -36,6 +36,19 @@ public class CsvCultureInvarianceTests
 
 
 
+    private static async Task RunUnderCulture(string cultureName, Func<Task> action) =>
+        _ = await RunUnderCulture
+        (
+            cultureName,
+            async () =>
+            {
+                await action().ConfigureAwait(false);
+                return new List<bool>();
+            }
+        ).ConfigureAwait(false);
+
+
+
     private static async Task<List<T>> RunUnderCulture<T>(string cultureName, Func<Task<List<T>>> action)
     {
         var originalCulture = CultureInfo.CurrentCulture;
@@ -59,13 +72,12 @@ public class CsvCultureInvarianceTests
     [Fact]
     public async Task ExtractAsync_when_culture_is_tr_TR_matches_columns_case_insensitively_without_locale_skew()
     {
-        // Header has uppercase "AGE"; the AttributedPersonRecord doesn't use
-        // [CsvColumn(Name=...)] for Age, so CsvHelper's default matching
-        // applies. The risk on tr-TR is that an internal ToLower/ToUpper
-        // using the current culture turns "AGE" into "AGE" (no I in this
-        // word) but turns "FirstName" into "fırstname" — a bad match for
-        // "first_name". To exercise the failure mode we use a property
-        // name with capital I.
+        // Every AttributedPersonRecord column is bound by an explicit lowercase
+        // [CsvColumn(Name=...)], so this pins that attribute-named headers still bind
+        // (and capital-I values round-trip) when the current culture is tr-TR, whose
+        // dotted/dotless I rules break culture-sensitive casing. It does not exercise
+        // CsvHelper's default (unattributed) header matching against a property name
+        // containing a capital I; the fixture has no such property.
         var csv = "first_name,last_name,age\r\nIlhan,Yilmaz,30\r\n";
         var results = await RunUnderCulture("tr-TR", async () =>
         {
@@ -135,7 +147,6 @@ public class CsvCultureInvarianceTests
             };
             await sut.LoadAsync(items.ToAsyncEnumerable()).ConfigureAwait(false);
             await writer.FlushAsync().ConfigureAwait(false);
-            return new List<int> { 0 };
         });
 
         stream.Position = 0;

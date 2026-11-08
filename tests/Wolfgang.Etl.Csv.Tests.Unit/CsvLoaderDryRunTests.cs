@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Wolfgang.Etl.Csv.Tests.Unit.TestModels;
@@ -59,7 +60,7 @@ public class CsvLoaderDryRunTests
         using (var writer = new StreamWriter(stream, Utf8NoBom, 1024, leaveOpen: true))
         {
             var loader = new CsvLoader<PersonRecord>(writer, new CsvLoaderOptions<PersonRecord> { LeaveOpen = true, IsDryRun = true });
-            await loader.LoadAsync(ToAsync(People));
+            await loader.LoadAsync(People.ToAsyncEnumerable());
             await writer.FlushAsync();
         }
 
@@ -74,7 +75,7 @@ public class CsvLoaderDryRunTests
         using (var writer = new StreamWriter(stream, Utf8NoBom, 1024, leaveOpen: true))
         {
             var loader = new CsvLoader<PersonRecord>(writer) { LeaveOpen = true, IsDryRun = true };
-            await loader.LoadAsync(ToAsync(People));
+            await loader.LoadAsync(People.ToAsyncEnumerable());
             await writer.FlushAsync();
         }
 
@@ -94,7 +95,7 @@ public class CsvLoaderDryRunTests
             IsDryRun = true,
         };
 
-        await loader.LoadAsync(ToAsync(People));
+        await loader.LoadAsync(People.ToAsyncEnumerable());
 
         // The full pipeline ran — items were enumerated and counted, just not written.
         Assert.Equal(People.Length, loader.CurrentItemCount);
@@ -113,7 +114,7 @@ public class CsvLoaderDryRunTests
             SkipItemCount = 1,
         };
 
-        await loader.LoadAsync(ToAsync(People));
+        await loader.LoadAsync(People.ToAsyncEnumerable());
 
         Assert.Equal(1, loader.CurrentSkippedItemCount);
         Assert.Equal(People.Length - 1, loader.CurrentItemCount);
@@ -135,7 +136,7 @@ public class CsvLoaderDryRunTests
                     LeaveOpen = true,
                 }
             );
-            await loader.LoadAsync(ToAsync(People));
+            await loader.LoadAsync(People.ToAsyncEnumerable());
             await writer.FlushAsync();
         }
 
@@ -143,16 +144,5 @@ public class CsvLoaderDryRunTests
 
         Assert.Contains("FirstName", output);
         Assert.Contains("Alice", output);
-    }
-
-
-    private static async IAsyncEnumerable<T> ToAsync<T>(IEnumerable<T> source)
-    {
-        foreach (var item in source)
-        {
-            yield return item;
-        }
-
-        await Task.CompletedTask.ConfigureAwait(false);
     }
 }
