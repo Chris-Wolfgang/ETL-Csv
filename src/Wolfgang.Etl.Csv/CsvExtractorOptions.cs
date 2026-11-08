@@ -152,7 +152,9 @@ public sealed record CsvExtractorOptions<TRecord> : ExtractorOptions
 
 
     /// <summary>
-    /// Gets the one-based index of the first record to read. Defaults to <c>1</c>.
+    /// Gets the one-based index of the first line the parser consumes. Defaults to <c>1</c>.
+    /// Lines before it are read and discarded; the line at this index is the header row when
+    /// <see cref="HasHeaderRecord"/> is <see langword="true"/>, otherwise the first data row.
     /// </summary>
     /// <exception cref="ArgumentOutOfRangeException">value is less than 1.</exception>
     public int InitialRecordIndex

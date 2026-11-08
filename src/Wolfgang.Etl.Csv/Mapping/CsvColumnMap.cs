@@ -8,7 +8,7 @@ namespace Wolfgang.Etl.Csv;
 /// </summary>
 /// <param name="PropertyName">
 /// The case-sensitive name of the property on the record type to bind. Must match
-/// a public property declared on <c>TRecord</c>.
+/// a public instance property of <c>TRecord</c>, declared or inherited.
 /// </param>
 public sealed record CsvColumnMap(string PropertyName)
 {
