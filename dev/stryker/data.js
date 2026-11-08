@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1793901413329,
+  "lastUpdate": 1794142007687,
   "repoUrl": "https://github.com/Chris-Wolfgang/ETL-Csv",
   "entries": {
     "Mutation score": [
@@ -134,6 +134,33 @@ window.BENCHMARK_DATA = {
           {
             "name": "Mutation score",
             "value": 91.16,
+            "unit": "%"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang",
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com"
+          },
+          "committer": {
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang",
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com"
+          },
+          "id": "74a51dcd56642aa9b16baef7ea47e3ec1d448fad",
+          "message": "test: drop redundant null-forgiving operators after Assert.NotNull in CsvClassMapFactoryTests\n\nAssert.NotNull(map) already narrows map to non-null, so the five map!\nsuppressions are redundant (InspectCode RedundantSuppressNullableWarningExpression\nand S8969 flag the same five tokens).\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>",
+          "timestamp": "2026-11-07T05:52:13Z",
+          "url": "https://github.com/Chris-Wolfgang/ETL-Csv/commit/74a51dcd56642aa9b16baef7ea47e3ec1d448fad"
+        },
+        "date": 1794142002133,
+        "tool": "customBiggerIsBetter",
+        "benches": [
+          {
+            "name": "Mutation score",
+            "value": 91.98,
             "unit": "%"
           }
         ]
