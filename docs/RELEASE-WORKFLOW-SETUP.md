@@ -7,7 +7,7 @@ This guide explains how to configure a repository to use the standard `release.y
 The release workflow triggers when you **publish a GitHub Release** and implements a comprehensive validation and automatic deployment process that:
 - ✅ Checks the release tag matches a `<Version>` (or `<PackageVersion>`) declared in `src/`
 - ✅ Tests all target frameworks per test project on Windows
-- ✅ Enforces the coverage gates (90 % line coverage for `src/`, 100 % for `tests/`)
+- ✅ Enforces the coverage gates (95 % line coverage for `src/`, 100 % for `tests/`)
 - ✅ Validates NuGet package integrity with smoke tests and generates a CycloneDX SBOM
 - ✅ Builds the DocFX documentation before publishing, so a docs failure blocks the package
 - ✅ Records a SLSA build-provenance attestation for every package (`gh attestation verify`)
@@ -82,7 +82,7 @@ Ensure the following settings are enabled:
 1. **validate-release** (3-10 minutes, Windows)
    - Checks the tag against the `<Version>` / `<PackageVersion>` values found in `src/`
    - Runs every target framework of every test project with coverage
-   - Enforces the coverage gates (90 % `src/`, 100 % `tests/`) and uploads the report
+   - Enforces the coverage gates (95 % `src/`, 100 % `tests/`) and uploads the report
 
 2. **pack-and-validate** (2-5 minutes, Windows)
    - Generates `THIRD-PARTY-NOTICES.md` per src project (`scripts/third-party-notices.ps1`: the package's transitive NuGet closure, build-time-only packages omitted) into `obj/`, which `Directory.Build.props` packs into the package root
@@ -90,17 +90,26 @@ Ensure the following settings are enabled:
    - Generates a CycloneDX SBOM (`*.bom.json`) per package
    - Uploads the packages as an artifact; sets `has-packages` for the later jobs
 
-3. **verify-docs-build** (Windows) — skipped when there is no `docfx_project/docfx.json`
+3. **aot-smoke** — calls `aot-smoke.yaml` after `validate-release` (in parallel with `pack-and-validate`) to publish the Native AOT smoke app; `publish-nuget` waits for it
+
+4. **attest-provenance** (Ubuntu) — only when packages were produced
+   - `actions/attest-build-provenance` signs a SLSA provenance attestation for each `.nupkg` (recorded under the repo's Attestations; verify with `gh attestation verify <pkg>.nupkg --repo <owner>/<repo> --signer-workflow <owner>/<repo>/.github/workflows/release.yaml`)
+
+5. **sourcelink-snupkg** (Ubuntu) — only when packages were produced
+   - Structurally verifies the `.snupkg` symbol packages (SourceLink and embedded PDB data) before anything is pushed
+
+6. **verify-docs-build** (Windows) — skipped when there is no `docfx_project/docfx.json`
    - Builds the DocFX site without deploying, so a docs error blocks the package instead of landing after it
 
-4. **publish-nuget** (1-2 minutes, Windows) — only when packages were produced
-   - `actions/attest-build-provenance` signs a SLSA provenance attestation for each `.nupkg` (recorded under the repo's Attestations; verify with `gh attestation verify <pkg>.nupkg --repo <owner>/<repo> --signer-workflow <owner>/<repo>/.github/workflows/release.yaml`)
+7. **publish-nuget** (1-2 minutes, Windows) — needs `pack-and-validate`, `verify-docs-build`, `sourcelink-snupkg` and `aot-smoke`
    - `NuGet/login` mints a short-lived key via OIDC trusted publishing
    - `dotnet nuget push --skip-duplicate` for every `.nupkg`
 
-5. **trigger-docs** — calls `docfx.yaml` to build and deploy the versioned docs to `gh-pages`
+8. **sourcelink-symbol-server-smoke** (Ubuntu) — after `publish-nuget`, checks that the published symbols resolve from the NuGet symbol server
 
-6. **update-release-artifacts** — attaches the `.nupkg` / `.snupkg` / `.bom.json` files and the zipped coverage report to the GitHub Release with `gh release upload`
+9. **trigger-docs** — calls `docfx.yaml` to build and deploy the versioned docs to `gh-pages`
+
+10. **update-release-artifacts** — attaches the `.nupkg` / `.snupkg` / `.bom.json` files and the zipped coverage report to the GitHub Release with `gh release upload`
 
 ### Monitoring the Workflow
 
@@ -143,7 +152,7 @@ Ensure the following settings are enabled:
 **Problem:** The workflow fails at "Verify coverage threshold".
 
 **Solution:**
-1. Review the `CoverageReport/Summary.txt` artifact — the gate is per assembly: 90 % for `src/`, 100 % for `tests/` (test code that never runs is dead code)
+1. Review the `CoverageReport/Summary.txt` artifact — the gate is per assembly: 95 % for `src/`, 100 % for `tests/` (test code that never runs is dead code)
 2. Add tests for the uncovered paths, or delete unreachable test helpers
 3. Ensure tests actually run on every framework — a framework with zero tests fails on its own
 4. Push the fix, then re-publish the release (or re-run the workflow from the Actions tab)
@@ -194,7 +203,7 @@ Before publishing a production GitHub Release (for example `v1.0.0`):
 │  • Tag == a <Version> / <PackageVersion> under src/           │
 │  • Restore & Build (Release)                                 │
 │  • Test every TFM of every test project, with coverage       │
-│  • Coverage gates: 90 % src, 100 % tests                     │
+│  • Coverage gates: 95 % src, 100 % tests                     │
 └──────────────────────────────────────────────────────────────┘
                             │
                             ▼ (only if tests pass)

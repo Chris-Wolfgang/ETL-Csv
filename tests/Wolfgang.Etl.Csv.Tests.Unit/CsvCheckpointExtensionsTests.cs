@@ -10,6 +10,13 @@ namespace Wolfgang.Etl.Csv.Tests.Unit;
 
 public class CsvCheckpointExtensionsTests
 {
+    public static TheoryData<string> BlankPaths => new()
+    {
+        string.Empty,
+        "   ",
+    };
+
+
     [Fact]
     public async Task ReadCheckpointAsync_when_the_file_is_missing_returns_zero()
     {
@@ -108,18 +115,6 @@ public class CsvCheckpointExtensionsTests
     }
 
 
-    [Theory]
-    [InlineData("")]
-    [InlineData("   ")]
-    public async Task ReadCheckpointAsync_when_path_is_empty_or_whitespace_throws_ArgumentException(string path)
-    {
-        await Assert.ThrowsAsync<ArgumentException>
-        (
-            async () => await CsvCheckpointExtensions.ReadCheckpointAsync(path)
-        );
-    }
-
-
     [Fact]
     public async Task ReadCheckpointAsync_when_the_file_is_too_large_throws_FormatException()
     {
@@ -161,11 +156,12 @@ public class CsvCheckpointExtensionsTests
         {
             // The atomic replace throws IOException (Linux) or UnauthorizedAccessException (Windows) —
             // WriteCheckpointAsync catches both. The temp file being gone proves the cleanup ran.
-            await Assert.ThrowsAnyAsync<Exception>
+            var ex = await Assert.ThrowsAnyAsync<Exception>
             (
                 async () => await CsvCheckpointExtensions.WriteCheckpointAsync(path, 1)
             );
 
+            Assert.True(ex is IOException or UnauthorizedAccessException, ex.GetType().FullName);
             Assert.False(File.Exists(path + ".tmp"), "the temp file should be cleaned up when the replace fails");
         }
         finally
@@ -182,8 +178,7 @@ public class CsvCheckpointExtensionsTests
 
 
     [Theory]
-    [InlineData("")]
-    [InlineData("   ")]
+    [MemberData(nameof(BlankPaths))]
     public async Task ReadCheckpointAsync_when_path_is_empty_or_whitespace_reports_the_path_parameter(string path)
     {
         var ex = await Assert.ThrowsAsync<ArgumentException>
@@ -237,7 +232,7 @@ public class CsvCheckpointExtensionsTests
         var path = NewTempPath();
         try
         {
-            await WriteRawAsync(path, "42".PadLeft(64));
+            await WriteRawAsync(path, "42".PadLeft(CsvCheckpointExtensions.MaxCheckpointBytes));
 
             Assert.Equal(42, await CsvCheckpointExtensions.ReadCheckpointAsync(path));
         }
@@ -255,7 +250,7 @@ public class CsvCheckpointExtensionsTests
         var path = NewTempPath();
         try
         {
-            await WriteRawAsync(path, "42".PadLeft(65));
+            await WriteRawAsync(path, "42".PadLeft(CsvCheckpointExtensions.MaxCheckpointBytes + 1));
 
             var ex = await Assert.ThrowsAsync<FormatException>
             (
@@ -311,8 +306,7 @@ public class CsvCheckpointExtensionsTests
 
 
     [Theory]
-    [InlineData("")]
-    [InlineData("   ")]
+    [MemberData(nameof(BlankPaths))]
     public async Task WriteCheckpointAsync_when_path_is_empty_or_whitespace_throws_ArgumentException(string path)
     {
         var ex = await Assert.ThrowsAsync<ArgumentException>
