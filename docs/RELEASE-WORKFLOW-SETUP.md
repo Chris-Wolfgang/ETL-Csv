@@ -90,17 +90,26 @@ Ensure the following settings are enabled:
    - Generates a CycloneDX SBOM (`*.bom.json`) per package
    - Uploads the packages as an artifact; sets `has-packages` for the later jobs
 
-3. **verify-docs-build** (Windows) — skipped when there is no `docfx_project/docfx.json`
+3. **aot-smoke** — calls `aot-smoke.yaml` after `validate-release` (in parallel with `pack-and-validate`) to publish the Native AOT smoke app; `publish-nuget` waits for it
+
+4. **attest-provenance** (Ubuntu) — only when packages were produced
+   - `actions/attest-build-provenance` signs a SLSA provenance attestation for each `.nupkg` (recorded under the repo's Attestations; verify with `gh attestation verify <pkg>.nupkg --repo <owner>/<repo> --signer-workflow <owner>/<repo>/.github/workflows/release.yaml`)
+
+5. **sourcelink-snupkg** (Ubuntu) — only when packages were produced
+   - Structurally verifies the `.snupkg` symbol packages (SourceLink and embedded PDB data) before anything is pushed
+
+6. **verify-docs-build** (Windows) — skipped when there is no `docfx_project/docfx.json`
    - Builds the DocFX site without deploying, so a docs error blocks the package instead of landing after it
 
-4. **publish-nuget** (1-2 minutes, Windows) — only when packages were produced
-   - `actions/attest-build-provenance` signs a SLSA provenance attestation for each `.nupkg` (recorded under the repo's Attestations; verify with `gh attestation verify <pkg>.nupkg --repo <owner>/<repo> --signer-workflow <owner>/<repo>/.github/workflows/release.yaml`)
+7. **publish-nuget** (1-2 minutes, Windows) — needs `pack-and-validate`, `verify-docs-build`, `sourcelink-snupkg` and `aot-smoke`
    - `NuGet/login` mints a short-lived key via OIDC trusted publishing
    - `dotnet nuget push --skip-duplicate` for every `.nupkg`
 
-5. **trigger-docs** — calls `docfx.yaml` to build and deploy the versioned docs to `gh-pages`
+8. **sourcelink-symbol-server-smoke** (Ubuntu) — after `publish-nuget`, checks that the published symbols resolve from the NuGet symbol server
 
-6. **update-release-artifacts** — attaches the `.nupkg` / `.snupkg` / `.bom.json` files and the zipped coverage report to the GitHub Release with `gh release upload`
+9. **trigger-docs** — calls `docfx.yaml` to build and deploy the versioned docs to `gh-pages`
+
+10. **update-release-artifacts** — attaches the `.nupkg` / `.snupkg` / `.bom.json` files and the zipped coverage report to the GitHub Release with `gh release upload`
 
 ### Monitoring the Workflow
 

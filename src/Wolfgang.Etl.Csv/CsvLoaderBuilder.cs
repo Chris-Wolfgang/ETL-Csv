@@ -27,6 +27,7 @@ internal sealed class CsvLoaderBuilder<[DynamicallyAccessedMembers(DynamicallyAc
     private CsvLoaderOptions<T> _options = new();
 
     private Encoding _encoding = System.Text.Encoding.UTF8;
+    private bool _hasRun;
 
 
     private CsvLoaderBuilder(IEtlPipeline<T> pipeline, string? path, StreamWriter? writer, CsvLoader<T>? existing)
@@ -94,6 +95,7 @@ internal sealed class CsvLoaderBuilder<[DynamicallyAccessedMembers(DynamicallyAc
         // Only _encoding matters: it is handed to the StreamWriter this builder opens for a
         // path sink, and that writer's encoding is authoritative. CsvLoader.Encoding is inert and
         // obsolete, so it is deliberately not mirrored here.
+        EnsureNotRun();
         _encoding = encoding;
         return this;
     }
@@ -139,6 +141,10 @@ internal sealed class CsvLoaderBuilder<[DynamicallyAccessedMembers(DynamicallyAc
         CancellationToken token = default
     )
     {
+        // Mirrors CsvExtractorBuilder's materialization guard: configuration recorded after a run
+        // would otherwise silently apply to the next run (and, for a path sink, overwrite the file).
+        _hasRun = true;
+
         CsvLoader<T> loader;
         StreamWriter? owned = null;
 
@@ -176,6 +182,19 @@ internal sealed class CsvLoaderBuilder<[DynamicallyAccessedMembers(DynamicallyAc
     }
 
 
+    private void EnsureNotRun()
+    {
+        if (_hasRun)
+        {
+            throw new InvalidOperationException
+            (
+                "The loader has already been run; configuration setters can no longer be applied."
+            );
+        }
+    }
+
+
+
     /// <summary>
     /// Applies one configuration change by whichever route suits the sink.
     /// </summary>
@@ -191,6 +210,8 @@ internal sealed class CsvLoaderBuilder<[DynamicallyAccessedMembers(DynamicallyAc
         Action<CsvLoader<T>> mutate
     )
     {
+        EnsureNotRun();
+
         if (_existing is not null)
         {
             _mutations.Add(mutate);
