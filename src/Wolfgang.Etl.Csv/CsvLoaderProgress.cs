@@ -6,8 +6,9 @@ namespace Wolfgang.Etl.Csv;
 /// Progress report for CSV loading operations.
 /// </summary>
 /// <remarks>
-/// Extends <see cref="Report"/> with the count of items skipped during loading
-/// and the 1-based line number most recently written.
+/// Extends <see cref="Report"/> with the count of items skipped during loading,
+/// the 1-based line number most recently written, and the count of records that
+/// failed validation (<see cref="CurrentInvalidItemCount"/>).
 /// </remarks>
 public record CsvLoaderProgress : Report
 {

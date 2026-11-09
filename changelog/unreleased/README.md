@@ -65,7 +65,9 @@ pwsh ./scripts/changelog.ps1 bump                      # print the derived versi
 ```
 
 `assemble` inserts a `## [<version>] - <today>` section directly under `## [Unreleased]` in `CHANGELOG.md`,
-grouped by kind in the order above, then deletes the fragments. Commit the result as part of the release PR.
+grouped by kind in the order above, then deletes the fragments. It also updates the footer link definitions:
+`[Unreleased]` is moved to compare from the new version, and a `[<version>]: .../compare/v<previous>...v<version>`
+line is added below it. Commit the result as part of the release PR.
 
 Version derivation starts from the newest `## [x.y.z]` heading already in `CHANGELOG.md` and applies the
 highest-ranked fragment kind present:

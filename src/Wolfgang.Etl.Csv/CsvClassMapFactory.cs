@@ -158,7 +158,10 @@ internal static class CsvClassMapFactory
     /// <typeparam name="T">The record type being mapped.</typeparam>
     /// <param name="columnMaps">Runtime column descriptors. Must be non-empty.</param>
     /// <exception cref="ArgumentNullException"><paramref name="columnMaps"/> is <c>null</c>.</exception>
-    /// <exception cref="ArgumentException">A descriptor names a property that doesn't exist on <typeparamref name="T"/>.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="columnMaps"/> is empty, two descriptors name the same property or the same
+    /// non-negative index, or a descriptor names a property that doesn't exist on <typeparamref name="T"/>.
+    /// </exception>
     [RequiresUnreferencedCode("Reflects over the public properties of T to build a CsvHelper ClassMap from runtime column descriptors.")]
     public static ClassMap<T> BuildFromColumnMaps<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>
     (
@@ -218,7 +221,17 @@ internal static class CsvClassMapFactory
 
         foreach (var col in columnMaps)
         {
-            ApplyColumnMap(map, properties, type, col);
+            if (!properties.TryGetValue(col.PropertyName, out var prop))
+            {
+                throw new ArgumentException
+                (
+                    $"Property '{col.PropertyName}' was not found on type '{type.FullName}'.",
+                    nameof(columnMaps)
+                );
+            }
+
+            var memberMap = map.Map(prop.DeclaringType ?? prop.ReflectedType!, prop);
+            ApplyColumnSettings(memberMap, col.Index, col.Name, col.Optional, col.Format, col.Default);
         }
 
         return map;
@@ -226,50 +239,41 @@ internal static class CsvClassMapFactory
 
 
 
-    private static void ApplyColumnMap<T>
+    // Applies the column settings shared by CsvColumnMap and [CsvColumn]. Index takes precedence over
+    // Name (per both types' docs): apply only one binding path so CsvHelper never sees an ambiguous
+    // configuration.
+    private static void ApplyColumnSettings
     (
-        DefaultClassMap<T> map,
-        IReadOnlyDictionary<string, PropertyInfo> properties,
-        Type type,
-        CsvColumnMap col
+        MemberMap memberMap,
+        int index,
+        string? name,
+        bool optional,
+        string? format,
+        string? defaultValue
     )
     {
-        if (!properties.TryGetValue(col.PropertyName, out var prop))
+        if (index >= 0)
         {
-            throw new ArgumentException
-            (
-                $"Property '{col.PropertyName}' was not found on type '{type.FullName}'.",
-                nameof(col)
-            );
+            memberMap.Index(index);
+        }
+        else if (name is not null && name.Length > 0)
+        {
+            memberMap.Name(name);
         }
 
-        var memberMap = map.Map(prop.DeclaringType ?? prop.ReflectedType!, prop);
-
-        // Index takes precedence over Name. Per CsvColumnMap.Name's docstring,
-        // Name is ignored when Index is non-negative. Apply only one binding
-        // path to avoid CsvHelper getting an ambiguous configuration.
-        if (col.Index >= 0)
-        {
-            memberMap.Index(col.Index);
-        }
-        else if (col.Name is not null && col.Name.Length > 0)
-        {
-            memberMap.Name(col.Name);
-        }
-
-        if (col.Optional)
+        if (optional)
         {
             memberMap.Optional();
         }
 
-        if (col.Format is not null && col.Format.Length > 0)
+        if (format is not null && format.Length > 0)
         {
-            memberMap.TypeConverterOption.Format(col.Format);
+            memberMap.TypeConverterOption.Format(format);
         }
 
-        if (col.Default is not null)
+        if (defaultValue is not null)
         {
-            memberMap.Default(col.Default);
+            memberMap.Default(defaultValue);
         }
     }
 
@@ -335,29 +339,6 @@ internal static class CsvClassMapFactory
             ? existingMap
             : map.Map(prop.DeclaringType ?? prop.ReflectedType!, prop);
 
-        // Index takes precedence over Name (matches CsvColumnAttribute.Name's docstring).
-        if (col.Index >= 0)
-        {
-            memberMap.Index(col.Index);
-        }
-        else if (col.Name is not null && col.Name.Length > 0)
-        {
-            memberMap.Name(col.Name);
-        }
-
-        if (col.Optional)
-        {
-            memberMap.Optional();
-        }
-
-        if (col.Format is not null && col.Format.Length > 0)
-        {
-            memberMap.TypeConverterOption.Format(col.Format);
-        }
-
-        if (col.Default is not null)
-        {
-            memberMap.Default(col.Default);
-        }
+        ApplyColumnSettings(memberMap, col.Index, col.Name, col.Optional, col.Format, col.Default);
     }
 }
