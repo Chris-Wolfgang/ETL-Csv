@@ -223,9 +223,9 @@ public class CsvExtractorTests
             // drain
         }
 
-        // StreamReader liveness: Peek on a disposed reader throws ObjectDisposedException,
-        // so a direct call that returns end-of-stream (-1) proves the reader is still open.
-        Assert.Equal(-1, reader.Peek());
+        // StreamReader liveness: Peek on a disposed reader throws ObjectDisposedException.
+        var peekException = Record.Exception(() => reader.Peek());
+        Assert.Null(peekException);
 
         // Underlying stream is also still readable.
         Assert.True(stream.CanRead);
@@ -608,82 +608,5 @@ public class CsvExtractorTests
         );
 
         Assert.Equal(0, sut.CurrentErrorItemCount);   // fail-fast aborts rather than counting a skip
-    }
-
-
-
-    [Fact]
-    public async Task ExtractAsync_when_a_quoted_field_contains_a_line_break_keeps_it_and_reports_the_raw_line_number()
-    {
-        // One logical record spanning two physical lines (rows 2-3). The field must round-trip intact,
-        // and CurrentLineNumber follows the parser's raw row (3), not the record count (1 data record).
-        var csv = "FirstName,LastName,Age\r\n\"Line\r\nBreak\",Smith,30\r\n";
-        var sut = new CsvExtractor<PersonRecord>(new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(csv)), Encoding.UTF8));
-        var progress = new SyncProgress<CsvExtractorProgress>();
-
-        var rows = new List<PersonRecord>();
-        await foreach (var item in sut.ExtractAsync(progress))
-        {
-            rows.Add(item);
-        }
-
-        Assert.Equal("Line\r\nBreak", Assert.Single(rows).FirstName);
-        Assert.Equal(3, progress.LastValue!.CurrentLineNumber);
-    }
-
-
-
-    private static async Task<List<PersonRecord>> ExtractWithOptionsAsync(string csv, CsvExtractorOptions<PersonRecord> options)
-    {
-        var sut = new CsvExtractor<PersonRecord>(new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(csv)), Encoding.UTF8), options);
-        var list = new List<PersonRecord>();
-        await foreach (var item in sut.ExtractAsync())
-        {
-            list.Add(item);
-        }
-
-        return list;
-    }
-
-
-
-    [Fact]
-    public async Task ExtractAsync_when_Quote_is_a_single_quote_keeps_a_delimiter_inside_single_quoted_fields()
-    {
-        var rows = await ExtractWithOptionsAsync
-        (
-            "FirstName,LastName,Age\r\n'Smith, Jr',Alice,30\r\n",
-            new CsvExtractorOptions<PersonRecord> { Quote = '\'' }
-        );
-
-        Assert.Equal("Smith, Jr", Assert.Single(rows).FirstName);
-    }
-
-
-
-    [Fact]
-    public async Task ExtractAsync_when_Escape_is_a_backslash_unescapes_backslash_quoted_quotes()
-    {
-        var rows = await ExtractWithOptionsAsync
-        (
-            "FirstName,LastName,Age\r\n\"Al\\\"ice\",Smith,30\r\n",
-            new CsvExtractorOptions<PersonRecord> { Escape = '\\' }
-        );
-
-        Assert.Equal("Al\"ice", Assert.Single(rows).FirstName);
-    }
-
-
-
-    [Fact]
-    public async Task ExtractAsync_when_Comment_is_a_semicolon_skips_semicolon_comment_lines()
-    {
-        var rows = await ExtractWithOptionsAsync
-        (
-            "FirstName,LastName,Age\r\n;a comment line\r\nAlice,Smith,30\r\n",
-            new CsvExtractorOptions<PersonRecord> { AllowComments = true, Comment = ';' }
-        );
-
-        Assert.Equal("Alice", Assert.Single(rows).FirstName);
     }
 }

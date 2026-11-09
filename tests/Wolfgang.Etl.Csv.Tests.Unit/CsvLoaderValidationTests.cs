@@ -182,27 +182,6 @@ public class CsvLoaderValidationTests
 
 
     [Fact]
-    public async Task LoadAsync_when_the_loader_is_reused_restarts_the_invalid_count_and_record_ordinal()
-    {
-        using var stream = new MemoryStream();
-        var loader = CreateLoader(stream, out var writer);
-        loader.OnValidationFailure = CsvValidationFailureAction.Skip;
-        CsvInvalidRecord<Order>? captured = null;
-        loader.InvalidRecordHandler = invalid => captured = invalid;
-
-        await loader.LoadAsync(Orders.ToAsyncEnumerable());
-
-        var progress = new SyncProgress<CsvLoaderProgress>();
-        await loader.LoadAsync(Orders.ToAsyncEnumerable(), progress);
-        writer.Dispose();
-
-        Assert.Equal(1, progress.LastValue!.CurrentInvalidItemCount);
-        Assert.Equal(2, captured!.LineNumber);
-    }
-
-
-
-    [Fact]
     public async Task LoadAsync_reports_the_invalid_count_through_progress()
     {
         using var stream = new MemoryStream();

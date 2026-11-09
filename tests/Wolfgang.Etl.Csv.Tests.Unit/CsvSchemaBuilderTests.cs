@@ -301,8 +301,9 @@ public class CsvSchemaBuilderTests
 
 
 
-    // Deliberately declares no members of its own: the test only needs a derived type whose
-    // mapped property is inherited from BaseRecord.
     [ExcludeFromCodeCoverage]
-    private sealed record DerivedRecord : BaseRecord;
+    private sealed record DerivedRecord : BaseRecord
+    {
+        public int Id { get; set; }
+    }
 }

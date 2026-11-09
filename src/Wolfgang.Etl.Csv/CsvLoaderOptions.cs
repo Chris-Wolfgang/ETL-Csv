@@ -56,9 +56,8 @@ public sealed record CsvLoaderOptions<TRecord> : LoaderOptions
 
 
     /// <summary>
-    /// Gets a value indicating whether the supplied writer is left open when the load completes
-    /// (the CSV writer is disposed at the end of each run, not when the loader is disposed).
-    /// Defaults to <see langword="true"/>.
+    /// Gets a value indicating whether the supplied writer is left open when the loader is
+    /// disposed. Defaults to <see langword="true"/>.
     /// </summary>
     public bool LeaveOpen { get; init; } = true;
 

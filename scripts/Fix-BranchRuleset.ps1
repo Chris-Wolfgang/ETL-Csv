@@ -43,9 +43,6 @@ param(
     [switch]$Force
 )
 
-Set-StrictMode -Version Latest
-$ErrorActionPreference = 'Stop'
-
 # Check if gh CLI is installed
 try {
     $null = gh --version

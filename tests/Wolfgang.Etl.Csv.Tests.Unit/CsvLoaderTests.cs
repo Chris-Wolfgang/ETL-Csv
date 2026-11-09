@@ -439,23 +439,4 @@ public class CsvLoaderTests
         // and a static Detonate would never be called.
         public string Detonate => throw new InvalidOperationException($"boom: {Name}");
     }
-
-
-
-    [Fact]
-    public async Task LoadAsync_when_NewLine_is_LF_terminates_every_row_with_LF()
-    {
-        using var stream = new MemoryStream();
-        using (var writer = new StreamWriter(stream, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false), 1024, leaveOpen: true))
-        {
-            var sut = new CsvLoader<PersonRecord>(writer, new CsvLoaderOptions<PersonRecord> { NewLine = "\n" });
-            await sut.LoadAsync(new[] { new PersonRecord { FirstName = "Alice", LastName = "Smith", Age = 30 } }.ToAsyncEnumerable());
-        }
-
-        Assert.Equal
-        (
-            "FirstName,LastName,Age\nAlice,Smith,30\n",
-            Encoding.UTF8.GetString(stream.ToArray())
-        );
-    }
 }

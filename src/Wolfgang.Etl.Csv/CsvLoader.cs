@@ -405,7 +405,7 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     public int SkipRecordCount
     {
         get => SkipItemCount;
-        [Obsolete("Configure SkipItemCount through CsvLoaderOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")]
+        [Obsolete("Configure SkipRecordCount through CsvLoaderOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")]
         set => SkipItemCount = value;
     }
 
@@ -418,7 +418,7 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     public int MaxRecordCount
     {
         get => MaximumItemCount;
-        [Obsolete("Configure MaximumItemCount through CsvLoaderOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")]
+        [Obsolete("Configure MaxRecordCount through CsvLoaderOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")]
         set => MaximumItemCount = value;
     }
 
@@ -461,8 +461,6 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
         // invoking this worker, so a null is unreachable here.
 
         CsvLogMessages.StartingOperation(_logger, OperationName, null);
-
-        ResetRunCounters();
 
         // The `await using var` form doesn't compose with ConfigureAwait(false) —
         // there's no way to ConfigureAwait the implicit DisposeAsync that runs at
@@ -769,19 +767,6 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
             // Surface the CsvHelper exception, not the reflection wrapper, preserving its stack.
             ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
         }
-    }
-
-
-
-    /// <summary>
-    /// Zeroes the CSV-specific per-run counters so a reused instance starts every run from zero,
-    /// matching the base class counters, instead of accumulating across runs.
-    /// </summary>
-    private void ResetRunCounters()
-    {
-        Volatile.Write(ref _currentLineNumber, 0);
-        Volatile.Write(ref _currentInvalidItemCount, 0);
-        Volatile.Write(ref _currentRecordNumber, 0);
     }
 
 

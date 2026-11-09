@@ -64,7 +64,7 @@ public static class CsvValidator
             var value = selector(record);
             return value is not null && TryCompareTo(value, threshold, out var comparison) && comparison > 0
                 ? CsvValidationResult.Pass
-                : CsvValidationResult.Fail(FormattableString.Invariant($"{Label(memberName)} must be greater than {threshold}."));
+                : CsvValidationResult.Fail($"{Label(memberName)} must be greater than {threshold}.");
         };
     }
 
@@ -101,7 +101,7 @@ public static class CsvValidator
                 && TryCompareTo(value, min, out var low) && low >= 0
                 && TryCompareTo(value, max, out var high) && high <= 0
                 ? CsvValidationResult.Pass
-                : CsvValidationResult.Fail(FormattableString.Invariant($"{Label(memberName)} must be between {min} and {max} inclusive."));
+                : CsvValidationResult.Fail($"{Label(memberName)} must be between {min} and {max} inclusive.");
         };
     }
 
@@ -129,7 +129,7 @@ public static class CsvValidator
         return record =>
             (selector(record)?.Length ?? 0) <= maxLength
                 ? CsvValidationResult.Pass
-                : CsvValidationResult.Fail(FormattableString.Invariant($"{Label(memberName)} must be at most {maxLength} characters."));
+                : CsvValidationResult.Fail($"{Label(memberName)} must be at most {maxLength} characters.");
     }
 
 

@@ -78,9 +78,8 @@ public sealed record CsvExtractorOptions<TRecord> : ExtractorOptions
 
 
     /// <summary>
-    /// Gets a value indicating whether the supplied reader is left open when the extraction
-    /// completes (the CSV parser is disposed at the end of each run, not when the extractor is
-    /// disposed). Defaults to <see langword="true"/>.
+    /// Gets a value indicating whether the supplied reader is left open when the extractor is
+    /// disposed. Defaults to <see langword="true"/>.
     /// </summary>
     public bool LeaveOpen { get; init; } = true;
 

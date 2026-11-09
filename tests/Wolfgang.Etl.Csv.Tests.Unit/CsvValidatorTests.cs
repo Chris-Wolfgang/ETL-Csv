@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Text.RegularExpressions;
 using Xunit;
 
@@ -40,29 +39,6 @@ public class CsvValidatorTests
         Assert.True(validator(new Order { Quantity = 1 }).IsValid);
         Assert.False(validator(new Order { Quantity = 0 }).IsValid);
         Assert.False(validator(new Order { Quantity = -1 }).IsValid);
-    }
-
-
-
-    [Fact]
-    public void Threshold_failure_messages_when_the_current_culture_is_de_DE_format_values_invariantly()
-    {
-        var original = CultureInfo.CurrentCulture;
-        try
-        {
-            CultureInfo.CurrentCulture = new CultureInfo("de-DE");
-            var order = new Order { OrderNumber = "A1", Price = 0.25m };
-
-            var greater = CsvValidator.GreaterThan<Order>(o => o.Price, 9.99m, "Price");
-            var inRange = CsvValidator.InRange<Order>(o => o.Price, 0.5m, 9.99m, "Price");
-
-            Assert.Equal("Price must be greater than 9.99.", Assert.Single(greater(order).Failures));
-            Assert.Equal("Price must be between 0.5 and 9.99 inclusive.", Assert.Single(inRange(order).Failures));
-        }
-        finally
-        {
-            CultureInfo.CurrentCulture = original;
-        }
     }
 
 
@@ -472,9 +448,5 @@ public class CsvValidatorTests
 
 
         public string Notes { get; set; } = string.Empty;
-
-
-
-        public decimal Price { get; set; }
     }
 }

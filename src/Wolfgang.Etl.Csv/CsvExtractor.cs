@@ -459,7 +459,7 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     public int SkipRecordCount
     {
         get => SkipItemCount;
-        [Obsolete("Configure SkipItemCount through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")]
+        [Obsolete("Configure SkipRecordCount through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")]
         set => SkipItemCount = value;
     }
 
@@ -472,7 +472,7 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     public int MaxRecordCount
     {
         get => MaximumItemCount;
-        [Obsolete("Configure MaximumItemCount through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")]
+        [Obsolete("Configure MaxRecordCount through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")]
         set => MaximumItemCount = value;
     }
 
@@ -583,8 +583,6 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     )
     {
         CsvLogMessages.StartingOperation(_logger, OperationName, null);
-
-        ResetRunCounters();
 
         var configuration = BuildConfiguration();
 
@@ -834,19 +832,6 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
         }
 
         Discriminator?.RegisterClassMaps(context);
-    }
-
-
-
-    /// <summary>
-    /// Zeroes the CSV-specific per-run counters so a reused instance starts every run from zero,
-    /// matching the base class counters, instead of accumulating across runs.
-    /// </summary>
-    private void ResetRunCounters()
-    {
-        Volatile.Write(ref _currentLineNumber, 0);
-        Volatile.Write(ref _currentBadDataCount, 0);
-        Volatile.Write(ref _currentInvalidItemCount, 0);
     }
 
 
