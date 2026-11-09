@@ -38,6 +38,7 @@ This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) f
 - **Cookbook — resumable extraction:** [docs/cookbook/resumable-extraction.md](docs/cookbook/resumable-extraction.md)
 - **Cookbook — polymorphic rows (mixed shapes):** [docs/cookbook/polymorphic-rows.md](docs/cookbook/polymorphic-rows.md)
 - **Cookbook — streaming record validation:** [docs/cookbook/record-validation.md](docs/cookbook/record-validation.md)
+- **Pipeline extensions (`EtlPipeline` CSV source / sink builders):** [docs/pipeline-extensions.md](docs/pipeline-extensions.md)
 
 ---
 
@@ -49,14 +50,10 @@ Define a record type, then read or write CSV with a single `await foreach` / `aw
 
 ```csharp
 using System.IO;
+using System.Threading;
 using Wolfgang.Etl.Csv;
 
-public sealed record Person
-{
-    public string FirstName { get; set; } = string.Empty;
-    public string LastName  { get; set; } = string.Empty;
-    public int    Age       { get; set; }
-}
+var cancellationToken = CancellationToken.None; // or a token from your host
 
 using var reader = new StreamReader("people.csv");
 var extractor = new CsvExtractor<Person>(reader);
@@ -64,6 +61,14 @@ var extractor = new CsvExtractor<Person>(reader);
 await foreach (var person in extractor.ExtractAsync(cancellationToken))
 {
     Console.WriteLine($"{person.FirstName} {person.LastName} ({person.Age})");
+}
+
+// Type declarations follow the top-level statements in a single-file program.
+public sealed record Person
+{
+    public string FirstName { get; set; } = string.Empty;
+    public string LastName  { get; set; } = string.Empty;
+    public int    Age       { get; set; }
 }
 ```
 
@@ -104,16 +109,20 @@ That's the full surface for the simplest case. The library auto-maps record prop
 | Progress reporting with item count, skip count, line number, bad-data count | `CsvExtractorProgress`, `CsvLoaderProgress` |
 | Cancellation support throughout | `CancellationToken` on every async API |
 | Skip metadata rows / start at a specific line | `InitialRecordIndex` |
+| Resume an interrupted extraction from a checkpoint file ([cookbook](docs/cookbook/resumable-extraction.md)) | `CsvCheckpointExtensions`: `ReadCheckpointAsync`, `WriteCheckpointAsync`, `ResumeFromCheckpointAsync` |
 | Limit how many records get processed | `MaximumItemCount`, `SkipItemCount` (options record) |
+| Dry-run a load: enumerate, count and report progress, write nothing | `IsDryRun` (loader options record) |
 | Compile-time column mapping (declarative) | `[CsvColumn]`, `[CsvIgnore]` |
 | Runtime column mapping (configuration / DB-driven layouts) | `CsvColumnMap`, `ColumnMaps` property |
 | Type-safe code-first schema (undecorated / generated types) | `CsvSchemaBuilder<T>`, `CsvSchema`, `Schema` option |
 | Parser-agnostic public surface (no `CsvHelper` types leaked) | `CsvTrimOptions`, `CsvBadDataInfo`, `CsvShouldQuoteContext` |
 | Custom delimiter, quote, escape, comment character | `Delimiter`, `Quote`, `Escape`, `Comment`, `AllowComments` |
+| Line terminator for written records; skip or surface blank lines when reading | `NewLine` (loader), `IgnoreBlankLines` (extractor) |
 | `LeaveOpen` semantics matching .NET conventions | `LeaveOpen` |
 | Trim whitespace inside or outside quotes | `TrimOptions` |
 | Skip-or-abort policy for rows that fail to parse or convert | `ErrorPolicy` (options record) |
 | Custom quoting callback | `ShouldQuote` |
+| Fluent `EtlPipeline` source / sink builders (see [pipeline extensions](docs/pipeline-extensions.md)) | `EtlPipelineCsvExtensions.CsvExtractor<T>(…)` / `CsvLoader<T>(…)`, `ICsvExtractorBuilder<T>`, `ICsvLoaderBuilder<T>` |
 
 CSV knobs are configured through `CsvExtractorOptions<TRecord>` / `CsvLoaderOptions<TRecord>` passed to the constructor. The settable properties on the stages themselves are `[Obsolete]`.
 
@@ -197,7 +206,7 @@ await foreach (var person in extractor.ExtractAsync(progress, cancellationToken)
 }
 ```
 
-`ReportingInterval` (inherited from `ExtractorBase`) controls how often progress is sampled.
+`ReportingInterval` on `CsvExtractorOptions<TRecord>` / `CsvLoaderOptions<TRecord>` controls how often progress is sampled (the setter inherited from `ExtractorBase` / `LoaderBase` is deprecated).
 
 ### Example: Handling rows that fail to parse
 
@@ -302,6 +311,8 @@ The public `CsvExtractor` and `CsvLoader` constructors are annotated `[RequiresU
 - Suppress at the call site (acknowledges the risk), or
 - Annotate the calling method `[RequiresUnreferencedCode]` (propagates the contract), or
 - Avoid trimming for assemblies that use this library.
+
+A Native AOT publish (`PublishAot=true`) additionally reports `IL3050` (`[RequiresDynamicCode]`) warnings; they come from CsvHelper itself. The library's own reflection paths carry `[RequiresDynamicCode]` internally, so the public constructors surface only `IL2026`.
 
 ---
 
@@ -428,5 +439,5 @@ Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for:
 
 - [**CsvHelper**](https://joshclose.github.io/CsvHelper/) by Josh Close — the underlying CSV parser and writer. Dual-licensed under MS-PL and Apache 2.0; both are MIT-compatible.
 - [**Wolfgang.Etl.Abstractions**](https://github.com/Chris-Wolfgang/ETL-Abstractions) — the `ExtractorBase<T, TProgress>` / `LoaderBase<T, TProgress>` contracts this library implements.
-- [**Wolfgang.Etl.TestKit.Xunit**](https://github.com/Chris-Wolfgang/ETL-Test-Kit) — provides the `ExtractorBaseContractTests` / `LoaderBaseContractTests` used to verify behavioural conformance.
+- [**Wolfgang.Etl.TestKit.Xunit**](https://github.com/Chris-Wolfgang/ETL-Abstractions) — provides the `ExtractorBaseContractTests` / `LoaderBaseContractTests` used to verify behavioural conformance.
 

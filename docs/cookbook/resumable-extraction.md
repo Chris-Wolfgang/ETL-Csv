@@ -67,7 +67,7 @@ static async Task WriteCheckpointAtomicAsync(string path, int count, Cancellatio
 {
     var temp = path + ".tmp";
     await File.WriteAllTextAsync(temp, count.ToString(CultureInfo.InvariantCulture), ct);
-    File.Move(temp, path, overwrite: true);   // atomic replace (net8+; File.Replace on older TFMs)
+    File.Move(temp, path, overwrite: true);   // atomic replace (netcoreapp3.0+ / netstandard2.1; File.Replace on net462 / netstandard2.0)
 }
 ```
 

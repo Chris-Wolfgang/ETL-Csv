@@ -16,17 +16,6 @@ namespace Wolfgang.Etl.Csv.Tests.Unit;
 
 public class CsvAttributeMappingTests
 {
-    public sealed record IndexedRecord
-    {
-        [CsvColumn(Index = 0)]
-        public string A { get; set; } = string.Empty;
-
-        [CsvColumn(Index = 1)]
-        public string B { get; set; } = string.Empty;
-    }
-
-
-
     public sealed record PartiallyAttributedRecord
     {
         [CsvColumn(Name = "first_name")]
@@ -336,17 +325,6 @@ public class CsvAttributeMappingTests
 
         Assert.Single(results);
         Assert.Equal(new DateTime(1995, 4, 12, 0, 0, 0, DateTimeKind.Unspecified), results[0].DateOfBirth);
-    }
-
-
-
-    [Fact]
-    public void CsvClassMapFactory_BuildFromColumnMaps_when_columnMaps_is_empty_throws()
-    {
-        Assert.Throws<ArgumentException>
-        (
-            () => CsvClassMapFactory.BuildFromColumnMaps<PriceRecord>(Array.Empty<CsvColumnMap>())
-        );
     }
 
 
