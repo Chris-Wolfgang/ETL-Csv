@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace Wolfgang.Etl.Csv;
@@ -64,7 +65,7 @@ public static class CsvValidator
             var value = selector(record);
             return value is not null && TryCompareTo(value, threshold, out var comparison) && comparison > 0
                 ? CsvValidationResult.Pass
-                : CsvValidationResult.Fail(FormattableString.Invariant($"{Label(memberName)} must be greater than {threshold}."));
+                : CsvValidationResult.Fail(string.Format(CultureInfo.InvariantCulture, "{0} must be greater than {1}.", Label(memberName), threshold));
         };
     }
 
@@ -101,7 +102,7 @@ public static class CsvValidator
                 && TryCompareTo(value, min, out var low) && low >= 0
                 && TryCompareTo(value, max, out var high) && high <= 0
                 ? CsvValidationResult.Pass
-                : CsvValidationResult.Fail(FormattableString.Invariant($"{Label(memberName)} must be between {min} and {max} inclusive."));
+                : CsvValidationResult.Fail(string.Format(CultureInfo.InvariantCulture, "{0} must be between {1} and {2} inclusive.", Label(memberName), min, max));
         };
     }
 
@@ -129,7 +130,7 @@ public static class CsvValidator
         return record =>
             (selector(record)?.Length ?? 0) <= maxLength
                 ? CsvValidationResult.Pass
-                : CsvValidationResult.Fail(FormattableString.Invariant($"{Label(memberName)} must be at most {maxLength} characters."));
+                : CsvValidationResult.Fail(string.Format(CultureInfo.InvariantCulture, "{0} must be at most {1} characters.", Label(memberName), maxLength));
     }
 
 
