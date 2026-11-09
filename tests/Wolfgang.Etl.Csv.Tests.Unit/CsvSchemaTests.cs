@@ -68,15 +68,15 @@ public class CsvSchemaTests
     public async Task ExtractAsync_with_For_schema_of_an_index_mapped_record_is_equivalent_to_the_attribute_path()
     {
         var csv = "x,y\r\n1,2\r\n";
-        var attributeOptions = new CsvExtractorOptions<CsvAttributeMappingTests.IndexedRecord> { HasHeaderRecord = false };
-        var schemaOptions = new CsvExtractorOptions<CsvAttributeMappingTests.IndexedRecord>
+        var attributeOptions = new CsvExtractorOptions<IndexedRecord> { HasHeaderRecord = false };
+        var schemaOptions = new CsvExtractorOptions<IndexedRecord>
         {
             HasHeaderRecord = false,
-            Schema = CsvSchema.For<CsvAttributeMappingTests.IndexedRecord>(),
+            Schema = CsvSchema.For<IndexedRecord>(),
         };
 
-        var viaAttributes = await ExtractAsync(new CsvExtractor<CsvAttributeMappingTests.IndexedRecord>(Reader(csv), attributeOptions));
-        var viaSchema = await ExtractAsync(new CsvExtractor<CsvAttributeMappingTests.IndexedRecord>(Reader(csv), schemaOptions));
+        var viaAttributes = await ExtractAsync(new CsvExtractor<IndexedRecord>(Reader(csv), attributeOptions));
+        var viaSchema = await ExtractAsync(new CsvExtractor<IndexedRecord>(Reader(csv), schemaOptions));
 
         Assert.Equal(viaAttributes, viaSchema);
     }
