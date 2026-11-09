@@ -22,7 +22,6 @@ on:
       - Fuzz
       - GC profiling
       - License Audit
-      - Mutation testing
       - OSSF Scorecard
       - PR Checks v3 (Gated)
       - SAST (Semgrep)

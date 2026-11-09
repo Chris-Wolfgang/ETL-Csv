@@ -34,7 +34,7 @@ public sealed class CsvDiscriminator<TBase>
     public string? ColumnName { get; init; }
 
 
-    /// <summary>Maps each discriminator value to the concrete record type. Every value type must derive from / implement <typeparamref name="TBase"/>.</summary>
+    /// <summary>Maps each discriminator value to the concrete record type. Every value type must derive from / implement <typeparamref name="TBase"/>; when the dictionary is set directly (not through <see cref="CsvDiscriminatorBuilder{TBase}"/>), a type that does not is reported as an <see cref="InvalidOperationException"/> at the start of the first extract or load, not at initialization.</summary>
     public IReadOnlyDictionary<string, Type> Mapping { get; init; } = new Dictionary<string, Type>();
 
 
@@ -148,7 +148,14 @@ public sealed class CsvDiscriminator<TBase>
         var lookup = new Dictionary<string, Type>(Comparer);
         foreach (var pair in Mapping)
         {
-            lookup[pair.Key] = pair.Value;
+            // Mapping may use a different comparer than Comparer, so two of its keys can collide here.
+            // Reject that like CsvDiscriminatorBuilder.Build does instead of letting the last one win.
+            if (lookup.ContainsKey(pair.Key))
+            {
+                throw new InvalidOperationException($"Discriminator value '{pair.Key}' is mapped more than once under the configured Comparer.");
+            }
+
+            lookup.Add(pair.Key, pair.Value);
         }
 
         return lookup;
@@ -160,7 +167,14 @@ public sealed class CsvDiscriminator<TBase>
         var lookup = new Dictionary<Type, string>();
         foreach (var pair in Mapping)
         {
-            lookup[pair.Value] = pair.Key;
+            // A type mapped to two values would make the loader's type -> value lookup depend on
+            // dictionary order; reject it like CsvDiscriminatorBuilder.Build does.
+            if (lookup.ContainsKey(pair.Value))
+            {
+                throw new InvalidOperationException($"Type '{pair.Value}' is mapped to more than one discriminator value.");
+            }
+
+            lookup.Add(pair.Value, pair.Key);
         }
 
         return lookup;
