@@ -210,10 +210,11 @@ public sealed class EtlPipelineCsvExtensionsTests : IDisposable
 
         var bytes = File.ReadAllBytes(target);
 
-        Assert.True
+        // A UTF-8 BOM proves the loader used the configured encoding to open the file.
+        Assert.Equal
         (
-            bytes.Length >= 3 && bytes[0] == 0xEF && bytes[1] == 0xBB && bytes[2] == 0xBF,
-            "Expected a UTF-8 BOM, proving the loader used the configured encoding to open the file."
+            new byte[] { 0xEF, 0xBB, 0xBF },
+            bytes.Take(3)
         );
     }
 
@@ -336,6 +337,28 @@ public sealed class EtlPipelineCsvExtensionsTests : IDisposable
         _ = builder.Through(FilterAdults);
 
         Assert.Throws<InvalidOperationException>(() => builder.Delimiter(";"));
+    }
+
+
+    [Fact]
+    public async Task Configuring_the_loader_after_it_has_run_throws_and_names_the_reason()
+    {
+        var source = WriteTempFile("guard.csv", "FirstName,LastName,Age\r\nAlice,Smith,30\r\n");
+        var target = Path.Combine(_tempDir, "guard-out.csv");
+
+        var builder = EtlPipeline
+            .Create()
+            .CsvExtractor<PersonRecord>(source)
+            .CsvLoader(target);
+        await builder.RunAsync();
+
+        var ex = Assert.Throws<InvalidOperationException>(() => builder.Delimiter(";"));
+        Assert.Equal
+        (
+            "The loader has already been run; configuration setters can no longer be applied.",
+            ex.Message
+        );
+        Assert.Throws<InvalidOperationException>(() => builder.Encoding(Encoding.Unicode));
     }
 
 
@@ -581,7 +604,7 @@ public sealed class EtlPipelineCsvExtensionsTests : IDisposable
         var badData = new SyncProgress<CsvBadDataInfo>();
         var readingExceptions = new SyncProgress<CsvReadingExceptionInfo>();
 
-        await Assert.ThrowsAnyAsync<Exception>
+        await Assert.ThrowsAsync<CsvHelper.TypeConversion.TypeConverterException>
         (
             async () => await EtlPipeline
                 .Create()
@@ -592,8 +615,8 @@ public sealed class EtlPipelineCsvExtensionsTests : IDisposable
                 .RunAsync()
         );
 
-        Assert.True(badData.CallCount > 0);
-        Assert.True(readingExceptions.CallCount > 0);
+        Assert.Equal(1, badData.CallCount);
+        Assert.Equal(1, readingExceptions.CallCount);
     }
 
 
