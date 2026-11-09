@@ -30,8 +30,8 @@ public class CsvClassMapFactoryTests
         var map = CsvClassMapFactory.GetMap<IgnoreOnlyRecord>();
 
         Assert.NotNull(map);
-        Assert.True(Member(map!, nameof(IgnoreOnlyRecord.Secret)).Data.Ignore);
-        Assert.False(Member(map!, nameof(IgnoreOnlyRecord.Visible)).Data.Ignore);
+        Assert.True(Member(map, nameof(IgnoreOnlyRecord.Secret)).Data.Ignore);
+        Assert.False(Member(map, nameof(IgnoreOnlyRecord.Visible)).Data.Ignore);
     }
 
 
@@ -55,16 +55,16 @@ public class CsvClassMapFactoryTests
 
         Assert.NotNull(map);
 
-        var first = Member(map!, nameof(ColumnOnlyRecord.First));
+        var first = Member(map, nameof(ColumnOnlyRecord.First));
         Assert.True(first.Data.IsIndexSet);
         Assert.Equal(0, first.Data.Index);
 
-        var second = Member(map!, nameof(ColumnOnlyRecord.Second));
+        var second = Member(map, nameof(ColumnOnlyRecord.Second));
         Assert.True(second.Data.IsIndexSet);
         Assert.Equal(1, second.Data.Index);
         Assert.Equal(new[] { "yyyy-MM-dd" }, second.Data.TypeConverterOptions.Formats);
 
-        var named = Member(map!, nameof(ColumnOnlyRecord.Named));
+        var named = Member(map, nameof(ColumnOnlyRecord.Named));
         Assert.True(named.Data.IsNameSet);
         Assert.Equal("renamed", named.Data.Names.Single());
     }

@@ -14,7 +14,8 @@ namespace Wolfgang.Etl.Csv;
 /// </summary>
 /// <typeparam name="T">The record type consumed by the loader.</typeparam>
 /// <remarks>
-/// Each setter maps 1:1 to a public property on <see cref="CsvLoader{TRecord}"/>; no new
+/// Each setter maps 1:1 to a public property on <see cref="CsvLoader{TRecord}"/>, except
+/// <c>Encoding(...)</c>, which only selects how a path-based sink is opened; no other new
 /// configuration surface is introduced. Stream ownership is decided by the terminator overload,
 /// not a setter: a path-based sink owns and disposes the file it opens (on success and failure),
 /// while a caller-supplied <see cref="System.IO.StreamWriter"/> is left open for the caller.

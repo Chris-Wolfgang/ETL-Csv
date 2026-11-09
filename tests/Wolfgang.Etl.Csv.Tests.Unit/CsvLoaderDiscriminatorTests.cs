@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Wolfgang.Etl.Csv.Tests.Unit.TestModels;
@@ -228,9 +227,8 @@ public class CsvLoaderDiscriminatorTests
         var (sut, stream) = CreateLoader(discriminator);
         var items = new LedgerRow[] { new ExplodingRow { RecordType = "BOOM" } };
 
-        var ex = await Assert.ThrowsAnyAsync<Exception>(async () => await LoadAndReadAsync(sut, stream, items));
-
-        Assert.IsNotType<TargetInvocationException>(ex);
+        // Exactly CsvHelper's WriterException, which also rules out the reflection wrapper.
+        await Assert.ThrowsAsync<CsvHelper.WriterException>(async () => await LoadAndReadAsync(sut, stream, items));
     }
 
 
