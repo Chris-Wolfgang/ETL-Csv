@@ -240,6 +240,19 @@ function Invoke-Assemble
 
     $block = @($section -split "`n") + @('')
     $lines.InsertRange($insertAt, [string[]]$block)
+
+    # Keep a Changelog footer: when an "[Unreleased]: <repo>/compare/v<x>...HEAD" link definition exists,
+    # move it to the new version and add "[<Version>]: <repo>/compare/v<previous>...v<Version>" below it.
+    for ($i = 0; $i -lt $lines.Count; $i++)
+    {
+        if ($lines[$i] -match '^\[Unreleased\]:\s*(?<repo>\S+)/compare/v\S+\.\.\.HEAD\s*$')
+        {
+            $repo = $Matches['repo']
+            $lines[$i] = "[Unreleased]: $repo/compare/v$Version...HEAD"
+            $lines.Insert($i + 1, "[$Version]: $repo/compare/v$current...v$Version")
+            break
+        }
+    }
     Set-Content -Path $ChangelogPath -Value ($lines -join "`n") -NoNewline
     Add-Content -Path $ChangelogPath -Value ''
 

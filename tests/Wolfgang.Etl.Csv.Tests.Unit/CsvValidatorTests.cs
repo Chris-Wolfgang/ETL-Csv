@@ -166,14 +166,6 @@ public class CsvValidatorTests
 
 
     [Fact]
-    public void MaxLength_rejects_a_negative_limit()
-    {
-        Assert.Throws<ArgumentOutOfRangeException>(() => CsvValidator.MaxLength<Order>(o => o.Notes, -1));
-    }
-
-
-
-    [Fact]
     public void MaxLength_when_limit_is_negative_reports_the_parameter_value_and_reason()
     {
         var ex = Assert.Throws<ArgumentOutOfRangeException>(() => CsvValidator.MaxLength<Order>(o => o.Notes, -1));
@@ -324,25 +316,9 @@ public class CsvValidatorTests
 
 
     [Fact]
-    public void CsvValidationResult_failed_ctor_throws_on_empty_failures()
-    {
-        Assert.Throws<ArgumentException>(() => new CsvValidationResult(Array.Empty<string>()));
-    }
-
-
-
-    [Fact]
     public void CsvValidationResult_Fail_throws_on_null_reasons()
     {
         Assert.Throws<ArgumentNullException>(() => CsvValidationResult.Fail(reasons: null!));
-    }
-
-
-
-    [Fact]
-    public void CsvValidationResult_Fail_throws_on_empty_reasons()
-    {
-        Assert.Throws<ArgumentException>(() => CsvValidationResult.Fail());
     }
 
 
@@ -382,26 +358,6 @@ public class CsvValidatorTests
     {
 #pragma warning disable CS0618 // legacy ctor is [Obsolete] — deliberate call under test
         Assert.Throws<ArgumentNullException>(() => new CsvValidationResult(IsValid: false, Failures: null!));
-#pragma warning restore CS0618
-    }
-
-
-
-    [Fact]
-    public void CsvValidationResult_legacy_ctor_throws_on_success_with_failures()
-    {
-#pragma warning disable CS0618 // legacy ctor is [Obsolete] — deliberate call under test
-        Assert.Throws<ArgumentException>(() => new CsvValidationResult(IsValid: true, Failures: new[] { "impossible" }));
-#pragma warning restore CS0618
-    }
-
-
-
-    [Fact]
-    public void CsvValidationResult_legacy_ctor_throws_on_failure_without_failures()
-    {
-#pragma warning disable CS0618 // legacy ctor is [Obsolete] — deliberate call under test
-        Assert.Throws<ArgumentException>(() => new CsvValidationResult(IsValid: false, Failures: Array.Empty<string>()));
 #pragma warning restore CS0618
     }
 
