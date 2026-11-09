@@ -56,8 +56,9 @@ public sealed record CsvLoaderOptions<TRecord> : LoaderOptions
 
 
     /// <summary>
-    /// Gets a value indicating whether the supplied writer is left open when the loader is
-    /// disposed. Defaults to <see langword="true"/>.
+    /// Gets a value indicating whether the supplied writer is left open when the load completes
+    /// (the CSV writer is disposed at the end of each run, not when the loader is disposed).
+    /// Defaults to <see langword="true"/>.
     /// </summary>
     public bool LeaveOpen { get; init; } = true;
 
@@ -173,8 +174,9 @@ public sealed record CsvLoaderOptions<TRecord> : LoaderOptions
     /// <summary>
     /// Gets a value indicating whether the load runs as a dry run. When <see langword="true"/>, the
     /// loader enumerates the source, honours <see cref="LoaderOptions.SkipItemCount"/> / <see cref="LoaderOptions.MaximumItemCount"/>,
-    /// increments progress counters, fires progress reports and logs exactly as a real load would — but
-    /// writes nothing to the underlying writer (neither the header nor any records). Use it to validate a
+    /// increments progress counters, fires progress reports and logs as a real load would — but
+    /// writes nothing to the underlying writer (neither the header nor any records), so
+    /// <see cref="CsvLoaderProgress.CurrentLineNumber"/> stays <c>0</c>. Use it to validate a
     /// pipeline against real data without producing output. Defaults to <see langword="false"/>.
     /// </summary>
     public bool IsDryRun { get; init; }

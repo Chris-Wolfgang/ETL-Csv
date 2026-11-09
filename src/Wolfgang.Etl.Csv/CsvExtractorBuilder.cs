@@ -93,7 +93,22 @@ internal sealed class CsvExtractorBuilder<[DynamicallyAccessedMembers(Dynamicall
     }
 
 
-    public ICsvExtractorBuilder<T> InitialRecordIndex(int oneBasedIndex) => Set(o => o with { InitialRecordIndex = oneBasedIndex }, e => e.InitialRecordIndex = oneBasedIndex);
+    public ICsvExtractorBuilder<T> InitialRecordIndex(int oneBasedIndex)
+    {
+        // Validate here so both routes (options record and pre-built extractor, whose mutation is
+        // deferred to materialization) fail at the call, naming the caller's parameter.
+        if (oneBasedIndex < 1)
+        {
+            throw new ArgumentOutOfRangeException
+            (
+                nameof(oneBasedIndex),
+                oneBasedIndex,
+                "InitialRecordIndex must be 1 or greater."
+            );
+        }
+
+        return Set(o => o with { InitialRecordIndex = oneBasedIndex }, e => e.InitialRecordIndex = oneBasedIndex);
+    }
 
 
     public ICsvExtractorBuilder<T> SkipRecordCount(int count) => Set(o => o with { SkipItemCount = count }, e => e.SkipItemCount = count);
@@ -227,28 +242,39 @@ internal sealed class CsvExtractorBuilder<[DynamicallyAccessedMembers(Dynamicall
     private CsvExtractor<T> BuildExtractor()
     {
         CsvExtractor<T> extractor;
+        StreamReader? ownedReader = null;
 
-        if (_existing is not null)
+        try
         {
-            // The instance already exists, so options cannot travel through its constructor;
-            // the recorded fluent mutations are replayed onto it below (see Set).
-            extractor = _existing;
-        }
-        else if (_reader is not null)
-        {
-            extractor = new CsvExtractor<T>(_reader, _options);
-        }
-        else
-        {
-            // Path-based source: the builder owns the reader it opens, so LeaveOpen is false and
-            // the CsvReader disposes it when enumeration finishes (success or failure).
-            var reader = new StreamReader(_path!, _encoding, detectEncodingFromByteOrderMarks: true);
-            extractor = new CsvExtractor<T>(reader, _options with { LeaveOpen = false });
-        }
+            if (_existing is not null)
+            {
+                // The instance already exists, so options cannot travel through its constructor;
+                // the recorded fluent mutations are replayed onto it below (see Set).
+                extractor = _existing;
+            }
+            else if (_reader is not null)
+            {
+                extractor = new CsvExtractor<T>(_reader, _options);
+            }
+            else
+            {
+                // Path-based source: the builder owns the reader it opens, so LeaveOpen is false and
+                // the CsvReader disposes it when enumeration finishes (success or failure).
+                ownedReader = new StreamReader(_path!, _encoding, detectEncodingFromByteOrderMarks: true);
+                extractor = new CsvExtractor<T>(ownedReader, _options with { LeaveOpen = false });
+            }
 
-        foreach (var mutation in _mutations)
+            foreach (var mutation in _mutations)
+            {
+                mutation(extractor);
+            }
+        }
+        catch
         {
-            mutation(extractor);
+            // Nothing owns the reader until an extractor is handed back, so a throw from the
+            // constructor or a replayed mutation must release the file handle here.
+            ownedReader?.Dispose();
+            throw;
         }
 
         return extractor;

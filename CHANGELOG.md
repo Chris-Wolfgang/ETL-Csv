@@ -24,7 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Built against `Wolfgang.Etl.Abstractions` 0.25.0 (and TestKit / TestKit.Xunit 0.25.0): the base-stage `ReportingInterval` / `MaximumItemCount` / `SkipItemCount` setters are deprecated fleet-wide in favour of the options record, and `IncrementCurrentItemCount(int)` / `IncrementCurrentSkippedItemCount(int)` are available to derived stages. No change to this package's own API.
+- Built against `Wolfgang.Etl.Abstractions` 0.26.0 (the API arrived in 0.25.0; TestKit / TestKit.Xunit likewise): the base-stage `ReportingInterval` / `MaximumItemCount` / `SkipItemCount` setters are deprecated fleet-wide in favour of the options record, and `IncrementCurrentItemCount(int)` / `IncrementCurrentSkippedItemCount(int)` are available to derived stages. No change to this package's own API.
 
 ### Fixed
 
@@ -491,3 +491,17 @@ Initial release.
 
 - `CsvExtractor<T>` and `CsvLoader<T>` are annotated `[RequiresUnreferencedCode]` — the library is not trim/NativeAOT safe.
 - See [`docs/abi-stability.md`](docs/abi-stability.md) for the SemVer commitment, [`docs/license-audit.md`](docs/license-audit.md) for the 0.1.0 dependency snapshot, [`docs/reproducible-build-verification.md`](docs/reproducible-build-verification.md) for the build-repro recipe.
+
+[Unreleased]: https://github.com/Chris-Wolfgang/ETL-Csv/compare/v0.10.0...HEAD
+[0.10.0]: https://github.com/Chris-Wolfgang/ETL-Csv/compare/v0.9.0...v0.10.0
+[0.9.0]: https://github.com/Chris-Wolfgang/ETL-Csv/compare/v0.8.0...v0.9.0
+[0.8.0]: https://github.com/Chris-Wolfgang/ETL-Csv/compare/v0.7.1...v0.8.0
+[0.7.1]: https://github.com/Chris-Wolfgang/ETL-Csv/compare/v0.7.0...v0.7.1
+[0.7.0]: https://github.com/Chris-Wolfgang/ETL-Csv/compare/v0.6.1...v0.7.0
+[0.6.1]: https://github.com/Chris-Wolfgang/ETL-Csv/compare/v0.6.0...v0.6.1
+[0.6.0]: https://github.com/Chris-Wolfgang/ETL-Csv/compare/v0.5.0...v0.6.0
+[0.5.0]: https://github.com/Chris-Wolfgang/ETL-Csv/compare/v0.4.0...v0.5.0
+[0.4.0]: https://github.com/Chris-Wolfgang/ETL-Csv/compare/v0.3.0...v0.4.0
+[0.3.0]: https://github.com/Chris-Wolfgang/ETL-Csv/compare/v0.2.0...v0.3.0
+[0.2.0]: https://github.com/Chris-Wolfgang/ETL-Csv/compare/v0.1.0...v0.2.0
+[0.1.0]: https://github.com/Chris-Wolfgang/ETL-Csv/releases/tag/v0.1.0
