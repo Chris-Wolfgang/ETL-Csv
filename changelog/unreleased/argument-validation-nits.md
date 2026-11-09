@@ -1,0 +1,3 @@
+type: fix
+
+The path-based `CsvExtractor` / `CsvLoader` pipeline factories reject an empty or whitespace path up front, the builder's `InitialRecordIndex(...)` rejects a value below 1 at the call (naming `oneBasedIndex`), a direct-init `CsvDiscriminator` whose values collide under its `Comparer` or that maps one type twice now throws `InvalidOperationException` instead of letting the last entry win, `CsvValidationResult.Fail(...)` copies the caller's array, `BuildFromColumnMaps` reports an unknown property with `ParamName` `columnMaps`, and `WriteCheckpointAsync` removes its `.tmp` file when the write itself fails.
