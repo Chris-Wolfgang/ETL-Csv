@@ -66,7 +66,10 @@ internal static class Program
                 "[RequiresUnreferencedCode] marker may now be removable; review whether the library " +
                 "gained AOT support (e.g. a source-generated class map) and update this smoke."
             );
-            return 0;
+
+            // Distinct non-zero exit: the workflow only checks the exit code, so an unexpected
+            // success must fail the job too, forcing a deliberate update of this smoke.
+            return 2;
         }
         catch (Exception ex) when (ex is MissingMethodException or NotSupportedException)
         {

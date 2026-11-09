@@ -17,7 +17,7 @@ The relevant MSBuild properties are set in `Directory.Build.props`:
 
 Plus `Microsoft.SourceLink.GitHub` which embeds the commit SHA into PDBs (separate property, also in `Directory.Build.props`).
 
-`release.yaml`'s `pack-and-validate` job runs on a clean GitHub-hosted Ubuntu runner, so the build environment is well-defined.
+`release.yaml`'s `pack-and-validate` job runs on a clean GitHub-hosted Windows runner (`windows-latest`), so the build environment is well-defined.
 
 ## Verification recipe (one-shot, run by hand)
 
@@ -72,6 +72,6 @@ The reproducibility check is most valuable when run by a **different party than 
 
 If we ever adopt a third-party reproducibility verifier (e.g. `r-b.org` for .NET libraries — equivalent of reproducible-builds.org for Debian), wire it up at that point.
 
-## SLSA + SBOM tracking
+## SLSA + SBOM
 
-Build provenance attestation (SLSA Level 3) and SBOM generation are tracked separately in #71 (supply-chain hardening). This document is the lightweight starting point; #71's scope is the full supply-chain story.
+Both ship today: `release.yaml`'s `attest-provenance` job signs a SLSA build-provenance attestation for every `.nupkg` (verify with `gh attestation verify`), and `pack-and-validate` generates a CycloneDX SBOM (`*.bom.json`) per package, attached to the GitHub Release. This document covers only the reproducibility half of that story.

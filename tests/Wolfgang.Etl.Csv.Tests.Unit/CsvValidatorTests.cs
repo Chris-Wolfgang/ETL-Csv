@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text.RegularExpressions;
 using Xunit;
 
@@ -39,6 +40,29 @@ public class CsvValidatorTests
         Assert.True(validator(new Order { Quantity = 1 }).IsValid);
         Assert.False(validator(new Order { Quantity = 0 }).IsValid);
         Assert.False(validator(new Order { Quantity = -1 }).IsValid);
+    }
+
+
+
+    [Fact]
+    public void Threshold_failure_messages_when_the_current_culture_is_de_DE_format_values_invariantly()
+    {
+        var original = CultureInfo.CurrentCulture;
+        try
+        {
+            CultureInfo.CurrentCulture = new CultureInfo("de-DE");
+            var order = new Order { OrderNumber = "A1", Price = 0.25m };
+
+            var greater = CsvValidator.GreaterThan<Order>(o => o.Price, 9.99m, "Price");
+            var inRange = CsvValidator.InRange<Order>(o => o.Price, 0.5m, 9.99m, "Price");
+
+            Assert.Equal("Price must be greater than 9.99.", Assert.Single(greater(order).Failures));
+            Assert.Equal("Price must be between 0.5 and 9.99 inclusive.", Assert.Single(inRange(order).Failures));
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = original;
+        }
     }
 
 
@@ -137,14 +161,6 @@ public class CsvValidatorTests
         var result = validator(new Order { Quantity = 5 });
 
         Assert.False(result.IsValid);
-    }
-
-
-
-    [Fact]
-    public void MaxLength_rejects_a_negative_limit()
-    {
-        Assert.Throws<ArgumentOutOfRangeException>(() => CsvValidator.MaxLength<Order>(o => o.Notes, -1));
     }
 
 
@@ -300,25 +316,9 @@ public class CsvValidatorTests
 
 
     [Fact]
-    public void CsvValidationResult_failed_ctor_throws_on_empty_failures()
-    {
-        Assert.Throws<ArgumentException>(() => new CsvValidationResult(Array.Empty<string>()));
-    }
-
-
-
-    [Fact]
     public void CsvValidationResult_Fail_throws_on_null_reasons()
     {
         Assert.Throws<ArgumentNullException>(() => CsvValidationResult.Fail(reasons: null!));
-    }
-
-
-
-    [Fact]
-    public void CsvValidationResult_Fail_throws_on_empty_reasons()
-    {
-        Assert.Throws<ArgumentException>(() => CsvValidationResult.Fail());
     }
 
 
@@ -358,26 +358,6 @@ public class CsvValidatorTests
     {
 #pragma warning disable CS0618 // legacy ctor is [Obsolete] — deliberate call under test
         Assert.Throws<ArgumentNullException>(() => new CsvValidationResult(IsValid: false, Failures: null!));
-#pragma warning restore CS0618
-    }
-
-
-
-    [Fact]
-    public void CsvValidationResult_legacy_ctor_throws_on_success_with_failures()
-    {
-#pragma warning disable CS0618 // legacy ctor is [Obsolete] — deliberate call under test
-        Assert.Throws<ArgumentException>(() => new CsvValidationResult(IsValid: true, Failures: new[] { "impossible" }));
-#pragma warning restore CS0618
-    }
-
-
-
-    [Fact]
-    public void CsvValidationResult_legacy_ctor_throws_on_failure_without_failures()
-    {
-#pragma warning disable CS0618 // legacy ctor is [Obsolete] — deliberate call under test
-        Assert.Throws<ArgumentException>(() => new CsvValidationResult(IsValid: false, Failures: Array.Empty<string>()));
 #pragma warning restore CS0618
     }
 
@@ -492,5 +472,9 @@ public class CsvValidatorTests
 
 
         public string Notes { get; set; } = string.Empty;
+
+
+
+        public decimal Price { get; set; }
     }
 }

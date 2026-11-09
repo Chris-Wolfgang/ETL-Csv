@@ -83,7 +83,7 @@ public class ExtractorBenchmarks
     [Benchmark]
     public async Task<int> File_TextReader_1KB()
     {
-        using var stream = new FileStream(_filePath, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize: 4096);
+        using var stream = new FileStream(_filePath, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize: 1024);
         using var reader = new StreamReader(stream, Encoding.UTF8, detectEncodingFromByteOrderMarks: false, bufferSize: 1024);
         var extractor = new CsvExtractor<BenchmarkRecord>(reader);
 

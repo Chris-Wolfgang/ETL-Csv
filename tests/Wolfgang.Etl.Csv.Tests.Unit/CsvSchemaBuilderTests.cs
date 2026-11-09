@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Wolfgang.Etl.Csv.Tests.Unit.TestModels;
@@ -275,23 +276,11 @@ public class CsvSchemaBuilderTests
         using (var writer = new StreamWriter(stream, utf8NoBom, 1024, leaveOpen: true))
         {
             var loader = create(writer);
-            await loader.LoadAsync(ToAsync(records)).ConfigureAwait(false);
+            await loader.LoadAsync(records.ToAsyncEnumerable()).ConfigureAwait(false);
             await writer.FlushAsync().ConfigureAwait(false);
         }
 
         return utf8NoBom.GetString(stream.ToArray());
-    }
-
-
-
-    private static async IAsyncEnumerable<T> ToAsync<T>(IEnumerable<T> source)
-    {
-        foreach (var item in source)
-        {
-            yield return item;
-        }
-
-        await Task.CompletedTask.ConfigureAwait(false);
     }
 
 

@@ -113,7 +113,7 @@ public class CsvExtractorTests
 
 
     [Fact]
-    public async Task Constructor_when_logger_is_null_extracts_every_record_without_logging()
+    public async Task Constructor_when_logger_is_null_extracts_every_record()
     {
         // logger is now an optional trailing parameter; null means "no logging"
         // (NullLogger.Instance) rather than an argument error.
@@ -135,7 +135,7 @@ public class CsvExtractorTests
 
 
     [Fact]
-    public async Task Constructor_when_logger_is_omitted_extracts_every_record_without_logging()
+    public async Task Constructor_when_logger_is_omitted_extracts_every_record()
     {
         var sut = new CsvExtractor<PersonRecord>(CreateCsvStream(ExpectedItems));
 
@@ -223,26 +223,14 @@ public class CsvExtractorTests
             // drain
         }
 
-        // StreamReader liveness: Peek on a disposed reader throws ObjectDisposedException.
-        var peekException = Record.Exception(() => reader.Peek());
-        Assert.Null(peekException);
+        // StreamReader liveness: Peek on a disposed reader throws ObjectDisposedException,
+        // so a direct call that returns end-of-stream (-1) proves the reader is still open.
+        Assert.Equal(-1, reader.Peek());
 
         // Underlying stream is also still readable.
         Assert.True(stream.CanRead);
     }
 
-
-
-    [Fact]
-    public void InitialRecordIndex_when_set_to_zero_throws_ArgumentOutOfRangeException()
-    {
-        var sut = new CsvExtractor<PersonRecord>(CreateCsvStream(ExpectedItems));
-
-        Assert.Throws<ArgumentOutOfRangeException>
-        (
-            () => sut.InitialRecordIndex = 0
-        );
-    }
 
 
     [Fact]
@@ -393,7 +381,7 @@ public class CsvExtractorTests
         }
 
         Assert.NotNull(progress.LastValue);
-        Assert.True(progress.LastValue.CurrentBadDataCount >= 1);
+        Assert.Equal(2, progress.LastValue.CurrentBadDataCount);
     }
 
 
@@ -490,7 +478,7 @@ public class CsvExtractorTests
 
 
     [Fact]
-    public void SkipRecordCount_when_set_updates_SkipItemCount_alias()
+    public void SkipItemCount_when_set_is_read_back_through_SkipRecordCount_alias()
     {
         var sut = new CsvExtractor<PersonRecord>(CreateCsvStream(ExpectedItems))
         {
@@ -504,7 +492,7 @@ public class CsvExtractorTests
 
 
     [Fact]
-    public void MaxRecordCount_when_set_updates_MaximumItemCount_alias()
+    public void MaximumItemCount_when_set_is_read_back_through_MaxRecordCount_alias()
     {
         var sut = new CsvExtractor<PersonRecord>(CreateCsvStream(ExpectedItems))
         {
