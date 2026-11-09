@@ -71,6 +71,37 @@ public class CsvExtractorValidationTests
 
 
     [Fact]
+    public async Task ExtractAsync_when_the_extractor_is_reused_restarts_the_line_and_invalid_counts()
+    {
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes(Csv));
+        using var reader = new StreamReader(stream, Encoding.UTF8, detectEncodingFromByteOrderMarks: true, bufferSize: 1024, leaveOpen: true);
+        var sut = new CsvExtractor<Order>(reader)
+        {
+            LeaveOpen = true,
+            OnValidationFailure = CsvValidationFailureAction.Skip,
+            Validators = new[] { CsvValidator.GreaterThan<Order>(o => o.Quantity, 0, "Quantity") },
+        };
+
+        var first = new SyncProgress<CsvExtractorProgress>();
+        await ReadAllAsync(sut, first);
+
+        stream.Position = 0;
+        reader.DiscardBufferedData();
+
+        var second = new SyncProgress<CsvExtractorProgress>();
+        await ReadAllAsync(sut, second);
+
+        Assert.Equal(1, second.LastValue!.CurrentInvalidItemCount);
+        Assert.Equal
+        (
+            first.LastValue!.CurrentLineNumber,
+            second.LastValue.CurrentLineNumber
+        );
+    }
+
+
+
+    [Fact]
     public async Task ExtractAsync_when_OnValidationFailure_is_Skip_drops_invalid_records()
     {
         CsvInvalidRecord<Order>? captured = null;

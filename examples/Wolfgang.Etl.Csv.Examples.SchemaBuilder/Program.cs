@@ -35,8 +35,8 @@ Console.WriteLine();
 
 var orders = new[]
 {
-    new Order { Id = 2001, PlacedOn = new DateTime(2026, 3, 1), Total = 12.00m },
-    new Order { Id = 2002, PlacedOn = new DateTime(2026, 3, 2), Total = 8.75m },
+    new Order { Id = 2001, PlacedOn = new DateTime(2026, 3, 1, 0, 0, 0, DateTimeKind.Unspecified), Total = 12.00m },
+    new Order { Id = 2002, PlacedOn = new DateTime(2026, 3, 2, 0, 0, 0, DateTimeKind.Unspecified), Total = 8.75m },
 };
 
 using (var writer = new StreamWriter(Console.OpenStandardOutput(), leaveOpen: true))

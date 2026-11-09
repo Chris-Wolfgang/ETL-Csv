@@ -23,6 +23,13 @@ namespace Wolfgang.Etl.Csv;
 /// using <see href="https://joshclose.github.io/CsvHelper/">CsvHelper</see>.
 /// </summary>
 /// <typeparam name="TRecord">The type of records to load. Must be <c>notnull</c>.</typeparam>
+/// <remarks>
+/// <c>LoadAsync</c> can throw: <see cref="CsvValidationException"/> when a record fails a validator and
+/// <c>OnValidationFailure</c> is <see cref="CsvValidationFailureAction.Stop"/> (the default);
+/// <see cref="InvalidOperationException"/> for a record whose runtime type is not mapped when the
+/// discriminator's <c>OnUnknown</c> is <see cref="CsvDiscriminatorAction.Throw"/>; and CsvHelper's own
+/// exception when a record cannot be written.
+/// </remarks>
 /// <example>
 /// <code>
 /// using var writer = new StreamWriter("people.csv");
@@ -35,6 +42,14 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     where TRecord : notnull
 {
     private static readonly string OperationName = $"CSV loading of {typeof(TRecord).Name}";
+
+    // CsvWriter.WriteRecord<T> binds the map from the static T, so writing a mixed file requires
+    // dispatching to the record's runtime type. Cache the open generic method once, and each closed
+    // generic per runtime type so high-volume loads don't re-pay MakeGenericMethod per row.
+    private static readonly MethodInfo WriteRecordMethod =
+        typeof(CsvWriter).GetMethod(nameof(CsvWriter.WriteRecord))!;
+
+    private static readonly ConcurrentDictionary<Type, MethodInfo> WriteRecordByType = new();
 
     private readonly StreamWriter _writer;
     private readonly ILogger _logger;
@@ -159,6 +174,10 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="streamWriter"/> is <c>null</c>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="options"/> sets both <c>Schema</c> and a non-empty <c>ColumnMaps</c>, or its
+    /// <c>Schema</c> was built for a record type other than <typeparamref name="TRecord"/>.
     /// </exception>
     [RequiresUnreferencedCode("CsvLoader uses CsvHelper, which reflects over TRecord's members beyond what DynamicallyAccessedMembers can express (type converter constructors, non-public getters in some flows). The library is not trim/NativeAOT safe.")]
     public CsvLoader
@@ -325,7 +344,9 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     /// <see cref="CsvExtractor{TRecord}.Discriminator"/>. Build one with
     /// <see cref="CsvDiscriminatorBuilder{TBase}"/> (trim/AOT-safe). No header row is written while a
     /// discriminator is set (the shapes have no common header); a record whose runtime type is not
-    /// mapped is handled per <see cref="CsvDiscriminator{TBase}.UnknownDiscriminator"/>.
+    /// mapped is handled per <see cref="CsvDiscriminator{TBase}.UnknownDiscriminator"/>. The discriminator
+    /// value is not written for you: only the columns the concrete type maps are written, so map the
+    /// discriminator column as a property of each concrete type if the file must round-trip.
     /// </summary>
     public CsvDiscriminator<TRecord>? Discriminator { get => _discriminator; [Obsolete("Configure Discriminator through CsvLoaderOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set => _discriminator = value; }
 
@@ -369,9 +390,9 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     /// configure it through <see cref="CsvLoaderOptions{TRecord}"/>). When <c>true</c>,
     /// the loader enumerates the source and honors <see cref="LoaderBase{TDestination, TProgress}.SkipItemCount"/> /
     /// <see cref="LoaderBase{TDestination, TProgress}.MaximumItemCount"/>, increments progress counters, fires progress reports, and
-    /// logs exactly as a real load would — but writes nothing to the underlying writer (neither
-    /// the header nor any records). Use it to validate a pipeline against real data without
-    /// producing output. Defaults to <c>false</c>.
+    /// logs as a real load would — but writes nothing to the underlying writer (neither
+    /// the header nor any records), so <see cref="CsvLoaderProgress.CurrentLineNumber"/> stays <c>0</c>.
+    /// Use it to validate a pipeline against real data without producing output. Defaults to <c>false</c>.
     /// </summary>
     public bool IsDryRun { get => _isDryRun; [Obsolete("Configure IsDryRun through CsvLoaderOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set => _isDryRun = value; }
 
@@ -441,6 +462,8 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
 
         CsvLogMessages.StartingOperation(_logger, OperationName, null);
 
+        ResetRunCounters();
+
         // The `await using var` form doesn't compose with ConfigureAwait(false) —
         // there's no way to ConfigureAwait the implicit DisposeAsync that runs at
         // scope exit. Split into construction + explicit ConfiguredAsyncDisposable
@@ -456,7 +479,7 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
 
         // Honor a token that is already cancelled before we pull the first record
         // from the source — mirrors CsvExtractor's top-of-loop check so a
-        // pre-cancelled load reads nothing (LoaderBase contract, TestKit 0.13).
+        // pre-cancelled load reads nothing (LoaderBase contract).
         token.ThrowIfCancellationRequested();
 
         await foreach (var item in items.WithCancellation(token).ConfigureAwait(false))
@@ -531,7 +554,7 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
         }
 
         _ = Interlocked.Increment(ref _currentInvalidItemCount);
-        InvalidRecordHandler?.Invoke(invalid!);
+        InvalidRecordHandler?.Invoke(invalid);
 
         switch (OnValidationFailure)
         {
@@ -539,7 +562,7 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
                 return false;
 
             case CsvValidationFailureAction.Stop:
-                throw new CsvValidationException(invalid!.LineNumber, invalid.Failures);
+                throw new CsvValidationException(invalid.LineNumber, invalid.Failures);
 
             default:
                 return true;
@@ -573,7 +596,7 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
 
     // Runs every configured validator against the record, aggregating failures. Returns true when
     // the record is valid (or no validators are configured); otherwise false with the failure detail.
-    private bool TryValidate(TRecord item, int recordNumber, out CsvInvalidRecord<TRecord>? invalid)
+    private bool TryValidate(TRecord item, int recordNumber, [NotNullWhen(false)] out CsvInvalidRecord<TRecord>? invalid)
     {
         invalid = null;
 
@@ -707,16 +730,6 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
 
 
 
-    // CsvWriter.WriteRecord<T> binds the map from the static T, so writing a mixed file requires
-    // dispatching to the record's runtime type. Cache the open generic method once, and each closed
-    // generic per runtime type so high-volume loads don't re-pay MakeGenericMethod per row.
-    private static readonly MethodInfo WriteRecordMethod =
-        typeof(CsvWriter).GetMethod(nameof(CsvWriter.WriteRecord))!;
-
-    private static readonly ConcurrentDictionary<Type, MethodInfo> WriteRecordByType = new();
-
-
-
     [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Only reached for a direct-init CsvDiscriminator (no builder-captured writer); CsvLoader is already [RequiresUnreferencedCode].")]
     [UnconditionalSuppressMessage("AOT", "IL3050", Justification = "Only reached for a direct-init CsvDiscriminator; the builder path uses a statically-rooted write delegate and does not hit MakeGenericMethod.")]
     private void WriteRecordByRuntimeType(CsvWriter csvWriter, TRecord item)
@@ -756,6 +769,19 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
             // Surface the CsvHelper exception, not the reflection wrapper, preserving its stack.
             ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
         }
+    }
+
+
+
+    /// <summary>
+    /// Zeroes the CSV-specific per-run counters so a reused instance starts every run from zero,
+    /// matching the base class counters, instead of accumulating across runs.
+    /// </summary>
+    private void ResetRunCounters()
+    {
+        Volatile.Write(ref _currentLineNumber, 0);
+        Volatile.Write(ref _currentInvalidItemCount, 0);
+        Volatile.Write(ref _currentRecordNumber, 0);
     }
 
 

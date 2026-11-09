@@ -3,8 +3,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using CsCheck;
 using Wolfgang.Etl.Csv.Tests.Unit.TestModels;
 using Xunit;
@@ -127,7 +127,7 @@ public class CsvFuzzTests
             }
         );
 
-        loader.LoadAsync(ToAsync(records)).GetAwaiter().GetResult();
+        loader.LoadAsync(records.ToAsyncEnumerable()).GetAwaiter().GetResult();
         writer.Flush();
 
         return Utf8NoBom.GetString(stream.ToArray());
@@ -157,17 +157,6 @@ public class CsvFuzzTests
         return results;
     }
 #pragma warning restore VSTHRD002, S5034
-
-
-    private static async IAsyncEnumerable<PersonRecord> ToAsync(IEnumerable<PersonRecord> items)
-    {
-        foreach (var item in items)
-        {
-            yield return item;
-        }
-
-        await Task.CompletedTask;
-    }
 }
 
 #endif
