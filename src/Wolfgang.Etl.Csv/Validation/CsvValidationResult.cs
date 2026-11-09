@@ -145,6 +145,7 @@ public sealed record CsvValidationResult
             );
         }
 
-        return new CsvValidationResult(reasons);
+        // Copy: a params array is the caller's, and Failures is documented as immutable.
+        return new CsvValidationResult(Array.AsReadOnly((string[])reasons.Clone()));
     }
 }

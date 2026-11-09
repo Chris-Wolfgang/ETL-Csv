@@ -93,7 +93,22 @@ internal sealed class CsvExtractorBuilder<[DynamicallyAccessedMembers(Dynamicall
     }
 
 
-    public ICsvExtractorBuilder<T> InitialRecordIndex(int oneBasedIndex) => Set(o => o with { InitialRecordIndex = oneBasedIndex }, e => e.InitialRecordIndex = oneBasedIndex);
+    public ICsvExtractorBuilder<T> InitialRecordIndex(int oneBasedIndex)
+    {
+        // Validate here so both routes (options record and pre-built extractor, whose mutation is
+        // deferred to materialization) fail at the call, naming the caller's parameter.
+        if (oneBasedIndex < 1)
+        {
+            throw new ArgumentOutOfRangeException
+            (
+                nameof(oneBasedIndex),
+                oneBasedIndex,
+                "InitialRecordIndex must be 1 or greater."
+            );
+        }
+
+        return Set(o => o with { InitialRecordIndex = oneBasedIndex }, e => e.InitialRecordIndex = oneBasedIndex);
+    }
 
 
     public ICsvExtractorBuilder<T> SkipRecordCount(int count) => Set(o => o with { SkipItemCount = count }, e => e.SkipItemCount = count);
