@@ -5,17 +5,8 @@
 # pre-existing finding that is deliberate design rather than a defect. A
 # NEW finding of any of these audit types anywhere else still fails.
 
-rules:
-  dangerous-triggers:
-    ignore:
-      # pr.yaml's `pull_request_target` is deliberate: the workflow YAML
-      # executes from the base branch (main), not from the PR branch, so
-      # a malicious PR cannot modify the workflow logic that validates
-      # it. A concurrent "Fetch trusted configuration files from main
-      # branch" step overwrites any protected-file changes the PR made
-      # before any build step runs (see the SECURITY NOTE at the top of
-      # pr.yaml). Converting to `pull_request` would remove that safe-
-      # configs guarantee and open the door to a malicious PR silencing
-      # analyzers. This is the same intent already documented for
-      # Scorecard's DangerousWorkflowID in scorecard.yaml's Filter step.
-      - pr.yaml
+# No config-level ignores remain. The former `dangerous-triggers` entry for pr.yaml
+# is gone: pr.yaml runs on `pull_request` now, and the one `pull_request_target`
+# workflow (protected-files.yaml) documents its exception with an inline
+# `zizmor: ignore[dangerous-triggers]` next to the trigger.
+rules: {}
