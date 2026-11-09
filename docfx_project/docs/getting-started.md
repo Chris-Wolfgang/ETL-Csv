@@ -27,14 +27,10 @@ Define a record type, then read a CSV with `await foreach`:
 
 ```csharp
 using System.IO;
+using System.Threading;
 using Wolfgang.Etl.Csv;
 
-public sealed record Person
-{
-    public string FirstName { get; set; } = string.Empty;
-    public string LastName  { get; set; } = string.Empty;
-    public int    Age       { get; set; }
-}
+var cancellationToken = CancellationToken.None; // or a token from your host
 
 using var reader = new StreamReader("people.csv");
 var extractor = new CsvExtractor<Person>(reader);
@@ -42,6 +38,14 @@ var extractor = new CsvExtractor<Person>(reader);
 await foreach (var person in extractor.ExtractAsync(cancellationToken))
 {
     Console.WriteLine($"{person.FirstName} {person.LastName} ({person.Age})");
+}
+
+// Type declarations follow the top-level statements in a single-file program.
+public sealed record Person
+{
+    public string FirstName { get; set; } = string.Empty;
+    public string LastName  { get; set; } = string.Empty;
+    public int    Age       { get; set; }
 }
 ```
 
@@ -52,6 +56,13 @@ using var writer = new StreamWriter("people.csv");
 var loader = new CsvLoader<Person>(writer);
 
 await loader.LoadAsync(GetPeopleAsync(), cancellationToken);
+
+static async IAsyncEnumerable<Person> GetPeopleAsync()
+{
+    yield return new Person { FirstName = "Alice", LastName = "Smith", Age = 30 };
+    yield return new Person { FirstName = "Bob",   LastName = "Jones", Age = 25 };
+    await Task.CompletedTask;   // satisfies the async signature
+}
 ```
 
 Delimiters, headers, column maps, validation and error handling are configured through

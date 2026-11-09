@@ -87,7 +87,7 @@ jobs:
           }
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
         with:
           dotnet-version: |
             3.1.x
@@ -371,7 +371,7 @@ jobs:
           persist-credentials: false
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
         with:
           dotnet-version: |
             3.1.x
@@ -390,9 +390,11 @@ jobs:
       # Renders each src project's transitive NuGet closure to obj/THIRD-PARTY-NOTICES.md;
       # Directory.Build.props packs it at the package root. Runs from the tag, after
       # restore (nuget-license reads project.assets.json) and before pack.
+      # -Strict: a nuget-license failure fails the release instead of a ::warning:: that
+      # would let the pack below ship without notices (#594).
       - name: Generate third-party notices
         shell: pwsh
-        run: pwsh ./scripts/third-party-notices.ps1
+        run: pwsh ./scripts/third-party-notices.ps1 -Strict
 
       - name: Pack NuGet packages
         id: check-packages
@@ -419,7 +421,9 @@ jobs:
           # Iterate through each project and create NuGet package
           foreach ($proj in $projects) {
             Write-Host "📦 Packing $($proj.Name)" -ForegroundColor Cyan
-            dotnet pack $proj.FullName --no-build --configuration Release --output $packagesPath
+            # RequireThirdPartyNotices: Directory.Build.props fails the pack when the generated
+            # obj/THIRD-PARTY-NOTICES.md is missing, instead of silently skipping it (#594).
+            dotnet pack $proj.FullName --no-build --configuration Release --output $packagesPath -p:RequireThirdPartyNotices=true
 
             # Check if pack operation failed and exit with error
             if ($LASTEXITCODE -ne 0) {
@@ -610,7 +614,7 @@ jobs:
           path: ./nuget-packages
 
       - name: Attest build provenance
-        # Pinned to the v4.1.1 COMMIT — attest actions publish annotated tags
+        # Pinned to the v4.2.2 COMMIT — attest actions publish annotated tags
         # that break tag-pin verification.
         uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
         with:
@@ -645,7 +649,7 @@ jobs:
 
       - name: Setup .NET
         if: steps.check.outputs.found == 'true'
-        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
         with:
           # Install the same SDK set as validate-release so dotnet build can
           # compile every TFM the solution targets (some test projects span
@@ -816,7 +820,7 @@ jobs:
       contents: read
     steps:
       - name: Setup .NET
-        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
         with:
           dotnet-version: |
             3.1.x
@@ -888,7 +892,7 @@ jobs:
           persist-credentials: false
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
         with:
           dotnet-version: 10.0.x
 

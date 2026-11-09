@@ -66,7 +66,7 @@
     </PackageReference>
 
     <!-- Meziantou - Comprehensive code quality -->
-    <PackageReference Include="Meziantou.Analyzer" Version="3.0.320">
+    <PackageReference Include="Meziantou.Analyzer" Version="3.0.321">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -108,7 +108,9 @@
          Change these three lines when forking the template for another owner. -->
     <Authors>Chris Wolfgang</Authors>
     <Company>Chris Wolfgang</Company>
-    <Copyright>Copyright (c) $([System.DateTime]::UtcNow.Year) Chris Wolfgang</Copyright>
+    <!-- No build-date year: a DateTime.UtcNow-derived value changes the package metadata with the
+         build date and defeats docs/reproducible-build-verification.md. -->
+    <Copyright>Copyright (c) Chris Wolfgang</Copyright>
     <RepositoryType>git</RepositoryType>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
@@ -124,6 +126,15 @@
          package root. Generated, never committed - nothing to keep in sync. -->
     <None Include="$(MSBuildProjectDirectory)/obj/THIRD-PARTY-NOTICES.md" Pack="true" PackagePath="\" Visible="false" />
   </ItemGroup>
+
+  <!-- The item above is conditional so a local `dotnet pack` works without the generator. A release
+       pack passes -p:RequireThirdPartyNotices=true (release.yaml), and then a missing file fails the
+       pack instead of shipping a package without its licence notices (#268, #594). -->
+  <Target Name="RequireThirdPartyNotices"
+          BeforeTargets="GenerateNuspec"
+          Condition="'$(RequireThirdPartyNotices)' == 'true' and $(_RelativeProjectDir.StartsWith('src/')) and !Exists('$(MSBuildProjectDirectory)/obj/THIRD-PARTY-NOTICES.md')">
+    <Error Text="$(MSBuildProjectDirectory)/obj/THIRD-PARTY-NOTICES.md is missing. Run scripts/third-party-notices.ps1 after restore and before pack." />
+  </Target>
 
   <ItemGroup>
     <!-- SourceLink: embed source provenance into PDBs so debuggers can step

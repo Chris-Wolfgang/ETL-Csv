@@ -5,9 +5,10 @@ name: SAST (Semgrep)
 # Semgrep runs a different engine and ruleset from CodeQL (pattern/dataflow
 # rules for C#, a general security-audit pack, and a secrets pack), so it
 # surfaces issues CodeQL's queries don't. Findings upload to Code Scanning
-# (Security tab) as an additional signal; report-only for now (`|| true`) so a
-# noisy new ruleset can't block merges — promote to a gate once the baseline is
-# clean.
+# (Security tab) as an additional signal. Findings are report-only: the scan step
+# accepts exit 0 (no findings) and 1 (findings, reported through the SARIF upload)
+# so a noisy ruleset can't block merges, and fails on any other exit code (bad
+# config, crash, network) so a broken scan can't pass silently.
 #
 # Uses the public Semgrep registry packs, which need no account/login.
 
@@ -83,7 +84,7 @@ jobs:
         # scan step above still runs (report-only, as documented) and its SARIF is available
         # once the change lands in this repository.
         if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
-        uses: github/codeql-action/upload-sarif@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4.39.1
+        uses: github/codeql-action/upload-sarif@1fc58d04a4d4374f921bdac573c3811c240f9c26 # v4.39.2
         with:
           sarif_file: semgrep.sarif
           # Pinned to the job's default so renaming the job cannot orphan this configuration on main.

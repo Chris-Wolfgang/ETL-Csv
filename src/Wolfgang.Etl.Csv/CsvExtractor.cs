@@ -21,6 +21,13 @@ namespace Wolfgang.Etl.Csv;
 /// using <see href="https://joshclose.github.io/CsvHelper/">CsvHelper</see>.
 /// </summary>
 /// <typeparam name="TRecord">The type of records to extract. Must be <c>notnull</c>.</typeparam>
+/// <remarks>
+/// Enumerating <c>ExtractAsync</c> can throw: <see cref="CsvValidationException"/> when a record fails a
+/// validator and <c>OnValidationFailure</c> is <see cref="CsvValidationFailureAction.Stop"/> (the default);
+/// <see cref="InvalidOperationException"/> for an unmapped discriminator value when the discriminator's
+/// <c>OnUnknown</c> is <see cref="CsvDiscriminatorAction.Throw"/>; and CsvHelper's own parse or
+/// conversion exception when a row fails under the default fail-fast <c>ErrorPolicy</c>.
+/// </remarks>
 /// <example>
 /// <code>
 /// using var reader = new StreamReader("people.csv");
@@ -160,6 +167,10 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="streamReader"/> is <c>null</c>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="options"/> sets both <c>Schema</c> and a non-empty <c>ColumnMaps</c>, or its
+    /// <c>Schema</c> was built for a record type other than <typeparamref name="TRecord"/>.
     /// </exception>
     [RequiresUnreferencedCode("CsvExtractor uses CsvHelper, which reflects over TRecord's members beyond what DynamicallyAccessedMembers can express (type converter constructors, non-public setters in some flows). The library is not trim/NativeAOT safe.")]
     public CsvExtractor
@@ -448,7 +459,7 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     public int SkipRecordCount
     {
         get => SkipItemCount;
-        [Obsolete("Configure SkipRecordCount through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")]
+        [Obsolete("Configure SkipItemCount through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")]
         set => SkipItemCount = value;
     }
 
@@ -461,7 +472,7 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     public int MaxRecordCount
     {
         get => MaximumItemCount;
-        [Obsolete("Configure MaxRecordCount through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")]
+        [Obsolete("Configure MaximumItemCount through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")]
         set => MaximumItemCount = value;
     }
 
@@ -573,11 +584,11 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     {
         CsvLogMessages.StartingOperation(_logger, OperationName, null);
 
+        ResetRunCounters();
+
         var configuration = BuildConfiguration();
 
-#pragma warning disable CA2007, MA0004
         using var csvReader = new CsvReader(_reader, configuration, LeaveOpen);
-#pragma warning restore CA2007, MA0004
 
         RegisterRecordMap(csvReader.Context);
 
@@ -586,8 +597,7 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
         // Manual ReadAsync / GetRecord loop instead of GetRecordsAsync so we can check
         // MaximumItemCount BEFORE materializing the next row. With GetRecordsAsync the
         // (N+1)th row would be parsed and type-converted (firing BadDataFound and
-        // ReadingExceptionOccurred for it) before the limit check could stop us, and
-        // MaximumItemCount = 0 would still consume one record.
+        // ReadingExceptionOccurred for it) before the limit check could stop us.
         while (true)
         {
             token.ThrowIfCancellationRequested();
@@ -675,7 +685,7 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
             if (!TryValidate(record, out var invalid))
             {
                 _ = Interlocked.Increment(ref _currentInvalidItemCount);
-                InvalidRecordHandler?.Invoke(invalid!);
+                InvalidRecordHandler?.Invoke(invalid);
 
                 if (OnValidationFailure == CsvValidationFailureAction.Skip)
                 {
@@ -684,7 +694,7 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
 
                 if (OnValidationFailure == CsvValidationFailureAction.Stop)
                 {
-                    throw new CsvValidationException(invalid!.LineNumber, invalid.Failures);
+                    throw new CsvValidationException(invalid.LineNumber, invalid.Failures);
                 }
 
                 // Continue: fall through and yield the invalid record anyway.
@@ -703,7 +713,10 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
 
     // Routes a failed row through the base ErrorPolicy and returns its decision. On Skip,
     // HandleItemError has already incremented CurrentErrorItemCount; the caller re-throws
-    // on Abort so the stack is preserved.
+    // on Abort so the stack is preserved. The ItemErrorContext ordinal is the parser's physical
+    // line number (RawRow), not a record ordinal: a CSV row can span several lines, and the line is
+    // what a caller needs to find the row in the source. CsvExtractorProgress.CurrentLineNumber and
+    // CsvBadDataInfo use the same numbering.
     private ItemErrorAction RouteItemError(CsvReader csvReader, Exception exception)
     {
         var rawRow = csvReader.Parser.RawRecord;
@@ -825,6 +838,19 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
 
 
 
+    /// <summary>
+    /// Zeroes the CSV-specific per-run counters so a reused instance starts every run from zero,
+    /// matching the base class counters, instead of accumulating across runs.
+    /// </summary>
+    private void ResetRunCounters()
+    {
+        Volatile.Write(ref _currentLineNumber, 0);
+        Volatile.Write(ref _currentBadDataCount, 0);
+        Volatile.Write(ref _currentInvalidItemCount, 0);
+    }
+
+
+
     /// <inheritdoc />
     protected override CsvExtractorProgress CreateProgressReport() =>
         new
@@ -842,7 +868,7 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     // Runs every configured validator against the bound record, aggregating failures. Returns true
     // when the record is valid (or no validators are configured); otherwise false with the failure
     // detail. The line number is the source row the record was read from.
-    private bool TryValidate(TRecord record, out CsvInvalidRecord<TRecord>? invalid)
+    private bool TryValidate(TRecord record, [NotNullWhen(false)] out CsvInvalidRecord<TRecord>? invalid)
     {
         invalid = null;
 
@@ -859,7 +885,13 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
             if (!result.IsValid)
             {
                 failures ??= new List<string>();
-                failures.AddRange(result.Failures);
+                // Failures is non-nullable, but a validator can still return `with { Failures = null! }`;
+                // skip it rather than throw from AddRange.
+                // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
+                if (result.Failures is not null)
+                {
+                    failures.AddRange(result.Failures);
+                }
             }
         }
 
