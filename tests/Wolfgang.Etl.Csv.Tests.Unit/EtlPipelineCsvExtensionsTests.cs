@@ -210,10 +210,11 @@ public sealed class EtlPipelineCsvExtensionsTests : IDisposable
 
         var bytes = File.ReadAllBytes(target);
 
-        Assert.True
+        // A UTF-8 BOM proves the loader used the configured encoding to open the file.
+        Assert.Equal
         (
-            bytes.Length >= 3 && bytes[0] == 0xEF && bytes[1] == 0xBB && bytes[2] == 0xBF,
-            "Expected a UTF-8 BOM, proving the loader used the configured encoding to open the file."
+            new byte[] { 0xEF, 0xBB, 0xBF },
+            bytes.Take(3)
         );
     }
 
@@ -581,7 +582,7 @@ public sealed class EtlPipelineCsvExtensionsTests : IDisposable
         var badData = new SyncProgress<CsvBadDataInfo>();
         var readingExceptions = new SyncProgress<CsvReadingExceptionInfo>();
 
-        await Assert.ThrowsAnyAsync<Exception>
+        await Assert.ThrowsAsync<CsvHelper.TypeConversion.TypeConverterException>
         (
             async () => await EtlPipeline
                 .Create()
@@ -592,8 +593,8 @@ public sealed class EtlPipelineCsvExtensionsTests : IDisposable
                 .RunAsync()
         );
 
-        Assert.True(badData.CallCount > 0);
-        Assert.True(readingExceptions.CallCount > 0);
+        Assert.Equal(1, badData.CallCount);
+        Assert.Equal(1, readingExceptions.CallCount);
     }
 
 
