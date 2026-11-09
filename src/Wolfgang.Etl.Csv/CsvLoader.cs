@@ -462,6 +462,8 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
 
         CsvLogMessages.StartingOperation(_logger, OperationName, null);
 
+        ResetRunCounters();
+
         // The `await using var` form doesn't compose with ConfigureAwait(false) —
         // there's no way to ConfigureAwait the implicit DisposeAsync that runs at
         // scope exit. Split into construction + explicit ConfiguredAsyncDisposable
@@ -767,6 +769,19 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
             // Surface the CsvHelper exception, not the reflection wrapper, preserving its stack.
             ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
         }
+    }
+
+
+
+    /// <summary>
+    /// Zeroes the CSV-specific per-run counters so a reused instance starts every run from zero,
+    /// matching the base class counters, instead of accumulating across runs.
+    /// </summary>
+    private void ResetRunCounters()
+    {
+        Volatile.Write(ref _currentLineNumber, 0);
+        Volatile.Write(ref _currentInvalidItemCount, 0);
+        Volatile.Write(ref _currentRecordNumber, 0);
     }
 
 
