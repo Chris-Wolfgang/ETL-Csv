@@ -110,7 +110,7 @@ public class CsvLoaderTests
 
 
     [Fact]
-    public async Task Constructor_when_logger_is_null_loads_every_record_without_logging()
+    public async Task Constructor_when_logger_is_null_loads_every_record()
     {
         // logger is now an optional trailing parameter; null means "no logging"
         // (NullLogger.Instance) rather than an argument error.
@@ -135,7 +135,7 @@ public class CsvLoaderTests
 
 
     [Fact]
-    public async Task Constructor_when_logger_is_omitted_loads_every_record_without_logging()
+    public async Task Constructor_when_logger_is_omitted_loads_every_record()
     {
         var stream = new MemoryStream();
         var writer = new StreamWriter(stream, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false), 1024, leaveOpen: true);
@@ -415,7 +415,7 @@ public class CsvLoaderTests
         );
         var items = new[] { new ExplodingRecord { Name = "Alice" } };
 
-        await Assert.ThrowsAnyAsync<Exception>(async () => await sut.LoadAsync(items.ToAsyncEnumerable()));
+        await Assert.ThrowsAsync<CsvHelper.WriterException>(async () => await sut.LoadAsync(items.ToAsyncEnumerable()));
 
         // Under a consulted Skip policy HandleItemError would have counted the row here.
         Assert.Equal(0, sut.CurrentErrorItemCount);

@@ -86,6 +86,8 @@ public sealed class CsvDiscriminatorBuilder<TBase>
 
 
     /// <summary>Sets how an unmapped discriminator value / record type is handled. Defaults to <see cref="CsvDiscriminatorAction.Throw"/>.</summary>
+    /// <param name="action">The action to take for an unmapped value or type.</param>
+    /// <returns>This builder, for chaining.</returns>
     public CsvDiscriminatorBuilder<TBase> OnUnknown(CsvDiscriminatorAction action)
     {
         _onUnknown = action;
@@ -94,6 +96,8 @@ public sealed class CsvDiscriminatorBuilder<TBase>
 
 
     /// <summary>Sets the comparer used to match discriminator values. Defaults to <see cref="StringComparer.OrdinalIgnoreCase"/>.</summary>
+    /// <param name="comparer">The comparer for discriminator values.</param>
+    /// <returns>This builder, for chaining.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="comparer"/> is null.</exception>
     public CsvDiscriminatorBuilder<TBase> WithComparer(StringComparer comparer)
     {
@@ -103,6 +107,7 @@ public sealed class CsvDiscriminatorBuilder<TBase>
 
 
     /// <summary>Builds the immutable <see cref="CsvDiscriminator{TBase}"/>.</summary>
+    /// <returns>The configured discriminator.</returns>
     /// <exception cref="InvalidOperationException">
     /// The same discriminator value, or the same concrete type, was mapped more than once.
     /// </exception>

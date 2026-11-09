@@ -16,7 +16,8 @@ public enum CsvDiscriminatorAction
 
     /// <summary>
     /// Read the row into (or write the record as) the base type <c>TBase</c> using its default
-    /// (attribute- or <c>ColumnMaps</c>-based) mapping instead of a concrete-type mapping.
+    /// (<c>Schema</c>-, <c>ColumnMaps</c>- or attribute-based, in that order) mapping instead of a
+    /// concrete-type mapping.
     /// </summary>
     YieldAsBase,
 }

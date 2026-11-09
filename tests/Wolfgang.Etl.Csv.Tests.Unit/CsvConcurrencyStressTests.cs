@@ -84,7 +84,7 @@ public class CsvConcurrencyStressTests
                 }
             );
 
-            await loader.LoadAsync(ToAsync(records)).ConfigureAwait(false);
+            await loader.LoadAsync(records.ToAsyncEnumerable()).ConfigureAwait(false);
             await writer.FlushAsync().ConfigureAwait(false);
 
             return Utf8NoBom.GetString(stream.ToArray());
@@ -140,15 +140,4 @@ public class CsvConcurrencyStressTests
 
     private static StreamReader ReaderOver(string content) =>
         new(new MemoryStream(Utf8NoBom.GetBytes(content)), Utf8NoBom);
-
-
-    private static async IAsyncEnumerable<PersonRecord> ToAsync(IEnumerable<PersonRecord> items)
-    {
-        foreach (var item in items)
-        {
-            yield return item;
-        }
-
-        await Task.CompletedTask;
-    }
 }
