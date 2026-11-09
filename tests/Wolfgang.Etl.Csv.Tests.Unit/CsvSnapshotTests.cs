@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VerifyXunit;
@@ -53,7 +54,7 @@ public class CsvSnapshotTests
 
 
     [Fact]
-    public async Task Pipe_delimiter_and_no_header()
+    public async Task Pipe_delimiter_and_no_header_writes_pipe_separated_rows_without_a_header()
     {
         var csv = await LoadToStringAsync
         (
@@ -107,21 +108,10 @@ public class CsvSnapshotTests
         );
         configure?.Invoke(loader);
 
-        await loader.LoadAsync(ToAsync(records));
+        await loader.LoadAsync(records.ToAsyncEnumerable());
         await writer.FlushAsync();
 
         return Utf8NoBom.GetString(stream.ToArray());
-    }
-
-
-    private static async IAsyncEnumerable<PersonRecord> ToAsync(IEnumerable<PersonRecord> items)
-    {
-        foreach (var item in items)
-        {
-            yield return item;
-        }
-
-        await Task.CompletedTask;
     }
 }
 

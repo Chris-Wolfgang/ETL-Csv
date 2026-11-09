@@ -45,6 +45,9 @@ param(
     [string]$MaintenanceProjectUrl
 )
 
+Set-StrictMode -Version Latest
+$ErrorActionPreference = 'Stop'
+
 # Check gh CLI
 try {
     $null = gh --version

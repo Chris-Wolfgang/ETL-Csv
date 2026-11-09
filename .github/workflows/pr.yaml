@@ -788,7 +788,7 @@ jobs:
           echo ""
 
           failed_projects=""
-          threshold=${CODECOV_MINIMUM:-90}
+          threshold=${CODECOV_MINIMUM:-95}
           test_threshold=${CODECOV_TEST_MINIMUM:-100}
           matched_count=0
 
@@ -1673,7 +1673,7 @@ jobs:
           cat CoverageReport/Summary.txt
           echo ""
 
-          THRESHOLD=${CODECOV_MINIMUM:-90}
+          THRESHOLD=${CODECOV_MINIMUM:-95}
           TEST_THRESHOLD=${CODECOV_TEST_MINIMUM:-100}
           FAILED=0
           MATCHED=0
