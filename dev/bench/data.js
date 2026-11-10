@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1794270466849,
+  "lastUpdate": 1794319980660,
   "repoUrl": "https://github.com/Chris-Wolfgang/ETL-Csv",
   "entries": {
     "BenchmarkDotNet": [
@@ -12058,6 +12058,186 @@ window.BENCHMARK_DATA = {
             "value": 218804753.55555555,
             "unit": "ns",
             "range": "± 927830.8387090735"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "e9870fd4d32b5bbe73f81bcd6fe43906d35aead6",
+          "message": "docs: LeaveOpen applies when the run completes, not on stage disposal (#638)\n\n* test: assert reader liveness directly instead of through a closure (AccessToDisposedClosure)\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>\n\n* test: map DerivedRecord.Id in the inherited-property test (UnusedMember.Local)\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>\n\n* style: mark CsvSchema.cs namespace as intentionally flat (CheckNamespace)\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>\n\n* fix: reset CSV per-run counters at the start of every extract/load run\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>\n\n* fix: CsvExtractorBuilder disposes its owned reader when materialization throws\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>\n\n* fix: CsvLoaderBuilder validates before truncating and disposes its writer on failure\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>\n\n* fix: format CsvValidator threshold messages with the invariant culture\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>\n\n* chore: fix ETL-Csv.slnx solution items (aot-smoke.yaml, missing tracked files)\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>\n\n* chore(scripts): StrictMode and ErrorActionPreference=Stop in the three gh-mutating setup scripts\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>\n\n* test: assert Quote, Escape, Comment and NewLine change parsing/output\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>\n\n* test: extractor keeps a quoted embedded line break and reports the raw line number\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>\n\n* test: drop the unused DerivedRecord.Id instead of mapping it\n\nMapping Id made InspectCode report its never-used setter instead\n(UnusedAutoPropertyAccessor.Local, alert 1104 on the PR head). The test only\nneeds a derived type with an inherited property.\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>\n\n* docs: LeaveOpen applies when the run completes, not on stage disposal\n\nCloses #575\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>\n\n* ci(differential): run the macOS leg on macos-latest\n\nGitHub no longer offers the macos-14 image: the scheduled run on\n2026-11-09 cancelled the macos-arm64 job with \"The configuration\n'macos-14-arm64-us-default' is not supported\", which also skipped the\nmanifest diff. macos-latest is Apple Silicon, as macos-14 was; AuditTrail\nmade the same change on 2026-11-07.\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n\n* test: drive the replayed-mutation test with SkipRecordCount(-1)\n\nSince #656 the builder validates InitialRecordIndex eagerly, so\nInitialRecordIndex(0) throws at the call and never reaches the replay\nthis test is about. A negative SkipRecordCount is still only rejected by\nthe extractor's own setter when the mutation is replayed.\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n\n* ci: re-trigger checks after the stack was created\n\nThe pull_request and pull_request_target runs fired when the PRs were added to the\nGitHub stack (17:55Z) never started Stage 3 or the Protected Files Guard, and\nneither run can be retried. This commit changes no files.\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n\n* fix: build validator messages with string.Format(InvariantCulture)\n\nInspectCode (S6618) flags FormattableString.Invariant and suggests string.Create,\nbut string.Create(IFormatProvider, ...) exists only on .NET 6+ and this library\nalso targets net462/netstandard2.0. string.Format(CultureInfo.InvariantCulture, ...)\nis available on every TFM and keeps the messages culture-invariant.\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n\n* test: restore using System.Linq in CsvSchemaBuilderTests (main does not compile)\n\nThe native-stack squash of #616 (75b3308) dropped the using, although #616's own\nhead still had it; LoadToStringAsync calls records.ToAsyncEnumerable(), so the test\nproject fails with CS1061 on main (pr.yaml push run at 544a0d9: Stage 1 and\nInspectCode both fail to build).\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n\n* docs: obsolete SkipRecordCount/MaxRecordCount setters name the non-obsolete replacement (#639)\n\nCloses #576\n\nCo-authored-by: Claude Fable 5.1 <noreply@anthropic.com>\n\n---------\n\nCo-authored-by: Claude Fable 5.1 <noreply@anthropic.com>",
+          "timestamp": "2026-11-10T09:09:20-05:00",
+          "tree_id": "d49aef030b7621b30c6f7b9d82ec94ca81fc5ec6",
+          "url": "https://github.com/Chris-Wolfgang/ETL-Csv/commit/e9870fd4d32b5bbe73f81bcd6fe43906d35aead6"
+        },
+        "date": 1794319978636,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.DateTimeBenchmarks.Extract_Memory(RecordCount: 10000)",
+            "value": 3985964.8671875,
+            "unit": "ns",
+            "range": "± 123035.06343588176"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.DateTimeBenchmarks.Load_Memory(RecordCount: 10000)",
+            "value": 3985422.0494791665,
+            "unit": "ns",
+            "range": "± 91896.63521397844"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.ExtractorBenchmarks.Memory_TextReader(RecordCount: 1000)",
+            "value": 967207.1263020834,
+            "unit": "ns",
+            "range": "± 97612.29154989128"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.ExtractorBenchmarks.File_TextReader_1KB(RecordCount: 1000)",
+            "value": 1048456.1953125,
+            "unit": "ns",
+            "range": "± 36761.95262673963"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.ExtractorBenchmarks.File_TextReader_64KB(RecordCount: 1000)",
+            "value": 1069844.7473958333,
+            "unit": "ns",
+            "range": "± 198807.78247796133"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.ExtractorBenchmarks.Memory_TextReader(RecordCount: 10000)",
+            "value": 2843601.2473958335,
+            "unit": "ns",
+            "range": "± 5927.176872632004"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.ExtractorBenchmarks.File_TextReader_1KB(RecordCount: 10000)",
+            "value": 4393490.625,
+            "unit": "ns",
+            "range": "± 59610.95233899678"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.ExtractorBenchmarks.File_TextReader_64KB(RecordCount: 10000)",
+            "value": 3258423.203125,
+            "unit": "ns",
+            "range": "± 101863.66557756242"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.ExtractorBenchmarks.Memory_TextReader(RecordCount: 100000)",
+            "value": 26172278.104166668,
+            "unit": "ns",
+            "range": "± 128502.95934716384"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.ExtractorBenchmarks.File_TextReader_1KB(RecordCount: 100000)",
+            "value": 44639700.11111111,
+            "unit": "ns",
+            "range": "± 1062689.4369039098"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.ExtractorBenchmarks.File_TextReader_64KB(RecordCount: 100000)",
+            "value": 30564410.1875,
+            "unit": "ns",
+            "range": "± 823182.4752191205"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.LoaderBenchmarks.Memory_TextWriter(RecordCount: 1000)",
+            "value": 1248789.4114583333,
+            "unit": "ns",
+            "range": "± 97533.55110593617"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.LoaderBenchmarks.File_TextWriter_1KB(RecordCount: 1000)",
+            "value": 2791127.5885416665,
+            "unit": "ns",
+            "range": "± 43670.584432162424"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.LoaderBenchmarks.File_TextWriter_64KB(RecordCount: 1000)",
+            "value": 1952789.30078125,
+            "unit": "ns",
+            "range": "± 209621.20860957855"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.LoaderBenchmarks.Memory_TextWriter(RecordCount: 10000)",
+            "value": 3684147.6979166665,
+            "unit": "ns",
+            "range": "± 81589.9911045019"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.LoaderBenchmarks.File_TextWriter_1KB(RecordCount: 10000)",
+            "value": 6801337.989583333,
+            "unit": "ns",
+            "range": "± 699686.0332307526"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.LoaderBenchmarks.File_TextWriter_64KB(RecordCount: 10000)",
+            "value": 4407421.3125,
+            "unit": "ns",
+            "range": "± 63670.37003377852"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.LoaderBenchmarks.Memory_TextWriter(RecordCount: 100000)",
+            "value": 24728680.59375,
+            "unit": "ns",
+            "range": "± 158016.055620152"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.LoaderBenchmarks.File_TextWriter_1KB(RecordCount: 100000)",
+            "value": 53340762.11111111,
+            "unit": "ns",
+            "range": "± 2198355.610977172"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.LoaderBenchmarks.File_TextWriter_64KB(RecordCount: 100000)",
+            "value": 30987539.625,
+            "unit": "ns",
+            "range": "± 929352.1164078926"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.MemoryDeltaBenchmarks.Extract_MemoryDelta(RecordCount: 0)",
+            "value": 4401.396100362142,
+            "unit": "ns",
+            "range": "± 226.22728990174576"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.MemoryDeltaBenchmarks.Extract_MemoryDelta(RecordCount: 1)",
+            "value": 469861.2135416667,
+            "unit": "ns",
+            "range": "± 20945.679626143337"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.MemoryDeltaBenchmarks.Extract_MemoryDelta(RecordCount: 1000)",
+            "value": 703936.4348958334,
+            "unit": "ns",
+            "range": "± 5239.232233787359"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.MemoryDeltaBenchmarks.Extract_MemoryDelta(RecordCount: 10000)",
+            "value": 2734408.26953125,
+            "unit": "ns",
+            "range": "± 50180.006078373226"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.MemoryDeltaBenchmarks.Extract_MemoryDelta(RecordCount: 100000)",
+            "value": 23968333.291666668,
+            "unit": "ns",
+            "range": "± 882793.2064651505"
+          },
+          {
+            "name": "Wolfgang.Etl.Csv.Benchmarks.MemoryDeltaBenchmarks.Extract_MemoryDelta(RecordCount: 1000000)",
+            "value": 220645838.44444445,
+            "unit": "ns",
+            "range": "± 1908486.0077194902"
           }
         ]
       }
