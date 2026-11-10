@@ -459,7 +459,7 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     public int SkipRecordCount
     {
         get => SkipItemCount;
-        [Obsolete("Configure SkipRecordCount through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")]
+        [Obsolete("Configure SkipItemCount through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")]
         set => SkipItemCount = value;
     }
 
@@ -472,7 +472,7 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     public int MaxRecordCount
     {
         get => MaximumItemCount;
-        [Obsolete("Configure MaxRecordCount through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")]
+        [Obsolete("Configure MaximumItemCount through CsvExtractorOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")]
         set => MaximumItemCount = value;
     }
 
