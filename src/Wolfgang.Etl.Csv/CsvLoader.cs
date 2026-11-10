@@ -405,7 +405,7 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     public int SkipRecordCount
     {
         get => SkipItemCount;
-        [Obsolete("Configure SkipRecordCount through CsvLoaderOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")]
+        [Obsolete("Configure SkipItemCount through CsvLoaderOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")]
         set => SkipItemCount = value;
     }
 
@@ -418,7 +418,7 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     public int MaxRecordCount
     {
         get => MaximumItemCount;
-        [Obsolete("Configure MaxRecordCount through CsvLoaderOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")]
+        [Obsolete("Configure MaximumItemCount through CsvLoaderOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")]
         set => MaximumItemCount = value;
     }
 
