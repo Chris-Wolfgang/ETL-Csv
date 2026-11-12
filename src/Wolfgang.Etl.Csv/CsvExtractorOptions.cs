@@ -17,12 +17,12 @@ namespace Wolfgang.Etl.Csv;
 /// <see cref="System.IO.StreamReader"/> supplied to the constructor, whose
 /// <see cref="System.IO.StreamReader.CurrentEncoding"/> is authoritative; the former
 /// <see cref="CsvExtractor{TRecord}.Encoding"/> property never influenced it and is
-/// <see cref="ObsoleteAttribute">obsolete</see>. To read a non-default encoding, construct the
+/// <see cref="T:System.ObsoleteAttribute">obsolete</see>. To read a non-default encoding, construct the
 /// <see cref="System.IO.StreamReader"/> with the encoding you want.
 /// </para>
 /// <para>
 /// <c>BadDataFound</c> and <c>ReadingExceptionOccurred</c> are intentionally absent: both are
-/// already <see cref="ObsoleteAttribute">obsolete</see> on <see cref="CsvExtractor{TRecord}"/>,
+/// already <see cref="T:System.ObsoleteAttribute">obsolete</see> on <see cref="CsvExtractor{TRecord}"/>,
 /// superseded by the unified error policy. Carrying them onto a new options record would
 /// reintroduce deprecated surface.
 /// </para>
