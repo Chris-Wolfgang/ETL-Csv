@@ -36,6 +36,7 @@ public sealed class CsvSourceNitsTests
         );
 
         Assert.Equal("path", ex.ParamName);
+        Assert.StartsWith("Path must not be empty or whitespace.", ex.Message, StringComparison.Ordinal);
     }
 
 
@@ -53,6 +54,7 @@ public sealed class CsvSourceNitsTests
         var ex = Assert.Throws<ArgumentException>(() => pipeline.CsvLoader(path));
 
         Assert.Equal("path", ex.ParamName);
+        Assert.StartsWith("Path must not be empty or whitespace.", ex.Message, StringComparison.Ordinal);
     }
 
 
@@ -68,6 +70,7 @@ public sealed class CsvSourceNitsTests
         var ex = Assert.Throws<ArgumentOutOfRangeException>(() => builder.InitialRecordIndex(0));
 
         Assert.Equal("oneBasedIndex", ex.ParamName);
+        Assert.StartsWith("InitialRecordIndex must be 1 or greater.", ex.Message, StringComparison.Ordinal);
     }
 
 
@@ -84,6 +87,7 @@ public sealed class CsvSourceNitsTests
         var ex = Assert.Throws<ArgumentOutOfRangeException>(() => builder.InitialRecordIndex(0));
 
         Assert.Equal("oneBasedIndex", ex.ParamName);
+        Assert.StartsWith("InitialRecordIndex must be 1 or greater.", ex.Message, StringComparison.Ordinal);
     }
 
 
