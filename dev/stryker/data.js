@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1794142007687,
+  "lastUpdate": 1794749263905,
   "repoUrl": "https://github.com/Chris-Wolfgang/ETL-Csv",
   "entries": {
     "Mutation score": [
@@ -161,6 +161,33 @@ window.BENCHMARK_DATA = {
           {
             "name": "Mutation score",
             "value": 91.98,
+            "unit": "%"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang",
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com"
+          },
+          "committer": {
+            "name": "GitHub",
+            "username": "web-flow",
+            "email": "noreply@github.com"
+          },
+          "id": "9e40f51039e9abef00f7325358d72ea936e60ed1",
+          "message": "test: assert the argument messages to kill three String-mutation survivors (#695)\n\nMutation tracker #404 lists String mutations at\nEtlPipelineCsvExtensions.cs:54 and :154 and CsvExtractorBuilder.cs:106.\nThe existing tests checked only ParamName; they now also assert the\nmessage prefix.\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-14T17:59:58Z",
+          "url": "https://github.com/Chris-Wolfgang/ETL-Csv/commit/9e40f51039e9abef00f7325358d72ea936e60ed1"
+        },
+        "date": 1794749259353,
+        "tool": "customBiggerIsBetter",
+        "benches": [
+          {
+            "name": "Mutation score (tests/Wolfgang.Etl.Csv.Tests.Unit)",
+            "value": 91.37,
             "unit": "%"
           }
         ]
