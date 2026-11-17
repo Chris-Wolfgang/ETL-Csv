@@ -31,6 +31,57 @@ public class CsvLoaderWorkerTests
 
 
     [Fact]
+    public async Task LoadAsync_when_MaximumItemCount_is_reached_does_not_pull_another_item_from_the_source()
+    {
+        using var stream = new MemoryStream();
+        using var writer = new StreamWriter(stream, Utf8NoBom, 1024, leaveOpen: true);
+        var sut = new CsvLoader<PersonRecord>
+        (
+            writer,
+            new CsvLoaderOptions<PersonRecord> { LeaveOpen = true, MaximumItemCount = 2 }
+        );
+        var pulled = 0;
+
+        async IAsyncEnumerable<PersonRecord> Source()
+        {
+            foreach (var person in People)
+            {
+                pulled++;
+                yield return person;
+            }
+
+            await Task.CompletedTask;
+        }
+
+        await sut.LoadAsync(Source());
+
+        Assert.Equal(2, sut.CurrentItemCount);
+        Assert.Equal(2, pulled);
+    }
+
+
+
+    [Fact]
+    public async Task LoadAsync_when_token_is_already_cancelled_writes_nothing()
+    {
+        using var stream = new MemoryStream();
+        using var writer = new StreamWriter(stream, Utf8NoBom, 1024, leaveOpen: true);
+        var sut = new CsvLoader<PersonRecord>(writer, new CsvLoaderOptions<PersonRecord> { LeaveOpen = true });
+        using var cts = new System.Threading.CancellationTokenSource();
+        cts.Cancel();
+
+        await Assert.ThrowsAnyAsync<OperationCanceledException>
+        (
+            () => sut.LoadAsync(People.ToAsyncEnumerable(), cts.Token)
+        );
+
+        await writer.FlushAsync();
+        Assert.Equal(0, stream.Length);
+    }
+
+
+
+    [Fact]
     public async Task LoadAsync_logs_start_skip_load_limit_and_completion()
     {
         using var stream = new MemoryStream();
