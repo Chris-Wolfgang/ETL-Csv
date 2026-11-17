@@ -142,36 +142,26 @@ internal sealed class CsvLoaderBuilder<[DynamicallyAccessedMembers(DynamicallyAc
     )
     {
         // Mirrors CsvExtractorBuilder's materialization guard: configuration recorded after a run
-        // would otherwise silently apply to the next run (and, for a path sink, overwrite the file).
+        // would otherwise silently apply to the next run. The run itself is single-use too: the
+        // loader and (for a path sink) its writer are consumed by the first run, and a second run
+        // against the same destination would replace the first run's output.
+        if (_hasRun)
+        {
+            throw new InvalidOperationException
+            (
+                "The loader has already been run; RunAsync can only be called once per builder."
+            );
+        }
+
         _hasRun = true;
 
-        CsvLoader<T> loader;
         StreamWriter? owned = null;
+        string? temporaryPath = null;
         IEtlPipelineSink sink;
 
         try
         {
-            if (_existing is not null)
-            {
-                // The instance already exists, so options cannot travel through its constructor;
-                // the recorded fluent mutations are replayed onto it below (see Set).
-                loader = _existing;
-            }
-            else if (_writer is not null)
-            {
-                loader = new CsvLoader<T>(_writer, _options);
-            }
-            else
-            {
-                // Validate before opening: StreamWriter(append: false) truncates the target file, so
-                // options the constructor would reject must not cost the caller the file's contents.
-                CsvSchema.ValidateOptions(_options.Schema, _options.ColumnMaps, typeof(T), "options");
-
-                // Path-based sink: the builder owns the writer it opens and disposes it after the run
-                // (success or failure) via DisposingOwned, flushing the file to disk.
-                owned = new StreamWriter(_path!, append: false, _encoding);
-                loader = new CsvLoader<T>(owned, _options);
-            }
+            var loader = CreateLoader(ref owned, ref temporaryPath);
 
             foreach (var mutation in _mutations)
             {
@@ -193,10 +183,113 @@ internal sealed class CsvLoaderBuilder<[DynamicallyAccessedMembers(DynamicallyAc
 #pragma warning disable CA1849
             owned?.Dispose();
 #pragma warning restore CA1849
+            DeleteQuietly(temporaryPath);
             throw;
         }
 
-        return sink.RunAsync(progress, token);
+        return temporaryPath is null
+            ? sink.RunAsync(progress, token)
+            : RunAndCommitAsync(sink, _path!, temporaryPath, progress, token);
+    }
+
+
+    [UnconditionalSuppressMessage
+    (
+        "Trimming",
+        "IL2026",
+        Justification = "CsvLoader construction is unreferenced-code; the public terminator extension methods on IEtlPipeline that create this builder carry [RequiresUnreferencedCode]."
+    )]
+    private CsvLoader<T> CreateLoader(ref StreamWriter? owned, ref string? temporaryPath)
+    {
+        if (_existing is not null)
+        {
+            // The instance already exists, so options cannot travel through its constructor;
+            // the recorded fluent mutations are replayed onto it by the caller (see Set).
+            return _existing;
+        }
+
+        if (_writer is not null)
+        {
+            return new CsvLoader<T>(_writer, _options);
+        }
+
+        // Validate before opening: StreamWriter(append: false) truncates its target, so options the
+        // constructor would reject must not cost the caller a file.
+        CsvSchema.ValidateOptions(_options.Schema, _options.ColumnMaps, typeof(T), "options");
+
+        // Path-based sink: the builder owns the writer it opens and disposes it after the run
+        // (success or failure) via DisposingOwned, flushing the file to disk. The output goes to a
+        // sibling temporary file that replaces the destination only when the run succeeds, so a run
+        // that fails (for example because the source cannot be opened) or is cancelled leaves an
+        // existing destination untouched.
+        temporaryPath = TemporaryPathFor(_path!);
+        owned = new StreamWriter(temporaryPath, append: false, _encoding);
+        return new CsvLoader<T>(owned, _options);
+    }
+
+
+    private static string TemporaryPathFor(string path)
+    {
+        var full = Path.GetFullPath(path);
+        return Path.Combine
+        (
+            Path.GetDirectoryName(full)!,
+            Path.GetFileName(full) + "." + Guid.NewGuid().ToString("N") + ".tmp"
+        );
+    }
+
+
+    private static async Task RunAndCommitAsync
+    (
+        IEtlPipelineSink sink,
+        string path,
+        string temporaryPath,
+        IProgress<EtlPipelineProgress>? progress,
+        CancellationToken token
+    )
+    {
+        try
+        {
+            // DisposingOwned has closed the temporary file by the time this completes.
+            await sink.RunAsync(progress, token).ConfigureAwait(false);
+
+            if (File.Exists(path))
+            {
+                File.Replace(temporaryPath, path, destinationBackupFileName: null);
+            }
+            else
+            {
+                File.Move(temporaryPath, path);
+            }
+        }
+        catch
+        {
+            DeleteQuietly(temporaryPath);
+            throw;
+        }
+    }
+
+
+    // Best-effort cleanup of the temporary file; the original failure is what the caller needs to see.
+    private static void DeleteQuietly(string? temporaryPath)
+    {
+        if (temporaryPath is null)
+        {
+            return;
+        }
+
+        try
+        {
+            File.Delete(temporaryPath);
+        }
+        catch (IOException)
+        {
+            // Left behind only if the file is still locked; nothing more can be done here.
+        }
+        catch (UnauthorizedAccessException)
+        {
+            // As above.
+        }
     }
 
 

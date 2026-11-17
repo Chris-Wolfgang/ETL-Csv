@@ -365,6 +365,48 @@ public class CsvCheckpointExtensionsTests
     }
 
 
+    [Fact]
+    public async Task WriteCheckpointAsync_when_count_is_negative_throws_and_writes_nothing()
+    {
+        var path = NewTempPath();
+        try
+        {
+            var ex = await Assert.ThrowsAsync<ArgumentOutOfRangeException>
+            (
+                async () => await CsvCheckpointExtensions.WriteCheckpointAsync(path, -5)
+            );
+
+            Assert.Equal("count", ex.ParamName);
+            Assert.False(File.Exists(path));
+            Assert.False(File.Exists(path + ".tmp"));
+        }
+        finally
+        {
+            Cleanup(path);
+        }
+    }
+
+
+    [Fact]
+    public async Task ReadCheckpointAsync_when_the_file_holds_a_negative_count_throws_FormatException()
+    {
+        var path = NewTempPath();
+        try
+        {
+            await WriteRawAsync(path, "-5");
+
+            await Assert.ThrowsAsync<FormatException>
+            (
+                async () => await CsvCheckpointExtensions.ReadCheckpointAsync(path)
+            );
+        }
+        finally
+        {
+            Cleanup(path);
+        }
+    }
+
+
     private static string NewTempPath() =>
         Path.Combine(Path.GetTempPath(), "csvchk-" + Guid.NewGuid().ToString("N") + ".txt");
 
