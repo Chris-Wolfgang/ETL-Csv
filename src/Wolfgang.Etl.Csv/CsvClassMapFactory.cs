@@ -113,8 +113,8 @@ internal static class CsvClassMapFactory
         // the parser's default behaviour rather than registering a map.
         var hasAnyAttributes = properties.Any
         (
-            p => p.IsDefined(typeof(CsvColumnAttribute), inherit: true)
-              || p.IsDefined(typeof(CsvIgnoreAttribute), inherit: true)
+            p => Attribute.IsDefined(p, typeof(CsvColumnAttribute), inherit: true)
+              || Attribute.IsDefined(p, typeof(CsvIgnoreAttribute), inherit: true)
         );
 
         if (!hasAnyAttributes)
@@ -125,13 +125,15 @@ internal static class CsvClassMapFactory
         var map = new DefaultClassMap<T>();
         map.AutoMap(System.Globalization.CultureInfo.CurrentCulture);
 
-        // Index AutoMap's MemberMaps by MemberInfo once so ApplyAttributes can do
+        // Index AutoMap's MemberMaps by (declaring type, name) once so ApplyAttributes can do
         // O(1) lookups instead of an O(N) FirstOrDefault per property — keeping
         // overall map construction O(N) instead of O(N^2) for wide records.
         // MemberMap.Data.Member is typed as MemberInfo? but is always set for entries
         // produced by AutoMap (it's the property/field the map binds to). The
-        // null-forgiving operator is safe here.
-        var memberMapsByMember = map.MemberMaps.ToDictionary(mm => mm.Data.Member!);
+        // null-forgiving operator is safe here. The key is (DeclaringType, Name) rather than the
+        // MemberInfo itself: the PropertyInfo from Type.GetProperties and the one CsvHelper holds
+        // differ in ReflectedType for inherited properties, so they are not Equal.
+        var memberMapsByMember = map.MemberMaps.ToDictionary(mm => MemberKey(mm.Data.Member!));
 
         foreach (var prop in properties)
         {
@@ -313,16 +315,23 @@ internal static class CsvClassMapFactory
 
 
 
+    private static (Type?, string) MemberKey(MemberInfo member) => (member.DeclaringType, member.Name);
+
+
+
     private static void ApplyAttributes
     (
         ClassMap map,
-        IReadOnlyDictionary<MemberInfo, MemberMap> memberMapsByMember,
+        IReadOnlyDictionary<(Type?, string), MemberMap> memberMapsByMember,
         PropertyInfo prop
     )
     {
-        if (prop.IsDefined(typeof(CsvIgnoreAttribute), inherit: true))
+        var key = MemberKey(prop);
+
+        // Attribute.IsDefined walks overridden properties; PropertyInfo.IsDefined ignores 'inherit'.
+        if (Attribute.IsDefined(prop, typeof(CsvIgnoreAttribute), inherit: true))
         {
-            if (memberMapsByMember.TryGetValue(prop, out var existing))
+            if (memberMapsByMember.TryGetValue(key, out var existing))
             {
                 existing.Ignore();
             }
@@ -335,7 +344,7 @@ internal static class CsvClassMapFactory
             return;
         }
 
-        var memberMap = memberMapsByMember.TryGetValue(prop, out var existingMap)
+        var memberMap = memberMapsByMember.TryGetValue(key, out var existingMap)
             ? existingMap
             : map.Map(prop.DeclaringType ?? prop.ReflectedType!, prop);
 
