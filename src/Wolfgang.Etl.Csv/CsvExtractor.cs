@@ -191,6 +191,9 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     /// every property at its default.
     /// </summary>
     /// <param name="options">The configuration to apply, or <c>null</c>.</param>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="options"/> holds an invalid combination or value (see the message for the option at fault).
+    /// </exception>
     internal void ApplyOptions(CsvExtractorOptions<TRecord>? options)
     {
         if (options is null)
@@ -199,6 +202,7 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
         }
 
         CsvSchema.ValidateOptions(options.Schema, options.ColumnMaps, typeof(TRecord), nameof(options));
+        ValidateOptionValues(options);
 
         _allowComments = options.AllowComments;
         _comment = options.Comment;
@@ -216,6 +220,28 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
         _onValidationFailure = options.OnValidationFailure;
         _invalidRecordHandler = options.InvalidRecordHandler;
         _initialRecordIndex = options.InitialRecordIndex;
+    }
+
+
+
+    // Rejects option values the parser would otherwise fail on mid-enumeration with an error that does
+    // not name the option (an empty Delimiter is an IndexOutOfRangeException; a name-based
+    // Discriminator without a header row raises a CsvHelper ReaderException that ErrorPolicy can swallow).
+    private static void ValidateOptionValues(CsvExtractorOptions<TRecord> options)
+    {
+        if (string.IsNullOrEmpty(options.Delimiter))
+        {
+            throw new ArgumentException("Delimiter must not be null or empty.", nameof(options));
+        }
+
+        if (options.Discriminator is { ColumnName: not null } && !options.HasHeaderRecord)
+        {
+            throw new ArgumentException
+            (
+                "A Discriminator that selects its column by ColumnName requires HasHeaderRecord = true; use ColumnIndex without a header row.",
+                nameof(options)
+            );
+        }
     }
 
 

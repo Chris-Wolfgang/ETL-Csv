@@ -198,6 +198,9 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     /// every property at its default.
     /// </summary>
     /// <param name="options">The configuration to apply, or <c>null</c>.</param>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="options"/> holds an invalid combination or value (see the message for the option at fault).
+    /// </exception>
     internal void ApplyOptions(CsvLoaderOptions<TRecord>? options)
     {
         if (options is null)
@@ -206,6 +209,16 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
         }
 
         CsvSchema.ValidateOptions(options.Schema, options.ColumnMaps, typeof(TRecord), nameof(options));
+
+        if (string.IsNullOrEmpty(options.Delimiter))
+        {
+            throw new ArgumentException("Delimiter must not be null or empty.", nameof(options));
+        }
+
+        if (string.IsNullOrEmpty(options.NewLine))
+        {
+            throw new ArgumentException("NewLine must not be null or empty.", nameof(options));
+        }
 
         _delimiter = options.Delimiter;
         _escape = options.Escape;
