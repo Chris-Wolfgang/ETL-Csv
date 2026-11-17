@@ -90,11 +90,12 @@ public class CsvRuntimeMapCacheTests
             new CsvExtractorOptions<Pair> { HasHeaderRecord = false, ColumnMaps = maps }
         );
 
+        var items = new List<Pair>();
         await foreach (var item in extractor.ExtractAsync())
         {
-            return item;
+            items.Add(item);
         }
 
-        throw new InvalidOperationException("no record");
+        return Assert.Single(items);
     }
 }
