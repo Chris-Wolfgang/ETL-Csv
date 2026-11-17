@@ -42,18 +42,13 @@ public class CsvLoaderWorkerTests
         );
         var pulled = 0;
 
-        async IAsyncEnumerable<PersonRecord> Source()
+        var source = People.ToAsyncEnumerable().Select(person =>
         {
-            foreach (var person in People)
-            {
-                pulled++;
-                yield return person;
-            }
+            pulled++;
+            return person;
+        });
 
-            await Task.CompletedTask;
-        }
-
-        await sut.LoadAsync(Source());
+        await sut.LoadAsync(source);
 
         Assert.Equal(2, sut.CurrentItemCount);
         Assert.Equal(2, pulled);
