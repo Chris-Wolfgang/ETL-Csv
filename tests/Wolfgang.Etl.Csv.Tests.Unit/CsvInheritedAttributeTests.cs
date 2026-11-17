@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
@@ -26,13 +27,13 @@ public class CsvInheritedAttributeTests
 
 
 
-    public class VirtualBase
+    public abstract class VirtualBase
     {
         [CsvIgnore]
-        public virtual string? Secret { get; set; }
+        public abstract string? Secret { get; set; }
 
         [CsvColumn(Name = "identifier")]
-        public virtual int Id { get; set; }
+        public abstract int Id { get; set; }
     }
 
 
@@ -104,20 +105,9 @@ public class CsvInheritedAttributeTests
         var writer = new StreamWriter(stream, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false), 1024, leaveOpen: true);
         var loader = new CsvLoader<T>(writer);
 
-        await loader.LoadAsync(ToAsync(item));
+        await loader.LoadAsync(new[] { item }.ToAsyncEnumerable());
         await writer.FlushAsync();
 
         return Encoding.UTF8.GetString(stream.ToArray());
-    }
-
-
-
-    private static async IAsyncEnumerable<T> ToAsync<T>(params T[] items)
-    {
-        foreach (var item in items)
-        {
-            yield return item;
-        }
-        await Task.CompletedTask;
     }
 }
