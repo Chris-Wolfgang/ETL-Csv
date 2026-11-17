@@ -125,7 +125,7 @@ internal static class CsvClassMapFactory
         var map = new DefaultClassMap<T>();
         map.AutoMap(System.Globalization.CultureInfo.CurrentCulture);
 
-        // Index AutoMap's MemberMaps by (declaring type, name) once so ApplyAttributes can do
+        // Index AutoMap's MemberMaps by declaring type + name once so ApplyAttributes can do
         // O(1) lookups instead of an O(N) FirstOrDefault per property — keeping
         // overall map construction O(N) instead of O(N^2) for wide records.
         // MemberMap.Data.Member is typed as MemberInfo? but is always set for entries
@@ -315,14 +315,15 @@ internal static class CsvClassMapFactory
 
 
 
-    private static (Type?, string) MemberKey(MemberInfo member) => (member.DeclaringType, member.Name);
+    // Stable across reflected types. A string rather than a tuple: net462 has no ValueTuple.
+    private static string MemberKey(MemberInfo member) => member.DeclaringType + "." + member.Name;
 
 
 
     private static void ApplyAttributes
     (
         ClassMap map,
-        IReadOnlyDictionary<(Type?, string), MemberMap> memberMapsByMember,
+        IReadOnlyDictionary<string, MemberMap> memberMapsByMember,
         PropertyInfo prop
     )
     {
