@@ -75,7 +75,7 @@ public class CsvExtractorPreambleTests
         }
 
         Assert.NotNull(info);
-        Assert.Equal(5, info!.LineNumber);
+        Assert.Equal(5, info.LineNumber);
     }
 
 
