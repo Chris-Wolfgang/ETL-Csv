@@ -45,7 +45,7 @@ public sealed class EtlPipelineCsvPathBuilderTests : IDisposable
         _ = EtlPipeline
             .Create()
             .CsvExtractor<PersonRecord>(source)
-            .Through<PersonRecord>(x => x);
+            .AsAsyncEnumerable();
 
         File.Delete(source);
         Assert.False(File.Exists(source));
@@ -65,7 +65,6 @@ public sealed class EtlPipelineCsvPathBuilderTests : IDisposable
             () => EtlPipeline
                 .Create()
                 .CsvExtractor<PersonRecord>(source)
-                .Through<PersonRecord>(x => x)
                 .CsvLoader(missingDirectory)
                 .RunAsync()
         );
