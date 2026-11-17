@@ -77,7 +77,7 @@ public sealed class CsvSchema
 
         foreach (var property in typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance))
         {
-            if (property.IsDefined(typeof(CsvIgnoreAttribute), inherit: true))
+            if (Attribute.IsDefined(property, typeof(CsvIgnoreAttribute), inherit: true))
             {
                 continue;
             }
