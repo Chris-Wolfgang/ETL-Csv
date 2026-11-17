@@ -25,7 +25,7 @@ Three overloads begin a pipeline and return `ICsvExtractorBuilder<T>`:
 
 | Overload | Ownership |
 | --- | --- |
-| `CsvExtractor<T>(string path)` | The factory **owns** the file stream and disposes it when the run ends (success or failure). |
+| `CsvExtractor<T>(string path)` | The factory **owns** the file stream: it is opened when the pipeline is enumerated and disposed when enumeration ends (success, failure or abandonment). Composing a pipeline that is never run holds no file handle. |
 | `CsvExtractor<T>(StreamReader reader)` | The **caller** owns the reader. |
 | `CsvExtractor<T>(CsvExtractor<T> extractor)` | The **caller** owns the extractor and its stream. |
 
@@ -35,7 +35,7 @@ Three overloads terminate a pipeline and return `ICsvLoaderBuilder<T>` (an `IEtl
 
 | Overload | Ownership |
 | --- | --- |
-| `CsvLoader<T>(string path)` | The terminator **owns** the file stream and disposes it after the run. |
+| `CsvLoader<T>(string path)` | The terminator **owns** the file stream and disposes it after the run. Output goes to a temporary file beside the destination that replaces it only when the run succeeds, so a failed or cancelled run leaves an existing file untouched. `RunAsync` can be called once per sink. |
 | `CsvLoader<T>(StreamWriter writer)` | The **caller** owns the writer. |
 | `CsvLoader<T>(CsvLoader<T> loader)` | The **caller** owns the loader and its stream. |
 

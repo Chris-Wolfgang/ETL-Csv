@@ -472,62 +472,83 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     {
         // LoaderBase null-checks `items` in all public LoadAsync overloads before
         // invoking this worker, so a null is unreachable here.
-
         CsvLogMessages.StartingOperation(_logger, OperationName, null);
 
         ResetRunCounters();
 
-        // The `await using var` form doesn't compose with ConfigureAwait(false) —
-        // there's no way to ConfigureAwait the implicit DisposeAsync that runs at
-        // scope exit. Split into construction + explicit ConfiguredAsyncDisposable
-        // so the disposal continuation never captures the caller's
-        // SynchronizationContext (real deadlock risk on net462/netstandard targets
-        // where sync-over-async consumers exist in the wild).
+        // `await using var` doesn't compose with ConfigureAwait(false), so the disposal is split
+        // out explicitly: the continuation never captures the caller's SynchronizationContext
+        // (real deadlock risk on net462/netstandard targets with sync-over-async consumers).
         var csvWriter = new CsvWriter(_writer, BuildConfiguration(), LeaveOpen);
         await using var csvWriterDisposal = csvWriter.ConfigureAwait(false);
 
         RegisterRecordMap(csvWriter.Context);
 
-        await WriteHeaderIfNeededAsync(csvWriter).ConfigureAwait(false);
-
-        // Honor a token that is already cancelled before we pull the first record
-        // from the source — mirrors CsvExtractor's top-of-loop check so a
-        // pre-cancelled load reads nothing (LoaderBase contract).
+        // A token that is already cancelled must write no header and pull nothing (LoaderBase contract).
         token.ThrowIfCancellationRequested();
 
-        await foreach (var item in items.WithCancellation(token).ConfigureAwait(false))
+        await WriteHeaderIfNeededAsync(csvWriter).ConfigureAwait(false);
+
+        // Manual enumeration (not `await foreach`) so MaximumItemCount is tested BEFORE the next item
+        // is pulled — a one-shot upstream must not lose an item the loader would discard.
+        var enumerator = items.WithCancellation(token).ConfigureAwait(false).GetAsyncEnumerator();
+        try
         {
-            token.ThrowIfCancellationRequested();
-
-            // 1-based ordinal of the record in the input sequence — the loader writes rather than reads,
-            // so this is the meaningful "where did this record come from" for an invalid record.
-            var recordNumber = ++_currentRecordNumber;
-
-            if (CurrentSkippedItemCount < SkipItemCount)
+            while (!LimitReached() && await enumerator.MoveNextAsync())
             {
-                IncrementCurrentSkippedItemCount();
-                CsvLogMessages.SkippedItem(_logger, CurrentSkippedItemCount, SkipItemCount, null);
-                continue;
-            }
+                token.ThrowIfCancellationRequested();
 
-            if (CurrentItemCount >= MaximumItemCount)
-            {
-                CsvLogMessages.ReachedMaximumItemCount(_logger, MaximumItemCount, null);
-                break;
-            }
+                // 1-based ordinal of the record in the input sequence — the meaningful "where did this
+                // record come from" for an invalid record, since the loader writes rather than reads.
+                var recordNumber = ++_currentRecordNumber;
 
-            if (!await TryWriteRecordAsync(csvWriter, item, recordNumber).ConfigureAwait(false))
-            {
-                continue;
-            }
+                if (TrySkipItem()
+                    || !await TryWriteRecordAsync(csvWriter, enumerator.Current, recordNumber).ConfigureAwait(false))
+                {
+                    continue;
+                }
 
-            IncrementCurrentItemCount();
-            CsvLogMessages.LoadedItem(_logger, CurrentItemCount, null);
+                IncrementCurrentItemCount();
+                CsvLogMessages.LoadedItem(_logger, CurrentItemCount, null);
+            }
+        }
+        finally
+        {
+            await enumerator.DisposeAsync();
         }
 
         await csvWriter.FlushAsync().ConfigureAwait(false);
 
         CsvLogMessages.LoadingCompleted(_logger, CurrentItemCount, CurrentSkippedItemCount, null);
+    }
+
+
+
+    // True once the skip window is behind us and MaximumItemCount records have been loaded.
+    private bool LimitReached()
+    {
+        if (CurrentSkippedItemCount < SkipItemCount || CurrentItemCount < MaximumItemCount)
+        {
+            return false;
+        }
+
+        CsvLogMessages.ReachedMaximumItemCount(_logger, MaximumItemCount, null);
+        return true;
+    }
+
+
+
+    // Consumes one item of the SkipItemCount window; returns true when the item was skipped.
+    private bool TrySkipItem()
+    {
+        if (CurrentSkippedItemCount >= SkipItemCount)
+        {
+            return false;
+        }
+
+        IncrementCurrentSkippedItemCount();
+        CsvLogMessages.SkippedItem(_logger, CurrentSkippedItemCount, SkipItemCount, null);
+        return true;
     }
 
 
