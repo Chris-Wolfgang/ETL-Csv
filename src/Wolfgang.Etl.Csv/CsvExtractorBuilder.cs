@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using Wolfgang.Etl.Abstractions;
 
 namespace Wolfgang.Etl.Csv;
@@ -230,7 +232,51 @@ internal sealed class CsvExtractorBuilder<[DynamicallyAccessedMembers(Dynamicall
     }
 
 
-    private IEtlPipeline<T> Pipeline() => _pipeline ??= EtlPipeline.Create().From(BuildExtractor());
+    private IEtlPipeline<T> Pipeline()
+    {
+        if (_pipeline is not null)
+        {
+            return _pipeline;
+        }
+
+        if (_path is not null)
+        {
+            // Options the extractor constructor would reject fail here, at composition, as they
+            // always have — the constructor itself now runs only when the pipeline is enumerated.
+            CsvSchema.ValidateOptions(_options.Schema, _options.ColumnMaps, typeof(T), "options");
+
+            return _pipeline = EtlPipeline.Create().From(ReadPathAsync());
+        }
+
+        return _pipeline = EtlPipeline.Create().From(BuildExtractor());
+    }
+
+
+    // Path-based source: the file is opened when enumeration starts and closed when it ends
+    // (success, failure or abandonment), so composing a pipeline never holds a file handle and the
+    // pipeline can be enumerated more than once. Setters are locked once the pipeline exists, so
+    // _options / _encoding / _mutations are stable by the time this runs.
+    [UnconditionalSuppressMessage
+    (
+        "Trimming",
+        "IL2026",
+        Justification = "CsvExtractor construction is unreferenced-code; the public factory extension methods on EtlPipeline that create this builder carry [RequiresUnreferencedCode]."
+    )]
+    private async IAsyncEnumerable<T> ReadPathAsync([EnumeratorCancellation] CancellationToken token = default)
+    {
+        using var reader = new StreamReader(_path!, _encoding, detectEncodingFromByteOrderMarks: true);
+        var extractor = new CsvExtractor<T>(reader, _options with { LeaveOpen = true });
+
+        foreach (var mutation in _mutations)
+        {
+            mutation(extractor);
+        }
+
+        await foreach (var item in extractor.ExtractAsync(token).WithCancellation(token).ConfigureAwait(false))
+        {
+            yield return item;
+        }
+    }
 
 
     [UnconditionalSuppressMessage
@@ -241,40 +287,13 @@ internal sealed class CsvExtractorBuilder<[DynamicallyAccessedMembers(Dynamicall
     )]
     private CsvExtractor<T> BuildExtractor()
     {
-        CsvExtractor<T> extractor;
-        StreamReader? ownedReader = null;
+        // The instance already exists for a caller-supplied extractor, so options cannot travel
+        // through its constructor; the recorded fluent mutations are replayed onto it (see Set).
+        var extractor = _existing ?? new CsvExtractor<T>(_reader!, _options);
 
-        try
+        foreach (var mutation in _mutations)
         {
-            if (_existing is not null)
-            {
-                // The instance already exists, so options cannot travel through its constructor;
-                // the recorded fluent mutations are replayed onto it below (see Set).
-                extractor = _existing;
-            }
-            else if (_reader is not null)
-            {
-                extractor = new CsvExtractor<T>(_reader, _options);
-            }
-            else
-            {
-                // Path-based source: the builder owns the reader it opens, so LeaveOpen is false and
-                // the CsvReader disposes it when enumeration finishes (success or failure).
-                ownedReader = new StreamReader(_path!, _encoding, detectEncodingFromByteOrderMarks: true);
-                extractor = new CsvExtractor<T>(ownedReader, _options with { LeaveOpen = false });
-            }
-
-            foreach (var mutation in _mutations)
-            {
-                mutation(extractor);
-            }
-        }
-        catch
-        {
-            // Nothing owns the reader until an extractor is handed back, so a throw from the
-            // constructor or a replayed mutation must release the file handle here.
-            ownedReader?.Dispose();
-            throw;
+            mutation(extractor);
         }
 
         return extractor;
