@@ -50,7 +50,10 @@ public class CsvInheritedAttributeTests
     [Fact]
     public async Task LoadAsync_when_ignored_property_is_inherited_does_not_write_it()
     {
-        var text = await WriteAsync(new DerivedRecord { Secret = "s", Extra = "e", Id = 7 });
+        var record = new DerivedRecord { Secret = "s", Extra = "e", Id = 7 };
+        Assert.Equal("s", record.Secret);
+
+        var text = await WriteAsync(record);
 
         Assert.Equal("Extra,identifier\r\ne,7\r\n", text);
     }
@@ -79,7 +82,10 @@ public class CsvInheritedAttributeTests
     [Fact]
     public async Task LoadAsync_when_attributes_are_on_overridden_base_properties_applies_them()
     {
-        var text = await WriteAsync(new OverridingRecord { Secret = "s", Id = 7 });
+        var record = new OverridingRecord { Secret = "s", Id = 7 };
+        Assert.Equal("s", record.Secret);
+
+        var text = await WriteAsync(record);
 
         Assert.Equal("identifier\r\n7\r\n", text);
     }
