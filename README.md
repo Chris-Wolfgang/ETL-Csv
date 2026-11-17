@@ -110,7 +110,7 @@ That's the full surface for the simplest case. The library auto-maps record prop
 | Cancellation support throughout | `CancellationToken` on every async API |
 | Skip metadata rows / start at a specific line | `InitialRecordIndex` |
 | Resume an interrupted extraction from a checkpoint file ([cookbook](docs/cookbook/resumable-extraction.md)) | `CsvCheckpointExtensions`: `ReadCheckpointAsync`, `WriteCheckpointAsync`, `ResumeFromCheckpointAsync` |
-| Limit how many records get processed | `MaximumItemCount`, `SkipItemCount` (options record) |
+| Limit how many records get processed (comment and blank lines never count; see [below](#example-comment-and-blank-lines-and-the-item-counts)) | `MaximumItemCount`, `SkipItemCount` (options record) |
 | Dry-run a load: enumerate, count and report progress, write nothing | `IsDryRun` (loader options record) |
 | Compile-time column mapping (declarative) | `[CsvColumn]`, `[CsvIgnore]` |
 | Runtime column mapping (configuration / DB-driven layouts) | `CsvColumnMap`, `ColumnMaps` property |
@@ -241,6 +241,16 @@ consult it: CsvHelper writes a record's fields out one at a time, so a record th
 cannot be withdrawn without leaving a half-written row. A write failure always propagates out of
 `LoadAsync`. To drop records before they are written, use `Validators` with
 `OnValidationFailure = CsvValidationFailureAction.Skip`.
+
+### Example: Comment and blank lines and the item counts
+
+Comment lines (with `AllowComments`), blank lines (with `IgnoreBlankLines`, the default) and any lines before
+`InitialRecordIndex` are not records. They never count toward `SkipItemCount`, `MaximumItemCount`,
+`CurrentItemCount` or `CurrentSkippedItemCount`; only real data rows do. With `SkipItemCount = 1` and
+`MaximumItemCount = 2`, a file with comments and blank lines between its data rows still yields the 2nd and
+3rd data rows. Line numbers in progress reports and errors stay physical source lines.
+
+If you set `IgnoreBlankLines = false`, a blank line is surfaced to the parser as a row and is counted.
 
 ### Example: Polymorphic rows (mixed shapes in one file)
 
