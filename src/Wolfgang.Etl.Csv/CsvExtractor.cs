@@ -50,6 +50,10 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     private int _progressTimerWired;
 
     private int _currentLineNumber;
+
+    // Lines consumed by the InitialRecordIndex preamble skip. The parser numbers rows from 1 after
+    // the skip, so every reported line number adds this to stay a physical line in the source.
+    private int _preambleLineCount;
     private int _currentBadDataCount;
     private int _currentInvalidItemCount;
 
@@ -333,7 +337,9 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     /// not necessarily the first data row. When <see cref="HasHeaderRecord"/> is <c>true</c>,
     /// it becomes the header row (column names); when <see cref="HasHeaderRecord"/> is
     /// <c>false</c>, it becomes the first data row. Set this to skip metadata or banner
-    /// lines that precede the header / data section.
+    /// lines that precede the header / data section. The skipped lines are discarded as raw
+    /// text, not parsed as CSV, so blank lines, comment lines and quote characters in them have no effect
+    /// and each counts as exactly one line (a quoted field cannot span a line break inside the skipped block).
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">value is less than 1.</exception>
     public int InitialRecordIndex
@@ -512,7 +518,7 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
 
 
 
-    private static CsvBadDataInfo ToCsvBadDataInfo(BadDataFoundArgs args)
+    private CsvBadDataInfo ToCsvBadDataInfo(BadDataFoundArgs args)
     {
         // CsvHelper invokes BadDataFound from its parser/reader chain, so Context.Reader
         // and Context.Parser are guaranteed non-null here. Using `!` instead of `?.`
@@ -522,7 +528,7 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
 
         return new CsvBadDataInfo
         (
-            args.Context.Parser!.RawRow,
+            args.Context.Parser!.RawRow + _preambleLineCount,
             columnNumber,
             args.Field,
             args.RawRecord
@@ -544,7 +550,7 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
 
 
 
-    private static CsvReadingExceptionInfo ToCsvReadingExceptionInfo(ReadingExceptionOccurredArgs args)
+    private CsvReadingExceptionInfo ToCsvReadingExceptionInfo(ReadingExceptionOccurredArgs args)
     {
         var ctx = args.Exception.Context;
         var columnIndex = ctx?.Reader?.CurrentIndex ?? -1;
@@ -565,7 +571,7 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
 
         return new CsvReadingExceptionInfo
         (
-            ctx?.Parser?.RawRow ?? -1,
+            ctx?.Parser is { } parser ? parser.RawRow + _preambleLineCount : -1,
             columnNumber,
             columnName,
             columnValue,
@@ -585,6 +591,8 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
         CsvLogMessages.StartingOperation(_logger, OperationName, null);
 
         ResetRunCounters();
+
+        await SkipPreambleAsync().ConfigureAwait(false);
 
         var configuration = BuildConfiguration();
 
@@ -720,20 +728,32 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     private ItemErrorAction RouteItemError(CsvReader csvReader, Exception exception)
     {
         var rawRow = csvReader.Parser.RawRecord;
-        return HandleItemError(new ItemErrorContext(csvReader.Parser.RawRow, exception, () => rawRow));
+        return HandleItemError(new ItemErrorContext(csvReader.Parser.RawRow + _preambleLineCount, exception, () => rawRow));
+    }
+
+
+
+    // Discards the lines before InitialRecordIndex (1-based) on the raw reader, before the CSV parser
+    // sees them: banner text is not CSV, so a blank line, a comment line or a stray quote in it must
+    // not be interpreted (a blank line would swallow the next record, a quote the rest of the file).
+    private async Task SkipPreambleAsync()
+    {
+        _preambleLineCount = 0;
+
+        while (_preambleLineCount < InitialRecordIndex - 1
+            && await _reader.ReadLineAsync().ConfigureAwait(false) is not null)
+        {
+            _preambleLineCount++;
+            CsvLogMessages.IgnoredRow(_logger, _preambleLineCount, null);
+        }
+
+        Volatile.Write(ref _currentLineNumber, _preambleLineCount);
     }
 
 
 
     private async Task PrepareReaderAsync(CsvReader csvReader)
     {
-        // Skip lines before InitialRecordIndex (1-based).
-        while (csvReader.Parser.RawRow < InitialRecordIndex - 1 && await csvReader.ReadAsync().ConfigureAwait(false))
-        {
-            UpdateLineNumber(csvReader);
-            CsvLogMessages.IgnoredRow(_logger, csvReader.Parser.RawRow, null);
-        }
-
         // Read the header record if present.
         if (HasHeaderRecord && await csvReader.ReadAsync().ConfigureAwait(false))
         {
@@ -759,7 +779,7 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
         // (which uses Volatile.Read on this field) sees a consistent snapshot.
         // Context.Parser is guaranteed non-null here — UpdateLineNumber is only
         // called after a successful ReadAsync(), which sets the Parser.
-        Volatile.Write(ref _currentLineNumber, csvReader.Context.Parser!.RawRow);
+        Volatile.Write(ref _currentLineNumber, csvReader.Context.Parser!.RawRow + _preambleLineCount);
     }
 
 
