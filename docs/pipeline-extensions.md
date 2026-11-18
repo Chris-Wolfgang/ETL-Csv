@@ -41,8 +41,8 @@ Three overloads terminate a pipeline and return `ICsvLoaderBuilder<T>` (an `IEtl
 
 ## Inline configuration
 
-Each builder exposes fluent setters that map 1:1 to the underlying `CsvExtractor<T>` / `CsvLoader<T>`
-properties. The **first pipeline operator** you call (`Where`, `Select`, `Through`, `CsvLoader`, …)
+Each builder exposes fluent setters for the most common `CsvExtractor<T>` / `CsvLoader<T>` options
+(listed below). The **first pipeline operator** you call (`Where`, `Select`, `Through`, `CsvLoader`, …)
 narrows the builder to `IEtlPipeline<T>` — the configuration setters fall off the surface, so there is
 no explicit `Build()` step.
 
@@ -52,8 +52,19 @@ no explicit `Build()` step.
 - **Loader:** `Delimiter`, `Quote`, `Escape`, `NewLine`, `HasHeaderRecord`, `Encoding`, `TrimOptions`,
   `ShouldQuote`, `ColumnMaps`, `IsDryRun`.
 
-`Encoding(…)` binds the encoding used to open a path-based stream, so it controls the bytes actually
-read from / written to disk.
+Most setters map to the property of the same name; `Encoding(…)` is the exception — it selects the
+encoding used to open a path-based stream, so it controls the bytes actually read from / written to disk,
+and it has no effect on a caller-supplied reader or writer. `SkipRecordCount` / `MaxRecordCount` map to
+`SkipItemCount` / `MaximumItemCount`.
+
+The following options have **no** fluent setter. To use them, build the `CsvExtractor<T>` / `CsvLoader<T>`
+yourself with the options record and pass it to the `CsvExtractor<T>(extractor)` / `CsvLoader<T>(loader)`
+overloads:
+
+- **Extractor:** `Schema`, `Discriminator`, `Validators`, `OnValidationFailure`, `InvalidRecordHandler`,
+  `ErrorPolicy`, `LeaveOpen`.
+- **Loader:** `Schema`, `Discriminator`, `Validators`, `OnValidationFailure`, `InvalidRecordHandler`,
+  `LeaveOpen`.
 
 ## Where do `Where` / `Select` come from?
 
@@ -63,19 +74,22 @@ LINQ-flavored operators (`Where`, `Select`, `Distinct`, `Take`, …) are extensi
 `Through`:
 
 ```csharp
+// C# does not allow `yield` inside a lambda, so the stage is a local (or static) iterator method.
+static async IAsyncEnumerable<Order> PositiveQuantities(IAsyncEnumerable<Order> source)
+{
+    await foreach (var order in source)
+    {
+        if (order.Quantity > 0)
+        {
+            yield return order;
+        }
+    }
+}
+
 await EtlPipeline
     .Create()
     .CsvExtractor<Order>("orders.csv")
-    .Through(async source =>
-    {
-        await foreach (var order in source)
-        {
-            if (order.Quantity > 0)
-            {
-                yield return order;
-            }
-        }
-    })
+    .Through<Order>(PositiveQuantities)
     .CsvLoader<Order>("filtered.csv")
     .RunAsync();
 ```

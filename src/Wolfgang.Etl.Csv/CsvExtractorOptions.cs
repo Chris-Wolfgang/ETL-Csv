@@ -34,6 +34,7 @@ public sealed record CsvExtractorOptions<TRecord> : ExtractorOptions
     /// <summary>
     /// Gets a value indicating whether lines beginning with <see cref="Comment"/> are treated as
     /// comments and skipped. Defaults to <see langword="false"/>.
+    /// Comment lines are not records: they do not count toward <c>SkipItemCount</c>, <c>MaximumItemCount</c> or the item count.
     /// </summary>
     public bool AllowComments { get; init; }
 

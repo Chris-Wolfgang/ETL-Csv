@@ -22,6 +22,14 @@ namespace Wolfgang.Etl.Csv;
 /// checkpoint, where to persist, exactly-once vs at-least-once semantics) remains the
 /// caller's responsibility. The one mechanical piece worth not hand-rolling is the atomic
 /// write, so a crash mid-checkpoint never leaves a torn counter file.
+/// <para>
+/// <b>What to checkpoint.</b> <c>SkipItemCount</c> / <see cref="CsvExtractor{TRecord}.SkipRecordCount"/>
+/// skip raw <i>rows</i>, not committed records. The two are equal only while the extractor never drops a
+/// row; with validators under <see cref="CsvValidationFailureAction.Skip"/>, an <c>ErrorPolicy</c> that
+/// returns <c>Skip</c>, or a discriminator that skips unknown values, checkpoint the number of rows
+/// <i>consumed</i> instead — see docs/cookbook/resumable-extraction.md — or resuming re-yields
+/// records that were already committed.
+/// </para>
 /// </remarks>
 public static class CsvCheckpointExtensions
 {
