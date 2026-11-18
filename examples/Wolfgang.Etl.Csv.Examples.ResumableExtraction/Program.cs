@@ -38,6 +38,9 @@ static async Task ProcessAsync(string csvPath, string checkpointPath, int stopAf
         Console.WriteLine($"  resuming past {alreadyDone} already-processed row(s)");
     }
 
+    // `processed` counts rows the extractor has consumed. Here every row is yielded, so that equals
+    // the records committed. If validators / ErrorPolicy / a discriminator can drop rows, checkpoint
+    // the rows consumed instead of the records committed (cookbook, section 3a).
     var processed = alreadyDone;
     await foreach (var order in extractor.ExtractAsync())
     {

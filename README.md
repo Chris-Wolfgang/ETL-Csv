@@ -110,7 +110,7 @@ That's the full surface for the simplest case. The library auto-maps record prop
 | Cancellation support throughout | `CancellationToken` on every async API |
 | Skip metadata rows / start at a specific line | `InitialRecordIndex` |
 | Resume an interrupted extraction from a checkpoint file ([cookbook](docs/cookbook/resumable-extraction.md)) | `CsvCheckpointExtensions`: `ReadCheckpointAsync`, `WriteCheckpointAsync`, `ResumeFromCheckpointAsync` |
-| Limit how many records get processed | `MaximumItemCount`, `SkipItemCount` (options record) |
+| Limit how many records get processed (comment and blank lines never count; see [below](#example-comment-and-blank-lines-and-the-item-counts)) | `MaximumItemCount`, `SkipItemCount` (options record) |
 | Dry-run a load: enumerate, count and report progress, write nothing | `IsDryRun` (loader options record) |
 | Compile-time column mapping (declarative) | `[CsvColumn]`, `[CsvIgnore]` |
 | Runtime column mapping (configuration / DB-driven layouts) | `CsvColumnMap`, `ColumnMaps` property |
@@ -179,7 +179,7 @@ When `ColumnMaps` is non-null and non-empty, runtime maps override any attribute
 
 ### Example: Type-safe schema builder (for records you can't decorate)
 
-When the record is a third-party or generated type you can't put `[CsvColumn]` on — or you'd rather keep the layout in code — describe it with `CsvSchemaBuilder<T>`. Property selectors are compile-time checked and survive a rename, and `.Build()` produces a `CsvSchema` that is applied through the same mapping path as attributes, so a code-built schema behaves identically to the equivalent attributed record:
+When the record is a third-party or generated type you can't put `[CsvColumn]` on — or you'd rather keep the layout in code — describe it with `CsvSchemaBuilder<T>`. Property selectors are compile-time checked and survive a rename, and `.Build()` produces a `CsvSchema` that lists exactly the columns you describe:
 
 ```csharp
 var schema = new CsvSchemaBuilder<Order>()
@@ -192,7 +192,7 @@ var extractor = new CsvExtractor<Order>(reader, new CsvExtractorOptions<Order> {
 var loader    = new CsvLoader<Order>(writer,    new CsvLoaderOptions<Order>    { Schema = schema });
 ```
 
-`.Column(selector, name, index, format, optional, default)` mirrors every `[CsvColumn]` / `CsvColumnMap` field. A column binds by name or by index, not both: passing a non-blank `name` together with a non-negative `index`, or a blank `name`, throws `ArgumentException` (stricter than `[CsvColumn]`, which tolerates both); pass neither to bind by the property's own name. `Schema` overrides attribute resolution for that instance and is mutually exclusive with `ColumnMaps`; leaving both unset keeps attribute behaviour. A schema is bound to the record type it was built for — an extractor or loader for a different type rejects it at construction. `CsvSchema.For<T>()` reifies a type's attribute-resolved mapping as a `CsvSchema` you can inspect (`RecordType`, `Columns`). See the runnable example under [`examples/Wolfgang.Etl.Csv.Examples.SchemaBuilder/`](examples/Wolfgang.Etl.Csv.Examples.SchemaBuilder/).
+`.Column(selector, name, index, format, optional, default)` mirrors every `[CsvColumn]` / `CsvColumnMap` field. A column binds by name or by index, not both: passing a non-blank `name` together with a non-negative `index`, or a blank `name`, throws `ArgumentException` (stricter than `[CsvColumn]`, which tolerates both); pass neither to bind by the property's own name. A schema maps **only the columns it lists** — a public property you leave out is neither read nor written — whereas an attributed record keeps every unlisted public property mapped by name (attributes adjust that default map). To get the attributed behaviour as a schema, start from `CsvSchema.For<T>()`, which includes every mapped property. `Schema` overrides attribute resolution for that instance and is mutually exclusive with `ColumnMaps`; leaving both unset keeps attribute behaviour. A schema is bound to the record type it was built for — an extractor or loader for a different type rejects it at construction. `CsvSchema.For<T>()` reifies a type's attribute-resolved mapping as a `CsvSchema` you can inspect (`RecordType`, `Columns`). See the runnable example under [`examples/Wolfgang.Etl.Csv.Examples.SchemaBuilder/`](examples/Wolfgang.Etl.Csv.Examples.SchemaBuilder/).
 
 ### Example: Progress reporting
 
@@ -241,6 +241,16 @@ consult it: CsvHelper writes a record's fields out one at a time, so a record th
 cannot be withdrawn without leaving a half-written row. A write failure always propagates out of
 `LoadAsync`. To drop records before they are written, use `Validators` with
 `OnValidationFailure = CsvValidationFailureAction.Skip`.
+
+### Example: Comment and blank lines and the item counts
+
+Comment lines (with `AllowComments`), blank lines (with `IgnoreBlankLines`, the default) and any lines before
+`InitialRecordIndex` are not records. They never count toward `SkipItemCount`, `MaximumItemCount`,
+`CurrentItemCount` or `CurrentSkippedItemCount`; only real data rows do. With `SkipItemCount = 1` and
+`MaximumItemCount = 2`, a file with comments and blank lines between its data rows still yields the 2nd and
+3rd data rows. Line numbers in progress reports and errors stay physical source lines.
+
+If you set `IgnoreBlankLines = false`, a blank line is surfaced to the parser as a row and is counted.
 
 ### Example: Polymorphic rows (mixed shapes in one file)
 

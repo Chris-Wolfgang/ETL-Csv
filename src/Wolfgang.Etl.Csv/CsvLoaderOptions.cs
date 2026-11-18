@@ -56,8 +56,9 @@ public sealed record CsvLoaderOptions<TRecord> : LoaderOptions
 
 
     /// <summary>
-    /// Gets a value indicating whether the supplied writer is left open when the loader is
-    /// disposed. Defaults to <see langword="true"/>.
+    /// Gets a value indicating whether the supplied writer is left open when the load completes
+    /// (the CSV writer is disposed at the end of each run, not when the loader is disposed).
+    /// Defaults to <see langword="true"/>.
     /// </summary>
     public bool LeaveOpen { get; init; } = true;
 
@@ -97,7 +98,19 @@ public sealed record CsvLoaderOptions<TRecord> : LoaderOptions
     /// Gets the explicit column mappings. Defaults to <see langword="null"/>, meaning mapping is
     /// driven by attributes on <typeparamref name="TRecord"/>.
     /// </summary>
-    public IReadOnlyList<CsvColumnMap>? ColumnMaps { get; init; }
+    /// <remarks>
+    /// The list is copied when it is assigned, so editing the caller's list afterwards has no effect
+    /// on a component built from these options. To change the mapping, assign a new list.
+    /// </remarks>
+    public IReadOnlyList<CsvColumnMap>? ColumnMaps
+    {
+        get => _columnMaps;
+        init => _columnMaps = FrozenColumnMaps.Freeze(value);
+    }
+
+
+
+    private IReadOnlyList<CsvColumnMap>? _columnMaps;
 
 
 

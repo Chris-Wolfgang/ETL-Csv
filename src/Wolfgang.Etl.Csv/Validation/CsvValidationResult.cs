@@ -10,6 +10,15 @@ namespace Wolfgang.Etl.Csv;
 /// path; the legacy positional constructor is retained for source-compat and marked
 /// <see cref="T:System.ObsoleteAttribute"/>.
 /// </summary>
+/// <remarks>
+/// The invariant is enforced by the constructors only. <see cref="IsValid"/> and <see cref="Failures"/>
+/// keep public <c>init</c> accessors (part of the shipped API), so an object initializer or a <c>with</c>
+/// expression can still produce a state the constructors reject — for example
+/// <c>CsvValidationResult.Fail("x") with { IsValid = true }</c>. Treat results as immutable values and build
+/// them with <see cref="Pass"/> / <see cref="Fail(string[])"/>; the extractor and loader tolerate a
+/// <c>null</c> <see cref="Failures"/> and a failed result with no reasons rather than assuming the invariant.
+/// <see cref="Failures"/> is compared by reference, so two separately created failed results are not equal.
+/// </remarks>
 public sealed record CsvValidationResult
 {
     /// <summary>

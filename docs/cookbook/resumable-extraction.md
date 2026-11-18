@@ -28,6 +28,13 @@ A record being yielded by `ExtractAsync` does **not** mean it's durably committe
 
 Acknowledge a record **only after the downstream side-effect has committed** — and count *committed* records, not *read* records.
 
+> **Caveat — `SkipItemCount` skips raw rows, not committed records.** The two counts are equal only while
+> the extractor never drops a row. If you also use validators with `OnValidationFailure = Skip`, an
+> `ErrorPolicy` that returns `Skip`, or a discriminator with `UnknownDiscriminator = Skip`, each dropped
+> row advances the file position but not your committed count, so a resume with `SkipItemCount = committed`
+> lands *before* the real position and re-yields already-committed records. Either keep the sink idempotent
+> or checkpoint the rows consumed instead — see [§3a](#3a-when-rows-can-be-dropped).
+
 ```csharp
 var processed = await CsvCheckpointExtensions.ReadCheckpointAsync(checkpointPath, ct);   // 0 if absent
 
@@ -53,6 +60,26 @@ await foreach (var order in extractor.ExtractAsync(ct))
 ```
 
 Checkpointing after every record is simplest and safest. If the per-record checkpoint write is a measurable cost, batch it (`if (processed % 1000 == 0) …`) plus a final write after the loop — but the trade-off is direct: with a batch of N, the checkpoint lags the commits by up to N, so a crash re-processes up to N **already-committed** records on resume. That's harmless *only* if the downstream is idempotent (the same at-least-once caveat as §8); the larger the batch, the more re-work a crash costs.
+
+## 3a. When rows can be dropped
+
+Checkpoint the number of raw rows **consumed** when the record was yielded, not the number of records you committed. At the point a record is yielded, that is:
+
+```csharp
+// dropped = rows your own handlers saw and discarded: increment it in InvalidRecordHandler
+// (validators under OnValidationFailure = Skip). CurrentErrorItemCount already counts rows an
+// ErrorPolicy skipped, and CurrentSkippedItemCount already counts the SkipItemCount rows plus
+// null / unmapped-discriminator rows.
+var consumed = extractor.CurrentItemCount
+             + extractor.CurrentSkippedItemCount
+             + extractor.CurrentErrorItemCount
+             + dropped;
+
+await tx.CommitAsync(ct);
+await CsvCheckpointExtensions.WriteCheckpointAsync(checkpointPath, consumed, ct);
+```
+
+Resume with `SkipItemCount = consumed` as usual. Example: rows `Ann`, `Bad` (fails validation, dropped), `Cy`, `Dee` — after committing `Cy` the committed count is 2 but the consumed count is 3, and only `SkipItemCount = 3` resumes at `Dee` (`SkipItemCount = 2` yields `Cy` again). This is pinned by `CsvResumeRowCountTests`. If you use `OnValidationFailure = Continue`, invalid records are yielded and already counted in `CurrentItemCount`, so do not add them to `dropped`.
 
 ## 4. Atomic write (why the temp-file dance)
 

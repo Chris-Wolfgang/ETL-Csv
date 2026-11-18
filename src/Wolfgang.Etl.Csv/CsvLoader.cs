@@ -198,6 +198,9 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     /// every property at its default.
     /// </summary>
     /// <param name="options">The configuration to apply, or <c>null</c>.</param>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="options"/> holds an invalid combination or value (see the message for the option at fault).
+    /// </exception>
     internal void ApplyOptions(CsvLoaderOptions<TRecord>? options)
     {
         if (options is null)
@@ -206,6 +209,16 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
         }
 
         CsvSchema.ValidateOptions(options.Schema, options.ColumnMaps, typeof(TRecord), nameof(options));
+
+        if (string.IsNullOrEmpty(options.Delimiter))
+        {
+            throw new ArgumentException("Delimiter must not be null or empty.", nameof(options));
+        }
+
+        if (string.IsNullOrEmpty(options.NewLine))
+        {
+            throw new ArgumentException("NewLine must not be null or empty.", nameof(options));
+        }
 
         _delimiter = options.Delimiter;
         _escape = options.Escape;
@@ -322,7 +335,7 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     /// and non-empty, the runtime maps are the only source of property-to-column
     /// bindings; attribute-based mapping is bypassed.
     /// </remarks>
-    public IReadOnlyList<CsvColumnMap>? ColumnMaps { get => _columnMaps; [Obsolete("Configure ColumnMaps through CsvLoaderOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set => _columnMaps = value; }
+    public IReadOnlyList<CsvColumnMap>? ColumnMaps { get => _columnMaps; [Obsolete("Configure ColumnMaps through CsvLoaderOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set => _columnMaps = FrozenColumnMaps.Freeze(value); }
 
 
 
@@ -405,7 +418,7 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     public int SkipRecordCount
     {
         get => SkipItemCount;
-        [Obsolete("Configure SkipRecordCount through CsvLoaderOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")]
+        [Obsolete("Configure SkipItemCount through CsvLoaderOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")]
         set => SkipItemCount = value;
     }
 
@@ -418,7 +431,7 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     public int MaxRecordCount
     {
         get => MaximumItemCount;
-        [Obsolete("Configure MaxRecordCount through CsvLoaderOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")]
+        [Obsolete("Configure MaximumItemCount through CsvLoaderOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")]
         set => MaximumItemCount = value;
     }
 
@@ -459,60 +472,83 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     {
         // LoaderBase null-checks `items` in all public LoadAsync overloads before
         // invoking this worker, so a null is unreachable here.
-
         CsvLogMessages.StartingOperation(_logger, OperationName, null);
 
-        // The `await using var` form doesn't compose with ConfigureAwait(false) —
-        // there's no way to ConfigureAwait the implicit DisposeAsync that runs at
-        // scope exit. Split into construction + explicit ConfiguredAsyncDisposable
-        // so the disposal continuation never captures the caller's
-        // SynchronizationContext (real deadlock risk on net462/netstandard targets
-        // where sync-over-async consumers exist in the wild).
+        ResetRunCounters();
+
+        // `await using var` doesn't compose with ConfigureAwait(false), so the disposal is split
+        // out explicitly: the continuation never captures the caller's SynchronizationContext
+        // (real deadlock risk on net462/netstandard targets with sync-over-async consumers).
         var csvWriter = new CsvWriter(_writer, BuildConfiguration(), LeaveOpen);
         await using var csvWriterDisposal = csvWriter.ConfigureAwait(false);
 
         RegisterRecordMap(csvWriter.Context);
 
-        await WriteHeaderIfNeededAsync(csvWriter).ConfigureAwait(false);
-
-        // Honor a token that is already cancelled before we pull the first record
-        // from the source — mirrors CsvExtractor's top-of-loop check so a
-        // pre-cancelled load reads nothing (LoaderBase contract).
+        // A token that is already cancelled must write no header and pull nothing (LoaderBase contract).
         token.ThrowIfCancellationRequested();
 
-        await foreach (var item in items.WithCancellation(token).ConfigureAwait(false))
+        await WriteHeaderIfNeededAsync(csvWriter).ConfigureAwait(false);
+
+        // Manual enumeration (not `await foreach`) so MaximumItemCount is tested BEFORE the next item
+        // is pulled — a one-shot upstream must not lose an item the loader would discard.
+        var enumerator = items.WithCancellation(token).ConfigureAwait(false).GetAsyncEnumerator();
+        try
         {
-            token.ThrowIfCancellationRequested();
-
-            // 1-based ordinal of the record in the input sequence — the loader writes rather than reads,
-            // so this is the meaningful "where did this record come from" for an invalid record.
-            var recordNumber = ++_currentRecordNumber;
-
-            if (CurrentSkippedItemCount < SkipItemCount)
+            while (!LimitReached() && await enumerator.MoveNextAsync())
             {
-                IncrementCurrentSkippedItemCount();
-                CsvLogMessages.SkippedItem(_logger, CurrentSkippedItemCount, SkipItemCount, null);
-                continue;
-            }
+                token.ThrowIfCancellationRequested();
 
-            if (CurrentItemCount >= MaximumItemCount)
-            {
-                CsvLogMessages.ReachedMaximumItemCount(_logger, MaximumItemCount, null);
-                break;
-            }
+                // 1-based ordinal of the record in the input sequence — the meaningful "where did this
+                // record come from" for an invalid record, since the loader writes rather than reads.
+                var recordNumber = ++_currentRecordNumber;
 
-            if (!await TryWriteRecordAsync(csvWriter, item, recordNumber).ConfigureAwait(false))
-            {
-                continue;
-            }
+                if (TrySkipItem()
+                    || !await TryWriteRecordAsync(csvWriter, enumerator.Current, recordNumber).ConfigureAwait(false))
+                {
+                    continue;
+                }
 
-            IncrementCurrentItemCount();
-            CsvLogMessages.LoadedItem(_logger, CurrentItemCount, null);
+                IncrementCurrentItemCount();
+                CsvLogMessages.LoadedItem(_logger, CurrentItemCount, null);
+            }
+        }
+        finally
+        {
+            await enumerator.DisposeAsync();
         }
 
         await csvWriter.FlushAsync().ConfigureAwait(false);
 
         CsvLogMessages.LoadingCompleted(_logger, CurrentItemCount, CurrentSkippedItemCount, null);
+    }
+
+
+
+    // True once the skip window is behind us and MaximumItemCount records have been loaded.
+    private bool LimitReached()
+    {
+        if (CurrentSkippedItemCount < SkipItemCount || CurrentItemCount < MaximumItemCount)
+        {
+            return false;
+        }
+
+        CsvLogMessages.ReachedMaximumItemCount(_logger, MaximumItemCount, null);
+        return true;
+    }
+
+
+
+    // Consumes one item of the SkipItemCount window; returns true when the item was skipped.
+    private bool TrySkipItem()
+    {
+        if (CurrentSkippedItemCount >= SkipItemCount)
+        {
+            return false;
+        }
+
+        IncrementCurrentSkippedItemCount();
+        CsvLogMessages.SkippedItem(_logger, CurrentSkippedItemCount, SkipItemCount, null);
+        return true;
     }
 
 
@@ -767,6 +803,19 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
             // Surface the CsvHelper exception, not the reflection wrapper, preserving its stack.
             ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
         }
+    }
+
+
+
+    /// <summary>
+    /// Zeroes the CSV-specific per-run counters so a reused instance starts every run from zero,
+    /// matching the base class counters, instead of accumulating across runs.
+    /// </summary>
+    private void ResetRunCounters()
+    {
+        Volatile.Write(ref _currentLineNumber, 0);
+        Volatile.Write(ref _currentInvalidItemCount, 0);
+        Volatile.Write(ref _currentRecordNumber, 0);
     }
 
 

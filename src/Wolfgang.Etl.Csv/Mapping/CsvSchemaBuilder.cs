@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Reflection;
+using Wolfgang.Etl.Abstractions;
 
 // ReSharper disable once CheckNamespace -- the public surface is one flat namespace; Mapping/ is organisational
 namespace Wolfgang.Etl.Csv;
@@ -76,7 +76,7 @@ public sealed class CsvSchemaBuilder<T>
         string? @default = null
     )
     {
-        var propertyName = ResolvePropertyName(selector);
+        var propertyName = PropertySelector.Resolve(selector).Name;
 
         if (index < -1)
         {
@@ -137,38 +137,5 @@ public sealed class CsvSchemaBuilder<T>
         }
 
         return new CsvSchema(typeof(T), Array.AsReadOnly(_columns.ToArray()));
-    }
-
-
-
-    // The one genuinely shared primitive across the ETL family (lambda -> PropertyInfo). Kept
-    // local until the shared helper ships in Wolfgang.Etl.Abstractions (ETL-Abstractions#758).
-    private static string ResolvePropertyName<TProperty>(Expression<Func<T, TProperty>> selector)
-    {
-        if (selector is null)
-        {
-            throw new ArgumentNullException(nameof(selector));
-        }
-
-        var body = selector.Body;
-
-        // A value-type property selected as Func<T, object> is wrapped in a boxing Convert.
-        if (body is UnaryExpression { NodeType: ExpressionType.Convert or ExpressionType.ConvertChecked } unary)
-        {
-            body = unary.Operand;
-        }
-
-        if (body is not MemberExpression member
-            || member.Member is not PropertyInfo property
-            || member.Expression is not ParameterExpression)
-        {
-            throw new ArgumentException
-            (
-                $"Selector must be a direct access of a public property of {typeof(T).Name} (e.g. x => x.Name).",
-                nameof(selector)
-            );
-        }
-
-        return property.Name;
     }
 }

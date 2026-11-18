@@ -22,6 +22,14 @@ namespace Wolfgang.Etl.Csv;
 /// checkpoint, where to persist, exactly-once vs at-least-once semantics) remains the
 /// caller's responsibility. The one mechanical piece worth not hand-rolling is the atomic
 /// write, so a crash mid-checkpoint never leaves a torn counter file.
+/// <para>
+/// <b>What to checkpoint.</b> <c>SkipItemCount</c> / <see cref="CsvExtractor{TRecord}.SkipRecordCount"/>
+/// skip raw <i>rows</i>, not committed records. The two are equal only while the extractor never drops a
+/// row; with validators under <see cref="CsvValidationFailureAction.Skip"/>, an <c>ErrorPolicy</c> that
+/// returns <c>Skip</c>, or a discriminator that skips unknown values, checkpoint the number of rows
+/// <i>consumed</i> instead — see docs/cookbook/resumable-extraction.md — or resuming re-yields
+/// records that were already committed.
+/// </para>
 /// </remarks>
 public static class CsvCheckpointExtensions
 {
@@ -40,7 +48,7 @@ public static class CsvCheckpointExtensions
     /// <returns>The persisted count, or <c>0</c> when the file is absent.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="path"/> is <c>null</c>.</exception>
     /// <exception cref="ArgumentException"><paramref name="path"/> is empty or whitespace.</exception>
-    /// <exception cref="FormatException">The file exists but does not contain a valid integer, or is too large to be one.</exception>
+    /// <exception cref="FormatException">The file exists but does not contain a valid integer, contains a negative one, or is too large to be one.</exception>
     public static async ValueTask<int> ReadCheckpointAsync(string path, CancellationToken token = default)
     {
         if (path is null)
@@ -95,9 +103,22 @@ public static class CsvCheckpointExtensions
             text = Encoding.UTF8.GetString(buffer, 0, read);
         }
 
+        return ParseCheckpoint(text, path);
+    }
+
+
+    private static int ParseCheckpoint(string text, string path)
+    {
         if (!int.TryParse(text.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out var count))
         {
             throw new FormatException($"Checkpoint file '{path}' does not contain a valid integer.");
+        }
+
+        // A negative count is never a valid checkpoint (SkipRecordCount rejects it); report it as a
+        // bad file here rather than as an argument error naming an internal parameter later.
+        if (count < 0)
+        {
+            throw new FormatException($"Checkpoint file '{path}' contains a negative count ({count}).");
         }
 
         return count;
@@ -106,14 +127,16 @@ public static class CsvCheckpointExtensions
 
     /// <summary>
     /// Writes <paramref name="count"/> to <paramref name="path"/> atomically: the value is written
-    /// to <c>path + ".tmp"</c> and then renamed over <paramref name="path"/>. A crash mid-write
-    /// leaves either the previous value intact or the new value — never a partial write.
+    /// to <c>path + ".tmp"</c> and then renamed over <paramref name="path"/>. The temporary
+    /// file is flushed to disk before the rename, so a crash or power loss mid-write leaves either the
+    /// previous value intact or the new value — never a partial write.
     /// </summary>
     /// <param name="path">The checkpoint file path.</param>
     /// <param name="count">The count to persist.</param>
     /// <param name="token">A token to observe while writing.</param>
     /// <exception cref="ArgumentNullException"><paramref name="path"/> is <c>null</c>.</exception>
     /// <exception cref="ArgumentException"><paramref name="path"/> is empty or whitespace.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="count"/> is negative.</exception>
     public static async ValueTask WriteCheckpointAsync(string path, int count, CancellationToken token = default)
     {
         if (path is null)
@@ -126,6 +149,11 @@ public static class CsvCheckpointExtensions
             throw new ArgumentException("Path must not be empty or whitespace.", nameof(path));
         }
 
+        if (count < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(count), count, "A checkpoint count must not be negative.");
+        }
+
         token.ThrowIfCancellationRequested();
 
         var temporaryPath = path + ".tmp";
@@ -136,6 +164,13 @@ public static class CsvCheckpointExtensions
             using var stream = new FileStream(temporaryPath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, useAsync: true);
             await stream.WriteAsync(bytes, 0, bytes.Length, token).ConfigureAwait(false);
             await stream.FlushAsync(token).ConfigureAwait(false);
+
+            // FlushAsync only empties the FileStream buffer into the OS cache. Force the bytes to the
+            // device before the rename so a power loss cannot leave the renamed file empty. There is
+            // no async flush-to-disk API, so this one call is synchronous.
+#pragma warning disable CA1849
+            stream.Flush(flushToDisk: true);
+#pragma warning restore CA1849
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or OperationCanceledException)
         {
@@ -144,6 +179,12 @@ public static class CsvCheckpointExtensions
             throw;
         }
 
+        ReplaceDestination(temporaryPath, path);
+    }
+
+
+    private static void ReplaceDestination(string temporaryPath, string path)
+    {
         // Atomic replace. File.Move's overwrite overload is only on the modern runtime targets;
         // on net462 / netstandard fall back to File.Replace (atomic when the destination exists)
         // or a plain Move for the very first write. If the replace itself fails (destination
