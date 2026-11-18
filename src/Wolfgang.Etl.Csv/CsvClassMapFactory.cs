@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using CsvHelper.Configuration;
 
 namespace Wolfgang.Etl.Csv;
@@ -24,45 +25,25 @@ internal static class CsvClassMapFactory
     // Caching the negative result avoids re-reflecting on every extraction.
     private static readonly ConcurrentDictionary<Type, ClassMap?> Cache = new();
 
-    // Runtime-maps cache: keyed by (TRecord, ColumnMaps reference identity).
-    // Two callers passing distinct list instances with identical content still
-    // pay reflection once each — by-reference is the only safe key here
-    // because CsvColumnMap is mutable (Index/Name/Format/Default are init-only
-    // on the type but the list itself can be repopulated). Long-running
-    // services that reuse a single ColumnMaps instance across many extractions
-    // hit this cache; one-shot callers see no benefit but no regression.
-    private static readonly ConcurrentDictionary<RuntimeMapKey, ClassMap> RuntimeMapCache = new();
+    // Runtime-maps cache: keyed weakly by the ColumnMaps list instance, so an entry dies with the
+    // list (no unbounded growth when a caller builds a fresh list per run). Each entry keeps a
+    // snapshot of the list's contents at build time and is revalidated on every hit, so a list that
+    // is repopulated for a different layout is rebuilt rather than served a stale ClassMap.
+    private static readonly ConditionalWeakTable<IReadOnlyList<CsvColumnMap>, ConcurrentDictionary<Type, RuntimeMapEntry>> RuntimeMapCache = new();
 
 
 
-    private readonly struct RuntimeMapKey : IEquatable<RuntimeMapKey>
+    private sealed class RuntimeMapEntry
     {
-        public RuntimeMapKey(Type recordType, IReadOnlyList<CsvColumnMap> columnMaps)
+        public RuntimeMapEntry(CsvColumnMap[] snapshot, ClassMap map)
         {
-            RecordType = recordType;
-            ColumnMaps = columnMaps;
+            Snapshot = snapshot;
+            Map = map;
         }
 
-        public Type RecordType { get; }
+        public CsvColumnMap[] Snapshot { get; }
 
-        public IReadOnlyList<CsvColumnMap> ColumnMaps { get; }
-
-        public bool Equals(RuntimeMapKey other) =>
-            RecordType == other.RecordType
-            && ReferenceEquals(ColumnMaps, other.ColumnMaps);
-
-        public override bool Equals(object? obj) =>
-            obj is RuntimeMapKey other && Equals(other);
-
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                var hash = RecordType.GetHashCode();
-                hash = (hash * 31) + System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(ColumnMaps);
-                return hash;
-            }
-        }
+        public ClassMap Map { get; }
     }
 
 
@@ -151,11 +132,10 @@ internal static class CsvClassMapFactory
     /// runtime (e.g. from configuration or a database) rather than via attributes.
     /// </summary>
     /// <remarks>
-    /// Cached by <c>(typeof(T), columnMaps reference identity)</c>: passing the
-    /// same <paramref name="columnMaps"/> instance to subsequent calls returns the
-    /// cached <see cref="ClassMap{T}"/> without re-reflecting. Callers running
-    /// long-lived services should reuse a single <c>ColumnMaps</c> instance per
-    /// template to amortize the reflection cost.
+    /// Cached per <paramref name="columnMaps"/> instance and <typeparamref name="T"/>: passing the
+    /// same list instance with unchanged contents returns the cached <see cref="ClassMap{T}"/>
+    /// without re-reflecting. The cache holds the list weakly (it does not keep it alive) and is
+    /// revalidated against a snapshot of the list's contents, so a repopulated list is rebuilt.
     /// </remarks>
     /// <typeparam name="T">The record type being mapped.</typeparam>
     /// <param name="columnMaps">Runtime column descriptors. Must be non-empty.</param>
@@ -182,15 +162,19 @@ internal static class CsvClassMapFactory
 
         ValidateNoDuplicates(columnMaps);
 
-        var key = new RuntimeMapKey(typeof(T), columnMaps);
-        if (RuntimeMapCache.TryGetValue(key, out var cached))
+        var byType = RuntimeMapCache.GetValue(columnMaps, _ => new ConcurrentDictionary<Type, RuntimeMapEntry>());
+        var current = columnMaps.ToArray();
+
+        if (byType.TryGetValue(typeof(T), out var cached) && cached.Snapshot.SequenceEqual(current))
         {
-            return (ClassMap<T>)cached;
+            return (ClassMap<T>)cached.Map;
         }
 
         var built = BuildClassMapFromColumnMaps<T>(columnMaps);
-        return (ClassMap<T>)RuntimeMapCache.GetOrAdd(key, built);
+        byType[typeof(T)] = new RuntimeMapEntry(current, built);
+        return built;
     }
+
 
 
     // Non-generic bridge for the polymorphic direct-init path — see GetMap(Type). RUC and
