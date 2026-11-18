@@ -43,7 +43,15 @@ public sealed class CsvDiscriminator<TBase>
 
 
     /// <summary>Optional per-type runtime column maps, applied instead of the concrete type's attributes.</summary>
-    public IReadOnlyDictionary<Type, IReadOnlyList<CsvColumnMap>>? PerTypeColumnMaps { get; init; }
+    public IReadOnlyDictionary<Type, IReadOnlyList<CsvColumnMap>>? PerTypeColumnMaps
+    {
+        get => _perTypeColumnMaps;
+        init => _perTypeColumnMaps = FrozenColumnMaps.Freeze(value);
+    }
+
+
+
+    private IReadOnlyDictionary<Type, IReadOnlyList<CsvColumnMap>>? _perTypeColumnMaps;
 
 
     /// <summary>The comparer used to match discriminator values. Defaults to <see cref="StringComparer.OrdinalIgnoreCase"/>.</summary>

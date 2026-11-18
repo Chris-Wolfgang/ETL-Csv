@@ -34,6 +34,7 @@ public sealed record CsvExtractorOptions<TRecord> : ExtractorOptions
     /// <summary>
     /// Gets a value indicating whether lines beginning with <see cref="Comment"/> are treated as
     /// comments and skipped. Defaults to <see langword="false"/>.
+    /// Comment lines are not records: they do not count toward <c>SkipItemCount</c>, <c>MaximumItemCount</c> or the item count.
     /// </summary>
     public bool AllowComments { get; init; }
 
@@ -105,7 +106,19 @@ public sealed record CsvExtractorOptions<TRecord> : ExtractorOptions
     /// Gets the explicit column mappings. Defaults to <see langword="null"/>, meaning mapping is
     /// driven by attributes on <typeparamref name="TRecord"/>.
     /// </summary>
-    public IReadOnlyList<CsvColumnMap>? ColumnMaps { get; init; }
+    /// <remarks>
+    /// The list is copied when it is assigned, so editing the caller's list afterwards has no effect
+    /// on a component built from these options. To change the mapping, assign a new list.
+    /// </remarks>
+    public IReadOnlyList<CsvColumnMap>? ColumnMaps
+    {
+        get => _columnMaps;
+        init => _columnMaps = FrozenColumnMaps.Freeze(value);
+    }
+
+
+
+    private IReadOnlyList<CsvColumnMap>? _columnMaps;
 
 
 

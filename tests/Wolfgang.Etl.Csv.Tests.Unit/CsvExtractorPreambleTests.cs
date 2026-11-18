@@ -75,7 +75,36 @@ public class CsvExtractorPreambleTests
         }
 
         Assert.NotNull(info);
-        Assert.Equal(5, info!.LineNumber);
+        Assert.Equal(5, info.LineNumber);
+    }
+
+
+
+    [Fact]
+    public async Task ExtractAsync_when_preamble_and_data_have_comment_and_blank_lines_they_do_not_count_as_items()
+    {
+        var csv = "banner\n\n#note\nFirstName,LastName,Age\n#c1\nAnn,Lee,1\n\n#c2\nBob,Ray,2\n\nCy,Fox,3\nDee,Kim,4\n";
+        var sut = new CsvExtractor<PersonRecord>
+        (
+            new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(csv)), Encoding.UTF8),
+            new CsvExtractorOptions<PersonRecord>
+            {
+                InitialRecordIndex = 4,
+                AllowComments = true,
+                SkipItemCount = 1,
+                MaximumItemCount = 2,
+            }
+        );
+
+        var items = new List<PersonRecord>();
+        await foreach (var item in sut.ExtractAsync())
+        {
+            items.Add(item);
+        }
+
+        Assert.Equal(new[] { "Bob", "Cy" }, items.ConvertAll(i => i.FirstName));
+        Assert.Equal(2, sut.CurrentItemCount);
+        Assert.Equal(1, sut.CurrentSkippedItemCount);
     }
 
 

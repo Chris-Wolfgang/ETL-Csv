@@ -335,7 +335,7 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     /// and non-empty, the runtime maps are the only source of property-to-column
     /// bindings; attribute-based mapping is bypassed.
     /// </remarks>
-    public IReadOnlyList<CsvColumnMap>? ColumnMaps { get => _columnMaps; [Obsolete("Configure ColumnMaps through CsvLoaderOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set => _columnMaps = value; }
+    public IReadOnlyList<CsvColumnMap>? ColumnMaps { get => _columnMaps; [Obsolete("Configure ColumnMaps through CsvLoaderOptions<TRecord> passed to the constructor instead. This setter will be removed in a future release.")] set => _columnMaps = FrozenColumnMaps.Freeze(value); }
 
 
 

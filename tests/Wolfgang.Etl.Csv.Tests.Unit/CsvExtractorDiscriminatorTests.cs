@@ -481,7 +481,7 @@ public class CsvExtractorDiscriminatorTests
 
         var maps = Assert.Single(discriminator.PerTypeColumnMaps!);
         Assert.Equal(typeof(PaymentRow), maps.Key);
-        Assert.Same(columns, maps.Value);
+        Assert.Equal(columns, maps.Value); // equal contents; the list itself is now a private immutable copy
     }
 
 
