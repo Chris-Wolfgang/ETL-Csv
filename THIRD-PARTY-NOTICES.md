@@ -31,7 +31,7 @@ below) whenever the dependency graph changes.
 
 ## First-party dependencies
 
-`Wolfgang.Etl.Abstractions` 0.27.0 (MIT) is also a shipped runtime dependency, but it
+`Wolfgang.Etl.Abstractions` 0.28.0 (MIT) is also a shipped runtime dependency, but it
 is authored and published by this project's owner rather than a third party, so
 it is recorded here for completeness rather than listed in the table above.
 
