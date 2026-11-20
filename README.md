@@ -105,7 +105,7 @@ That's the full surface for the simplest case. The library auto-maps record prop
 | Feature | Where it lives |
 |---|---|
 | Async-first read/write of CSV streams | `CsvExtractor<T>`, `CsvLoader<T>` |
-| Multi-targeted: net462 → net10.0 | csproj `<TargetFrameworks>` |
+| Multi-targeted: net462 → net11.0 | csproj `<TargetFrameworks>` |
 | Progress reporting with item count, skip count, line number, bad-data count | `CsvExtractorProgress`, `CsvLoaderProgress` |
 | Cancellation support throughout | `CancellationToken` on every async API |
 | Skip metadata rows / start at a specific line | `InitialRecordIndex` |
@@ -360,7 +360,7 @@ This library uses **`BannedSymbols.txt`** to prohibit synchronous APIs and enfor
 ## 🛠️ Building from Source
 
 ### Prerequisites
-- [.NET 10.0 SDK](https://dotnet.microsoft.com/download) — required to build the highest TFM (`net10.0`). Older TFM targets (`net462`, `netstandard2.0`/`2.1`, `net5.0`–`net8.0`) compile through the .NET 10 SDK; you don't need additional SDKs installed.
+- [.NET 11.0 SDK](https://dotnet.microsoft.com/download) — required to build the highest TFM (`net11.0`; `global.json` pins 11.0.100). Older TFM targets (`net462`, `netstandard2.0`/`2.1`, `net5.0`–`net10.0`) compile through the .NET 11 SDK; you don't need additional SDKs installed.
 - Optional: [PowerShell Core](https://github.com/PowerShell/PowerShell) for formatting scripts
 
 ### Build Steps
