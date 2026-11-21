@@ -407,6 +407,69 @@ public class CsvCheckpointExtensionsTests
     }
 
 
+    [Fact]
+    public async Task WriteCheckpointAsync_when_count_is_zero_round_trips_zero()
+    {
+        var path = NewTempPath();
+        try
+        {
+            await CsvCheckpointExtensions.WriteCheckpointAsync(path, 0);
+
+            Assert.Equal(0, await CsvCheckpointExtensions.ReadCheckpointAsync(path));
+        }
+        finally
+        {
+            Cleanup(path);
+        }
+    }
+
+
+
+    [Fact]
+    public async Task WriteCheckpointAsync_when_count_is_negative_says_why_in_the_message()
+    {
+        var path = NewTempPath();
+        try
+        {
+            var ex = await Assert.ThrowsAsync<ArgumentOutOfRangeException>
+            (
+                async () => await CsvCheckpointExtensions.WriteCheckpointAsync(path, -1)
+            );
+
+            Assert.Contains("must not be negative", ex.Message, StringComparison.Ordinal);
+        }
+        finally
+        {
+            Cleanup(path);
+        }
+    }
+
+
+
+    [Fact]
+    public async Task ReadCheckpointAsync_when_the_file_holds_a_negative_count_names_the_file_and_the_count()
+    {
+        var path = NewTempPath();
+        try
+        {
+            await WriteRawAsync(path, "-1");
+
+            var ex = await Assert.ThrowsAsync<FormatException>
+            (
+                async () => await CsvCheckpointExtensions.ReadCheckpointAsync(path)
+            );
+
+            Assert.Contains(path, ex.Message, StringComparison.Ordinal);
+            Assert.Contains("negative count (-1)", ex.Message, StringComparison.Ordinal);
+        }
+        finally
+        {
+            Cleanup(path);
+        }
+    }
+
+
+
     private static string NewTempPath() =>
         Path.Combine(Path.GetTempPath(), "csvchk-" + Guid.NewGuid().ToString("N") + ".txt");
 
