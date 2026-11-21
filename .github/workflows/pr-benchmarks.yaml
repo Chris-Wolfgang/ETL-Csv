@@ -43,7 +43,9 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
         with:
-          dotnet-version: '10.0.x'
+          dotnet-version: |
+            10.0.x
+            11.0.x
 
       # Copy the delta script off the work tree — the base checkout below reverts
       # the tree to the base commit, which does not contain this PR's script.
