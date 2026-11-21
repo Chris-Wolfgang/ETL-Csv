@@ -65,7 +65,7 @@ public class CsvColumnMapsImmutabilityTests
         var options = new CsvExtractorOptions<PersonRecord> { ColumnMaps = MapsWithName("first") };
 
         Assert.IsNotAssignableFrom<System.Collections.IList>(options.ColumnMaps);
-        Assert.Equal(3, options.ColumnMaps!.Count);
+        Assert.Equal(3, options.ColumnMaps.Count);
         Assert.Equal("first", options.ColumnMaps[0].Name);
     }
 
@@ -100,7 +100,7 @@ public class CsvColumnMapsImmutabilityTests
         list[0] = new CsvColumnMap(nameof(PersonRecord.FirstName)) { Name = "given" };
         dictionary.Clear();
 
-        Assert.Equal("first", discriminator.PerTypeColumnMaps![typeof(PersonRecord)][0].Name);
+        Assert.Equal("first", discriminator.PerTypeColumnMaps[typeof(PersonRecord)][0].Name);
         Assert.Null(new CsvDiscriminator<object> { ColumnName = "kind", PerTypeColumnMaps = null }.PerTypeColumnMaps);
     }
 
@@ -114,12 +114,16 @@ public class CsvColumnMapsImmutabilityTests
         Assert.Equal
         (
             new[] { "FirstName", "LastName", "Age" },
-            options.ColumnMaps!.Select(m => m.PropertyName).ToArray()
+            options.ColumnMaps.Select(m => m.PropertyName).ToArray()
         );
-        Assert.Equal
-        (
-            3,
-            ((System.Collections.IEnumerable)options.ColumnMaps!).Cast<CsvColumnMap>().Count()
-        );
+        System.Collections.IEnumerable nonGeneric = options.ColumnMaps;
+        var enumerator = nonGeneric.GetEnumerator();
+        var count = 0;
+        while (enumerator.MoveNext())
+        {
+            count++;
+        }
+
+        Assert.Equal(3, count);
     }
 }
