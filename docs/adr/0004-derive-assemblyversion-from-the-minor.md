@@ -10,7 +10,7 @@
 
 There are two ways to get this wrong. If `AssemblyVersion` follows the package version, every patch release changes the binding identity and every .NET Framework consumer needs a binding redirect for no behavioural reason. If it is frozen, a breaking `0.x` minor release is invisible at bind time: a consumer who swaps in the new package without recompiling loads it and fails at run time.
 
-The ETL family has a policy for this (recorded in ETL-Abstractions as "`<AssemblyVersion>` policy for the ETL family"): a library that targets .NET Framework and is not already pinned at `1.0.0.0` derives `0.{Minor}.0.0` during `0.x`. The project file here already does that and explains it in a comment; there was no ADR.
+The ETL family has a policy for this (recorded in ETL-Abstractions as [ADR-0015](https://github.com/Chris-Wolfgang/ETL-Abstractions/blob/main/docs/adr/0015-assemblyversion-policy-for-the-etl-family.md), "`<AssemblyVersion>` policy for the ETL family"): a library that targets .NET Framework and is not already pinned at `1.0.0.0` derives `0.{Minor}.0.0` during `0.x`. The project file here already does that and explains it in a comment; there was no ADR.
 
 ## Decision
 
