@@ -313,6 +313,8 @@ The out-of-support 5.0–7.0 targets exist for binary compatibility with `Wolfga
 
 See the [NuGet package page](https://www.nuget.org/packages/Wolfgang.Etl.Csv/) for the authoritative per-TFM compatibility matrix.
 
+**Test matrix.** Every pull request runs the unit tests on five legs: Linux x64, Linux ARM64 (`ubuntu-24.04-arm`), Windows x64, Windows ARM64 (`windows-11-arm`) and macOS ARM64. Each leg runs the test target frameworks that runtime supports there: Windows x64 runs every one, .NET Framework 4.6.2-4.8.1 included; Linux x64 runs .NET Core 3.1 and .NET 5.0 and later; the ARM64 and macOS legs run .NET 6.0 and later. The ARM64 legs run on public repositories only. A Native AOT smoke app is also published and run on linux-x64 and linux-arm64.
+
 ### Trim / NativeAOT
 
 **Wolfgang.Etl.Csv is not trim-safe and not NativeAOT-compatible.** It depends on [CsvHelper](https://joshclose.github.io/CsvHelper/), which reflects over the record type's members (including type-converter constructors and members beyond what `DynamicallyAccessedMembers(PublicProperties)` can express) to build readers, writers, and type converters at runtime.
