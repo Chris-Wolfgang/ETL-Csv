@@ -12,6 +12,9 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>disable</ImplicitUsings>
     <IsPackable>false</IsPackable>
+    <!-- Not a test project: the ARM64 stages in pr.yaml fail on a project under tests/ that has
+         neither Microsoft.NET.Test.Sdk nor this explicit opt-out (#669). -->
+    <IsTestProject>false</IsTestProject>
     <PublishAot>true</PublishAot>
     <PublishTrimmed>true</PublishTrimmed>   <!-- implied by AOT; explicit so this reads as a trim + AOT check (#76) -->
     <InvariantGlobalization>true</InvariantGlobalization>
