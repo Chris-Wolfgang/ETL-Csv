@@ -422,6 +422,47 @@ public class CsvValidatorTests
 
 
     [Fact]
+    public void CsvValidationException_when_parameterless_has_default_line_and_no_failures()
+    {
+        var ex = new CsvValidationException();
+
+        Assert.Equal(0, ex.LineNumber);
+        Assert.Empty(ex.Failures);
+        Assert.Null(ex.InnerException);
+        Assert.False(string.IsNullOrEmpty(ex.Message));
+    }
+
+
+
+    [Fact]
+    public void CsvValidationException_when_given_a_message_uses_it_and_has_defaults()
+    {
+        var ex = new CsvValidationException("custom message");
+
+        Assert.Equal("custom message", ex.Message);
+        Assert.Equal(0, ex.LineNumber);
+        Assert.Empty(ex.Failures);
+        Assert.Null(ex.InnerException);
+    }
+
+
+
+    [Fact]
+    public void CsvValidationException_when_given_a_message_and_inner_exception_keeps_both_and_has_defaults()
+    {
+        var inner = new InvalidOperationException("inner");
+
+        var ex = new CsvValidationException("outer", inner);
+
+        Assert.Equal("outer", ex.Message);
+        Assert.Same(inner, ex.InnerException);
+        Assert.Equal(0, ex.LineNumber);
+        Assert.Empty(ex.Failures);
+    }
+
+
+
+    [Fact]
     public void CsvValidationResult_failed_ctor_empty_failures_reports_parameter_and_message()
     {
         var ex = Assert.Throws<ArgumentException>(() => new CsvValidationResult(Array.Empty<string>()));
