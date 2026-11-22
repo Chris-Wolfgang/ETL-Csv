@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1794749263905,
+  "lastUpdate": 1795356311789,
   "repoUrl": "https://github.com/Chris-Wolfgang/ETL-Csv",
   "entries": {
     "Mutation score": [
@@ -188,6 +188,33 @@ window.BENCHMARK_DATA = {
           {
             "name": "Mutation score (tests/Wolfgang.Etl.Csv.Tests.Unit)",
             "value": 91.37,
+            "unit": "%"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang",
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com"
+          },
+          "committer": {
+            "name": "GitHub",
+            "username": "web-flow",
+            "email": "noreply@github.com"
+          },
+          "id": "0b1b95d97dbae592b0e5d5b297a747611dbe4456",
+          "message": "feat: add standard exception constructors to CsvValidationException (#748)\n\nAdd (), (string?) and (string?, Exception?) constructors alongside the\nexisting (int lineNumber, IReadOnlyList<string> failures) one. The new\nconstructors leave LineNumber at 0 and Failures empty. Add tests for each\nconstructor, PublicAPI.Unshipped entries and a changelog fragment.\n\nRefs #208\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-21T20:50:13Z",
+          "url": "https://github.com/Chris-Wolfgang/ETL-Csv/commit/0b1b95d97dbae592b0e5d5b297a747611dbe4456"
+        },
+        "date": 1795356304687,
+        "tool": "customBiggerIsBetter",
+        "benches": [
+          {
+            "name": "Mutation score (tests/Wolfgang.Etl.Csv.Tests.Unit)",
+            "value": 90.46,
             "unit": "%"
           }
         ]
