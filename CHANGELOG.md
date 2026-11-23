@@ -20,6 +20,59 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 
 
+## [0.11.0] - 2026-11-23
+
+### Added
+
+- Add `CsvSchemaBuilder<T>` and `CsvSchema` — a fluent, type-safe, code-first column mapping for record types you cannot decorate with `[CsvColumn]`, applied through the new `Schema` option on `CsvExtractorOptions<TRecord>` / `CsvLoaderOptions<TRecord>` (mutually exclusive with `ColumnMaps`); `CsvSchema.For<T>()` reifies a type's attribute-resolved mapping for inspection. (#167)
+- The package now also ships a `net11.0` build. (#734)
+- Add the standard `()`, `(string)` and `(string, Exception)` constructors to `CsvValidationException`; exceptions built with them report `LineNumber` 0 and an empty `Failures` list. (#748)
+
+### Fixed
+
+- The path-based `CsvExtractor` / `CsvLoader` pipeline factories reject an empty or whitespace path up front, the builder's `InitialRecordIndex(...)` rejects a value below 1 at the call (naming `oneBasedIndex`), a direct-init `CsvDiscriminator` whose values collide under its `Comparer` or that maps one type twice now throws `InvalidOperationException` instead of letting the last entry win, `CsvValidationResult.Fail(...)` copies the caller's array, `BuildFromColumnMaps` reports an unknown property with `ParamName` `columnMaps`, and `WriteCheckpointAsync` removes its `.tmp` file when the write itself fails. (#590)
+- `CsvCheckpointExtensions.WriteCheckpointAsync` now rejects a negative count with `ArgumentOutOfRangeException` and flushes the temporary file to disk before the atomic rename, so a power loss cannot leave an empty checkpoint. `ReadCheckpointAsync` reports a negative value in the file as `FormatException` (the documented failure) instead of letting it surface later from the skip-count setter. (#713)
+- ColumnMaps (and CsvDiscriminator.PerTypeColumnMaps) are now copied into a private immutable list when assigned. Editing the list you passed in afterwards, for example `maps[0] = new CsvColumnMap(...)`, no longer affects an extractor or loader built from it, and the list read back cannot be cast to a mutable collection. (#723)
+- The path-based `EtlPipeline.CsvExtractor<T>(path)` builder now disposes the `StreamReader` it opened if constructing the extractor or replaying a configuration step throws, so the file handle is not left open.
+- `ResumeFromCheckpointAsync<TRecord>` now carries the same `DynamicallyAccessedMembers(PublicProperties)` annotation on `TRecord` as `CsvExtractor<TRecord>`, so trimmed and Native AOT callers no longer see an IL2091 warning flow through it.
+- `[CsvIgnore]` and `[CsvColumn]` are now honoured on properties inherited from a base class and on properties overridden in a derived class. Previously an inherited `[CsvIgnore]` property was written by `CsvLoader`, required in the header by `CsvExtractor`, and attributes on an overridden `virtual` property were lost; `CsvSchema.For<T>()` had the same override gap. (#708)
+- `InitialRecordIndex` now discards the preamble as raw lines before the CSV parser sees them. Previously a blank line, a comment line (with `AllowComments`) or a quote character in the banner made the skip overshoot and consume the header or the whole file. Reported line numbers are unchanged (physical source lines). (#711)
+- `ICsvLoaderBuilder<T>` configuration setters now throw `InvalidOperationException` once `RunAsync` has been called, matching `ICsvExtractorBuilder<T>`, instead of silently applying to the next run (which, for a path sink, reopened and overwrote the file).
+- The path-based `CsvLoader(path)` pipeline terminator now validates the options before opening (and truncating) the target file, and disposes the `StreamWriter` it opened if constructing the loader or wiring the sink throws.
+- `CsvLoaderProgress.CurrentLineNumber` now reports the line most recently written, as documented; it used to report one more (for example 5 after a header and three records).
+- `CsvLoader` now checks `MaximumItemCount` before pulling the next item from its source, so a one-shot upstream no longer loses one item past the limit, and it honours an already-cancelled token before writing the header row. (#710)
+- `CsvExtractor` and `CsvLoader` now validate their options record at construction: a null or empty `Delimiter` (and, for the loader, `NewLine`) and a name-based `Discriminator` combined with `HasHeaderRecord = false` throw `ArgumentException` naming `options`, instead of failing mid-enumeration with an `IndexOutOfRangeException` or a `ReaderException` that a skip `ErrorPolicy` could swallow. (#714)
+- The path-based `CsvExtractor<T>(path)` pipeline builder now opens its file when the pipeline is enumerated, not when it is composed, so an abandoned, cancelled-before-start or sink-failed pipeline no longer leaks a file handle, and the pipeline can be enumerated more than once. The path-based `CsvLoader(path)` sink now writes to a temporary file that replaces the destination only when the run succeeds, so a failed or cancelled run (for example a missing source file) no longer truncates an existing output file; a second `RunAsync` on the same sink throws `InvalidOperationException` instead of overwriting the first run's output. (#712)
+- A reused `CsvExtractor` / `CsvLoader` now resets its CSV-specific progress counters (`CurrentLineNumber`, `CurrentBadDataCount`, `CurrentInvalidItemCount`) and the loader's invalid-record ordinal at the start of every run, matching the base counters, instead of accumulating them across runs.
+- The runtime `ColumnMaps` class-map cache no longer returns a stale map when the same list is repopulated with a different layout, and no longer pins every list it has seen for the life of the process: entries are held weakly by list instance and revalidated against a snapshot of the list's contents. (#709)
+- `CsvValidator.GreaterThan`, `InRange` and `MaxLength` failure messages now format their thresholds with the invariant culture, so the message text (and `CsvValidationException.Message`) is the same on every host culture (for example `9.99`, not `9,99` under de-DE).
+
+### Documentation
+
+- Document that comment and blank lines never count toward SkipItemCount, MaximumItemCount or the item count. (#716)
+- The `CsvDiscriminator<TBase>` and `CsvLoader<TRecord>.Discriminator` XML docs now say the loader writes each record with its concrete type's own mapping and does not emit the discriminator value itself.
+- `ICsvExtractorBuilder<T>` now documents that its configuration setters throw `InvalidOperationException` once a pipeline operator has materialized the extractor.
+- `CsvExtractorOptions<TRecord>.LeaveOpen` and `CsvLoaderOptions<TRecord>.LeaveOpen` now say the reader/writer is closed (or left open) when the run completes, not when the stage is disposed. (#638)
+- `CsvLoaderOptions<TRecord>` and the README now say that `CsvLoader<TRecord>` does not consult the inherited `ErrorPolicy` (a record that fails partway through cannot be withdrawn), and point at validators with `Skip` for dropping records before they are written.
+- The `[Obsolete]` messages on the `SkipRecordCount` / `MaxRecordCount` setters of `CsvExtractor<TRecord>` and `CsvLoader<TRecord>` now name `SkipItemCount` / `MaximumItemCount` on the options record, instead of the options aliases that are themselves obsolete. (#638)
+- The `CsvExtractor<TRecord>` and `CsvLoader<TRecord>` options constructors now document the `ArgumentException` thrown when the options set both `Schema` and `ColumnMaps`, or a `Schema` built for another record type.
+- The resumable-extraction cookbook, example and `CsvCheckpointExtensions` docs now explain that `SkipItemCount` skips raw rows rather than committed records, and give the counter to checkpoint when validators, an `ErrorPolicy` or a discriminator can drop rows. The pipeline-extensions guide's `Through` sample now compiles, and its configuration section and the README schema-builder section no longer overstate what the fluent builders and `CsvSchema` do. (#716)
+- `CsvValidationResult` documentation now states that its invariants are enforced by the constructors only: the public `init` accessors on `IsValid` and `Failures` (shipped API) still allow `with` / initializer expressions to create states the constructors reject. (#715)
+- XML docs now list the exceptions `ExtractAsync` / `LoadAsync` can throw, say that `InitialRecordIndex` counts lines (not records), that a dry run leaves `CurrentLineNumber` at 0, that the builders' `Encoding(...)` is the one setter without a matching property, and complete the progress, discriminator, column-map and checkpoint remarks. (#591)
+- XML doc comments no longer claim that a parse failure always propagates (ErrorPolicy decides), that the builders' `Encoding(...)` sets the inert `Encoding` property, or point at the obsolete `SkipRecordCount` / `MaxRecordCount` aliases.
+
+### Internal
+
+- Update `Wolfgang.Etl.Abstractions`, `Wolfgang.Etl.TestKit` and `Wolfgang.Etl.TestKit.Xunit` to 0.27.0. No source or test changes were required. (#719)
+- Update `Wolfgang.Etl.Abstractions`, `Wolfgang.Etl.TestKit` and `Wolfgang.Etl.TestKit.Xunit` to 0.28.0. No source or test changes were required. (#730)
+- The library's own reflection path (the direct-init `CsvDiscriminator` maps, runtime-type writes, and the record map registration) is now annotated with `[RequiresUnreferencedCode]` / `[RequiresDynamicCode]` or covered at its seam, so a Native AOT publish reports no trim/AOT warnings from Wolfgang.Etl.Csv itself; the remaining warnings come from CsvHelper.
+- The trim, AOT and single-file analyzers now run on the net8.0+ builds (`IsAotCompatible` / `IsTrimmable`), so the existing `[RequiresUnreferencedCode]` annotations are checked for completeness. The library is still not trim-safe: CsvHelper reflects over the record type.
+- `PackageValidationBaselineVersion` advances to 0.10.0 now that the package is on the NuGet CDN, so the next release validates its API surface against what actually shipped.
+- `Microsoft.Bcl.AsyncInterfaces` and `Microsoft.Extensions.Logging.Abstractions` move to 11.0.0. (#515)
+- Formatting-only cleanup (blank-line spacing, Allman layout, a mis-placed backing field, redundant nested pragmas); no behaviour change.
+- Project-file hygiene: the package metadata now takes `Authors` / `Copyright` / `RepositoryType` from the shared build props (the copyright year is derived), and the class library no longer sets an `ApplicationIcon`. (#482)
+- `CsvSchemaBuilder<T>.Column` now resolves its property selector with the shared `PropertySelector.Resolve` from Wolfgang.Etl.Abstractions 0.27 instead of a private copy. Accepted and rejected selectors are unchanged. (#720)
+
 ## [0.10.0] - 2026-09-22
 
 ### Added
@@ -492,7 +545,8 @@ Initial release.
 - `CsvExtractor<T>` and `CsvLoader<T>` are annotated `[RequiresUnreferencedCode]` — the library is not trim/NativeAOT safe.
 - See [`docs/abi-stability.md`](docs/abi-stability.md) for the SemVer commitment, [`docs/license-audit.md`](docs/license-audit.md) for the 0.1.0 dependency snapshot, [`docs/reproducible-build-verification.md`](docs/reproducible-build-verification.md) for the build-repro recipe.
 
-[Unreleased]: https://github.com/Chris-Wolfgang/ETL-Csv/compare/v0.10.0...HEAD
+[Unreleased]: https://github.com/Chris-Wolfgang/ETL-Csv/compare/v0.11.0...HEAD
+[0.11.0]: https://github.com/Chris-Wolfgang/ETL-Csv/compare/v0.10.0...v0.11.0
 [0.10.0]: https://github.com/Chris-Wolfgang/ETL-Csv/compare/v0.9.0...v0.10.0
 [0.9.0]: https://github.com/Chris-Wolfgang/ETL-Csv/compare/v0.8.0...v0.9.0
 [0.8.0]: https://github.com/Chris-Wolfgang/ETL-Csv/compare/v0.7.1...v0.8.0

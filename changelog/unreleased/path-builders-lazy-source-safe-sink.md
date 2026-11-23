@@ -1,3 +1,0 @@
-type: fix
-
-The path-based `CsvExtractor<T>(path)` pipeline builder now opens its file when the pipeline is enumerated, not when it is composed, so an abandoned, cancelled-before-start or sink-failed pipeline no longer leaks a file handle, and the pipeline can be enumerated more than once. The path-based `CsvLoader(path)` sink now writes to a temporary file that replaces the destination only when the run succeeds, so a failed or cancelled run (for example a missing source file) no longer truncates an existing output file; a second `RunAsync` on the same sink throws `InvalidOperationException` instead of overwriting the first run's output.
