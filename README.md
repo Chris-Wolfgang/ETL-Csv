@@ -105,7 +105,7 @@ That's the full surface for the simplest case. The library auto-maps record prop
 | Feature | Where it lives |
 |---|---|
 | Async-first read/write of CSV streams | `CsvExtractor<T>`, `CsvLoader<T>` |
-| Multi-targeted: net462 → net10.0 | csproj `<TargetFrameworks>` |
+| Multi-targeted: net462 → net11.0 | csproj `<TargetFrameworks>` |
 | Progress reporting with item count, skip count, line number, bad-data count | `CsvExtractorProgress`, `CsvLoaderProgress` |
 | Cancellation support throughout | `CancellationToken` on every async API |
 | Skip metadata rows / start at a specific line | `InitialRecordIndex` |
@@ -313,6 +313,8 @@ The out-of-support 5.0–7.0 targets exist for binary compatibility with `Wolfga
 
 See the [NuGet package page](https://www.nuget.org/packages/Wolfgang.Etl.Csv/) for the authoritative per-TFM compatibility matrix.
 
+**Test matrix.** Every pull request runs the unit tests on five legs: Linux x64, Linux ARM64 (`ubuntu-24.04-arm`), Windows x64, Windows ARM64 (`windows-11-arm`) and macOS ARM64. Each leg runs the test target frameworks that runtime supports there: Windows x64 runs every one, .NET Framework 4.6.2-4.8.1 included; Linux x64 runs .NET Core 3.1 and .NET 5.0 and later; the ARM64 and macOS legs run .NET 6.0 and later. The ARM64 legs run on public repositories only. A Native AOT smoke app is also published and run on linux-x64 and linux-arm64.
+
 ### Trim / NativeAOT
 
 **Wolfgang.Etl.Csv is not trim-safe and not NativeAOT-compatible.** It depends on [CsvHelper](https://joshclose.github.io/CsvHelper/), which reflects over the record type's members (including type-converter constructors and members beyond what `DynamicallyAccessedMembers(PublicProperties)` can express) to build readers, writers, and type converters at runtime.
@@ -360,7 +362,7 @@ This library uses **`BannedSymbols.txt`** to prohibit synchronous APIs and enfor
 ## 🛠️ Building from Source
 
 ### Prerequisites
-- [.NET 10.0 SDK](https://dotnet.microsoft.com/download) — required to build the highest TFM (`net10.0`). Older TFM targets (`net462`, `netstandard2.0`/`2.1`, `net5.0`–`net8.0`) compile through the .NET 10 SDK; you don't need additional SDKs installed.
+- [.NET 11.0 SDK](https://dotnet.microsoft.com/download) — required to build the highest TFM (`net11.0`; `global.json` pins 11.0.100). Older TFM targets (`net462`, `netstandard2.0`/`2.1`, `net5.0`–`net10.0`) compile through the .NET 11 SDK; you don't need additional SDKs installed.
 - Optional: [PowerShell Core](https://github.com/PowerShell/PowerShell) for formatting scripts
 
 ### Build Steps
