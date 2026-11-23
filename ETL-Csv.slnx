@@ -85,9 +85,11 @@
     <File Path="docs/pipeline-extensions.md" />
   </Folder>
   <Folder Name="/.root/docs/adr/">
-    <File Path="docs/adr/0000-template.md" />
+    <File Path="docs/adr/0000-record-architecture-decisions.md" />
     <File Path="docs/adr/0001-csvhelper-as-internal-parser.md" />
+    <File Path="docs/adr/index.md" />
     <File Path="docs/adr/README.md" />
+    <File Path="docs/adr/TEMPLATE.md" />
   </Folder>
   <Folder Name="/.root/docs/cookbook/">
     <File Path="docs/cookbook/polymorphic-rows.md" />
