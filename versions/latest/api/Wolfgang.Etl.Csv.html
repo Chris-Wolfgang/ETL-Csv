@@ -116,7 +116,10 @@ trimming/AOT needs preserved.</p>
       <dt><a class="xref" href="Wolfgang.Etl.Csv.CsvDiscriminator-1.html">CsvDiscriminator&lt;TBase&gt;</a></dt>
       <dd><p>Describes how a single CSV file mixes multiple record shapes, keyed by a discriminator column, so a
 <a class="xref" href="Wolfgang.Etl.Csv.CsvExtractor-1.html">CsvExtractor&lt;TRecord&gt;</a> binds each row to the right concrete type and a
-<a class="xref" href="Wolfgang.Etl.Csv.CsvLoader-1.html">CsvLoader&lt;TRecord&gt;</a> writes each record's type and columns. Build one with
+<a class="xref" href="Wolfgang.Etl.Csv.CsvLoader-1.html">CsvLoader&lt;TRecord&gt;</a> writes each record with its concrete type's own column mapping. The
+loader does not emit the discriminator value itself: only the columns the concrete type maps are written,
+so a file that round-trips needs the discriminator column mapped as a property of each concrete type.
+Build one with
 <a class="xref" href="Wolfgang.Etl.Csv.CsvDiscriminatorBuilder-1.html">CsvDiscriminatorBuilder&lt;TBase&gt;</a> — that path is trim/AOT-safe. Constructing it directly
 from a <a class="xref" href="Wolfgang.Etl.Csv.CsvDiscriminator-1.html#Wolfgang_Etl_Csv_CsvDiscriminator_1_Mapping">Mapping</a> dictionary is supported but reflects over the mapped types at run time.</p>
 </dd>
@@ -170,6 +173,22 @@ using <a href="https://joshclose.github.io/CsvHelper/">CsvHelper</a>.</p>
 Surfaced to the caller via <a class="xref" href="Wolfgang.Etl.Csv.CsvExtractor-1.html#Wolfgang_Etl_Csv_CsvExtractor_1_ReadingExceptionOccurred">ReadingExceptionOccurred</a>
 so logging, metrics, or quarantine logic can be plugged in without the library
 making logging decisions on the caller's behalf.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Wolfgang.Etl.Csv.CsvSchema.html">CsvSchema</a></dt>
+      <dd><p>A record type's CSV column mapping as a first-class, introspectable object — the code-first
+counterpart of <a class="xref" href="Wolfgang.Etl.Csv.CsvColumnAttribute.html">CsvColumnAttribute</a> / <a class="xref" href="Wolfgang.Etl.Csv.CsvIgnoreAttribute.html">CsvIgnoreAttribute</a> decorations.
+Produced by <a class="xref" href="Wolfgang.Etl.Csv.CsvSchemaBuilder-1.html#Wolfgang_Etl_Csv_CsvSchemaBuilder_1_Build">Build()</a>, or reified from a type's attributes by
+<a class="xref" href="Wolfgang.Etl.Csv.CsvSchema.html#Wolfgang_Etl_Csv_CsvSchema_For__1">For&lt;T&gt;()</a>, and applied through <a class="xref" href="Wolfgang.Etl.Csv.CsvExtractorOptions-1.html#Wolfgang_Etl_Csv_CsvExtractorOptions_1_Schema">Schema</a> /
+<a class="xref" href="Wolfgang.Etl.Csv.CsvLoaderOptions-1.html#Wolfgang_Etl_Csv_CsvLoaderOptions_1_Schema">Schema</a>.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Wolfgang.Etl.Csv.CsvSchemaBuilder-1.html">CsvSchemaBuilder&lt;T&gt;</a></dt>
+      <dd><p>Fluent, type-safe, code-first builder for a <a class="xref" href="Wolfgang.Etl.Csv.CsvSchema.html">CsvSchema</a> — an alternative to the
+<a class="xref" href="Wolfgang.Etl.Csv.CsvColumnAttribute.html">CsvColumnAttribute</a> for record types you cannot decorate (third-party or generated
+POCOs) or layouts assembled at runtime.</p>
 </dd>
     </dl>
     <dl class="jumplist">

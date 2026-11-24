@@ -1,74 +1,101 @@
 Summary
-  Generated on: 9/23/2026 - 2:30:46 AM
-  Coverage date: 9/23/2026 - 2:30:42 AM
-  Parser: Cobertura
-  Assemblies: 2
-  Classes: 50
-  Files: 50
-  Line coverage: 98.6%
-  Covered lines: 3504
-  Uncovered lines: 49
-  Coverable lines: 3553
-  Total lines: 10018
-  Branch coverage: 83.5% (620 of 742)
-  Covered branches: 620
-  Total branches: 742
-  Method coverage: 98.6% (586 of 594)
-  Full method coverage: 95.9% (570 of 594)
-  Covered methods: 586
-  Fully covered methods: 570
-  Total methods: 594
+  Generated on: 11/24/2026 - 12:34:07 AM
+  Coverage date: 11/24/2026 - 12:34:03 AM - 11/24/2026 - 12:34:05 AM
+  Parser: MultiReport (2x Cobertura)
+  Assemblies: 3
+  Classes: 75
+  Files: 74
+  Line coverage: 99.7%
+  Covered lines: 5978
+  Uncovered lines: 14
+  Coverable lines: 5992
+  Total lines: 15763
+  Branch coverage: 88.2% (805 of 912)
+  Covered branches: 805
+  Total branches: 912
+  Method coverage: 99.6% (947 of 950)
+  Full method coverage: 99.3% (944 of 950)
+  Covered methods: 947
+  Fully covered methods: 944
+  Total methods: 950
 
-Wolfgang.Etl.Csv                                               96.7%
-  Wolfgang.Etl.Csv.CsvBadDataInfo                               100%
-  Wolfgang.Etl.Csv.CsvCheckpointExtensions                     92.5%
-  Wolfgang.Etl.Csv.CsvClassMapFactory                          99.1%
-  Wolfgang.Etl.Csv.CsvColumnAttribute                           100%
-  Wolfgang.Etl.Csv.CsvColumnMap                                 100%
-  Wolfgang.Etl.Csv.CsvDiscriminator<T>                         95.1%
-  Wolfgang.Etl.Csv.CsvDiscriminatorBuilder<T>                   100%
-  Wolfgang.Etl.Csv.CsvExtractor<T>                             95.3%
-  Wolfgang.Etl.Csv.CsvExtractorBuilder<T>                        97%
-  Wolfgang.Etl.Csv.CsvExtractorOptions<T>                       100%
-  Wolfgang.Etl.Csv.CsvExtractorProgress                         100%
-  Wolfgang.Etl.Csv.CsvInvalidRecord<T>                          100%
-  Wolfgang.Etl.Csv.CsvLoader<T>                                93.8%
-  Wolfgang.Etl.Csv.CsvLoaderBuilder<T>                           96%
-  Wolfgang.Etl.Csv.CsvLoaderOptions<T>                         94.4%
-  Wolfgang.Etl.Csv.CsvLoaderProgress                            100%
-  Wolfgang.Etl.Csv.CsvLogMessages                               100%
-  Wolfgang.Etl.Csv.CsvReadingExceptionInfo                      100%
-  Wolfgang.Etl.Csv.CsvShouldQuoteContext                        100%
-  Wolfgang.Etl.Csv.CsvTrimOptionsExtensions                     100%
-  Wolfgang.Etl.Csv.CsvValidationException                       100%
-  Wolfgang.Etl.Csv.CsvValidationResult                          100%
-  Wolfgang.Etl.Csv.CsvValidator                                 100%
-  Wolfgang.Etl.Csv.EtlPipelineCsvExtensions                     100%
+Wolfgang.Etl.Csv                                                  98.9%
+  Wolfgang.Etl.Csv.CsvBadDataInfo                                  100%
+  Wolfgang.Etl.Csv.CsvCheckpointExtensions                         100%
+  Wolfgang.Etl.Csv.CsvClassMapFactory                              100%
+  Wolfgang.Etl.Csv.CsvColumnAttribute                              100%
+  Wolfgang.Etl.Csv.CsvColumnMap                                    100%
+  Wolfgang.Etl.Csv.CsvDiscriminator<T>                             100%
+  Wolfgang.Etl.Csv.CsvDiscriminatorBuilder<T>                      100%
+  Wolfgang.Etl.Csv.CsvExtractor<T>                                96.9%
+  Wolfgang.Etl.Csv.CsvExtractorBuilder<T>                         97.5%
+  Wolfgang.Etl.Csv.CsvExtractorOptions<T>                          100%
+  Wolfgang.Etl.Csv.CsvExtractorProgress                            100%
+  Wolfgang.Etl.Csv.CsvInvalidRecord<T>                             100%
+  Wolfgang.Etl.Csv.CsvLoader<T>                                   99.5%
+  Wolfgang.Etl.Csv.CsvLoaderBuilder<T>                            96.9%
+  Wolfgang.Etl.Csv.CsvLoaderOptions<T>                             100%
+  Wolfgang.Etl.Csv.CsvLoaderProgress                               100%
+  Wolfgang.Etl.Csv.CsvLogMessages                                  100%
+  Wolfgang.Etl.Csv.CsvReadingExceptionInfo                         100%
+  Wolfgang.Etl.Csv.CsvSchema                                       100%
+  Wolfgang.Etl.Csv.CsvSchemaBuilder<T>                             100%
+  Wolfgang.Etl.Csv.CsvShouldQuoteContext                           100%
+  Wolfgang.Etl.Csv.CsvTrimOptionsExtensions                        100%
+  Wolfgang.Etl.Csv.CsvValidationException                          100%
+  Wolfgang.Etl.Csv.CsvValidationResult                             100%
+  Wolfgang.Etl.Csv.CsvValidator                                    100%
+  Wolfgang.Etl.Csv.EtlPipelineCsvExtensions                        100%
+  Wolfgang.Etl.Csv.FrozenColumnMaps                                100%
 
-Wolfgang.Etl.Csv.Tests.Unit                                    99.4%
-  Wolfgang.Etl.Csv.Tests.Unit.CsvAllocationProfileTests         100%
-  Wolfgang.Etl.Csv.Tests.Unit.CsvAttributeMappingTests         99.5%
-  Wolfgang.Etl.Csv.Tests.Unit.CsvBadDataInfoTests               100%
-  Wolfgang.Etl.Csv.Tests.Unit.CsvCheckpointExtensionsTests     97.5%
-  Wolfgang.Etl.Csv.Tests.Unit.CsvColumnAttributeTests           100%
-  Wolfgang.Etl.Csv.Tests.Unit.CsvConcurrencyStressTests         100%
-  Wolfgang.Etl.Csv.Tests.Unit.CsvCultureInvarianceTests         100%
-  Wolfgang.Etl.Csv.Tests.Unit.CsvExtractorDiscriminatorTests    100%
-  Wolfgang.Etl.Csv.Tests.Unit.CsvExtractorProgressTests         100%
-  Wolfgang.Etl.Csv.Tests.Unit.CsvExtractorTests                99.3%
-  Wolfgang.Etl.Csv.Tests.Unit.CsvExtractorValidationTests       100%
-  Wolfgang.Etl.Csv.Tests.Unit.CsvFuzzTests                     96.6%
-  Wolfgang.Etl.Csv.Tests.Unit.CsvLoaderDiscriminatorTests       100%
-  Wolfgang.Etl.Csv.Tests.Unit.CsvLoaderDryRunTests              100%
-  Wolfgang.Etl.Csv.Tests.Unit.CsvLoaderProgressTests            100%
-  Wolfgang.Etl.Csv.Tests.Unit.CsvLoaderTests                    100%
-  Wolfgang.Etl.Csv.Tests.Unit.CsvLoaderValidationTests          100%
-  Wolfgang.Etl.Csv.Tests.Unit.CsvOptionsBaseRecordTests         100%
-  Wolfgang.Etl.Csv.Tests.Unit.CsvOptionsDefaultsTests           100%
-  Wolfgang.Etl.Csv.Tests.Unit.CsvShouldQuoteContextTests        100%
-  Wolfgang.Etl.Csv.Tests.Unit.CsvSnapshotTests                  100%
-  Wolfgang.Etl.Csv.Tests.Unit.CsvTrimOptionsExtensionsTests     100%
-  Wolfgang.Etl.Csv.Tests.Unit.CsvValidatorTests                 100%
-  Wolfgang.Etl.Csv.Tests.Unit.CsvXmlDocExampleRotTests         91.1%
-  Wolfgang.Etl.Csv.Tests.Unit.EtlPipelineCsvExtensionsTests    98.9%
-  Wolfgang.Etl.Csv.Tests.Unit.SnapshotBaselineHygieneTests      100%
+Wolfgang.Etl.Csv.Tests.SourceLink                                  100%
+  Wolfgang.Etl.Csv.Tests.SourceLink.SourceLinkPdbTests             100%
+
+Wolfgang.Etl.Csv.Tests.Unit                                        100%
+  Wolfgang.Etl.Csv.Tests.Unit.CsvAllocationProfileTests            100%
+  Wolfgang.Etl.Csv.Tests.Unit.CsvAttributeMappingTests             100%
+  Wolfgang.Etl.Csv.Tests.Unit.CsvBadDataInfoTests                  100%
+  Wolfgang.Etl.Csv.Tests.Unit.CsvCheckpointExtensionsTests         100%
+  Wolfgang.Etl.Csv.Tests.Unit.CsvClassMapFactoryTests              100%
+  Wolfgang.Etl.Csv.Tests.Unit.CsvColumnAttributeTests              100%
+  Wolfgang.Etl.Csv.Tests.Unit.CsvColumnMapsImmutabilityTests       100%
+  Wolfgang.Etl.Csv.Tests.Unit.CsvConcurrencyStressTests            100%
+  Wolfgang.Etl.Csv.Tests.Unit.CsvCultureInvarianceTests            100%
+  Wolfgang.Etl.Csv.Tests.Unit.CsvExtractorDiscriminatorTests       100%
+  Wolfgang.Etl.Csv.Tests.Unit.CsvExtractorPreambleTests            100%
+  Wolfgang.Etl.Csv.Tests.Unit.CsvExtractorProgressTests            100%
+  Wolfgang.Etl.Csv.Tests.Unit.CsvExtractorTests                    100%
+  Wolfgang.Etl.Csv.Tests.Unit.CsvExtractorValidationTests          100%
+  Wolfgang.Etl.Csv.Tests.Unit.CsvExtractorWorkerTests              100%
+  Wolfgang.Etl.Csv.Tests.Unit.CsvFuzzTests                         100%
+  Wolfgang.Etl.Csv.Tests.Unit.CsvInheritedAttributeTests           100%
+  Wolfgang.Etl.Csv.Tests.Unit.CsvLoaderDiscriminatorTests          100%
+  Wolfgang.Etl.Csv.Tests.Unit.CsvLoaderDryRunTests                 100%
+  Wolfgang.Etl.Csv.Tests.Unit.CsvLoaderLineNumberTests             100%
+  Wolfgang.Etl.Csv.Tests.Unit.CsvLoaderProgressTests               100%
+  Wolfgang.Etl.Csv.Tests.Unit.CsvLoaderTests                       100%
+  Wolfgang.Etl.Csv.Tests.Unit.CsvLoaderValidationTests             100%
+  Wolfgang.Etl.Csv.Tests.Unit.CsvLoaderWorkerTests                 100%
+  Wolfgang.Etl.Csv.Tests.Unit.CsvMutationGapTests                  100%
+  Wolfgang.Etl.Csv.Tests.Unit.CsvOptionsBaseRecordTests            100%
+  Wolfgang.Etl.Csv.Tests.Unit.CsvOptionsDefaultsTests              100%
+  Wolfgang.Etl.Csv.Tests.Unit.CsvOptionsValidationTests            100%
+  Wolfgang.Etl.Csv.Tests.Unit.CsvResumeRowCountTests               100%
+  Wolfgang.Etl.Csv.Tests.Unit.CsvRuntimeMapCacheTests              100%
+  Wolfgang.Etl.Csv.Tests.Unit.CsvSchemaBuilderTests                100%
+  Wolfgang.Etl.Csv.Tests.Unit.CsvSchemaTests                       100%
+  Wolfgang.Etl.Csv.Tests.Unit.CsvShouldQuoteContextTests           100%
+  Wolfgang.Etl.Csv.Tests.Unit.CsvSnapshotTests                     100%
+  Wolfgang.Etl.Csv.Tests.Unit.CsvSourceNitsTests                   100%
+  Wolfgang.Etl.Csv.Tests.Unit.CsvSustainedLoadGcHelperTests        100%
+  Wolfgang.Etl.Csv.Tests.Unit.CsvSustainedLoadGcTests              100%
+  Wolfgang.Etl.Csv.Tests.Unit.CsvTrimOptionsExtensionsTests        100%
+  Wolfgang.Etl.Csv.Tests.Unit.CsvValidatorTests                    100%
+  Wolfgang.Etl.Csv.Tests.Unit.CsvXmlDocExampleRotTests             100%
+  Wolfgang.Etl.Csv.Tests.Unit.EtlPipelineCsvExtensionsTests        100%
+  Wolfgang.Etl.Csv.Tests.Unit.EtlPipelineCsvPathBuilderTests       100%
+  Wolfgang.Etl.Csv.Tests.Unit.SnapshotBaselineHygieneTests         100%
+  Wolfgang.Etl.Csv.Tests.Unit.TestModels.AttributedPersonRecord    100%
+  Wolfgang.Etl.Csv.Tests.Unit.TestModels.PersonRecord              100%
+  Wolfgang.Etl.Csv.Tests.Unit.TestModels.RecordingLogger<T>        100%
+  Wolfgang.Etl.Csv.Tests.Unit.TestModels.SyncProgress<T>           100%

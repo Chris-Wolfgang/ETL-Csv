@@ -96,7 +96,7 @@
 </div>
 </div>
 <h1>Coverage history</h1>
-<div class="historychart ct-chart" data-data="historyChartData5401a8e865dc4a7ca4c5ec0249494b60"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="ct-chart" width="1200" height="150" viewBox="0 0 1200 150">
+<div class="historychart ct-chart" data-data="historyChartData255cd8f8f55c4632923f15c99dc44d2a"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="ct-chart" width="1200" height="150" viewBox="0 0 1200 150">
 <style type="text/css">
         <![CDATA[
         .ct-chart .ct-grid {
@@ -168,7 +168,7 @@ Total lines: 52</title></line></g>
 </svg>
 </div>
 <script type="text/javascript">/* <![CDATA[ */ 
-var historyChartData5401a8e865dc4a7ca4c5ec0249494b60 = {
+var historyChartData255cd8f8f55c4632923f15c99dc44d2a = {
     "series" : [[{ 'meta': 0, 'value': 100 }],
 [],
 [],
@@ -239,9 +239,9 @@ var historyChartData5401a8e865dc4a7ca4c5ec0249494b60 = {
 <tr class="coverableline" title="Covered (1 visits)" data-coverage="{'AllTestMethods': {'VC': '1', 'LVS': 'green'}}"><td class="green">&nbsp;</td><td class="leftmargin rightmargin right">1</td><td class="rightmargin right"><a id="file0_line38"></a><code>38</code></td><td></td><td class="lightgreen"><code>&nbsp;&nbsp;&nbsp;&nbsp;internal&nbsp;static&nbsp;readonly&nbsp;Action&lt;ILogger,&nbsp;int,&nbsp;Exception?&gt;&nbsp;IgnoredRow&nbsp;=</code></td></tr>
 <tr class="coverableline" title="Covered (1 visits)" data-coverage="{'AllTestMethods': {'VC': '1', 'LVS': 'green'}}"><td class="green">&nbsp;</td><td class="leftmargin rightmargin right">1</td><td class="rightmargin right"><a id="file0_line39"></a><code>39</code></td><td></td><td class="lightgreen"><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LoggerMessage.Define&lt;int&gt;(LogLevel.Debug,&nbsp;new&nbsp;EventId(12,&nbsp;nameof(IgnoredRow)),&nbsp;&quot;Ignored&nbsp;row&nbsp;{RawRowIndex}&nbsp;before</code></td></tr>
 <tr class="" title="Not coverable" data-coverage="{'AllTestMethods': {'VC': '', 'LVS': 'gray'}}"><td class="gray">&nbsp;</td><td class="leftmargin rightmargin right"></td><td class="rightmargin right"><a id="file0_line40"></a><code>40</code></td><td></td><td class="lightgray"><code></code></td></tr>
-<tr class="" title="Not coverable" data-coverage="{'AllTestMethods': {'VC': '', 'LVS': 'gray'}}"><td class="gray">&nbsp;</td><td class="leftmargin rightmargin right"></td><td class="rightmargin right"><a id="file0_line41"></a><code>41</code></td><td></td><td class="lightgray"><code>&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Note:&nbsp;bad-data&nbsp;and&nbsp;reading-exception&nbsp;events&nbsp;are&nbsp;surfaced&nbsp;to&nbsp;callers&nbsp;via&nbsp;the</code></td></tr>
-<tr class="" title="Not coverable" data-coverage="{'AllTestMethods': {'VC': '', 'LVS': 'gray'}}"><td class="gray">&nbsp;</td><td class="leftmargin rightmargin right"></td><td class="rightmargin right"><a id="file0_line42"></a><code>42</code></td><td></td><td class="lightgray"><code>&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;CsvExtractor.BadDataFound&nbsp;and&nbsp;CsvExtractor.ReadingExceptionOccurred&nbsp;Action&lt;&gt;</code></td></tr>
-<tr class="" title="Not coverable" data-coverage="{'AllTestMethods': {'VC': '', 'LVS': 'gray'}}"><td class="gray">&nbsp;</td><td class="leftmargin rightmargin right"></td><td class="rightmargin right"><a id="file0_line43"></a><code>43</code></td><td></td><td class="lightgray"><code>&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;properties&nbsp;rather&nbsp;than&nbsp;being&nbsp;logged&nbsp;by&nbsp;the&nbsp;library.&nbsp;This&nbsp;keeps&nbsp;potentially-</code></td></tr>
+<tr class="" title="Not coverable" data-coverage="{'AllTestMethods': {'VC': '', 'LVS': 'gray'}}"><td class="gray">&nbsp;</td><td class="leftmargin rightmargin right"></td><td class="rightmargin right"><a id="file0_line41"></a><code>41</code></td><td></td><td class="lightgray"><code>&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Note:&nbsp;bad-data&nbsp;and&nbsp;reading-exception&nbsp;events&nbsp;are&nbsp;not&nbsp;logged&nbsp;by&nbsp;the&nbsp;library.&nbsp;Callers&nbsp;see</code></td></tr>
+<tr class="" title="Not coverable" data-coverage="{'AllTestMethods': {'VC': '', 'LVS': 'gray'}}"><td class="gray">&nbsp;</td><td class="leftmargin rightmargin right"></td><td class="rightmargin right"><a id="file0_line42"></a><code>42</code></td><td></td><td class="lightgray"><code>&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;them&nbsp;through&nbsp;ErrorPolicy&nbsp;(which&nbsp;decides&nbsp;skip-vs-abort&nbsp;for&nbsp;failed&nbsp;rows)&nbsp;and&nbsp;the&nbsp;deprecated,</code></td></tr>
+<tr class="" title="Not coverable" data-coverage="{'AllTestMethods': {'VC': '', 'LVS': 'gray'}}"><td class="gray">&nbsp;</td><td class="leftmargin rightmargin right"></td><td class="rightmargin right"><a id="file0_line43"></a><code>43</code></td><td></td><td class="lightgray"><code>&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;observation-only&nbsp;CsvExtractor.BadDataFound&nbsp;/&nbsp;ReadingExceptionOccurred&nbsp;callbacks.&nbsp;This&nbsp;keeps&nbsp;potentially-</code></td></tr>
 <tr class="" title="Not coverable" data-coverage="{'AllTestMethods': {'VC': '', 'LVS': 'gray'}}"><td class="gray">&nbsp;</td><td class="leftmargin rightmargin right"></td><td class="rightmargin right"><a id="file0_line44"></a><code>44</code></td><td></td><td class="lightgray"><code>&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;sensitive&nbsp;CSV&nbsp;record&nbsp;contents&nbsp;out&nbsp;of&nbsp;application&nbsp;logs&nbsp;unless&nbsp;the&nbsp;caller</code></td></tr>
 <tr class="" title="Not coverable" data-coverage="{'AllTestMethods': {'VC': '', 'LVS': 'gray'}}"><td class="gray">&nbsp;</td><td class="leftmargin rightmargin right"></td><td class="rightmargin right"><a id="file0_line45"></a><code>45</code></td><td></td><td class="lightgray"><code>&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;explicitly&nbsp;opts&nbsp;in&nbsp;by&nbsp;wiring&nbsp;those&nbsp;callbacks&nbsp;to&nbsp;their&nbsp;own&nbsp;logger.</code></td></tr>
 <tr class="" title="Not coverable" data-coverage="{'AllTestMethods': {'VC': '', 'LVS': 'gray'}}"><td class="gray">&nbsp;</td><td class="leftmargin rightmargin right"></td><td class="rightmargin right"><a id="file0_line46"></a><code>46</code></td><td></td><td class="lightgray"><code></code></td></tr>
@@ -254,7 +254,7 @@ var historyChartData5401a8e865dc4a7ca4c5ec0249494b60 = {
 </tbody>
 </table>
 </div>
-<div class="footer">Generated by: ReportGenerator 5.5.11.0<br />9/23/2026 - 2:30:45 AM<br /><a href="https://github.com/danielpalme/ReportGenerator">GitHub</a> | <a href="https://reportgenerator.io">reportgenerator.io</a></div></div>
+<div class="footer">Generated by: ReportGenerator 5.6.0.0<br />11/24/2026 - 12:34:07 AM<br /><a href="https://github.com/danielpalme/ReportGenerator">GitHub</a> | <a href="https://reportgenerator.io">reportgenerator.io</a></div></div>
 <div class="containerright">
 <div class="containerrightfixed">
 <h1>Methods/Properties</h1>

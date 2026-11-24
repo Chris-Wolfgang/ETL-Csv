@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Getting Started | Wolfgang.Etl.Csv Documentation </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Getting Started | Wolfgang.Etl.Csv Documentation ">
+      
+      
+      <link rel="icon" href="../favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.11.0/docfx_project/docs/getting-started.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="Wolfgang.Etl.Csv">
+            Wolfgang.Etl.Csv
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="getting-started">Getting Started</h1>
+
+<p>This guide will help you quickly get up and running with Wolfgang.Etl.Csv.</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<ul>
+<li>A project targeting .NET Framework 4.6.2+, .NET Standard 2.0/2.1, or .NET 5.0+</li>
+<li><a href="https://www.nuget.org/packages/Wolfgang.Etl.Abstractions/">Wolfgang.Etl.Abstractions</a> comes in as a dependency of the package</li>
+</ul>
+<h2 id="installation">Installation</h2>
+<h3 id="via-nuget-package-manager">Via NuGet Package Manager</h3>
+<pre><code class="lang-bash">dotnet add package Wolfgang.Etl.Csv
+</code></pre>
+<h3 id="via-package-manager-console">Via Package Manager Console</h3>
+<pre><code class="lang-powershell">Install-Package Wolfgang.Etl.Csv
+</code></pre>
+<h2 id="quick-start">Quick Start</h2>
+<p>Define a record type, then read a CSV with <code>await foreach</code>:</p>
+<pre><code class="lang-csharp">using System.IO;
+using System.Threading;
+using Wolfgang.Etl.Csv;
+
+var cancellationToken = CancellationToken.None; // or a token from your host
+
+using var reader = new StreamReader(&quot;people.csv&quot;);
+var extractor = new CsvExtractor&lt;Person&gt;(reader);
+
+await foreach (var person in extractor.ExtractAsync(cancellationToken))
+{
+    Console.WriteLine($&quot;{person.FirstName} {person.LastName} ({person.Age})&quot;);
+}
+
+// Type declarations follow the top-level statements in a single-file program.
+public sealed record Person
+{
+    public string FirstName { get; set; } = string.Empty;
+    public string LastName  { get; set; } = string.Empty;
+    public int    Age       { get; set; }
+}
+</code></pre>
+<p>Write records back out with <code>CsvLoader&lt;T&gt;</code>:</p>
+<pre><code class="lang-csharp">using var writer = new StreamWriter(&quot;people.csv&quot;);
+var loader = new CsvLoader&lt;Person&gt;(writer);
+
+await loader.LoadAsync(GetPeopleAsync(), cancellationToken);
+
+static async IAsyncEnumerable&lt;Person&gt; GetPeopleAsync()
+{
+    yield return new Person { FirstName = &quot;Alice&quot;, LastName = &quot;Smith&quot;, Age = 30 };
+    yield return new Person { FirstName = &quot;Bob&quot;,   LastName = &quot;Jones&quot;, Age = 25 };
+    await Task.CompletedTask;   // satisfies the async signature
+}
+</code></pre>
+<p>Delimiters, headers, column maps, validation and error handling are configured through
+<code>CsvExtractorOptions&lt;TRecord&gt;</code> / <code>CsvLoaderOptions&lt;TRecord&gt;</code> passed to the constructor.</p>
+<h2 id="next-steps">Next Steps</h2>
+<ul>
+<li>Explore the <a href="../api/index.md">API Reference</a> for detailed documentation</li>
+<li>Read the <a href="introduction.html">Introduction</a> to learn more about Wolfgang.Etl.Csv</li>
+<li>Check out the runnable examples under <code>examples/</code> in the <a href="https://github.com/Chris-Wolfgang/ETL-Csv">GitHub repository</a></li>
+</ul>
+<h2 id="common-issues">Common Issues</h2>
+<ul>
+<li><strong>Values parse differently on another machine:</strong> parsing and formatting follow the host's current culture.</li>
+<li><strong>NativeAOT / trimming:</strong> the extractor and loader are <code>[RequiresUnreferencedCode]</code>. CsvHelper reflects over the record type, so the library is not trim-safe.</li>
+</ul>
+<h2 id="additional-resources">Additional Resources</h2>
+<ul>
+<li><a href="https://github.com/Chris-Wolfgang/ETL-Csv">GitHub Repository</a></li>
+<li><a href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/main/CONTRIBUTING.md">Contributing Guidelines</a></li>
+<li><a href="https://github.com/Chris-Wolfgang/ETL-Csv/issues">Report an Issue</a></li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.11.0/docfx_project/docs/getting-started.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Made with DocFX <script>(function(){var r='/';if(window.location.hostname.endsWith('.github.io')){var s=window.location.pathname.split('/').filter(Boolean);if(s.length)r='/'+s[0]+'/';}var t=document.createElement('script');t.src=r+'public/version-picker.js';t.async=true;document.head.appendChild(t);})();</script>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

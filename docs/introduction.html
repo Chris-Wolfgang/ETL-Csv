@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.10.0/docfx_project/docs/introduction.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.11.0/docfx_project/docs/introduction.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -75,14 +75,19 @@
 
 <p>Welcome to Wolfgang.Etl.Csv!</p>
 <h2 id="overview">Overview</h2>
-<p>An Extractor and Loader that implement IExtract<t> and ILoadAsync<t> for use in ETLs build using Wolfgang.Etl.Abstractions</t></t></p>
-<!-- Add your project overview here -->
+<p>A <code>CsvExtractor&lt;T&gt;</code> and <code>CsvLoader&lt;T&gt;</code>, derived from <code>ExtractorBase&lt;,&gt;</code> and <code>LoaderBase&lt;,&gt;</code>, for ETLs built with
+Wolfgang.Etl.Abstractions. They stream CSV into and out of strongly-typed records, and use
+<a href="https://joshclose.github.io/CsvHelper/">CsvHelper</a> internally without exposing its types.</p>
 <h2 id="key-features">Key Features</h2>
-<!-- List the main features of your project. For example:
-- Feature 1: Description
-- Feature 2: Description
-- Feature 3: Description
--->
+<ul>
+<li>Async-first read and write of CSV streams, with cancellation throughout</li>
+<li>Progress reporting with item, skip, error, line-number and bad-data counts</li>
+<li>Compile-time column mapping (<code>[CsvColumn]</code>, <code>[CsvIgnore]</code>) and runtime mapping (<code>CsvColumnMap</code>)</li>
+<li>Polymorphic rows via <code>CsvDiscriminator&lt;TBase&gt;</code>, and streaming record validation</li>
+<li><code>ErrorPolicy</code> to skip or abort on rows that fail to parse</li>
+<li>Resumable extraction through checkpoints</li>
+<li>Multi-targeted from net462 to net10.0</li>
+</ul>
 <h2 id="getting-help">Getting Help</h2>
 <p>If you need help with Wolfgang.Etl.Csv, please:</p>
 <ul>
@@ -95,7 +100,7 @@
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.10.0/docfx_project/docs/introduction.md/#L1" class="edit-link">Edit this page</a>
+          <a href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.11.0/docfx_project/docs/introduction.md/#L1" class="edit-link">Edit this page</a>
         </div>
 
         <div class="next-article d-print-none border-top" id="nextArticle"></div>

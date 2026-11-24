@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.10.0/docfx_project/docs/getting-started.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.11.0/docfx_project/docs/getting-started.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -75,10 +75,10 @@
 
 <p>This guide will help you quickly get up and running with Wolfgang.Etl.Csv.</p>
 <h2 id="prerequisites">Prerequisites</h2>
-<!-- List any prerequisites needed. For example:
-- .NET 8.0 or later
-- Visual Studio 2022 or Visual Studio Code
--->
+<ul>
+<li>A project targeting .NET Framework 4.6.2+, .NET Standard 2.0/2.1, or .NET 5.0+</li>
+<li><a href="https://www.nuget.org/packages/Wolfgang.Etl.Abstractions/">Wolfgang.Etl.Abstractions</a> comes in as a dependency of the package</li>
+</ul>
 <h2 id="installation">Installation</h2>
 <h3 id="via-nuget-package-manager">Via NuGet Package Manager</h3>
 <pre><code class="lang-bash">dotnet add package Wolfgang.Etl.Csv
@@ -87,22 +87,55 @@
 <pre><code class="lang-powershell">Install-Package Wolfgang.Etl.Csv
 </code></pre>
 <h2 id="quick-start">Quick Start</h2>
-<!-- Add a quick start example. For example: -->
-<pre><code class="lang-csharp">// Add your quick start code example here
-// This should show the simplest way to use your library
-
+<p>Define a record type, then read a CSV with <code>await foreach</code>:</p>
+<pre><code class="lang-csharp">using System.IO;
+using System.Threading;
 using Wolfgang.Etl.Csv;
 
-// Example usage
+var cancellationToken = CancellationToken.None; // or a token from your host
+
+using var reader = new StreamReader(&quot;people.csv&quot;);
+var extractor = new CsvExtractor&lt;Person&gt;(reader);
+
+await foreach (var person in extractor.ExtractAsync(cancellationToken))
+{
+    Console.WriteLine($&quot;{person.FirstName} {person.LastName} ({person.Age})&quot;);
+}
+
+// Type declarations follow the top-level statements in a single-file program.
+public sealed record Person
+{
+    public string FirstName { get; set; } = string.Empty;
+    public string LastName  { get; set; } = string.Empty;
+    public int    Age       { get; set; }
+}
 </code></pre>
+<p>Write records back out with <code>CsvLoader&lt;T&gt;</code>:</p>
+<pre><code class="lang-csharp">using var writer = new StreamWriter(&quot;people.csv&quot;);
+var loader = new CsvLoader&lt;Person&gt;(writer);
+
+await loader.LoadAsync(GetPeopleAsync(), cancellationToken);
+
+static async IAsyncEnumerable&lt;Person&gt; GetPeopleAsync()
+{
+    yield return new Person { FirstName = &quot;Alice&quot;, LastName = &quot;Smith&quot;, Age = 30 };
+    yield return new Person { FirstName = &quot;Bob&quot;,   LastName = &quot;Jones&quot;, Age = 25 };
+    await Task.CompletedTask;   // satisfies the async signature
+}
+</code></pre>
+<p>Delimiters, headers, column maps, validation and error handling are configured through
+<code>CsvExtractorOptions&lt;TRecord&gt;</code> / <code>CsvLoaderOptions&lt;TRecord&gt;</code> passed to the constructor.</p>
 <h2 id="next-steps">Next Steps</h2>
 <ul>
 <li>Explore the <a href="../api/index.md">API Reference</a> for detailed documentation</li>
 <li>Read the <a href="introduction.html">Introduction</a> to learn more about Wolfgang.Etl.Csv</li>
-<li>Check out example projects in the <a href="https://github.com/Chris-Wolfgang/ETL-Csv">GitHub repository</a></li>
+<li>Check out the runnable examples under <code>examples/</code> in the <a href="https://github.com/Chris-Wolfgang/ETL-Csv">GitHub repository</a></li>
 </ul>
 <h2 id="common-issues">Common Issues</h2>
-<!-- Add common issues and their solutions here -->
+<ul>
+<li><strong>Values parse differently on another machine:</strong> parsing and formatting follow the host's current culture.</li>
+<li><strong>NativeAOT / trimming:</strong> the extractor and loader are <code>[RequiresUnreferencedCode]</code>. CsvHelper reflects over the record type, so the library is not trim-safe.</li>
+</ul>
 <h2 id="additional-resources">Additional Resources</h2>
 <ul>
 <li><a href="https://github.com/Chris-Wolfgang/ETL-Csv">GitHub Repository</a></li>
@@ -113,7 +146,7 @@ using Wolfgang.Etl.Csv;
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.10.0/docfx_project/docs/getting-started.md/#L1" class="edit-link">Edit this page</a>
+          <a href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.11.0/docfx_project/docs/getting-started.md/#L1" class="edit-link">Edit this page</a>
         </div>
 
         <div class="next-article d-print-none border-top" id="nextArticle"></div>

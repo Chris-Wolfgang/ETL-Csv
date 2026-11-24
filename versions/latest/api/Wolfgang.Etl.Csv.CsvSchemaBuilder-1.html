@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class CsvSchemaBuilder&lt;T&gt; | Wolfgang.Etl.Csv Documentation </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class CsvSchemaBuilder&lt;T&gt; | Wolfgang.Etl.Csv Documentation ">
+      
+      <meta name="description" content="Fluent, type-safe, code-first builder for a  — an alternative to the  for record types you cannot decorate (third-party or generated POCOs) or layouts assembled at runtime.">
+      <link rel="icon" href="../favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Chris-Wolfgang/ETL-Csv/new/v0.11.0/apiSpec/new?filename=Wolfgang_Etl_Csv_CsvSchemaBuilder_1.md&amp;value=---%0Auid%3A%20Wolfgang.Etl.Csv.CsvSchemaBuilder%601%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="Wolfgang.Etl.Csv">
+            Wolfgang.Etl.Csv
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Wolfgang.Etl.Csv.CsvSchemaBuilder`1">
+
+
+
+  <h1 id="Wolfgang_Etl_Csv_CsvSchemaBuilder_1" data-uid="Wolfgang.Etl.Csv.CsvSchemaBuilder`1" class="text-break">
+Class CsvSchemaBuilder&lt;T&gt;  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.11.0/src/Wolfgang.Etl.Csv/Mapping/CsvSchemaBuilder.cs/#L37"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">Wolfgang</span>.<span class="xref">Etl</span>.<a class="xref" href="Wolfgang.Etl.Csv.html">Csv</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Wolfgang.Etl.Csv.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Fluent, type-safe, code-first builder for a <a class="xref" href="Wolfgang.Etl.Csv.CsvSchema.html">CsvSchema</a> — an alternative to the
+<a class="xref" href="Wolfgang.Etl.Csv.CsvColumnAttribute.html">CsvColumnAttribute</a> for record types you cannot decorate (third-party or generated
+POCOs) or layouts assembled at runtime.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class CsvSchemaBuilder&lt;T&gt;</code></pre>
+  </div>
+
+
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The record type the schema maps.</p>
+</dd>
+  </dl>
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">CsvSchemaBuilder&lt;T&gt;</span></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+  <h2 id="Wolfgang_Etl_Csv_CsvSchemaBuilder_1_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+Properties are selected with an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.linq.expressions.expression-1">Expression&lt;TDelegate&gt;</a> (<code>x =&gt; x.Name</code>), so
+the mapping is compile-time checked and survives a rename. <a class="xref" href="Wolfgang.Etl.Csv.CsvSchemaBuilder-1.html#Wolfgang_Etl_Csv_CsvSchemaBuilder_1_Build">Build()</a> produces a
+<a class="xref" href="Wolfgang.Etl.Csv.CsvSchema.html">CsvSchema</a> whose columns are the same <a class="xref" href="Wolfgang.Etl.Csv.CsvColumnMap.html">CsvColumnMap</a> leaf type the
+attribute path resolves to, so a code-built schema is behaviorally identical to the equivalent
+<code>[CsvColumn]</code>-decorated layout. Apply it through
+<a class="xref" href="Wolfgang.Etl.Csv.CsvExtractorOptions-1.html#Wolfgang_Etl_Csv_CsvExtractorOptions_1_Schema">Schema</a> / <a class="xref" href="Wolfgang.Etl.Csv.CsvLoaderOptions-1.html#Wolfgang_Etl_Csv_CsvLoaderOptions_1_Schema">Schema</a>;
+leaving that unset keeps today's attribute behavior.
+</p>
+<example>
+<pre><code class="lang-csharp">var schema = new CsvSchemaBuilder&lt;Order&gt;()
+    .Column(o =&gt; o.Id,     name: "order_id")
+    .Column(o =&gt; o.Placed, name: "placed_at", format: "yyyy-MM-dd")
+    .Column(o =&gt; o.Total,  name: "amount",    format: "0.00")
+    .Build();
+
+var extractor = new CsvExtractor&lt;Order&gt;(reader, new CsvExtractorOptions&lt;Order&gt; { Schema = schema });</code></pre>
+</example>
+</div>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Wolfgang_Etl_Csv_CsvSchemaBuilder_1_Build_" data-uid="Wolfgang.Etl.Csv.CsvSchemaBuilder`1.Build*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvSchemaBuilder_1_Build" data-uid="Wolfgang.Etl.Csv.CsvSchemaBuilder`1.Build">
+  Build()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.11.0/src/Wolfgang.Etl.Csv/Mapping/CsvSchemaBuilder.cs/#L132"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Builds the schema from the columns added so far. The resulting
+<a class="xref" href="Wolfgang.Etl.Csv.CsvSchema.html#Wolfgang_Etl_Csv_CsvSchema_Columns">Columns</a> list is read-only.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CsvSchema Build()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Wolfgang.Etl.Csv.CsvSchema.html">CsvSchema</a></dt>
+    <dd><p>A <a class="xref" href="Wolfgang.Etl.Csv.CsvSchema.html">CsvSchema</a> bound to <code class="typeparamref">T</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>No columns have been added.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Wolfgang_Etl_Csv_CsvSchemaBuilder_1_Column_" data-uid="Wolfgang.Etl.Csv.CsvSchemaBuilder`1.Column*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvSchemaBuilder_1_Column__1_System_Linq_Expressions_Expression_System_Func__0___0___System_String_System_Int32_System_String_System_Boolean_System_String_" data-uid="Wolfgang.Etl.Csv.CsvSchemaBuilder`1.Column``1(System.Linq.Expressions.Expression{System.Func{`0,``0}},System.String,System.Int32,System.String,System.Boolean,System.String)">
+  Column&lt;TProperty&gt;(Expression&lt;Func&lt;T, TProperty&gt;&gt;, string?, int, string?, bool, string?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.11.0/src/Wolfgang.Etl.Csv/Mapping/CsvSchemaBuilder.cs/#L69"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Maps a property of <code class="typeparamref">T</code> to a CSV column.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CsvSchemaBuilder&lt;T&gt; Column&lt;TProperty&gt;(Expression&lt;Func&lt;T, TProperty&gt;&gt; selector, string? name = null, int index = -1, string? format = null, bool optional = false, string? @default = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>selector</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.linq.expressions.expression-1">Expression</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;T, TProperty&gt;&gt;</dt>
+    <dd><p>A property selector, e.g. <code>x =&gt; x.Name</code>. Must be a direct access of a public
+property of <code class="typeparamref">T</code> (an inherited property is fine) — not a field,
+method, nested/chained member, or computed expression.</p>
+</dd>
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The CSV column name to bind to. Must not be blank, and must not be combined with a
+non-negative <code class="paramref">index</code> (a column binds by name or by index, not both).
+Leave it <code>null</code> to bind by the property's own name.</p>
+</dd>
+    <dt><code>index</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The 0-based column index; <code>-1</code> (default) binds by name only.</p>
+</dd>
+    <dt><code>format</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>Parse/format string (e.g. <code>&quot;yyyy-MM-dd&quot;</code>).</p>
+</dd>
+    <dt><code>optional</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>When <code>true</code>, a missing column does not fail the read.</p>
+</dd>
+    <dt><code>default</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>Default value used when the column is absent or empty during reading.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Wolfgang.Etl.Csv.CsvSchemaBuilder-1.html">CsvSchemaBuilder</a>&lt;T&gt;</dt>
+    <dd><p>The same builder instance, for chaining.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TProperty</code></dt>
+    <dd><p>The selected property's type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">selector</code> is <code>null</code>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">selector</code> does not reference a public property of <code class="typeparamref">T</code>;
+<code class="paramref">name</code> is not <code>null</code> but is empty or whitespace; or both
+<code class="paramref">name</code> and a non-negative <code class="paramref">index</code> were supplied.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">index</code> is less than <code>-1</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.11.0/src/Wolfgang.Etl.Csv/Mapping/CsvSchemaBuilder.cs/#L37" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Made with DocFX <script>(function(){var r='/';if(window.location.hostname.endsWith('.github.io')){var s=window.location.pathname.split('/').filter(Boolean);if(s.length)r='/'+s[0]+'/';}var t=document.createElement('script');t.src=r+'public/version-picker.js';t.async=true;document.head.appendChild(t);})();</script>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class CsvLoader&lt;TRecord&gt; | Wolfgang.Etl.Csv Documentation </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class CsvLoader&lt;TRecord&gt; | Wolfgang.Etl.Csv Documentation ">
+      
+      <meta name="description" content="Loads records of type TRecord into a CSV stream using CsvHelper.">
+      <link rel="icon" href="../favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Chris-Wolfgang/ETL-Csv/new/v0.11.0/apiSpec/new?filename=Wolfgang_Etl_Csv_CsvLoader_1.md&amp;value=---%0Auid%3A%20Wolfgang.Etl.Csv.CsvLoader%601%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="Wolfgang.Etl.Csv">
+            Wolfgang.Etl.Csv
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Wolfgang.Etl.Csv.CsvLoader`1">
+
+
+
+  <h1 id="Wolfgang_Etl_Csv_CsvLoader_1" data-uid="Wolfgang.Etl.Csv.CsvLoader`1" class="text-break">
+Class CsvLoader&lt;TRecord&gt;  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.11.0/src/Wolfgang.Etl.Csv/CsvLoader.cs/#L40"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">Wolfgang</span>.<span class="xref">Etl</span>.<a class="xref" href="Wolfgang.Etl.Csv.html">Csv</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Wolfgang.Etl.Csv.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Loads records of type <code class="typeparamref">TRecord</code> into a CSV stream
+using <a href="https://joshclose.github.io/CsvHelper/">CsvHelper</a>.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class CsvLoader&lt;TRecord&gt; : LoaderBase&lt;TRecord, CsvLoaderProgress&gt;, ILoadWithProgressAndCancellationAsync&lt;TRecord, CsvLoaderProgress&gt;, ILoadWithProgressAsync&lt;TRecord, CsvLoaderProgress&gt;, ILoadWithCancellationAsync&lt;TRecord&gt;, ILoadAsync&lt;TRecord&gt;, IReportsItemErrors, IAsyncDisposable, IDisposable where TRecord : notnull</code></pre>
+  </div>
+
+
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TRecord</code></dt>
+    <dd><p>The type of records to load. Must be <code>notnull</code>.</p>
+</dd>
+  </dl>
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">LoaderBase</span>&lt;TRecord, <a class="xref" href="Wolfgang.Etl.Csv.CsvLoaderProgress.html">CsvLoaderProgress</a>&gt;</div>
+      <div><span class="xref">CsvLoader&lt;TRecord&gt;</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><span class="xref">ILoadWithProgressAndCancellationAsync</span>&lt;TRecord, <a class="xref" href="Wolfgang.Etl.Csv.CsvLoaderProgress.html">CsvLoaderProgress</a>&gt;</div>
+      <div><span class="xref">ILoadWithProgressAsync</span>&lt;TRecord, <a class="xref" href="Wolfgang.Etl.Csv.CsvLoaderProgress.html">CsvLoaderProgress</a>&gt;</div>
+      <div><span class="xref">ILoadWithCancellationAsync</span>&lt;TRecord&gt;</div>
+      <div><span class="xref">ILoadAsync</span>&lt;TRecord&gt;</div>
+      <div><span class="xref">IReportsItemErrors</span></div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iasyncdisposable">IAsyncDisposable</a></div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1">LoaderBase&lt;TRecord, CsvLoaderProgress&gt;.LoadAsync(IAsyncEnumerable&lt;TRecord&gt;)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1">LoaderBase&lt;TRecord, CsvLoaderProgress&gt;.LoadAsync(IAsyncEnumerable&lt;TRecord&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1">LoaderBase&lt;TRecord, CsvLoaderProgress&gt;.LoadAsync(IAsyncEnumerable&lt;TRecord&gt;, IProgress&lt;CsvLoaderProgress&gt;)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1">LoaderBase&lt;TRecord, CsvLoaderProgress&gt;.LoadAsync(IAsyncEnumerable&lt;TRecord&gt;, IProgress&lt;CsvLoaderProgress&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <span class="xref">LoaderBase&lt;TRecord, CsvLoaderProgress&gt;.DisposeAsync()</span>
+    </div>
+    <div>
+      <span class="xref">LoaderBase&lt;TRecord, CsvLoaderProgress&gt;.Dispose()</span>
+    </div>
+    <div>
+      <span class="xref">LoaderBase&lt;TRecord, CsvLoaderProgress&gt;.ReportingInterval</span>
+    </div>
+    <div>
+      <span class="xref">LoaderBase&lt;TRecord, CsvLoaderProgress&gt;.CurrentItemCount</span>
+    </div>
+    <div>
+      <span class="xref">LoaderBase&lt;TRecord, CsvLoaderProgress&gt;.CurrentSkippedItemCount</span>
+    </div>
+    <div>
+      <span class="xref">LoaderBase&lt;TRecord, CsvLoaderProgress&gt;.CurrentErrorItemCount</span>
+    </div>
+    <div>
+      <span class="xref">LoaderBase&lt;TRecord, CsvLoaderProgress&gt;.MaximumItemCount</span>
+    </div>
+    <div>
+      <span class="xref">LoaderBase&lt;TRecord, CsvLoaderProgress&gt;.SkipItemCount</span>
+    </div>
+    <div>
+      <span class="xref">LoaderBase&lt;TRecord, CsvLoaderProgress&gt;.WorkerResilience</span>
+    </div>
+    <div>
+      <span class="xref">LoaderBase&lt;TRecord, CsvLoaderProgress&gt;.ErrorPolicy</span>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+  <h2 id="Wolfgang_Etl_Csv_CsvLoader_1_examples">Examples</h2>
+  <pre><code class="lang-csharp">using var writer = new StreamWriter("people.csv");
+var loader = new CsvLoader&lt;Person&gt;(writer);
+await loader.LoadAsync(items, cancellationToken);</code></pre>
+
+
+  <h2 id="Wolfgang_Etl_Csv_CsvLoader_1_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p><code>LoadAsync</code> can throw: <a class="xref" href="Wolfgang.Etl.Csv.CsvValidationException.html">CsvValidationException</a> when a record fails a validator and
+<code>OnValidationFailure</code> is <a class="xref" href="Wolfgang.Etl.Csv.CsvValidationFailureAction.html#Wolfgang_Etl_Csv_CsvValidationFailureAction_Stop">Stop</a> (the default);
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a> for a record whose runtime type is not mapped when the
+discriminator's <code>OnUnknown</code> is <a class="xref" href="Wolfgang.Etl.Csv.CsvDiscriminatorAction.html#Wolfgang_Etl_Csv_CsvDiscriminatorAction_Throw">Throw</a>; and CsvHelper's own
+exception when a record cannot be written.</p>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Wolfgang_Etl_Csv_CsvLoader_1__ctor_" data-uid="Wolfgang.Etl.Csv.CsvLoader`1.#ctor*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvLoader_1__ctor_System_IO_StreamWriter_Microsoft_Extensions_Logging_ILogger_Wolfgang_Etl_Csv_CsvLoader__0___" data-uid="Wolfgang.Etl.Csv.CsvLoader`1.#ctor(System.IO.StreamWriter,Microsoft.Extensions.Logging.ILogger{Wolfgang.Etl.Csv.CsvLoader{`0}})">
+  CsvLoader(StreamWriter, ILogger&lt;CsvLoader&lt;TRecord&gt;&gt;?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.11.0/src/Wolfgang.Etl.Csv/CsvLoader.cs/#L99"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Wolfgang.Etl.Csv.CsvLoader-1.html">CsvLoader&lt;TRecord&gt;</a> class with diagnostic logging.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[RequiresUnreferencedCode(&quot;CsvLoader uses CsvHelper, which reflects over TRecord&#39;s members beyond what DynamicallyAccessedMembers can express (type converter constructors, non-public getters in some flows). The library is not trim/NativeAOT safe.&quot;)]
+public CsvLoader(StreamWriter streamWriter, ILogger&lt;CsvLoader&lt;TRecord&gt;&gt;? logger = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>streamWriter</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.streamwriter">StreamWriter</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.streamwriter">StreamWriter</a> to write CSV data to.</p>
+</dd>
+    <dt><code>logger</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.ilogger-1">ILogger</a>&lt;<a class="xref" href="Wolfgang.Etl.Csv.CsvLoader-1.html">CsvLoader</a>&lt;TRecord&gt;&gt;</dt>
+    <dd><p>An optional logger instance for diagnostic output. When <code>null</code> — or omitted —
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.abstractions.nulllogger.instance">Instance</a> is used and logging is disabled.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">streamWriter</code> is <code>null</code>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Wolfgang_Etl_Csv_CsvLoader_1__ctor_" data-uid="Wolfgang.Etl.Csv.CsvLoader`1.#ctor*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvLoader_1__ctor_System_IO_StreamWriter_Wolfgang_Etl_Csv_CsvLoaderOptions__0__Microsoft_Extensions_Logging_ILogger_Wolfgang_Etl_Csv_CsvLoader__0___" data-uid="Wolfgang.Etl.Csv.CsvLoader`1.#ctor(System.IO.StreamWriter,Wolfgang.Etl.Csv.CsvLoaderOptions{`0},Microsoft.Extensions.Logging.ILogger{Wolfgang.Etl.Csv.CsvLoader{`0}})">
+  CsvLoader(StreamWriter, CsvLoaderOptions&lt;TRecord&gt;?, ILogger&lt;CsvLoader&lt;TRecord&gt;&gt;?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.11.0/src/Wolfgang.Etl.Csv/CsvLoader.cs/#L182"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Wolfgang.Etl.Csv.CsvLoader-1.html">CsvLoader&lt;TRecord&gt;</a> class configured from an
+options record.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[RequiresUnreferencedCode(&quot;CsvLoader uses CsvHelper, which reflects over TRecord&#39;s members beyond what DynamicallyAccessedMembers can express (type converter constructors, non-public getters in some flows). The library is not trim/NativeAOT safe.&quot;)]
+public CsvLoader(StreamWriter streamWriter, CsvLoaderOptions&lt;TRecord&gt;? options, ILogger&lt;CsvLoader&lt;TRecord&gt;&gt;? logger = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>streamWriter</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.streamwriter">StreamWriter</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.streamwriter">StreamWriter</a> to write CSV data to.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Wolfgang.Etl.Csv.CsvLoaderOptions-1.html">CsvLoaderOptions</a>&lt;TRecord&gt;</dt>
+    <dd><p>The configuration to apply. When <code>null</code>, the documented defaults apply.</p>
+</dd>
+    <dt><code>logger</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.ilogger-1">ILogger</a>&lt;<a class="xref" href="Wolfgang.Etl.Csv.CsvLoader-1.html">CsvLoader</a>&lt;TRecord&gt;&gt;</dt>
+    <dd><p>An optional logger instance for diagnostic output. When <code>null</code> — or omitted —
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.abstractions.nulllogger.instance">Instance</a> is used and logging is disabled.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">streamWriter</code> is <code>null</code>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">options</code> sets both <code>Schema</code> and a non-empty <code>ColumnMaps</code>, or its
+<code>Schema</code> was built for a record type other than <code class="typeparamref">TRecord</code>.</p>
+</dd>
+  </dl>
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Wolfgang_Etl_Csv_CsvLoader_1_ColumnMaps_" data-uid="Wolfgang.Etl.Csv.CsvLoader`1.ColumnMaps*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvLoader_1_ColumnMaps" data-uid="Wolfgang.Etl.Csv.CsvLoader`1.ColumnMaps">
+  ColumnMaps
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.11.0/src/Wolfgang.Etl.Csv/CsvLoader.cs/#L338"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets a runtime column-map collection that overrides any
+<a class="xref" href="Wolfgang.Etl.Csv.CsvColumnAttribute.html">CsvColumnAttribute</a> / <a class="xref" href="Wolfgang.Etl.Csv.CsvIgnoreAttribute.html">CsvIgnoreAttribute</a> decorations
+on <code class="typeparamref">TRecord</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;CsvColumnMap&gt;? ColumnMaps { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Wolfgang.Etl.Csv.CsvColumnMap.html">CsvColumnMap</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Wolfgang_Etl_Csv_CsvLoader_1_ColumnMaps_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Use this property when the CSV layout isn't known at compile time. When non-null
+and non-empty, the runtime maps are the only source of property-to-column
+bindings; attribute-based mapping is bypassed.</p>
+</div>
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_CsvLoader_1_Delimiter_" data-uid="Wolfgang.Etl.Csv.CsvLoader`1.Delimiter*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvLoader_1_Delimiter" data-uid="Wolfgang.Etl.Csv.CsvLoader`1.Delimiter">
+  Delimiter
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.11.0/src/Wolfgang.Etl.Csv/CsvLoader.cs/#L245"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the field delimiter. Default is <code>&quot;,&quot;</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string Delimiter { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_CsvLoader_1_Discriminator_" data-uid="Wolfgang.Etl.Csv.CsvLoader`1.Discriminator*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvLoader_1_Discriminator" data-uid="Wolfgang.Etl.Csv.CsvLoader`1.Discriminator">
+  Discriminator
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.11.0/src/Wolfgang.Etl.Csv/CsvLoader.cs/#L364"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>When set, each record is written using a per-type mapping chosen by its runtime type, so a
+single file can mix multiple <code class="typeparamref">TRecord</code> shapes — the write-side mirror of
+<a class="xref" href="Wolfgang.Etl.Csv.CsvExtractor-1.html#Wolfgang_Etl_Csv_CsvExtractor_1_Discriminator">Discriminator</a>. Build one with
+<a class="xref" href="Wolfgang.Etl.Csv.CsvDiscriminatorBuilder-1.html">CsvDiscriminatorBuilder&lt;TBase&gt;</a> (trim/AOT-safe). No header row is written while a
+discriminator is set (the shapes have no common header); a record whose runtime type is not
+mapped is handled per <a class="xref" href="Wolfgang.Etl.Csv.CsvDiscriminator-1.html#Wolfgang_Etl_Csv_CsvDiscriminator_1_UnknownDiscriminator">UnknownDiscriminator</a>. The discriminator
+value is not written for you: only the columns the concrete type maps are written, so map the
+discriminator column as a property of each concrete type if the file must round-trip.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CsvDiscriminator&lt;TRecord&gt;? Discriminator { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Wolfgang.Etl.Csv.CsvDiscriminator-1.html">CsvDiscriminator</a>&lt;TRecord&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_CsvLoader_1_Encoding_" data-uid="Wolfgang.Etl.Csv.CsvLoader`1.Encoding*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvLoader_1_Encoding" data-uid="Wolfgang.Etl.Csv.CsvLoader`1.Encoding">
+  Encoding
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.11.0/src/Wolfgang.Etl.Csv/CsvLoader.cs/#L270"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the encoding forwarded to CsvHelper's writer configuration.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Encoding Encoding { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoding">Encoding</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Wolfgang_Etl_Csv_CsvLoader_1_Encoding_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This value is informational only — it is passed to CsvHelper's
+<code>CsvConfiguration.Encoding</code> but does <b>not</b> control how characters are
+encoded into bytes on the output stream. Byte encoding is performed by the
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.streamwriter">StreamWriter</a> supplied to the constructor, and that writer's
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.streamwriter.encoding">Encoding</a> is authoritative. To write a non-default
+encoding, construct the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.streamwriter">StreamWriter</a> with the encoding you want
+and ignore this property.</p>
+</div>
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_CsvLoader_1_Escape_" data-uid="Wolfgang.Etl.Csv.CsvLoader`1.Escape*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvLoader_1_Escape" data-uid="Wolfgang.Etl.Csv.CsvLoader`1.Escape">
+  Escape
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.11.0/src/Wolfgang.Etl.Csv/CsvLoader.cs/#L252"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the character used to escape the quote character within a field.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public char Escape { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_CsvLoader_1_HasHeaderRecord_" data-uid="Wolfgang.Etl.Csv.CsvLoader`1.HasHeaderRecord*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvLoader_1_HasHeaderRecord" data-uid="Wolfgang.Etl.Csv.CsvLoader`1.HasHeaderRecord">
+  HasHeaderRecord
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.11.0/src/Wolfgang.Etl.Csv/CsvLoader.cs/#L277"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets a value indicating whether a header record should be written.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool HasHeaderRecord { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_CsvLoader_1_InvalidRecordHandler_" data-uid="Wolfgang.Etl.Csv.CsvLoader`1.InvalidRecordHandler*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvLoader_1_InvalidRecordHandler" data-uid="Wolfgang.Etl.Csv.CsvLoader`1.InvalidRecordHandler">
+  InvalidRecordHandler
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.11.0/src/Wolfgang.Etl.Csv/CsvLoader.cs/#L395"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Optional callback invoked for each record that fails validation, before <a class="xref" href="Wolfgang.Etl.Csv.CsvLoader-1.html#Wolfgang_Etl_Csv_CsvLoader_1_OnValidationFailure">OnValidationFailure</a>
+is applied. Use it to log or quarantine invalid rows.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Action&lt;CsvInvalidRecord&lt;TRecord&gt;&gt;? InvalidRecordHandler { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="Wolfgang.Etl.Csv.CsvInvalidRecord-1.html">CsvInvalidRecord</a>&lt;TRecord&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_CsvLoader_1_IsDryRun_" data-uid="Wolfgang.Etl.Csv.CsvLoader`1.IsDryRun*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvLoader_1_IsDryRun" data-uid="Wolfgang.Etl.Csv.CsvLoader`1.IsDryRun">
+  IsDryRun
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.11.0/src/Wolfgang.Etl.Csv/CsvLoader.cs/#L410"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets a value indicating whether the load runs as a dry run (the setter is deprecated;
+configure it through <a class="xref" href="Wolfgang.Etl.Csv.CsvLoaderOptions-1.html">CsvLoaderOptions&lt;TRecord&gt;</a>). When <code>true</code>,
+the loader enumerates the source and honors <span class="xref">Wolfgang.Etl.Abstractions.LoaderBase&lt;TDestination, TProgress&gt;.SkipItemCount</span> /
+<span class="xref">Wolfgang.Etl.Abstractions.LoaderBase&lt;TDestination, TProgress&gt;.MaximumItemCount</span>, increments progress counters, fires progress reports, and
+logs as a real load would — but writes nothing to the underlying writer (neither
+the header nor any records), so <a class="xref" href="Wolfgang.Etl.Csv.CsvLoaderProgress.html#Wolfgang_Etl_Csv_CsvLoaderProgress_CurrentLineNumber">CurrentLineNumber</a> stays <code>0</code>.
+Use it to validate a pipeline against real data without producing output. Defaults to <code>false</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsDryRun { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_CsvLoader_1_LeaveOpen_" data-uid="Wolfgang.Etl.Csv.CsvLoader`1.LeaveOpen*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvLoader_1_LeaveOpen" data-uid="Wolfgang.Etl.Csv.CsvLoader`1.LeaveOpen">
+  LeaveOpen
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.11.0/src/Wolfgang.Etl.Csv/CsvLoader.cs/#L291"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets a value indicating whether the underlying stream should be left open
+after the writer is disposed.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool LeaveOpen { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Wolfgang_Etl_Csv_CsvLoader_1_LeaveOpen_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Defaults to <code>true</code> because the caller owns the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.streamwriter">StreamWriter</a>
+passed into the constructor.</p>
+</div>
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_CsvLoader_1_MaxRecordCount_" data-uid="Wolfgang.Etl.Csv.CsvLoader`1.MaxRecordCount*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvLoader_1_MaxRecordCount" data-uid="Wolfgang.Etl.Csv.CsvLoader`1.MaxRecordCount">
+  MaxRecordCount
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.11.0/src/Wolfgang.Etl.Csv/CsvLoader.cs/#L431"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the maximum number of records to write.
+This is an alias for <span class="xref">Wolfgang.Etl.Abstractions.LoaderBase&lt;TDestination, TProgress&gt;.MaximumItemCount</span>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int MaxRecordCount { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_CsvLoader_1_NewLine_" data-uid="Wolfgang.Etl.Csv.CsvLoader`1.NewLine*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvLoader_1_NewLine" data-uid="Wolfgang.Etl.Csv.CsvLoader`1.NewLine">
+  NewLine
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.11.0/src/Wolfgang.Etl.Csv/CsvLoader.cs/#L298"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the line terminator written between records.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string NewLine { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_CsvLoader_1_OnValidationFailure_" data-uid="Wolfgang.Etl.Csv.CsvLoader`1.OnValidationFailure*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvLoader_1_OnValidationFailure" data-uid="Wolfgang.Etl.Csv.CsvLoader`1.OnValidationFailure">
+  OnValidationFailure
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.11.0/src/Wolfgang.Etl.Csv/CsvLoader.cs/#L385"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>How a record that fails validation is handled. Defaults to <a class="xref" href="Wolfgang.Etl.Csv.CsvValidationFailureAction.html#Wolfgang_Etl_Csv_CsvValidationFailureAction_Stop">Stop</a>
+(the first invalid record raises a <a class="xref" href="Wolfgang.Etl.Csv.CsvValidationException.html">CsvValidationException</a>).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CsvValidationFailureAction OnValidationFailure { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Wolfgang.Etl.Csv.CsvValidationFailureAction.html">CsvValidationFailureAction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_CsvLoader_1_Quote_" data-uid="Wolfgang.Etl.Csv.CsvLoader`1.Quote*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvLoader_1_Quote" data-uid="Wolfgang.Etl.Csv.CsvLoader`1.Quote">
+  Quote
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.11.0/src/Wolfgang.Etl.Csv/CsvLoader.cs/#L305"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the quote character used to wrap fields when needed.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public char Quote { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_CsvLoader_1_Schema_" data-uid="Wolfgang.Etl.Csv.CsvLoader`1.Schema*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvLoader_1_Schema" data-uid="Wolfgang.Etl.Csv.CsvLoader`1.Schema">
+  Schema
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.11.0/src/Wolfgang.Etl.Csv/CsvLoader.cs/#L348"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the code-first schema supplied through <a class="xref" href="Wolfgang.Etl.Csv.CsvLoaderOptions-1.html#Wolfgang_Etl_Csv_CsvLoaderOptions_1_Schema">Schema</a>, or
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when mapping is driven by <a class="xref" href="Wolfgang.Etl.Csv.CsvLoader-1.html#Wolfgang_Etl_Csv_CsvLoader_1_ColumnMaps">ColumnMaps</a> or attributes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CsvSchema? Schema { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Wolfgang.Etl.Csv.CsvSchema.html">CsvSchema</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_CsvLoader_1_ShouldQuote_" data-uid="Wolfgang.Etl.Csv.CsvLoader`1.ShouldQuote*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvLoader_1_ShouldQuote" data-uid="Wolfgang.Etl.Csv.CsvLoader`1.ShouldQuote">
+  ShouldQuote
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.11.0/src/Wolfgang.Etl.Csv/CsvLoader.cs/#L315"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets a callback that decides whether a field should be quoted.
+When <code>null</code>, the underlying parser's default policy is used.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Func&lt;CsvShouldQuoteContext, bool&gt;? ShouldQuote { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="Wolfgang.Etl.Csv.CsvShouldQuoteContext.html">CsvShouldQuoteContext</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_CsvLoader_1_SkipRecordCount_" data-uid="Wolfgang.Etl.Csv.CsvLoader`1.SkipRecordCount*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvLoader_1_SkipRecordCount" data-uid="Wolfgang.Etl.Csv.CsvLoader`1.SkipRecordCount">
+  SkipRecordCount
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.11.0/src/Wolfgang.Etl.Csv/CsvLoader.cs/#L418"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the number of records to skip before writing.
+This is an alias for <span class="xref">Wolfgang.Etl.Abstractions.LoaderBase&lt;TDestination, TProgress&gt;.SkipItemCount</span>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int SkipRecordCount { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_CsvLoader_1_TrimOptions_" data-uid="Wolfgang.Etl.Csv.CsvLoader`1.TrimOptions*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvLoader_1_TrimOptions" data-uid="Wolfgang.Etl.Csv.CsvLoader`1.TrimOptions">
+  TrimOptions
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.11.0/src/Wolfgang.Etl.Csv/CsvLoader.cs/#L322"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the trimming options applied while writing.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CsvTrimOptions TrimOptions { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Wolfgang.Etl.Csv.CsvTrimOptions.html">CsvTrimOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_CsvLoader_1_Validators_" data-uid="Wolfgang.Etl.Csv.CsvLoader`1.Validators*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvLoader_1_Validators" data-uid="Wolfgang.Etl.Csv.CsvLoader`1.Validators">
+  Validators
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.11.0/src/Wolfgang.Etl.Csv/CsvLoader.cs/#L375"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Optional per-record validators run before each record is written. A record that fails one or
+more of them is counted in <a class="xref" href="Wolfgang.Etl.Csv.CsvLoaderProgress.html#Wolfgang_Etl_Csv_CsvLoaderProgress_CurrentInvalidItemCount">CurrentInvalidItemCount</a>, passed to
+<a class="xref" href="Wolfgang.Etl.Csv.CsvLoader-1.html#Wolfgang_Etl_Csv_CsvLoader_1_InvalidRecordHandler">InvalidRecordHandler</a>, and then handled per <a class="xref" href="Wolfgang.Etl.Csv.CsvLoader-1.html#Wolfgang_Etl_Csv_CsvLoader_1_OnValidationFailure">OnValidationFailure</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;CsvValidator&lt;TRecord&gt;&gt;? Validators { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Wolfgang.Etl.Csv.CsvValidator-1.html">CsvValidator</a>&lt;TRecord&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Wolfgang_Etl_Csv_CsvLoader_1_CreateProgressReport_" data-uid="Wolfgang.Etl.Csv.CsvLoader`1.CreateProgressReport*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvLoader_1_CreateProgressReport" data-uid="Wolfgang.Etl.Csv.CsvLoader`1.CreateProgressReport">
+  CreateProgressReport()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.11.0/src/Wolfgang.Etl.Csv/CsvLoader.cs/#L824"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a progress report of type TProgress. This gives the derived class the opportunity to
+implement a custom progress report that is specific to the loading process.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override CsvLoaderProgress CreateProgressReport()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Wolfgang.Etl.Csv.CsvLoaderProgress.html">CsvLoaderProgress</a></dt>
+    <dd><p>Progress of type TProgress</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_CsvLoader_1_CreateProgressTimer_" data-uid="Wolfgang.Etl.Csv.CsvLoader`1.CreateProgressTimer*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvLoader_1_CreateProgressTimer_System_IProgress_Wolfgang_Etl_Csv_CsvLoaderProgress__" data-uid="Wolfgang.Etl.Csv.CsvLoader`1.CreateProgressTimer(System.IProgress{Wolfgang.Etl.Csv.CsvLoaderProgress})">
+  CreateProgressTimer(IProgress&lt;CsvLoaderProgress&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.11.0/src/Wolfgang.Etl.Csv/CsvLoader.cs/#L836"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates the <span class="xref">Wolfgang.Etl.Abstractions.IProgressTimer</span> used to drive progress callbacks.
+Override this method in a derived class to inject a custom timer
+(for example, a custom implementation that allows manual control in unit tests).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override IProgressTimer CreateProgressTimer(IProgress&lt;CsvLoaderProgress&gt; progress)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>progress</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iprogress-1">IProgress</a>&lt;<a class="xref" href="Wolfgang.Etl.Csv.CsvLoaderProgress.html">CsvLoaderProgress</a>&gt;</dt>
+    <dd><p>The progress sink that will receive callbacks.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IProgressTimer</span></dt>
+    <dd><p>A started <span class="xref">Wolfgang.Etl.Abstractions.IProgressTimer</span> instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_Etl_Csv_CsvLoader_1_LoadWorkerAsync_" data-uid="Wolfgang.Etl.Csv.CsvLoader`1.LoadWorkerAsync*"></a>
+
+  <h3 id="Wolfgang_Etl_Csv_CsvLoader_1_LoadWorkerAsync_System_Collections_Generic_IAsyncEnumerable__0__System_Threading_CancellationToken_" data-uid="Wolfgang.Etl.Csv.CsvLoader`1.LoadWorkerAsync(System.Collections.Generic.IAsyncEnumerable{`0},System.Threading.CancellationToken)">
+  LoadWorkerAsync(IAsyncEnumerable&lt;TRecord&gt;, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.11.0/src/Wolfgang.Etl.Csv/CsvLoader.cs/#L467"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>This method is the core implementation of the loading logic and should be
+overridden by derived classes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override Task LoadWorkerAsync(IAsyncEnumerable&lt;TRecord&gt; items, CancellationToken token)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>items</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1">IAsyncEnumerable</a>&lt;TRecord&gt;</dt>
+    <dd><p>The items to be loaded to the destination.</p>
+</dd>
+    <dt><code>token</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A CancellationToken to observe while waiting for the task to complete.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a></dt>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Wolfgang_Etl_Csv_CsvLoader_1_LoadWorkerAsync_System_Collections_Generic_IAsyncEnumerable__0__System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Items may be an empty sequence if no data is available or if the loading fails.</p>
+</div>
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.11.0/src/Wolfgang.Etl.Csv/CsvLoader.cs/#L40" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Made with DocFX <script>(function(){var r='/';if(window.location.hostname.endsWith('.github.io')){var s=window.location.pathname.split('/').filter(Boolean);if(s.length)r='/'+s[0]+'/';}var t=document.createElement('script');t.src=r+'public/version-picker.js';t.async=true;document.head.appendChild(t);})();</script>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

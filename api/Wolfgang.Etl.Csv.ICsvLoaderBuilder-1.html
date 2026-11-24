@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/Chris-Wolfgang/ETL-Csv/new/v0.10.0/apiSpec/new?filename=Wolfgang_Etl_Csv_ICsvLoaderBuilder_1.md&amp;value=---%0Auid%3A%20Wolfgang.Etl.Csv.ICsvLoaderBuilder%601%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="docfx:docurl" content="https://github.com/Chris-Wolfgang/ETL-Csv/new/v0.11.0/apiSpec/new?filename=Wolfgang_Etl_Csv_ICsvLoaderBuilder_1.md&amp;value=---%0Auid%3A%20Wolfgang.Etl.Csv.ICsvLoaderBuilder%601%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -75,11 +75,11 @@
 
 
   <h1 id="Wolfgang_Etl_Csv_ICsvLoaderBuilder_1" data-uid="Wolfgang.Etl.Csv.ICsvLoaderBuilder`1" class="text-break">
-Interface ICsvLoaderBuilder&lt;T&gt;  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.10.0/src/Wolfgang.Etl.Csv/ICsvLoaderBuilder.cs/#L22"><i class="bi bi-code-slash"></i></a>
+Interface ICsvLoaderBuilder&lt;T&gt;  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.11.0/src/Wolfgang.Etl.Csv/ICsvLoaderBuilder.cs/#L23"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
-    <dl><dt>Namespace</dt><dd><a class="xref" href="Wolfgang.html">Wolfgang</a>.<a class="xref" href="Wolfgang.Etl.html">Etl</a>.<a class="xref" href="Wolfgang.Etl.Csv.html">Csv</a></dd></dl>
+    <dl><dt>Namespace</dt><dd><span class="xref">Wolfgang</span>.<span class="xref">Etl</span>.<a class="xref" href="Wolfgang.Etl.Csv.html">Csv</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Wolfgang.Etl.Csv.dll</dd></dl>
   </div>
 
@@ -119,7 +119,8 @@ materializes and runs it.</p>
 
 
   <h2 id="Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_remarks">Remarks</h2>
-  <div class="markdown level0 remarks"><p>Each setter maps 1:1 to a public property on <a class="xref" href="Wolfgang.Etl.Csv.CsvLoader-1.html">CsvLoader&lt;TRecord&gt;</a>; no new
+  <div class="markdown level0 remarks"><p>Each setter maps 1:1 to a public property on <a class="xref" href="Wolfgang.Etl.Csv.CsvLoader-1.html">CsvLoader&lt;TRecord&gt;</a>, except
+<code>Encoding(...)</code>, which only selects how a path-based sink is opened; no other new
 configuration surface is introduced. Stream ownership is decided by the terminator overload,
 not a setter: a path-based sink owns and disposes the file it opens (on success and failure),
 while a caller-supplied <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.streamwriter">StreamWriter</a> is left open for the caller.</p>
@@ -134,7 +135,7 @@ while a caller-supplied <a class="xref" href="https://learn.microsoft.com/dotnet
 
   <h3 id="Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_ColumnMaps_System_Collections_Generic_IReadOnlyList_Wolfgang_Etl_Csv_CsvColumnMap__" data-uid="Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.ColumnMaps(System.Collections.Generic.IReadOnlyList{Wolfgang.Etl.Csv.CsvColumnMap})">
   ColumnMaps(IReadOnlyList&lt;CsvColumnMap&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.10.0/src/Wolfgang.Etl.Csv/ICsvLoaderBuilder.cs/#L90"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.11.0/src/Wolfgang.Etl.Csv/ICsvLoaderBuilder.cs/#L92"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Sets <a class="xref" href="Wolfgang.Etl.Csv.CsvLoader-1.html#Wolfgang_Etl_Csv_CsvLoader_1_ColumnMaps">ColumnMaps</a> — explicit member-to-column mappings
@@ -178,7 +179,7 @@ applied instead of convention-based binding.</p>
 
   <h3 id="Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_Delimiter_System_String_" data-uid="Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.Delimiter(System.String)">
   Delimiter(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.10.0/src/Wolfgang.Etl.Csv/ICsvLoaderBuilder.cs/#L29"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.11.0/src/Wolfgang.Etl.Csv/ICsvLoaderBuilder.cs/#L30"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Sets <a class="xref" href="Wolfgang.Etl.Csv.CsvLoader-1.html#Wolfgang_Etl_Csv_CsvLoader_1_Delimiter">Delimiter</a>. Default: <code>&quot;,&quot;</code>.</p>
@@ -221,11 +222,12 @@ applied instead of convention-based binding.</p>
 
   <h3 id="Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_Encoding_System_Text_Encoding_" data-uid="Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.Encoding(System.Text.Encoding)">
   Encoding(Encoding)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.10.0/src/Wolfgang.Etl.Csv/ICsvLoaderBuilder.cs/#L68"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.11.0/src/Wolfgang.Etl.Csv/ICsvLoaderBuilder.cs/#L70"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Sets <a class="xref" href="Wolfgang.Etl.Csv.CsvLoader-1.html#Wolfgang_Etl_Csv_CsvLoader_1_Encoding">Encoding</a> and the encoding used to open a path-based
-sink. Default: <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoding.utf8">UTF8</a>.</p>
+  <div class="markdown level1 summary"><p>Sets the encoding used to open a path-based sink. Default: <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoding.utf8">UTF8</a>.
+The inert <a class="xref" href="Wolfgang.Etl.Csv.CsvLoader-1.html#Wolfgang_Etl_Csv_CsvLoader_1_Encoding">Encoding</a> property is not set; for a caller-supplied
+writer the encoding is whatever the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.streamwriter">StreamWriter</a> was constructed with.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -265,7 +267,7 @@ sink. Default: <a class="xref" href="https://learn.microsoft.com/dotnet/api/syst
 
   <h3 id="Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_Escape_System_Char_" data-uid="Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.Escape(System.Char)">
   Escape(char)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.10.0/src/Wolfgang.Etl.Csv/ICsvLoaderBuilder.cs/#L41"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.11.0/src/Wolfgang.Etl.Csv/ICsvLoaderBuilder.cs/#L42"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Sets <a class="xref" href="Wolfgang.Etl.Csv.CsvLoader-1.html#Wolfgang_Etl_Csv_CsvLoader_1_Escape">Escape</a>. Default: <code>&quot;</code>.</p>
@@ -302,7 +304,7 @@ sink. Default: <a class="xref" href="https://learn.microsoft.com/dotnet/api/syst
 
   <h3 id="Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_HasHeaderRecord_System_Boolean_" data-uid="Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.HasHeaderRecord(System.Boolean)">
   HasHeaderRecord(bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.10.0/src/Wolfgang.Etl.Csv/ICsvLoaderBuilder.cs/#L54"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.11.0/src/Wolfgang.Etl.Csv/ICsvLoaderBuilder.cs/#L55"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Sets <a class="xref" href="Wolfgang.Etl.Csv.CsvLoader-1.html#Wolfgang_Etl_Csv_CsvLoader_1_HasHeaderRecord">HasHeaderRecord</a>. Default: <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>.</p>
@@ -339,7 +341,7 @@ sink. Default: <a class="xref" href="https://learn.microsoft.com/dotnet/api/syst
 
   <h3 id="Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_IsDryRun_System_Boolean_" data-uid="Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.IsDryRun(System.Boolean)">
   IsDryRun(bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.10.0/src/Wolfgang.Etl.Csv/ICsvLoaderBuilder.cs/#L60"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.11.0/src/Wolfgang.Etl.Csv/ICsvLoaderBuilder.cs/#L61"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Sets <a class="xref" href="Wolfgang.Etl.Csv.CsvLoader-1.html#Wolfgang_Etl_Csv_CsvLoader_1_IsDryRun">IsDryRun</a>: when <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> the loader enumerates,
@@ -377,7 +379,7 @@ counts and reports but writes nothing. Default: <a href="https://learn.microsoft
 
   <h3 id="Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_NewLine_System_String_" data-uid="Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.NewLine(System.String)">
   NewLine(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.10.0/src/Wolfgang.Etl.Csv/ICsvLoaderBuilder.cs/#L48"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.11.0/src/Wolfgang.Etl.Csv/ICsvLoaderBuilder.cs/#L49"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Sets <a class="xref" href="Wolfgang.Etl.Csv.CsvLoader-1.html#Wolfgang_Etl_Csv_CsvLoader_1_NewLine">NewLine</a>. Default: <code>\r\n</code>.</p>
@@ -420,7 +422,7 @@ counts and reports but writes nothing. Default: <a href="https://learn.microsoft
 
   <h3 id="Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_Quote_System_Char_" data-uid="Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.Quote(System.Char)">
   Quote(char)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.10.0/src/Wolfgang.Etl.Csv/ICsvLoaderBuilder.cs/#L35"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.11.0/src/Wolfgang.Etl.Csv/ICsvLoaderBuilder.cs/#L36"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Sets <a class="xref" href="Wolfgang.Etl.Csv.CsvLoader-1.html#Wolfgang_Etl_Csv_CsvLoader_1_Quote">Quote</a>. Default: <code>&quot;</code>.</p>
@@ -457,7 +459,7 @@ counts and reports but writes nothing. Default: <a href="https://learn.microsoft
 
   <h3 id="Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_ShouldQuote_System_Func_Wolfgang_Etl_Csv_CsvShouldQuoteContext_System_Boolean__" data-uid="Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.ShouldQuote(System.Func{Wolfgang.Etl.Csv.CsvShouldQuoteContext,System.Boolean})">
   ShouldQuote(Func&lt;CsvShouldQuoteContext, bool&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.10.0/src/Wolfgang.Etl.Csv/ICsvLoaderBuilder.cs/#L82"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.11.0/src/Wolfgang.Etl.Csv/ICsvLoaderBuilder.cs/#L84"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Sets <a class="xref" href="Wolfgang.Etl.Csv.CsvLoader-1.html#Wolfgang_Etl_Csv_CsvLoader_1_ShouldQuote">ShouldQuote</a> — a predicate deciding, per field, whether
@@ -501,7 +503,7 @@ the value is quoted.</p>
 
   <h3 id="Wolfgang_Etl_Csv_ICsvLoaderBuilder_1_TrimOptions_Wolfgang_Etl_Csv_CsvTrimOptions_" data-uid="Wolfgang.Etl.Csv.ICsvLoaderBuilder`1.TrimOptions(Wolfgang.Etl.Csv.CsvTrimOptions)">
   TrimOptions(CsvTrimOptions)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.10.0/src/Wolfgang.Etl.Csv/ICsvLoaderBuilder.cs/#L74"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.11.0/src/Wolfgang.Etl.Csv/ICsvLoaderBuilder.cs/#L76"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Sets <a class="xref" href="Wolfgang.Etl.Csv.CsvLoader-1.html#Wolfgang_Etl_Csv_CsvLoader_1_TrimOptions">TrimOptions</a>. Default: <a class="xref" href="Wolfgang.Etl.Csv.CsvTrimOptions.html#Wolfgang_Etl_Csv_CsvTrimOptions_None">None</a>.</p>
@@ -538,7 +540,7 @@ the value is quoted.</p>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.10.0/src/Wolfgang.Etl.Csv/ICsvLoaderBuilder.cs/#L22" class="edit-link">Edit this page</a>
+          <a href="https://github.com/Chris-Wolfgang/ETL-Csv/blob/v0.11.0/src/Wolfgang.Etl.Csv/ICsvLoaderBuilder.cs/#L23" class="edit-link">Edit this page</a>
         </div>
 
 

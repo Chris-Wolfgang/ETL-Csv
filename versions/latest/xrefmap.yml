@@ -828,6 +828,23 @@ references:
   fullName.vb: Wolfgang.Etl.Csv.CsvExtractorOptions(Of TRecord).Quote
   nameWithType: CsvExtractorOptions<TRecord>.Quote
   nameWithType.vb: CsvExtractorOptions(Of TRecord).Quote
+- uid: Wolfgang.Etl.Csv.CsvExtractorOptions`1.Schema
+  name: Schema
+  href: api/Wolfgang.Etl.Csv.CsvExtractorOptions-1.html#Wolfgang_Etl_Csv_CsvExtractorOptions_1_Schema
+  commentId: P:Wolfgang.Etl.Csv.CsvExtractorOptions`1.Schema
+  fullName: Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>.Schema
+  fullName.vb: Wolfgang.Etl.Csv.CsvExtractorOptions(Of TRecord).Schema
+  nameWithType: CsvExtractorOptions<TRecord>.Schema
+  nameWithType.vb: CsvExtractorOptions(Of TRecord).Schema
+- uid: Wolfgang.Etl.Csv.CsvExtractorOptions`1.Schema*
+  name: Schema
+  href: api/Wolfgang.Etl.Csv.CsvExtractorOptions-1.html#Wolfgang_Etl_Csv_CsvExtractorOptions_1_Schema_
+  commentId: Overload:Wolfgang.Etl.Csv.CsvExtractorOptions`1.Schema
+  isSpec: "True"
+  fullName: Wolfgang.Etl.Csv.CsvExtractorOptions<TRecord>.Schema
+  fullName.vb: Wolfgang.Etl.Csv.CsvExtractorOptions(Of TRecord).Schema
+  nameWithType: CsvExtractorOptions<TRecord>.Schema
+  nameWithType.vb: CsvExtractorOptions(Of TRecord).Schema
 - uid: Wolfgang.Etl.Csv.CsvExtractorOptions`1.SkipRecordCount
   name: SkipRecordCount
   href: api/Wolfgang.Etl.Csv.CsvExtractorOptions-1.html#Wolfgang_Etl_Csv_CsvExtractorOptions_1_SkipRecordCount
@@ -1365,6 +1382,23 @@ references:
   fullName.vb: Wolfgang.Etl.Csv.CsvExtractor(Of TRecord).ReadingExceptionOccurred
   nameWithType: CsvExtractor<TRecord>.ReadingExceptionOccurred
   nameWithType.vb: CsvExtractor(Of TRecord).ReadingExceptionOccurred
+- uid: Wolfgang.Etl.Csv.CsvExtractor`1.Schema
+  name: Schema
+  href: api/Wolfgang.Etl.Csv.CsvExtractor-1.html#Wolfgang_Etl_Csv_CsvExtractor_1_Schema
+  commentId: P:Wolfgang.Etl.Csv.CsvExtractor`1.Schema
+  fullName: Wolfgang.Etl.Csv.CsvExtractor<TRecord>.Schema
+  fullName.vb: Wolfgang.Etl.Csv.CsvExtractor(Of TRecord).Schema
+  nameWithType: CsvExtractor<TRecord>.Schema
+  nameWithType.vb: CsvExtractor(Of TRecord).Schema
+- uid: Wolfgang.Etl.Csv.CsvExtractor`1.Schema*
+  name: Schema
+  href: api/Wolfgang.Etl.Csv.CsvExtractor-1.html#Wolfgang_Etl_Csv_CsvExtractor_1_Schema_
+  commentId: Overload:Wolfgang.Etl.Csv.CsvExtractor`1.Schema
+  isSpec: "True"
+  fullName: Wolfgang.Etl.Csv.CsvExtractor<TRecord>.Schema
+  fullName.vb: Wolfgang.Etl.Csv.CsvExtractor(Of TRecord).Schema
+  nameWithType: CsvExtractor<TRecord>.Schema
+  nameWithType.vb: CsvExtractor(Of TRecord).Schema
 - uid: Wolfgang.Etl.Csv.CsvExtractor`1.SkipRecordCount
   name: SkipRecordCount
   href: api/Wolfgang.Etl.Csv.CsvExtractor-1.html#Wolfgang_Etl_Csv_CsvExtractor_1_SkipRecordCount
@@ -1714,6 +1748,23 @@ references:
   fullName.vb: Wolfgang.Etl.Csv.CsvLoaderOptions(Of TRecord).Quote
   nameWithType: CsvLoaderOptions<TRecord>.Quote
   nameWithType.vb: CsvLoaderOptions(Of TRecord).Quote
+- uid: Wolfgang.Etl.Csv.CsvLoaderOptions`1.Schema
+  name: Schema
+  href: api/Wolfgang.Etl.Csv.CsvLoaderOptions-1.html#Wolfgang_Etl_Csv_CsvLoaderOptions_1_Schema
+  commentId: P:Wolfgang.Etl.Csv.CsvLoaderOptions`1.Schema
+  fullName: Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.Schema
+  fullName.vb: Wolfgang.Etl.Csv.CsvLoaderOptions(Of TRecord).Schema
+  nameWithType: CsvLoaderOptions<TRecord>.Schema
+  nameWithType.vb: CsvLoaderOptions(Of TRecord).Schema
+- uid: Wolfgang.Etl.Csv.CsvLoaderOptions`1.Schema*
+  name: Schema
+  href: api/Wolfgang.Etl.Csv.CsvLoaderOptions-1.html#Wolfgang_Etl_Csv_CsvLoaderOptions_1_Schema_
+  commentId: Overload:Wolfgang.Etl.Csv.CsvLoaderOptions`1.Schema
+  isSpec: "True"
+  fullName: Wolfgang.Etl.Csv.CsvLoaderOptions<TRecord>.Schema
+  fullName.vb: Wolfgang.Etl.Csv.CsvLoaderOptions(Of TRecord).Schema
+  nameWithType: CsvLoaderOptions<TRecord>.Schema
+  nameWithType.vb: CsvLoaderOptions(Of TRecord).Schema
 - uid: Wolfgang.Etl.Csv.CsvLoaderOptions`1.ShouldQuote
   name: ShouldQuote
   href: api/Wolfgang.Etl.Csv.CsvLoaderOptions-1.html#Wolfgang_Etl_Csv_CsvLoaderOptions_1_ShouldQuote
@@ -2166,6 +2217,23 @@ references:
   fullName.vb: Wolfgang.Etl.Csv.CsvLoader(Of TRecord).Quote
   nameWithType: CsvLoader<TRecord>.Quote
   nameWithType.vb: CsvLoader(Of TRecord).Quote
+- uid: Wolfgang.Etl.Csv.CsvLoader`1.Schema
+  name: Schema
+  href: api/Wolfgang.Etl.Csv.CsvLoader-1.html#Wolfgang_Etl_Csv_CsvLoader_1_Schema
+  commentId: P:Wolfgang.Etl.Csv.CsvLoader`1.Schema
+  fullName: Wolfgang.Etl.Csv.CsvLoader<TRecord>.Schema
+  fullName.vb: Wolfgang.Etl.Csv.CsvLoader(Of TRecord).Schema
+  nameWithType: CsvLoader<TRecord>.Schema
+  nameWithType.vb: CsvLoader(Of TRecord).Schema
+- uid: Wolfgang.Etl.Csv.CsvLoader`1.Schema*
+  name: Schema
+  href: api/Wolfgang.Etl.Csv.CsvLoader-1.html#Wolfgang_Etl_Csv_CsvLoader_1_Schema_
+  commentId: Overload:Wolfgang.Etl.Csv.CsvLoader`1.Schema
+  isSpec: "True"
+  fullName: Wolfgang.Etl.Csv.CsvLoader<TRecord>.Schema
+  fullName.vb: Wolfgang.Etl.Csv.CsvLoader(Of TRecord).Schema
+  nameWithType: CsvLoader<TRecord>.Schema
+  nameWithType.vb: CsvLoader(Of TRecord).Schema
 - uid: Wolfgang.Etl.Csv.CsvLoader`1.ShouldQuote
   name: ShouldQuote
   href: api/Wolfgang.Etl.Csv.CsvLoader-1.html#Wolfgang_Etl_Csv_CsvLoader_1_ShouldQuote
@@ -2324,6 +2392,111 @@ references:
   isSpec: "True"
   fullName: Wolfgang.Etl.Csv.CsvReadingExceptionInfo.LineNumber
   nameWithType: CsvReadingExceptionInfo.LineNumber
+- uid: Wolfgang.Etl.Csv.CsvSchema
+  name: CsvSchema
+  href: api/Wolfgang.Etl.Csv.CsvSchema.html
+  commentId: T:Wolfgang.Etl.Csv.CsvSchema
+  fullName: Wolfgang.Etl.Csv.CsvSchema
+  nameWithType: CsvSchema
+- uid: Wolfgang.Etl.Csv.CsvSchema.ColumnCount
+  name: ColumnCount
+  href: api/Wolfgang.Etl.Csv.CsvSchema.html#Wolfgang_Etl_Csv_CsvSchema_ColumnCount
+  commentId: P:Wolfgang.Etl.Csv.CsvSchema.ColumnCount
+  fullName: Wolfgang.Etl.Csv.CsvSchema.ColumnCount
+  nameWithType: CsvSchema.ColumnCount
+- uid: Wolfgang.Etl.Csv.CsvSchema.ColumnCount*
+  name: ColumnCount
+  href: api/Wolfgang.Etl.Csv.CsvSchema.html#Wolfgang_Etl_Csv_CsvSchema_ColumnCount_
+  commentId: Overload:Wolfgang.Etl.Csv.CsvSchema.ColumnCount
+  isSpec: "True"
+  fullName: Wolfgang.Etl.Csv.CsvSchema.ColumnCount
+  nameWithType: CsvSchema.ColumnCount
+- uid: Wolfgang.Etl.Csv.CsvSchema.Columns
+  name: Columns
+  href: api/Wolfgang.Etl.Csv.CsvSchema.html#Wolfgang_Etl_Csv_CsvSchema_Columns
+  commentId: P:Wolfgang.Etl.Csv.CsvSchema.Columns
+  fullName: Wolfgang.Etl.Csv.CsvSchema.Columns
+  nameWithType: CsvSchema.Columns
+- uid: Wolfgang.Etl.Csv.CsvSchema.Columns*
+  name: Columns
+  href: api/Wolfgang.Etl.Csv.CsvSchema.html#Wolfgang_Etl_Csv_CsvSchema_Columns_
+  commentId: Overload:Wolfgang.Etl.Csv.CsvSchema.Columns
+  isSpec: "True"
+  fullName: Wolfgang.Etl.Csv.CsvSchema.Columns
+  nameWithType: CsvSchema.Columns
+- uid: Wolfgang.Etl.Csv.CsvSchema.For*
+  name: For
+  href: api/Wolfgang.Etl.Csv.CsvSchema.html#Wolfgang_Etl_Csv_CsvSchema_For_
+  commentId: Overload:Wolfgang.Etl.Csv.CsvSchema.For
+  isSpec: "True"
+  fullName: Wolfgang.Etl.Csv.CsvSchema.For
+  nameWithType: CsvSchema.For
+- uid: Wolfgang.Etl.Csv.CsvSchema.For``1
+  name: For<T>()
+  href: api/Wolfgang.Etl.Csv.CsvSchema.html#Wolfgang_Etl_Csv_CsvSchema_For__1
+  commentId: M:Wolfgang.Etl.Csv.CsvSchema.For``1
+  name.vb: For(Of T)()
+  fullName: Wolfgang.Etl.Csv.CsvSchema.For<T>()
+  fullName.vb: Wolfgang.Etl.Csv.CsvSchema.For(Of T)()
+  nameWithType: CsvSchema.For<T>()
+  nameWithType.vb: CsvSchema.For(Of T)()
+- uid: Wolfgang.Etl.Csv.CsvSchema.RecordType
+  name: RecordType
+  href: api/Wolfgang.Etl.Csv.CsvSchema.html#Wolfgang_Etl_Csv_CsvSchema_RecordType
+  commentId: P:Wolfgang.Etl.Csv.CsvSchema.RecordType
+  fullName: Wolfgang.Etl.Csv.CsvSchema.RecordType
+  nameWithType: CsvSchema.RecordType
+- uid: Wolfgang.Etl.Csv.CsvSchema.RecordType*
+  name: RecordType
+  href: api/Wolfgang.Etl.Csv.CsvSchema.html#Wolfgang_Etl_Csv_CsvSchema_RecordType_
+  commentId: Overload:Wolfgang.Etl.Csv.CsvSchema.RecordType
+  isSpec: "True"
+  fullName: Wolfgang.Etl.Csv.CsvSchema.RecordType
+  nameWithType: CsvSchema.RecordType
+- uid: Wolfgang.Etl.Csv.CsvSchemaBuilder`1
+  name: CsvSchemaBuilder<T>
+  href: api/Wolfgang.Etl.Csv.CsvSchemaBuilder-1.html
+  commentId: T:Wolfgang.Etl.Csv.CsvSchemaBuilder`1
+  name.vb: CsvSchemaBuilder(Of T)
+  fullName: Wolfgang.Etl.Csv.CsvSchemaBuilder<T>
+  fullName.vb: Wolfgang.Etl.Csv.CsvSchemaBuilder(Of T)
+  nameWithType: CsvSchemaBuilder<T>
+  nameWithType.vb: CsvSchemaBuilder(Of T)
+- uid: Wolfgang.Etl.Csv.CsvSchemaBuilder`1.Build
+  name: Build()
+  href: api/Wolfgang.Etl.Csv.CsvSchemaBuilder-1.html#Wolfgang_Etl_Csv_CsvSchemaBuilder_1_Build
+  commentId: M:Wolfgang.Etl.Csv.CsvSchemaBuilder`1.Build
+  fullName: Wolfgang.Etl.Csv.CsvSchemaBuilder<T>.Build()
+  fullName.vb: Wolfgang.Etl.Csv.CsvSchemaBuilder(Of T).Build()
+  nameWithType: CsvSchemaBuilder<T>.Build()
+  nameWithType.vb: CsvSchemaBuilder(Of T).Build()
+- uid: Wolfgang.Etl.Csv.CsvSchemaBuilder`1.Build*
+  name: Build
+  href: api/Wolfgang.Etl.Csv.CsvSchemaBuilder-1.html#Wolfgang_Etl_Csv_CsvSchemaBuilder_1_Build_
+  commentId: Overload:Wolfgang.Etl.Csv.CsvSchemaBuilder`1.Build
+  isSpec: "True"
+  fullName: Wolfgang.Etl.Csv.CsvSchemaBuilder<T>.Build
+  fullName.vb: Wolfgang.Etl.Csv.CsvSchemaBuilder(Of T).Build
+  nameWithType: CsvSchemaBuilder<T>.Build
+  nameWithType.vb: CsvSchemaBuilder(Of T).Build
+- uid: Wolfgang.Etl.Csv.CsvSchemaBuilder`1.Column*
+  name: Column
+  href: api/Wolfgang.Etl.Csv.CsvSchemaBuilder-1.html#Wolfgang_Etl_Csv_CsvSchemaBuilder_1_Column_
+  commentId: Overload:Wolfgang.Etl.Csv.CsvSchemaBuilder`1.Column
+  isSpec: "True"
+  fullName: Wolfgang.Etl.Csv.CsvSchemaBuilder<T>.Column
+  fullName.vb: Wolfgang.Etl.Csv.CsvSchemaBuilder(Of T).Column
+  nameWithType: CsvSchemaBuilder<T>.Column
+  nameWithType.vb: CsvSchemaBuilder(Of T).Column
+- uid: Wolfgang.Etl.Csv.CsvSchemaBuilder`1.Column``1(System.Linq.Expressions.Expression{System.Func{`0,``0}},System.String,System.Int32,System.String,System.Boolean,System.String)
+  name: Column<TProperty>(Expression<Func<T, TProperty>>, string?, int, string?, bool, string?)
+  href: api/Wolfgang.Etl.Csv.CsvSchemaBuilder-1.html#Wolfgang_Etl_Csv_CsvSchemaBuilder_1_Column__1_System_Linq_Expressions_Expression_System_Func__0___0___System_String_System_Int32_System_String_System_Boolean_System_String_
+  commentId: M:Wolfgang.Etl.Csv.CsvSchemaBuilder`1.Column``1(System.Linq.Expressions.Expression{System.Func{`0,``0}},System.String,System.Int32,System.String,System.Boolean,System.String)
+  name.vb: Column(Of TProperty)(Expression(Of Func(Of T, TProperty)), String, Integer, String, Boolean, String)
+  fullName: Wolfgang.Etl.Csv.CsvSchemaBuilder<T>.Column<TProperty>(System.Linq.Expressions.Expression<System.Func<T, TProperty>>, string?, int, string?, bool, string?)
+  fullName.vb: Wolfgang.Etl.Csv.CsvSchemaBuilder(Of T).Column(Of TProperty)(System.Linq.Expressions.Expression(Of System.Func(Of T, TProperty)), String, Integer, String, Boolean, String)
+  nameWithType: CsvSchemaBuilder<T>.Column<TProperty>(Expression<Func<T, TProperty>>, string?, int, string?, bool, string?)
+  nameWithType.vb: CsvSchemaBuilder(Of T).Column(Of TProperty)(Expression(Of Func(Of T, TProperty)), String, Integer, String, Boolean, String)
 - uid: Wolfgang.Etl.Csv.CsvShouldQuoteContext
   name: CsvShouldQuoteContext
   href: api/Wolfgang.Etl.Csv.CsvShouldQuoteContext.html
@@ -2405,6 +2578,15 @@ references:
   commentId: T:Wolfgang.Etl.Csv.CsvValidationException
   fullName: Wolfgang.Etl.Csv.CsvValidationException
   nameWithType: CsvValidationException
+- uid: Wolfgang.Etl.Csv.CsvValidationException.#ctor
+  name: CsvValidationException()
+  href: api/Wolfgang.Etl.Csv.CsvValidationException.html#Wolfgang_Etl_Csv_CsvValidationException__ctor
+  commentId: M:Wolfgang.Etl.Csv.CsvValidationException.#ctor
+  name.vb: New()
+  fullName: Wolfgang.Etl.Csv.CsvValidationException.CsvValidationException()
+  fullName.vb: Wolfgang.Etl.Csv.CsvValidationException.New()
+  nameWithType: CsvValidationException.CsvValidationException()
+  nameWithType.vb: CsvValidationException.New()
 - uid: Wolfgang.Etl.Csv.CsvValidationException.#ctor(System.Int32,System.Collections.Generic.IReadOnlyList{System.String})
   name: CsvValidationException(int, IReadOnlyList<string>)
   href: api/Wolfgang.Etl.Csv.CsvValidationException.html#Wolfgang_Etl_Csv_CsvValidationException__ctor_System_Int32_System_Collections_Generic_IReadOnlyList_System_String__
@@ -2414,6 +2596,24 @@ references:
   fullName.vb: Wolfgang.Etl.Csv.CsvValidationException.New(Integer, System.Collections.Generic.IReadOnlyList(Of String))
   nameWithType: CsvValidationException.CsvValidationException(int, IReadOnlyList<string>)
   nameWithType.vb: CsvValidationException.New(Integer, IReadOnlyList(Of String))
+- uid: Wolfgang.Etl.Csv.CsvValidationException.#ctor(System.String)
+  name: CsvValidationException(string?)
+  href: api/Wolfgang.Etl.Csv.CsvValidationException.html#Wolfgang_Etl_Csv_CsvValidationException__ctor_System_String_
+  commentId: M:Wolfgang.Etl.Csv.CsvValidationException.#ctor(System.String)
+  name.vb: New(String)
+  fullName: Wolfgang.Etl.Csv.CsvValidationException.CsvValidationException(string?)
+  fullName.vb: Wolfgang.Etl.Csv.CsvValidationException.New(String)
+  nameWithType: CsvValidationException.CsvValidationException(string?)
+  nameWithType.vb: CsvValidationException.New(String)
+- uid: Wolfgang.Etl.Csv.CsvValidationException.#ctor(System.String,System.Exception)
+  name: CsvValidationException(string?, Exception?)
+  href: api/Wolfgang.Etl.Csv.CsvValidationException.html#Wolfgang_Etl_Csv_CsvValidationException__ctor_System_String_System_Exception_
+  commentId: M:Wolfgang.Etl.Csv.CsvValidationException.#ctor(System.String,System.Exception)
+  name.vb: New(String, Exception)
+  fullName: Wolfgang.Etl.Csv.CsvValidationException.CsvValidationException(string?, System.Exception?)
+  fullName.vb: Wolfgang.Etl.Csv.CsvValidationException.New(String, System.Exception)
+  nameWithType: CsvValidationException.CsvValidationException(string?, Exception?)
+  nameWithType.vb: CsvValidationException.New(String, Exception)
 - uid: Wolfgang.Etl.Csv.CsvValidationException.#ctor*
   name: CsvValidationException
   href: api/Wolfgang.Etl.Csv.CsvValidationException.html#Wolfgang_Etl_Csv_CsvValidationException__ctor_

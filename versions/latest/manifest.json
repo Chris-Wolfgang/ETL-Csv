@@ -1,4 +1,5 @@
 {
+  "docfx_version": "2.81.0+ba844df625370a6bd7c1ecab0d0ec4d1d9128ac4",
   "source_base_path": "D:/a/ETL-Csv/ETL-Csv/docfx_project",
   "xrefmap": "xrefmap.yml",
   "files": [
@@ -78,7 +79,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Wolfgang.Etl.Csv.CsvDiscriminator<TBase>",
-      "Summary": "<p sourcefile=\"api/Wolfgang.Etl.Csv.CsvDiscriminator-1.yml\" sourcestartlinenumber=\"1\">Describes how a single CSV file mixes multiple record shapes, keyed by a discriminator column, so a\n<xref href=\"Wolfgang.Etl.Csv.CsvExtractor%601\" data-throw-if-not-resolved=\"false\"></xref> binds each row to the right concrete type and a\n<xref href=\"Wolfgang.Etl.Csv.CsvLoader%601\" data-throw-if-not-resolved=\"false\"></xref> writes each record's type and columns. Build one with\n<xref href=\"Wolfgang.Etl.Csv.CsvDiscriminatorBuilder%601\" data-throw-if-not-resolved=\"false\"></xref> — that path is trim/AOT-safe. Constructing it directly\nfrom a <xref href=\"Wolfgang.Etl.Csv.CsvDiscriminator%601.Mapping\" data-throw-if-not-resolved=\"false\"></xref> dictionary is supported but reflects over the mapped types at run time.</p>\n"
+      "Summary": "<p sourcefile=\"api/Wolfgang.Etl.Csv.CsvDiscriminator-1.yml\" sourcestartlinenumber=\"1\">Describes how a single CSV file mixes multiple record shapes, keyed by a discriminator column, so a\n<xref href=\"Wolfgang.Etl.Csv.CsvExtractor%601\" data-throw-if-not-resolved=\"false\"></xref> binds each row to the right concrete type and a\n<xref href=\"Wolfgang.Etl.Csv.CsvLoader%601\" data-throw-if-not-resolved=\"false\"></xref> writes each record with its concrete type's own column mapping. The\nloader does not emit the discriminator value itself: only the columns the concrete type maps are written,\nso a file that round-trips needs the discriminator column mapped as a property of each concrete type.\nBuild one with\n<xref href=\"Wolfgang.Etl.Csv.CsvDiscriminatorBuilder%601\" data-throw-if-not-resolved=\"false\"></xref> — that path is trim/AOT-safe. Constructing it directly\nfrom a <xref href=\"Wolfgang.Etl.Csv.CsvDiscriminator%601.Mapping\" data-throw-if-not-resolved=\"false\"></xref> dictionary is supported but reflects over the mapped types at run time.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -233,6 +234,34 @@
       "IsMRef": true,
       "Title": "Wolfgang.Etl.Csv.CsvReadingExceptionInfo",
       "Summary": "<p sourcefile=\"api/Wolfgang.Etl.Csv.CsvReadingExceptionInfo.yml\" sourcestartlinenumber=\"1\">Describes a recoverable parse exception encountered while reading a CSV stream.\nSurfaced to the caller via <xref href=\"Wolfgang.Etl.Csv.CsvExtractor%601.ReadingExceptionOccurred\" data-throw-if-not-resolved=\"false\"></xref>\nso logging, metrics, or quarantine logic can be plugged in without the library\nmaking logging decisions on the caller's behalf.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wolfgang.Etl.Csv.CsvSchema.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wolfgang.Etl.Csv.CsvSchema.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Wolfgang.Etl.Csv.CsvSchema",
+      "Summary": "<p sourcefile=\"api/Wolfgang.Etl.Csv.CsvSchema.yml\" sourcestartlinenumber=\"1\">A record type's CSV column mapping as a first-class, introspectable object — the code-first\ncounterpart of <xref href=\"Wolfgang.Etl.Csv.CsvColumnAttribute\" data-throw-if-not-resolved=\"false\"></xref> / <xref href=\"Wolfgang.Etl.Csv.CsvIgnoreAttribute\" data-throw-if-not-resolved=\"false\"></xref> decorations.\nProduced by <xref href=\"Wolfgang.Etl.Csv.CsvSchemaBuilder%601.Build\" data-throw-if-not-resolved=\"false\"></xref>, or reified from a type's attributes by\n<xref href=\"Wolfgang.Etl.Csv.CsvSchema.For%60%601\" data-throw-if-not-resolved=\"false\"></xref>, and applied through <xref href=\"Wolfgang.Etl.Csv.CsvExtractorOptions%601.Schema\" data-throw-if-not-resolved=\"false\"></xref> /\n<xref href=\"Wolfgang.Etl.Csv.CsvLoaderOptions%601.Schema\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wolfgang.Etl.Csv.CsvSchemaBuilder-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wolfgang.Etl.Csv.CsvSchemaBuilder-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Wolfgang.Etl.Csv.CsvSchemaBuilder<T>",
+      "Summary": "<p sourcefile=\"api/Wolfgang.Etl.Csv.CsvSchemaBuilder-1.yml\" sourcestartlinenumber=\"1\">Fluent, type-safe, code-first builder for a <xref href=\"Wolfgang.Etl.Csv.CsvSchema\" data-throw-if-not-resolved=\"false\"></xref> — an alternative to the\n<xref href=\"Wolfgang.Etl.Csv.CsvColumnAttribute\" data-throw-if-not-resolved=\"false\"></xref> for record types you cannot decorate (third-party or generated\nPOCOs) or layouts assembled at runtime.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -513,6 +542,16 @@
         },
         ".json": {
           "relative_path": "toc.json"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "versions.json",
+      "output": {
+        "resource": {
+          "relative_path": "versions.json"
         }
       },
       "version": ""
