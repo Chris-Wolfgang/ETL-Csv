@@ -35,7 +35,7 @@ internal static class CsvBindingWriter
     {
         foreach (var member in binding.WriteMembers)
         {
-            object? value;
+            object? value = null;
             try
             {
                 value = member.Property.GetValue(record);
@@ -44,7 +44,6 @@ internal static class CsvBindingWriter
             {
                 // Surface what the getter threw, not the reflection wrapper.
                 ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
-                throw;
             }
 
             var text = CsvValueConverter.Format(value, member.Format, culture);
