@@ -85,14 +85,14 @@ Resume with `SkipItemCount = consumed` as usual. Example: rows `Ann`, `Bad` (fai
 
 A checkpoint file must never be left **torn**. If you write the counter in place and crash mid-write, the file can contain a truncated or garbage value, and the next resume reads nonsense.
 
-The fix is write-to-temp-then-rename: write the new value to `path + ".tmp"`, then atomically rename it over the target. A crash leaves either the *old* file intact or the *new* file complete — never a partial one, because the rename is atomic at the filesystem level.
+The fix is write-to-temp-then-rename: write the new value to a temporary file next to the target (`CsvCheckpointExtensions` names it `path + "." + <random> + ".tmp"`, unique to each write, so two writers never share one), then atomically rename it over the target. A crash leaves either the *old* file intact or the *new* file complete — never a partial one, because the rename is atomic at the filesystem level.
 
 `CsvCheckpointExtensions.WriteCheckpointAsync` does exactly this (and `ReadCheckpointAsync` returns `0` for a missing file and throws `FormatException` on non-integer content — corruption is loud, not silent). If you'd rather see the raw idiom:
 
 ```csharp
 static async Task WriteCheckpointAtomicAsync(string path, int count, CancellationToken ct)
 {
-    var temp = path + ".tmp";
+    var temp = path + "." + Guid.NewGuid().ToString("N") + ".tmp";
     await File.WriteAllTextAsync(temp, count.ToString(CultureInfo.InvariantCulture), ct);
     File.Move(temp, path, overwrite: true);   // atomic replace (netcoreapp3.0+ / netstandard2.1; File.Replace on net462 / netstandard2.0)
 }
