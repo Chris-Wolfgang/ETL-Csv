@@ -237,11 +237,10 @@ public sealed class CsvLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMem
     private Encoding _encoding = Encoding.UTF8;
 
     /// <summary>
-    /// Gets or sets the encoding forwarded to CsvHelper's writer configuration.
+    /// Gets or sets an encoding that the loader does not use.
     /// </summary>
     /// <remarks>
-    /// This value is informational only — it is passed to CsvHelper's
-    /// <c>CsvConfiguration.Encoding</c> but does <b>not</b> control how characters are
+    /// This value is informational only — it does <b>not</b> control how characters are
     /// encoded into bytes on the output stream. Byte encoding is performed by the
     /// <see cref="StreamWriter"/> supplied to the constructor, and that writer's
     /// <see cref="StreamWriter.Encoding"/> is authoritative. To write a non-default

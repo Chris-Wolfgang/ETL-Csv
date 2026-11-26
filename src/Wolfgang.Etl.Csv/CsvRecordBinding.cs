@@ -165,6 +165,7 @@ internal sealed class CsvRecordBinding
 
 
     /// <summary>Creates an instance from the constructor arguments, or the parameterless constructor.</summary>
+    /// <exception cref="InvalidOperationException">The type is a class with no public constructor.</exception>
     public object CreateInstance(object?[] constructorArguments)
     {
         if (_constructor is not null)
@@ -177,10 +178,23 @@ internal sealed class CsvRecordBinding
             return _defaultConstructor.Invoke(parameters: null);
         }
 
-        // A struct, or a class without a public constructor: Activator handles the struct case and
-        // reports the class case.
-        return Activator.CreateInstance(RecordType)!;
+        if (!RecordType.IsValueType)
+        {
+            throw new InvalidOperationException
+            (
+                $"{RecordType.FullName} has no public constructor, so a CSV record cannot be read into it."
+            );
+        }
+
+        return DefaultValue(RecordType);
     }
+
+
+
+    /// <summary>The default value of a value type: what <c>default(T)</c> is for it.</summary>
+    [UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "Only value types reach here, and a value type's default instance needs no constructor metadata.")]
+    public static object DefaultValue(Type valueType) =>
+        Activator.CreateInstance(valueType)!;
 
 
 

@@ -232,6 +232,6 @@ internal sealed class CsvBindingReader
             return parameter.DefaultValue;
         }
 
-        return parameter.ParameterType.IsValueType ? Activator.CreateInstance(parameter.ParameterType) : null;
+        return parameter.ParameterType.IsValueType ? CsvRecordBinding.DefaultValue(parameter.ParameterType) : null;
     }
 }

@@ -228,8 +228,8 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
 
 
     // Rejects option values the parser would otherwise fail on mid-enumeration with an error that does
-    // not name the option (an empty Delimiter is an IndexOutOfRangeException; a name-based
-    // Discriminator without a header row raises a CsvHelper ReaderException that ErrorPolicy can swallow).
+    // not name the option: a Delimiter, Quote or Comment CsvHelper 34 cannot use, and a name-based
+    // Discriminator without a header row, whose lookups would fail on every record.
     private static void ValidateOptionValues(CsvExtractorOptions<TRecord> options)
     {
         CsvOptionRules.Validate(options.Delimiter, options.Quote, options.Escape, nameof(options));
@@ -324,11 +324,10 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     private Encoding _encoding = Encoding.UTF8;
 
     /// <summary>
-    /// Gets or sets the encoding forwarded to the underlying parser configuration.
+    /// Gets or sets an encoding that the extractor does not use.
     /// </summary>
     /// <remarks>
-    /// This value is informational only — it is passed to CsvHelper's
-    /// <c>CsvConfiguration.Encoding</c> but does <b>not</b> control how bytes are
+    /// This value is informational only — it does <b>not</b> control how bytes are
     /// decoded into characters. Decoding happens inside the <see cref="StreamReader"/>
     /// supplied to the constructor, and that reader's <see cref="StreamReader.CurrentEncoding"/>
     /// is authoritative. To read a non-default encoding, construct the
