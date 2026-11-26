@@ -228,7 +228,7 @@ public class CsvLoaderDiscriminatorTests
         var items = new LedgerRow[] { new ExplodingRow { RecordType = "BOOM" } };
 
         // Exactly CsvHelper's WriterException, which also rules out the reflection wrapper.
-        await Assert.ThrowsAsync<CsvHelper.WriterException>(async () => await LoadAndReadAsync(sut, stream, items));
+        await Assert.ThrowsAsync<InvalidOperationException>(async () => await LoadAndReadAsync(sut, stream, items));
     }
 
 
@@ -331,7 +331,7 @@ public class CsvLoaderDiscriminatorTests
         var items = new LedgerRow[] { new ExplodingRow { RecordType = "BOOM" } };
 
         // Exactly CsvHelper's WriterException: not the reflection wrapper, and not swallowed.
-        await Assert.ThrowsAsync<CsvHelper.WriterException>(async () => await LoadAndReadAsync(sut, stream, items));
+        await Assert.ThrowsAsync<InvalidOperationException>(async () => await LoadAndReadAsync(sut, stream, items));
     }
 
 

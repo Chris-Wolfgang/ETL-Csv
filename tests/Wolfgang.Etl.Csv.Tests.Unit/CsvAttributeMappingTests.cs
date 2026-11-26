@@ -330,23 +330,24 @@ public class CsvAttributeMappingTests
 
 
     [Fact]
-    public void CsvClassMapFactory_BuildFromColumnMaps_when_columnMaps_is_null_throws()
+    public void CsvRecordBindingFactory_FromColumnMaps_when_columnMaps_is_null_throws()
     {
         Assert.Throws<ArgumentNullException>
         (
-            () => CsvClassMapFactory.BuildFromColumnMaps<PriceRecord>(null!)
+            () => CsvRecordBindingFactory.FromColumnMaps(typeof(PriceRecord), null!)
         );
     }
 
 
 
     [Fact]
-    public void CsvClassMapFactory_BuildFromColumnMaps_when_columnMaps_contains_duplicate_property_throws()
+    public void CsvRecordBindingFactory_FromColumnMaps_when_columnMaps_contains_duplicate_property_throws()
     {
         var ex = Assert.Throws<ArgumentException>
         (
-            () => CsvClassMapFactory.BuildFromColumnMaps<PriceRecord>
+            () => CsvRecordBindingFactory.FromColumnMaps
             (
+                typeof(PriceRecord),
                 new[]
                 {
                     new CsvColumnMap(nameof(PriceRecord.ProductNumber)) { Index = 0 },
@@ -361,12 +362,13 @@ public class CsvAttributeMappingTests
 
 
     [Fact]
-    public void CsvClassMapFactory_BuildFromColumnMaps_when_columnMaps_contains_duplicate_index_throws()
+    public void CsvRecordBindingFactory_FromColumnMaps_when_columnMaps_contains_duplicate_index_throws()
     {
         var ex = Assert.Throws<ArgumentException>
         (
-            () => CsvClassMapFactory.BuildFromColumnMaps<PriceRecord>
+            () => CsvRecordBindingFactory.FromColumnMaps
             (
+                typeof(PriceRecord),
                 new[]
                 {
                     new CsvColumnMap(nameof(PriceRecord.ProductNumber)) { Index = 2 },
@@ -382,12 +384,13 @@ public class CsvAttributeMappingTests
 
 
     [Fact]
-    public void CsvClassMapFactory_BuildFromColumnMaps_when_columnMaps_has_negative_indices_allows_duplicates()
+    public void CsvRecordBindingFactory_FromColumnMaps_when_columnMaps_has_negative_indices_allows_duplicates()
     {
         // Negative Index means "ignored" (Name path is used). Two distinct
         // properties both at Index = -1 is not a conflict.
-        var map = CsvClassMapFactory.BuildFromColumnMaps<PriceRecord>
+        var map = CsvRecordBindingFactory.FromColumnMaps
         (
+            typeof(PriceRecord),
             new[]
             {
                 new CsvColumnMap(nameof(PriceRecord.ProductNumber)) { Name = "alpha" },
@@ -401,7 +404,7 @@ public class CsvAttributeMappingTests
 
 
     [Fact]
-    public void CsvClassMapFactory_BuildFromColumnMaps_when_same_list_passed_twice_returns_cached_instance()
+    public void CsvRecordBindingFactory_FromColumnMaps_when_same_list_passed_twice_returns_cached_instance()
     {
         // Reuse the SAME list reference across two calls — must hit the cache
         // and return the identical ClassMap instance the second time.
@@ -411,8 +414,8 @@ public class CsvAttributeMappingTests
             new CsvColumnMap(nameof(PriceRecord.RetailPrice))   { Index = 1 },
         };
 
-        var first  = CsvClassMapFactory.BuildFromColumnMaps<PriceRecord>(columnMaps);
-        var second = CsvClassMapFactory.BuildFromColumnMaps<PriceRecord>(columnMaps);
+        var first  = CsvRecordBindingFactory.FromColumnMaps(typeof(PriceRecord), columnMaps);
+        var second = CsvRecordBindingFactory.FromColumnMaps(typeof(PriceRecord), columnMaps);
 
         Assert.Same(first, second);
     }
@@ -420,7 +423,7 @@ public class CsvAttributeMappingTests
 
 
     [Fact]
-    public void CsvClassMapFactory_BuildFromColumnMaps_when_distinct_list_instances_with_same_content_returns_separate_maps()
+    public void CsvRecordBindingFactory_FromColumnMaps_when_distinct_list_instances_with_same_content_returns_separate_maps()
     {
         // Two distinct list instances — even with content-identical entries —
         // must NOT collide. The cache is reference-keyed by design because
@@ -434,8 +437,8 @@ public class CsvAttributeMappingTests
             new CsvColumnMap(nameof(PriceRecord.ProductNumber)) { Index = 0 },
         };
 
-        var mapA = CsvClassMapFactory.BuildFromColumnMaps<PriceRecord>(listA);
-        var mapB = CsvClassMapFactory.BuildFromColumnMaps<PriceRecord>(listB);
+        var mapA = CsvRecordBindingFactory.FromColumnMaps(typeof(PriceRecord), listA);
+        var mapB = CsvRecordBindingFactory.FromColumnMaps(typeof(PriceRecord), listB);
 
         Assert.NotSame(mapA, mapB);
     }

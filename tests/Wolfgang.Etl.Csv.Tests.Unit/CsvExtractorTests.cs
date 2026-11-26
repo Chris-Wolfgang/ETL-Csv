@@ -517,7 +517,7 @@ public class CsvExtractorTests
         var stream = new MemoryStream(Encoding.UTF8.GetBytes(csv));
         var sut = new CsvExtractor<PersonRecord>(new StreamReader(stream, Encoding.UTF8));
 
-        return Assert.ThrowsAsync<CsvHelper.TypeConversion.TypeConverterException>
+        return Assert.ThrowsAsync<CsvHelper.CsvFormatException>
         (
             async () => await sut.ExtractAsync().ToListAsync()
         );
@@ -539,7 +539,7 @@ public class CsvExtractorTests
         CsvReadingExceptionInfo? captured = null;
         sut.ReadingExceptionOccurred = info => captured = info;
 
-        await Assert.ThrowsAsync<CsvHelper.TypeConversion.TypeConverterException>
+        await Assert.ThrowsAsync<CsvHelper.CsvFormatException>
         (
             async () =>
             {
@@ -596,7 +596,7 @@ public class CsvExtractorTests
             new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(csv)), Encoding.UTF8)
         );
 
-        await Assert.ThrowsAsync<CsvHelper.TypeConversion.TypeConverterException>
+        await Assert.ThrowsAsync<CsvHelper.CsvFormatException>
         (
             async () =>
             {
@@ -662,15 +662,75 @@ public class CsvExtractorTests
 
 
     [Fact]
-    public async Task ExtractAsync_when_Escape_is_a_backslash_unescapes_backslash_quoted_quotes()
+    public void Constructor_when_Escape_is_a_backslash_rejects_it()
     {
-        var rows = await ExtractWithOptionsAsync
+        // CsvHelper 34 reads RFC 4180 quoting only (a quote inside a quoted field is doubled), so a
+        // backslash escape is refused when the extractor is built instead of misreading the file.
+        var ex = Assert.Throws<ArgumentException>
         (
-            "FirstName,LastName,Age\r\n\"Al\\\"ice\",Smith,30\r\n",
-            new CsvExtractorOptions<PersonRecord> { Escape = '\\' }
+            () => new CsvExtractor<PersonRecord>
+            (
+                new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes("FirstName\r\n"))),
+                new CsvExtractorOptions<PersonRecord> { Escape = '\\' }
+            )
         );
 
-        Assert.Equal("Al\"ice", Assert.Single(rows).FirstName);
+        Assert.Equal("options", ex.ParamName);
+        Assert.Contains("RFC 4180", ex.Message, StringComparison.Ordinal);
+    }
+
+
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("||")]
+    [InlineData("\u00a7")]
+    public void Constructor_when_Delimiter_is_not_one_ASCII_character_rejects_it(string delimiter)
+    {
+        var ex = Assert.Throws<ArgumentException>
+        (
+            () => new CsvExtractor<PersonRecord>
+            (
+                new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes("FirstName\r\n"))),
+                new CsvExtractorOptions<PersonRecord> { Delimiter = delimiter }
+            )
+        );
+
+        Assert.Equal("options", ex.ParamName);
+    }
+
+
+
+    [Fact]
+    public void Constructor_when_AllowComments_and_Comment_is_not_ASCII_rejects_it()
+    {
+        var ex = Assert.Throws<ArgumentException>
+        (
+            () => new CsvExtractor<PersonRecord>
+            (
+                new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes("FirstName\r\n"))),
+                new CsvExtractorOptions<PersonRecord> { AllowComments = true, Comment = '\u00a7' }
+            )
+        );
+
+        Assert.Equal("options", ex.ParamName);
+    }
+
+
+
+    [Fact]
+    public void Constructor_when_Quote_is_not_ASCII_rejects_it()
+    {
+        var ex = Assert.Throws<ArgumentException>
+        (
+            () => new CsvExtractor<PersonRecord>
+            (
+                new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes("FirstName\r\n"))),
+                new CsvExtractorOptions<PersonRecord> { Quote = '\u00ab', Escape = '\u00ab' }
+            )
+        );
+
+        Assert.Equal("options", ex.ParamName);
     }
 
 
