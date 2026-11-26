@@ -188,7 +188,10 @@ public class CsvValueConverterTests
     [Fact]
     public void Parse_falls_back_to_the_type_converter_for_other_types()
     {
-        Assert.Equal(new Version(1, 2, 3), CsvValueConverter.Parse("1.2.3", typeof(Version), format: null, Invariant));
+        var point = Assert.IsType<Point>(CsvValueConverter.Parse("3;4", typeof(Point), format: null, Invariant));
+
+        Assert.Equal(3, point.X);
+        Assert.Equal(4, point.Y);
     }
 
 
@@ -198,7 +201,7 @@ public class CsvValueConverterTests
     [InlineData("ab", typeof(char))]
     [InlineData("Third", typeof(Sample))]
     [InlineData("x", typeof(int))]
-    [InlineData("not a version", typeof(Version))]
+    [InlineData("not a point", typeof(Point))]
     [InlineData("x", typeof(NoTextConversion))]
     public void Parse_when_the_text_is_not_a_value_of_the_type_throws_FormatException(string text, Type type)
     {
@@ -267,6 +270,48 @@ public class CsvValueConverterTests
     [TypeConverter(typeof(TypeConverter))]
     public sealed class NoTextConversion
     {
+    }
+
+
+
+    // A type with its own TypeConverter, the way a consumer adds a member type the converter has no rule
+    // for (the same on .NET Framework, which has fewer built-in converters than .NET).
+    [TypeConverter(typeof(PointConverter))]
+    public sealed class Point
+    {
+        public Point(int x, int y)
+        {
+            X = x;
+            Y = y;
+        }
+
+
+
+        public int X { get; }
+
+
+
+        public int Y { get; }
+    }
+
+
+
+    public sealed class PointConverter : TypeConverter
+    {
+        public override bool CanConvertFrom(ITypeDescriptorContext? context, Type sourceType) =>
+            sourceType == typeof(string);
+
+
+
+        public override object ConvertFrom(ITypeDescriptorContext? context, CultureInfo? culture, object value)
+        {
+            if (value is not string text || text.Split(';') is not { Length: 2 } parts)
+            {
+                throw new ArgumentException($"'{value}' is not 'x;y'.", nameof(value));
+            }
+
+            return new Point(int.Parse(parts[0], CultureInfo.InvariantCulture), int.Parse(parts[1], CultureInfo.InvariantCulture));
+        }
     }
 
 
