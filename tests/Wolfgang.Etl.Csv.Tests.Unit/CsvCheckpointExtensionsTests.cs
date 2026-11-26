@@ -170,8 +170,6 @@ public class CsvCheckpointExtensionsTests
             {
                 Directory.Delete(path, recursive: true);
             }
-
-            DeleteTempFiles(path);
         }
     }
 
@@ -519,21 +517,10 @@ public class CsvCheckpointExtensionsTests
         {
             File.Delete(path);
         }
-
-        DeleteTempFiles(path);
     }
 
 
     // The temp files WriteCheckpointAsync creates for path: "<name>.<random>.tmp" in the same folder.
     private static string[] TempFilesFor(string path) =>
         Directory.GetFiles(Path.GetDirectoryName(path)!, Path.GetFileName(path) + ".*.tmp");
-
-
-    private static void DeleteTempFiles(string path)
-    {
-        foreach (var file in TempFilesFor(path))
-        {
-            File.Delete(file);
-        }
-    }
 }
