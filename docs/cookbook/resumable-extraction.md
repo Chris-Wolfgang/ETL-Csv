@@ -92,7 +92,7 @@ The fix is write-to-temp-then-rename: write the new value to a temporary file ne
 ```csharp
 static async Task WriteCheckpointAtomicAsync(string path, int count, CancellationToken ct)
 {
-    var temp = path + "." + Guid.NewGuid().ToString("N") + ".tmp";
+    var temp = path + "." + Path.GetRandomFileName() + ".tmp";
     await File.WriteAllTextAsync(temp, count.ToString(CultureInfo.InvariantCulture), ct);
     File.Move(temp, path, overwrite: true);   // atomic replace (netcoreapp3.0+ / netstandard2.1; File.Replace on net462 / netstandard2.0)
 }

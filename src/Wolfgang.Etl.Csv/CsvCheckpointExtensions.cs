@@ -162,7 +162,7 @@ public static class CsvCheckpointExtensions
 
         // A name unique to this call (not a fixed "<path>.tmp"): concurrent writers of the same
         // checkpoint cannot collide, and CreateNew below never opens a file another writer holds.
-        var temporaryPath = path + "." + Guid.NewGuid().ToString("N") + ".tmp";
+        var temporaryPath = path + "." + Path.GetRandomFileName() + ".tmp";
         var bytes = Encoding.UTF8.GetBytes(count.ToString(CultureInfo.InvariantCulture));
 
         try
