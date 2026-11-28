@@ -201,27 +201,16 @@ public sealed class CsvSourceNitsTests
     [Fact]
     public async Task WriteCheckpointAsync_when_the_temp_file_cannot_be_written_rethrows()
     {
-        // A directory squatting on the ".tmp" name makes the FileStream open fail inside the guarded
+        // A checkpoint in a folder that does not exist makes the temp-file open fail inside the guarded
         // write; the cleanup path runs (best effort) and the original exception propagates.
-        var path = Path.Combine(Path.GetTempPath(), "csvchk-" + Guid.NewGuid().ToString("N") + ".txt");
-        var squatter = Directory.CreateDirectory(path + ".tmp");
+        var path = Path.Combine(Path.GetTempPath(), "csvchk-missing-" + Guid.NewGuid().ToString("N"), "checkpoint.txt");
 
-        try
-        {
-            // Windows reports UnauthorizedAccessException; some Unix runtimes report IOException.
-            var ex = await Assert.ThrowsAnyAsync<Exception>
-            (
-                async () => await CsvCheckpointExtensions.WriteCheckpointAsync(path, 7)
-            );
+        _ = await Assert.ThrowsAsync<DirectoryNotFoundException>
+        (
+            async () => await CsvCheckpointExtensions.WriteCheckpointAsync(path, 7)
+        );
 
-            Assert.True(ex is UnauthorizedAccessException or IOException, ex.GetType().FullName);
-
-            Assert.False(File.Exists(path));
-        }
-        finally
-        {
-            squatter.Delete();
-        }
+        Assert.False(File.Exists(path));
     }
 
 
