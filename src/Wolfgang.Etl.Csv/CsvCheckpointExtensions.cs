@@ -127,9 +127,13 @@ public static class CsvCheckpointExtensions
 
     /// <summary>
     /// Writes <paramref name="count"/> to <paramref name="path"/> atomically: the value is written
-    /// to <c>path + ".tmp"</c> and then renamed over <paramref name="path"/>. The temporary
-    /// file is flushed to disk before the rename, so a crash or power loss mid-write leaves either the
-    /// previous value intact or the new value — never a partial write.
+    /// to a temporary file next to it, named <c>path + "." + &lt;random&gt; + ".tmp"</c> and unique to
+    /// this call, and then renamed over <paramref name="path"/>. The temporary file is flushed to disk
+    /// before the rename, so a crash or power loss mid-write leaves either the previous value intact or
+    /// the new value — never a partial write. Because each call uses its own temporary file, two
+    /// writers of the same checkpoint never write into each other's file, and a stale temporary file
+    /// left by an earlier crash is never reused. A temporary file is deleted when the write or the
+    /// rename fails.
     /// </summary>
     /// <param name="path">The checkpoint file path.</param>
     /// <param name="count">The count to persist.</param>
@@ -156,12 +160,14 @@ public static class CsvCheckpointExtensions
 
         token.ThrowIfCancellationRequested();
 
-        var temporaryPath = path + ".tmp";
+        // A name unique to this call (not a fixed "<path>.tmp"): concurrent writers of the same
+        // checkpoint cannot collide, and CreateNew below never opens a file another writer holds.
+        var temporaryPath = path + "." + Path.GetRandomFileName() + ".tmp";
         var bytes = Encoding.UTF8.GetBytes(count.ToString(CultureInfo.InvariantCulture));
 
         try
         {
-            using var stream = new FileStream(temporaryPath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, useAsync: true);
+            using var stream = new FileStream(temporaryPath, FileMode.CreateNew, FileAccess.Write, FileShare.None, 4096, useAsync: true);
             await stream.WriteAsync(bytes, 0, bytes.Length, token).ConfigureAwait(false);
             await stream.FlushAsync(token).ConfigureAwait(false);
 
@@ -188,7 +194,7 @@ public static class CsvCheckpointExtensions
         // Atomic replace. File.Move's overwrite overload is only on the modern runtime targets;
         // on net462 / netstandard fall back to File.Replace (atomic when the destination exists)
         // or a plain Move for the very first write. If the replace itself fails (destination
-        // locked, permissions), clean up the temp file so the "no stray .tmp" story holds.
+        // locked, permissions), clean up the temp file so no stray temp file is left behind.
         try
         {
 #if NET8_0_OR_GREATER

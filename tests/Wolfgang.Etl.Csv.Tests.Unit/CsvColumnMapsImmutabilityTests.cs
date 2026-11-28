@@ -119,9 +119,17 @@ public class CsvColumnMapsImmutabilityTests
         System.Collections.IEnumerable nonGeneric = options.ColumnMaps;
         var enumerator = nonGeneric.GetEnumerator();
         var count = 0;
-        while (enumerator.MoveNext())
+        try
         {
-            count++;
+            while (enumerator.MoveNext())
+            {
+                count++;
+            }
+        }
+        finally
+        {
+            // The non-generic enumerator of a generic collection is IDisposable; dispose it as foreach would.
+            ((IDisposable)enumerator).Dispose();
         }
 
         Assert.Equal(3, count);
