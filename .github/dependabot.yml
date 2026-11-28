@@ -12,6 +12,11 @@ updates:
     ignore:
       - dependency-name: "CsvHelper"
         update-types: ["version-update:semver-major"]
+      # The unit tests' netcoreapp3.1 / net5.0 slot pins xunit.runner.visualstudio 2.4.5: 2.5+ ships
+      # no netcoreapp3.1 asset, so that slot runs zero tests and Stage 1 fails (#771). The other
+      # pre-net8.0 slots are already on 2.8.2 (the last 2.x) and net8.0+ on 3.x, so this blocks nothing else.
+      - dependency-name: "xunit.runner.visualstudio"
+        versions: [">= 2.5.0, < 3.0.0"]
     groups:
       dotnet-dependencies:
         patterns:
