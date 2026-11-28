@@ -140,5 +140,6 @@
     <File Path="tests/Wolfgang.Etl.Csv.Tests.Unit/stryker-config.json" />
     <Project Path="tests/Wolfgang.Etl.Csv.Tests.Unit/Wolfgang.Etl.Csv.Tests.Unit.csproj" />
     <Project Path="tests/Wolfgang.Etl.Csv.Tests.SourceLink/Wolfgang.Etl.Csv.Tests.SourceLink.csproj" />
+    <Project Path="tests/Wolfgang.Etl.Csv.Tests.Aot/Wolfgang.Etl.Csv.Tests.Aot.csproj" />
   </Folder>
 </Solution>

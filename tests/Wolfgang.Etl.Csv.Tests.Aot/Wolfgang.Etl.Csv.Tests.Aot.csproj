@@ -1,0 +1,75 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Native AOT test run (standards/aot-smoke.md; Tests.Aot conversion plan, 2026-11-20, group 3).
+
+    Runs the AOT-safe part of Wolfgang.Etl.Csv.Tests.Unit, compiled as a Native AOT executable with
+    xUnit v3. The xUnit 2 project stays as it is for every TFM; this one exists to prove the library
+    under trimming + AOT, which a JIT test run cannot. PublishAot, PublishTrimmed, IsAotCompatible,
+    TrimmerSingleWarn and IsPackable come from the *.Tests.Aot block in Directory.Build.props.
+
+    The test sources are linked, not copied: fix a test in Tests.Unit and it is fixed here. Left out
+    are the files that need what xUnit v3 AOT or a native binary cannot give them:
+    - the Wolfgang.Etl.TestKit.Xunit contract suites (xUnit 2 base classes): CsvExtractorTests,
+      CsvExtractorWorkerTests, CsvLoaderTests, CsvLoaderWorkerTests, CsvLoaderLineNumberTests;
+    - Verify snapshots: CsvSnapshotTests, SnapshotBaselineHygieneTests;
+    - CsCheck property tests: CsvFuzzTests;
+    - Roslyn compilation of the XML doc examples: CsvXmlDocExampleRotTests;
+    - GC and allocation measurements tuned for the JIT: CsvAllocationProfileTests,
+      CsvSustainedLoadGcTests (which also uses xUnit 2's ITestOutputHelper).
+    xUnit v3's in-process console runner makes this project its own executable (no
+    Microsoft.NET.Test.Sdk), and with PublishAot that executable is a native binary.
+  -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <!-- Not a dotnet-test project: build-pr.ps1 and the pr.yaml test stages run `dotnet test` only on
+         IsTestProject / Microsoft.NET.Test.Sdk projects. This one is published and run by aot-smoke.yaml. -->
+    <IsTestProject>false</IsTestProject>
+    <!-- CsvCultureInvarianceTests and CsvValueConverterTests use real cultures
+         (tr-TR, de-DE, ja-JP), so ICU is required. -->
+    <InvariantGlobalization>false</InvariantGlobalization>
+    <!-- The library's entry points carry [RequiresUnreferencedCode] by design (ADR 0003, ADR 0007): the
+         record binding reflects over TRecord. Every test that builds an extractor or loader is such a
+         call site, so the native publish reports IL2026 there (222 in a local win-x64 publish) and
+         IL2091 where a test helper passes an unannotated generic T (4). They are the consumer side of
+         that contract, the same warnings the AotSmoke harness suppresses at its call sites. They are
+         silenced for this test executable only; the library itself is still checked by its own
+         trim/AOT analyzers (IsAotCompatible, warnings as errors) and by the AotSmoke publish, which
+         reported no warning from Wolfgang.Etl.Csv. -->
+    <NoWarn>$(NoWarn);IL2026;IL2091</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- The AOT (source-generated) edition of xUnit.net v3: discovery and theory data are resolved
+         at build time, so no reflection is needed at run time. Requires net9.0+ and C#. -->
+    <PackageReference Include="xunit.v3.aot" Version="4.0.3" />
+    <PackageReference Include="System.Linq.Async" Version="7.0.1" />
+    <PackageReference Include="Wolfgang.Etl.TestKit" Version="0.28.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Wolfgang.Etl.Csv\Wolfgang.Etl.Csv.csproj" />
+  </ItemGroup>
+
+  <!-- The unit tests themselves, linked from the xUnit 2 project. -->
+  <ItemGroup>
+    <Compile Include="..\Wolfgang.Etl.Csv.Tests.Unit\*.cs" Link="Unit\%(Filename)%(Extension)" />
+    <Compile Include="..\Wolfgang.Etl.Csv.Tests.Unit\TestModels\*.cs" Link="Unit\TestModels\%(Filename)%(Extension)" />
+    <Compile Remove="..\Wolfgang.Etl.Csv.Tests.Unit\CsvExtractorTests.cs" />
+    <Compile Remove="..\Wolfgang.Etl.Csv.Tests.Unit\CsvExtractorWorkerTests.cs" />
+    <Compile Remove="..\Wolfgang.Etl.Csv.Tests.Unit\CsvLoaderTests.cs" />
+    <Compile Remove="..\Wolfgang.Etl.Csv.Tests.Unit\CsvLoaderWorkerTests.cs" />
+    <Compile Remove="..\Wolfgang.Etl.Csv.Tests.Unit\CsvLoaderLineNumberTests.cs" />
+    <Compile Remove="..\Wolfgang.Etl.Csv.Tests.Unit\CsvSnapshotTests.cs" />
+    <Compile Remove="..\Wolfgang.Etl.Csv.Tests.Unit\SnapshotBaselineHygieneTests.cs" />
+    <Compile Remove="..\Wolfgang.Etl.Csv.Tests.Unit\CsvFuzzTests.cs" />
+    <Compile Remove="..\Wolfgang.Etl.Csv.Tests.Unit\CsvXmlDocExampleRotTests.cs" />
+    <Compile Remove="..\Wolfgang.Etl.Csv.Tests.Unit\CsvAllocationProfileTests.cs" />
+    <Compile Remove="..\Wolfgang.Etl.Csv.Tests.Unit\CsvSustainedLoadGcTests.cs" />
+  </ItemGroup>
+
+</Project>
