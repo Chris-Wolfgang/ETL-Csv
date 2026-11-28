@@ -57,6 +57,14 @@
   <ItemGroup>
     <PackageReference Include="Wolfgang.Etl.Abstractions" Version="0.28.0" />
     <PackageReference Include="CsvHelper" Version="33.1.0" />
+    <!--
+      net8.0+ ships System.Text.Json in the shared framework, so the package is only needed on the
+      older targets. Referencing 11.0.0 on net8.0/net9.0 puts it next to the test platform's own
+      System.Text.Json build, and the testhost then crashes with MissingMethodException
+      (JsonObjectInfoValues`1.set_ObjectCreator) before any test runs.
+    -->
+    <PackageReference Include="System.Text.Json" Version="11.0.0"
+                      Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))" />
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="11.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="11.0.0" />
   </ItemGroup>

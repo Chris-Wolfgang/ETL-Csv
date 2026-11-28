@@ -17,7 +17,7 @@ namespace Wolfgang.Etl.Csv;
 /// <see cref="System.IO.StreamWriter"/> supplied to the constructor, whose
 /// <see cref="System.IO.StreamWriter.Encoding"/> is authoritative; the former
 /// <see cref="CsvLoader{TRecord}.Encoding"/> property never influenced it and is
-/// <see cref="ObsoleteAttribute">obsolete</see>. To write a non-default encoding, construct the
+/// <see cref="T:System.ObsoleteAttribute">obsolete</see>. To write a non-default encoding, construct the
 /// <see cref="System.IO.StreamWriter"/> with the encoding you want.
 /// </para>
 /// <para>
