@@ -12,3 +12,4 @@ See [README.md](README.md) for the folder and [ADR 0000](0000-record-architectur
 | [0004](0004-derive-assemblyversion-from-the-minor.md) | Derive AssemblyVersion as 0.{Minor}.0.0 | Accepted |
 | [0005](0005-reader-writer-and-file-ownership.md) | The caller owns the reader or writer it passes in; the path-based factories own the file they open | Accepted |
 | 0006 | Record architecture decisions (moved to [0000](0000-record-architecture-decisions.md)) | Retired |
+| [0007](0007-csvhelper-34-and-library-owned-record-binding.md) | CsvHelper 34, with record binding owned by the library | Accepted |

@@ -9,7 +9,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CsvHelper;
-using CsvHelper.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Wolfgang.Etl.Abstractions;
@@ -229,13 +228,14 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
 
 
     // Rejects option values the parser would otherwise fail on mid-enumeration with an error that does
-    // not name the option (an empty Delimiter is an IndexOutOfRangeException; a name-based
-    // Discriminator without a header row raises a CsvHelper ReaderException that ErrorPolicy can swallow).
+    // not name the option: a Delimiter, Quote or Comment CsvHelper 34 cannot use, and a name-based
+    // Discriminator without a header row, whose lookups would fail on every record.
     private static void ValidateOptionValues(CsvExtractorOptions<TRecord> options)
     {
-        if (string.IsNullOrEmpty(options.Delimiter))
+        CsvOptionRules.Validate(options.Delimiter, options.Quote, options.Escape, nameof(options));
+        if (options.AllowComments)
         {
-            throw new ArgumentException("Delimiter must not be null or empty.", nameof(options));
+            _ = CsvOptionRules.ToAscii(options.Comment, nameof(options));
         }
 
         if (options.Discriminator is { ColumnName: not null } && !options.HasHeaderRecord)
@@ -324,11 +324,10 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     private Encoding _encoding = Encoding.UTF8;
 
     /// <summary>
-    /// Gets or sets the encoding forwarded to the underlying parser configuration.
+    /// Gets or sets an encoding that the extractor does not use.
     /// </summary>
     /// <remarks>
-    /// This value is informational only — it is passed to CsvHelper's
-    /// <c>CsvConfiguration.Encoding</c> but does <b>not</b> control how bytes are
+    /// This value is informational only — it does <b>not</b> control how bytes are
     /// decoded into characters. Decoding happens inside the <see cref="StreamReader"/>
     /// supplied to the constructor, and that reader's <see cref="StreamReader.CurrentEncoding"/>
     /// is authoritative. To read a non-default encoding, construct the
@@ -510,98 +509,89 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
 
 
 
-    private CsvConfiguration BuildConfiguration()
+    private CsvReaderOptions BuildReaderOptions(CultureInfo culture)
     {
 #pragma warning disable CS0618 // ErrorPolicy supersedes the decision; the callback is read for observation only.
         var callerBadDataFound = BadDataFound;
 #pragma warning restore CS0618
 
-        return new CsvConfiguration(CultureInfo.CurrentCulture)
+        var separator = CsvOptionRules.ToSeparator(Delimiter);
+        var quote = CsvOptionRules.ToQuote(Quote, Escape);
+
+        return new CsvReaderOptions
         {
-            AllowComments = AllowComments,
-            BadDataFound = args =>
+            CommentPrefix = AllowComments ? CsvOptionRules.ToAscii(Comment, nameof(Comment)) : null,
+            // Malformed quoting is counted and reported, and the record is kept: the library's
+            // "bad data is tolerated" contract. Records of differing widths are allowed (a polymorphic
+            // file mixes them); a field a mapped member needs but the record lacks is the binding's error.
+            FieldCountMismatch = CsvFieldCountHandling.Allow,
+            FormatProvider = culture,
+            HasHeader = HasHeaderRecord,
+            IncludeValuesInExceptions = true,
+            MalformedData = CsvMalformedDataHandling.Recover,
+            MissingField = CsvMissingFieldHandling.ReturnEmpty,
+            OnMalformedRecord = record =>
             {
                 _ = Interlocked.Increment(ref _currentBadDataCount);
-                callerBadDataFound?.Invoke(ToCsvBadDataInfo(args));
+                callerBadDataFound?.Invoke(ToCsvBadDataInfo(record, separator, quote));
             },
-            Comment = Comment,
-            Delimiter = Delimiter,
-            Escape = Escape,
-            Encoding = Encoding,
-            HasHeaderRecord = HasHeaderRecord,
-            // A polymorphic file's header describes the discriminator column, not the base type's members,
-            // and each row is bound per concrete type — so don't validate the header against TRecord.
-            HeaderValidated = Discriminator is not null ? null : ConfigurationFunctions.HeaderValidated,
-            IgnoreBlankLines = IgnoreBlankLines,
-            // A polymorphic file mixes row shapes of differing widths; tolerate missing trailing
-            // fields so a narrower concrete type binds without tripping CsvHelper's default throw.
-            MissingFieldFound = Discriminator is not null ? null : ConfigurationFunctions.MissingFieldFound,
-            Quote = Quote,
-            ReadingExceptionOccurred = OnReadingExceptionOccurred,
-            TrimOptions = TrimOptions.ToCsvHelper(),
+            Quote = quote,
+            Separator = separator,
+            SkipEmptyLines = IgnoreBlankLines,
+            TrackLineNumbers = true,
+            TrimInsideQuotes = (TrimOptions & CsvTrimOptions.InsideQuotes) == CsvTrimOptions.InsideQuotes,
+            TrimWhitespace = (TrimOptions & CsvTrimOptions.Trim) == CsvTrimOptions.Trim,
         };
     }
 
 
 
-    private CsvBadDataInfo ToCsvBadDataInfo(BadDataFoundArgs args)
+    private CsvBadDataInfo ToCsvBadDataInfo(CsvMalformedRecord record, char separator, char quote)
     {
-        // CsvHelper invokes BadDataFound from its parser/reader chain, so Context.Reader
-        // and Context.Parser are guaranteed non-null here. Using `!` instead of `?.`
-        // removes defensive null branches that are unreachable through the public API.
-        var rawColumnIndex = args.Context.Reader!.CurrentIndex;
-        var columnNumber = rawColumnIndex >= 0 ? rawColumnIndex + 1 : -1;
+        // CsvHelper 34 reports the malformed record, not the field, so the field is found here by
+        // re-scanning the raw record. A malformed header has no column (-1), as with CsvHelper 33.
+        var column = -1;
+        var field = record.RawRecord;
+        if (!HasHeaderRecord || record.RecordNumber != 1)
+        {
+            column = CsvMalformedField.Find(record.RawRecord, separator, quote, out var badField);
+            field = column >= 0 ? badField : record.RawRecord;
+        }
 
         return new CsvBadDataInfo
         (
-            args.Context.Parser!.RawRow + _preambleLineCount,
-            columnNumber,
-            args.Field,
-            args.RawRecord
+            (int)record.LineNumber + CsvMalformedField.CountLineBreaks(record.RawRecord) + _preambleLineCount,
+            column >= 0 ? column + 1 : -1,
+            field,
+            record.RawRecord
         );
     }
 
 
 
-    private bool OnReadingExceptionOccurred(ReadingExceptionOccurredArgs args)
+    // Fires the deprecated observation callback for a record the binding could not read; the caller then
+    // routes the failure through the ErrorPolicy (which owns the skip-vs-abort decision).
+    private void OnReadingException(CsvReader csvReader, CsvBindingReader bindingReader, Exception exception)
     {
-        // Fire the deprecated observation callback, then return true so CsvHelper
-        // rethrows out of GetRecord — the extract loop's try/catch routes the
-        // failure through the ErrorPolicy (which owns the skip-vs-abort decision).
 #pragma warning disable CS0618 // observation-only; ErrorPolicy owns the decision.
-        ReadingExceptionOccurred?.Invoke(ToCsvReadingExceptionInfo(args));
+        var callback = ReadingExceptionOccurred;
 #pragma warning restore CS0618
-        return true;
-    }
+        if (callback is null)
+        {
+            return;
+        }
 
-
-
-    private CsvReadingExceptionInfo ToCsvReadingExceptionInfo(ReadingExceptionOccurredArgs args)
-    {
-        var ctx = args.Exception.Context;
-        var columnIndex = ctx?.Reader?.CurrentIndex ?? -1;
-        var headerRecord = ctx?.Reader?.HeaderRecord;
-        var currentRecord = ctx?.Parser?.Record;
-
-        // Bounds-check both index lookups. The original parsing exception is often
-        // caused by a record with the wrong number of fields, and indexing into a
-        // shorter record from the handler would itself throw IndexOutOfRangeException
-        // and mask the underlying error.
-        var columnName = headerRecord is not null && columnIndex >= 0 && columnIndex < headerRecord.Length
-            ? headerRecord[columnIndex]
-            : null;
-        var columnValue = currentRecord is not null && columnIndex >= 0 && columnIndex < currentRecord.Length
-            ? currentRecord[columnIndex]
-            : null;
-        var columnNumber = columnIndex >= 0 ? columnIndex + 1 : -1;
-
-        return new CsvReadingExceptionInfo
+        var column = bindingReader.FailedColumn;
+        callback
         (
-            ctx?.Parser is { } parser ? parser.RawRow + _preambleLineCount : -1,
-            columnNumber,
-            columnName,
-            columnValue,
-            args.Exception
+            new CsvReadingExceptionInfo
+            (
+                CurrentLine(csvReader),
+                column >= 0 ? column + 1 : -1,
+                bindingReader.FailedColumnName,
+                bindingReader.FailedValue,
+                exception
+            )
         );
     }
 
@@ -618,126 +608,120 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
 
         ResetRunCounters();
 
+        var culture = CultureInfo.CurrentCulture;
+        var options = BuildReaderOptions(culture);
+
         await SkipPreambleAsync().ConfigureAwait(false);
 
-        var configuration = BuildConfiguration();
-
-        using var csvReader = new CsvReader(_reader, configuration, LeaveOpen);
-
-        RegisterRecordMap(csvReader.Context);
-
-        await PrepareReaderAsync(csvReader).ConfigureAwait(false);
-
-        // Manual ReadAsync / GetRecord loop instead of GetRecordsAsync so we can check
-        // MaximumItemCount BEFORE materializing the next row. With GetRecordsAsync the
-        // (N+1)th row would be parsed and type-converted (firing BadDataFound and
-        // ReadingExceptionOccurred for it) before the limit check could stop us.
-        while (true)
+        var csvReader = CsvReader.Create(_reader, options, LeaveOpen);
+        try
         {
-            token.ThrowIfCancellationRequested();
+            var readers = await PrepareReaderAsync(csvReader, culture, token).ConfigureAwait(false);
 
-            if (CurrentItemCount >= MaximumItemCount)
+            // Read one record at a time so MaximumItemCount is checked BEFORE the next row is parsed
+            // and converted (an enumerator would read the (N+1)th row before the limit could stop it).
+            while (true)
             {
-                CsvLogMessages.ReachedMaximumItemCount(_logger, MaximumItemCount, null);
-                yield break;
-            }
+                token.ThrowIfCancellationRequested();
 
-            bool hasRow;
-            try
-            {
-                hasRow = await csvReader.ReadAsync().ConfigureAwait(false);
-            }
-            catch (CsvHelperException ex)
-            {
-                // Parse-level failure while reading the raw row. Route through the
-                // ErrorPolicy so it governs the same skip-vs-abort decision as a
-                // mapping failure below.
-                if (RouteItemError(csvReader, ex) == ItemErrorAction.Abort)
+                if (CurrentItemCount >= MaximumItemCount)
                 {
-                    throw;
+                    CsvLogMessages.ReachedMaximumItemCount(_logger, MaximumItemCount, null);
+                    yield break;
                 }
 
-                continue;
-            }
-
-            if (!hasRow)
-            {
-                break;
-            }
-
-            UpdateLineNumber(csvReader);
-
-            TRecord? record;
-            bool unknownSkip;
-            try
-            {
-                if (Discriminator is not null)
+                bool hasRow;
+                try
                 {
-                    record = GetDiscriminatedRecord(csvReader, out unknownSkip);
+                    hasRow = await csvReader.ReadAsync(token).ConfigureAwait(false);
                 }
-                else
+                catch (CsvFormatException ex)
                 {
-                    record = csvReader.GetRecord<TRecord>();
-                    unknownSkip = false;
-                }
-            }
-            catch (CsvHelperException ex)
-            {
-                // Type-conversion / mapping failure. The ErrorPolicy owns skip-vs-abort:
-                // Skip continues to the next row (CurrentErrorItemCount++); the default
-                // fail-fast policy aborts — re-throw preserving the original stack (the
-                // prior behavior for an unhandled reading exception).
-                if (RouteItemError(csvReader, ex) == ItemErrorAction.Abort)
-                {
-                    throw;
-                }
+                    // Parse-level failure while reading the raw row. Route through the ErrorPolicy so it
+                    // governs the same skip-vs-abort decision as a mapping failure below.
+                    if (RouteItemError(csvReader, ex) == ItemErrorAction.Abort)
+                    {
+                        throw;
+                    }
 
-                continue;
-            }
-
-            if (unknownSkip)
-            {
-                // An unmapped discriminator value under CsvDiscriminatorAction.Skip: count as
-                // skipped so totals reconcile, then move on. (Throw surfaces as an exception
-                // from GetDiscriminatedRecord; YieldAsBase returns a bound base record.)
-                IncrementCurrentSkippedItemCount();
-                CsvLogMessages.SkippedItem(_logger, CurrentSkippedItemCount, SkipItemCount, null);
-                continue;
-            }
-
-            if (record is null)
-            {
-                // CsvHelper can produce null for reference-typed TRecord when its
-                // type converters resolve every column to null. Count as skipped
-                // so totals reconcile against the raw row count instead of
-                // silently dropping the row.
-                IncrementCurrentSkippedItemCount();
-                CsvLogMessages.SkippedItem(_logger, CurrentSkippedItemCount, SkipItemCount, null);
-                continue;
-            }
-
-            if (!TryValidate(record, out var invalid))
-            {
-                _ = Interlocked.Increment(ref _currentInvalidItemCount);
-                InvalidRecordHandler?.Invoke(invalid);
-
-                if (OnValidationFailure == CsvValidationFailureAction.Skip)
-                {
                     continue;
                 }
 
-                if (OnValidationFailure == CsvValidationFailureAction.Stop)
+                if (!hasRow)
                 {
-                    throw new CsvValidationException(invalid.LineNumber, invalid.Failures);
+                    break;
                 }
 
-                // Continue: fall through and yield the invalid record anyway.
+                UpdateLineNumber(csvReader);
+
+                TRecord record;
+                bool unknownSkip;
+                var bindingReader = readers.Base;
+                try
+                {
+                    if (Discriminator is not null)
+                    {
+                        record = GetDiscriminatedRecord(csvReader, readers, out unknownSkip, out bindingReader)!;
+                    }
+                    else
+                    {
+                        record = (TRecord)bindingReader.Read(csvReader);
+                        unknownSkip = false;
+                    }
+                }
+                catch (CsvFormatException ex)
+                {
+                    // Type-conversion / mapping failure. The ErrorPolicy owns skip-vs-abort: Skip
+                    // continues to the next row (CurrentErrorItemCount++); the default fail-fast policy
+                    // aborts — re-throw preserving the original stack.
+                    OnReadingException(csvReader, bindingReader, ex);
+                    if (RouteItemError(csvReader, ex) == ItemErrorAction.Abort)
+                    {
+                        throw;
+                    }
+
+                    continue;
+                }
+
+                if (unknownSkip)
+                {
+                    // An unmapped discriminator value under CsvDiscriminatorAction.Skip: count as
+                    // skipped so totals reconcile, then move on. (Throw surfaces as an exception
+                    // from GetDiscriminatedRecord; YieldAsBase returns a bound base record.)
+                    IncrementCurrentSkippedItemCount();
+                    CsvLogMessages.SkippedItem(_logger, CurrentSkippedItemCount, SkipItemCount, null);
+                    continue;
+                }
+
+                if (!TryValidate(record, out var invalid))
+                {
+                    _ = Interlocked.Increment(ref _currentInvalidItemCount);
+                    InvalidRecordHandler?.Invoke(invalid);
+
+                    if (OnValidationFailure == CsvValidationFailureAction.Skip)
+                    {
+                        continue;
+                    }
+
+                    if (OnValidationFailure == CsvValidationFailureAction.Stop)
+                    {
+                        throw new CsvValidationException(invalid.LineNumber, invalid.Failures);
+                    }
+
+                    // Continue: fall through and yield the invalid record anyway.
+                }
+
+                IncrementCurrentItemCount();
+                CsvLogMessages.ExtractedItem(_logger, CurrentItemCount, null);
+
+                yield return record;
             }
-
-            IncrementCurrentItemCount();
-            CsvLogMessages.ExtractedItem(_logger, CurrentItemCount, null);
-
-            yield return record;
+        }
+        finally
+        {
+            // Disposing returns the reader's pooled buffers; it closes the StreamReader only when
+            // LeaveOpen is false.
+            await csvReader.DisposeAsync().ConfigureAwait(false);
         }
 
         CsvLogMessages.ExtractionCompleted(_logger, CurrentItemCount, CurrentSkippedItemCount, null);
@@ -747,14 +731,14 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
 
     // Routes a failed row through the base ErrorPolicy and returns its decision. On Skip,
     // HandleItemError has already incremented CurrentErrorItemCount; the caller re-throws
-    // on Abort so the stack is preserved. The ItemErrorContext ordinal is the parser's physical
-    // line number (RawRow), not a record ordinal: a CSV row can span several lines, and the line is
+    // on Abort so the stack is preserved. The ItemErrorContext ordinal is the physical line the
+    // record starts on, not a record ordinal: a CSV row can span several lines, and the line is
     // what a caller needs to find the row in the source. CsvExtractorProgress.CurrentLineNumber and
     // CsvBadDataInfo use the same numbering.
     private ItemErrorAction RouteItemError(CsvReader csvReader, Exception exception)
     {
-        var rawRow = csvReader.Parser.RawRecord;
-        return HandleItemError(new ItemErrorContext(csvReader.Parser.RawRow + _preambleLineCount, exception, () => rawRow));
+        var rawRow = Encoding.UTF8.GetString(csvReader.RawRecord.ToArray());
+        return HandleItemError(new ItemErrorContext(CurrentLine(csvReader), exception, () => rawRow));
     }
 
 
@@ -778,24 +762,94 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
 
 
 
-    private async Task PrepareReaderAsync(CsvReader csvReader)
+    // The readers of one run: the base TRecord's, and, with a Discriminator, one per mapped type,
+    // created when the type is first read.
+    private sealed class RunReaders
     {
-        // Read the header record if present.
-        if (HasHeaderRecord && await csvReader.ReadAsync().ConfigureAwait(false))
+        public RunReaders(CsvBindingReader baseReader, IReadOnlyDictionary<Type, CsvRecordBinding>? bindings, bool hasHeader, CultureInfo culture)
         {
-            UpdateLineNumber(csvReader);
-            csvReader.ReadHeader();
-            csvReader.ValidateHeader<TRecord>();
+            Base = baseReader;
+            Bindings = bindings;
+            HasHeader = hasHeader;
+            Culture = culture;
         }
 
+
+
+        public CsvBindingReader Base { get; }
+
+
+
+        public IReadOnlyDictionary<Type, CsvRecordBinding>? Bindings { get; }
+
+
+
+        public bool HasHeader { get; }
+
+
+
+        public CultureInfo Culture { get; }
+
+
+
+        public Dictionary<Type, CsvBindingReader> ByType { get; } = new();
+    }
+
+
+
+    private async Task<RunReaders> PrepareReaderAsync(CsvReader csvReader, CultureInfo culture, CancellationToken token)
+    {
+        // Read the header record, if present. The base binding is resolved against it: a missing
+        // required column fails here, before any record is read — unless a Discriminator is set, whose
+        // header describes the discriminator column and each row type, not the base type's members.
+        var headerRead = false;
+        if (HasHeaderRecord)
+        {
+            await csvReader.ReadHeaderAsync(token).ConfigureAwait(false);
+
+            // Empty input has no header row to validate (or line to report).
+            headerRead = csvReader.Headers.Count > 0;
+            if (headerRead)
+            {
+                Volatile.Write(ref _currentLineNumber, CurrentLine(csvReader, csvReader.LineNumber > 0 ? csvReader.LineNumber : 1));
+            }
+        }
+
+        var bindings = Discriminator?.GetBindings();
+        var baseReader = new CsvBindingReader
+        (
+            GetBaseBinding(),
+            csvReader,
+            HasHeaderRecord,
+            validateHeader: headerRead && Discriminator is null,
+            tolerateMissingFields: Discriminator is not null,
+            culture
+        );
+        var readers = new RunReaders(baseReader, bindings, HasHeaderRecord, culture);
+
         // Honour SkipItemCount.
-        while (CurrentSkippedItemCount < SkipItemCount && await csvReader.ReadAsync().ConfigureAwait(false))
+        while (CurrentSkippedItemCount < SkipItemCount && await csvReader.ReadAsync(token).ConfigureAwait(false))
         {
             UpdateLineNumber(csvReader);
             IncrementCurrentSkippedItemCount();
             CsvLogMessages.SkippedItem(_logger, CurrentSkippedItemCount, SkipItemCount, null);
         }
+
+        return readers;
     }
+
+
+
+    // The physical line the current record ends on, as CsvHelper 33's RawRow counted it: the line it
+    // starts on (CsvHelper 34's LineNumber) plus the line breaks inside its quoted fields, plus the
+    // InitialRecordIndex preamble the parser never saw.
+    private int CurrentLine(CsvReader csvReader) =>
+        CurrentLine(csvReader, csvReader.LineNumber);
+
+
+
+    private int CurrentLine(CsvReader csvReader, long startLine) =>
+        (int)startLine + CsvMalformedField.CountLineBreaks(csvReader.RawRecord) + _preambleLineCount;
 
 
 
@@ -803,31 +857,47 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
     {
         // Use Volatile.Write so the timer thread that calls CreateProgressReport
         // (which uses Volatile.Read on this field) sees a consistent snapshot.
-        // Context.Parser is guaranteed non-null here — UpdateLineNumber is only
-        // called after a successful ReadAsync(), which sets the Parser.
-        Volatile.Write(ref _currentLineNumber, csvReader.Context.Parser!.RawRow + _preambleLineCount);
+        Volatile.Write(ref _currentLineNumber, CurrentLine(csvReader));
     }
 
 
 
-    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "TRecord is annotated with PublicProperties; CsvClassMapFactory reflects only public properties of TRecord.")]
-    [UnconditionalSuppressMessage("AOT", "IL3050", Justification = "TRecord is annotated with PublicProperties; CsvClassMapFactory reflects only public properties of TRecord.")]
     // Reads the discriminator field for the current row, resolves the concrete type, and binds the
-    // record to it. Type-conversion failures surface as CsvHelperException (routed through ErrorPolicy
+    // record to it. Type-conversion failures surface as CsvFormatException (routed through ErrorPolicy
     // by the caller). An unmapped value follows Discriminator.UnknownDiscriminator: Skip returns
     // (default, true); YieldAsBase binds to TRecord; Throw raises a hard error that bypasses ErrorPolicy.
-    private TRecord? GetDiscriminatedRecord(CsvReader csvReader, out bool skip)
+    private TRecord? GetDiscriminatedRecord(CsvReader csvReader, RunReaders readers, out bool skip, out CsvBindingReader bindingReader)
     {
         skip = false;
+        bindingReader = readers.Base;
         var discriminator = Discriminator!;
 
-        var value = discriminator.ColumnName is not null
-            ? csvReader.GetField(discriminator.ColumnName)
-            : csvReader.GetField(discriminator.ColumnIndex);
+        var index = discriminator.ColumnIndex;
+        if (discriminator.ColumnName is not null && !csvReader.TryGetFieldIndex(discriminator.ColumnName, out index))
+        {
+            index = -1;
+        }
+
+        var value = index >= 0 && index < csvReader.FieldCount ? csvReader.GetString(index) : null;
 
         if (value is not null && discriminator.TryResolveType(value, out var type))
         {
-            return (TRecord?)csvReader.GetRecord(type);
+            if (!readers.ByType.TryGetValue(type, out var typeReader))
+            {
+                typeReader = new CsvBindingReader
+                (
+                    readers.Bindings![type],
+                    csvReader,
+                    readers.HasHeader,
+                    validateHeader: false,
+                    tolerateMissingFields: true,
+                    readers.Culture
+                );
+                readers.ByType.Add(type, typeReader);
+            }
+
+            bindingReader = typeReader;
+            return (TRecord)typeReader.Read(csvReader);
         }
 
         switch (discriminator.UnknownDiscriminator)
@@ -837,7 +907,7 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
                 return default;
 
             case CsvDiscriminatorAction.YieldAsBase:
-                return csvReader.GetRecord<TRecord>();
+                return (TRecord)readers.Base.Read(csvReader);
 
             default:
                 throw new InvalidOperationException
@@ -849,45 +919,18 @@ public sealed class CsvExtractor<[DynamicallyAccessedMembers(DynamicallyAccessed
 
 
 
-    // Same seam as CsvLoader.RegisterRecordMap. The requirement cannot move further out: the only caller is
-    // ExtractWorkerAsync, an override of an unannotated ExtractorBase member, where [RequiresUnreferencedCode]
-    // would be IL2046. It is surfaced instead at every public CsvExtractor constructor (and the EtlPipeline
-    // factory extensions), so no instance reaches this method without the consumer seeing the warning.
-    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Reached only through a CsvExtractor instance, whose public constructors carry [RequiresUnreferencedCode]; TRecord is annotated with PublicProperties and CsvClassMapFactory reflects only public properties of TRecord.")]
-    private void RegisterRecordMap(CsvContext context)
-    {
-        // Always register the base TRecord map (from Schema, ColumnMaps, or attributes). When a discriminator
-        // is set this backs CsvDiscriminatorAction.YieldAsBase — GetRecord<TRecord>() then binds
-        // through the intended base mapping instead of CsvHelper's default conventions. The map is
-        // null for an attribute-less type with no ColumnMaps, in which case CsvHelper auto-maps.
-        ClassMap? baseMap;
-        if (_schema is not null)
-        {
-            baseMap = CsvClassMapFactory.BuildFromColumnMaps<TRecord>(_schema.Columns);
-        }
-        else if (ColumnMaps is { Count: > 0 })
-        {
-            baseMap = CsvClassMapFactory.BuildFromColumnMaps<TRecord>(ColumnMaps);
-        }
-        else
-        {
-            baseMap = CsvClassMapFactory.GetMap<TRecord>();
-        }
-
-        if (baseMap is not null)
-        {
-            context.RegisterClassMap(baseMap);
-        }
-
-        Discriminator?.RegisterClassMaps(context);
-    }
+    // The base TRecord layout, from Schema, ColumnMaps, or attributes. With a discriminator it backs
+    // CsvDiscriminatorAction.YieldAsBase. The requirement cannot move further out: the only caller is
+    // ExtractWorkerAsync, an override of an unannotated ExtractorBase member, where
+    // [RequiresUnreferencedCode] would be IL2046. It is surfaced instead at every public CsvExtractor
+    // constructor (and the EtlPipeline factory extensions), so no instance reaches this method without
+    // the consumer seeing the warning.
+    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Reached only through a CsvExtractor instance, whose public constructors carry [RequiresUnreferencedCode]; TRecord is annotated with PublicProperties and the binding reflects only over public members of TRecord.")]
+    private CsvRecordBinding GetBaseBinding() =>
+        CsvRecordBindingFactory.Resolve(typeof(TRecord), _schema is not null ? _schema.Columns : ColumnMaps);
 
 
 
-    /// <summary>
-    /// Zeroes the CSV-specific per-run counters so a reused instance starts every run from zero,
-    /// matching the base class counters, instead of accumulating across runs.
-    /// </summary>
     private void ResetRunCounters()
     {
         Volatile.Write(ref _currentLineNumber, 0);

@@ -14,7 +14,7 @@ below) whenever the dependency graph changes.
 
 | Package | Version | License |
 |---------|---------|---------|
-| [CsvHelper](https://www.nuget.org/packages/CsvHelper/) | 33.1.0 | [MS-PL OR Apache-2.0](https://licenses.nuget.org/MS-PL%20OR%20Apache-2.0) |
+| [CsvHelper](https://www.nuget.org/packages/CsvHelper/) | 34.1.0 | [MS-PL OR Apache-2.0](https://licenses.nuget.org/MS-PL%20OR%20Apache-2.0) |
 | [Microsoft.Bcl.AsyncInterfaces](https://www.nuget.org/packages/Microsoft.Bcl.AsyncInterfaces/) | 10.0.14 | [MIT](https://licenses.nuget.org/MIT) |
 | [Microsoft.Extensions.Logging.Abstractions](https://www.nuget.org/packages/Microsoft.Extensions.Logging.Abstractions/) | 10.0.14 | [MIT](https://licenses.nuget.org/MIT) |
 

@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using CsvHelper;
-using CsvHelper.Configuration;
 
 // ReSharper disable once CheckNamespace -- the public surface is one flat namespace; Mapping/ is organisational
 namespace Wolfgang.Etl.Csv;
@@ -56,8 +54,7 @@ public sealed class CsvDiscriminatorBuilder<TBase>
     /// <param name="columnMaps">Optional per-type runtime column maps; when omitted, <typeparamref name="T"/>'s attributes apply.</param>
     /// <returns>The same builder, for chaining.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="discriminatorValue"/> is null.</exception>
-    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "T is annotated with PublicProperties; CsvClassMapFactory reflects only T's public properties.")]
-    [UnconditionalSuppressMessage("AOT", "IL3050", Justification = "T is annotated with PublicProperties; CsvClassMapFactory reflects only T's public properties.")]
+    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "T is annotated with PublicProperties; the binding reflects over T's public properties, and over its constructors only under the CsvExtractor / CsvLoader constructors' [RequiresUnreferencedCode].")]
     public CsvDiscriminatorBuilder<TBase> Map<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>
     (
         string discriminatorValue,
@@ -70,16 +67,11 @@ public sealed class CsvDiscriminatorBuilder<TBase>
             throw new ArgumentNullException(nameof(discriminatorValue));
         }
 
-        ClassMap? map = columnMaps is { Count: > 0 }
-            ? CsvClassMapFactory.BuildFromColumnMaps<T>(columnMaps)
-            : CsvClassMapFactory.GetMap<T>();
+        // Built here, where T is a compile-time type whose properties the trimmer keeps, so neither the
+        // extractor nor the loader reflects over a runtime-only type for a builder-made discriminator.
+        var binding = CsvRecordBindingFactory.Resolve(typeof(T), columnMaps);
 
-        // Capture a statically-rooted CsvWriter.WriteRecord<T> — because T is a compile-time type
-        // parameter here, the closed generic is reachable to the trimmer/AOT compiler, so the loader
-        // can write by runtime type without the non-AOT-safe MakeGenericMethod path.
-        Action<CsvWriter, object> writer = static (csvWriter, record) => csvWriter.WriteRecord((T)record);
-
-        _entries.Add(new Entry(discriminatorValue, typeof(T), map, columnMaps, writer));
+        _entries.Add(new Entry(discriminatorValue, typeof(T), binding, columnMaps));
 
         return this;
     }
@@ -115,8 +107,7 @@ public sealed class CsvDiscriminatorBuilder<TBase>
     {
         var mapping = new Dictionary<string, Type>(_comparer);
         var perTypeColumnMaps = new Dictionary<Type, IReadOnlyList<CsvColumnMap>>();
-        var classMaps = new List<ClassMap>();
-        var writers = new Dictionary<Type, Action<CsvWriter, object>>();
+        var bindings = new Dictionary<Type, CsvRecordBinding>();
         var seenTypes = new HashSet<Type>();
 
         foreach (var entry in _entries)
@@ -134,16 +125,11 @@ public sealed class CsvDiscriminatorBuilder<TBase>
             }
 
             mapping[entry.Value] = entry.Type;
-            writers[entry.Type] = entry.Writer;
+            bindings[entry.Type] = entry.Binding;
 
             if (entry.Columns is { Count: > 0 })
             {
                 perTypeColumnMaps[entry.Type] = entry.Columns;
-            }
-
-            if (entry.Map is not null)
-            {
-                classMaps.Add(entry.Map);
             }
         }
 
@@ -155,11 +141,10 @@ public sealed class CsvDiscriminatorBuilder<TBase>
             UnknownDiscriminator = _onUnknown,
             Comparer = _comparer,
             PerTypeColumnMaps = perTypeColumnMaps.Count > 0 ? perTypeColumnMaps : null,
-            PrebuiltClassMaps = classMaps,
-            PrebuiltWriters = writers,
+            PrebuiltBindings = bindings,
         };
     }
 
 
-    private sealed record Entry(string Value, Type Type, ClassMap? Map, IReadOnlyList<CsvColumnMap>? Columns, Action<CsvWriter, object> Writer);
+    private sealed record Entry(string Value, Type Type, CsvRecordBinding Binding, IReadOnlyList<CsvColumnMap>? Columns);
 }

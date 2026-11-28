@@ -251,7 +251,7 @@ public class CsvExtractorDiscriminatorTests
     public async Task ExtractAsync_when_Discriminator_is_direct_init_with_per_type_column_maps_reflects_and_binds()
     {
         // Exercises the reflective RegisterClassMaps fallback (no PrebuiltClassMaps) and the
-        // non-generic CsvClassMapFactory.BuildFromColumnMaps(Type, ...) bridge.
+        // CsvRecordBindingFactory.FromColumnMaps(Type, ...) path.
         var discriminator = new CsvDiscriminator<LedgerRow>
         {
             ColumnIndex = 0,
@@ -370,7 +370,7 @@ public class CsvExtractorDiscriminatorTests
     public async Task ExtractAsync_by_name_discriminator_does_not_validate_the_header_against_the_base_type()
     {
         // The base LedgerRow has a RecordType property that is not in this header; validating the header
-        // against the base type would throw a HeaderValidationException. Discriminator mode must skip it.
+        // against the base type would throw a CsvFormatException. Discriminator mode must skip it.
         const string csv = "Kind,Account,Amount\nPMT,ACC1,100\n";
         var discriminator = new CsvDiscriminatorBuilder<LedgerRow>("Kind")
             .Map<PaymentRow>
@@ -519,27 +519,27 @@ public class CsvExtractorDiscriminatorTests
 
 
     [Fact]
-    public void TryGetWriter_when_built_by_the_builder_returns_the_captured_writer()
+    public void GetBindings_when_built_by_the_builder_returns_the_prebuilt_bindings()
     {
         var discriminator = BuildByIndex();
 
-        var found = discriminator.TryGetWriter(typeof(PaymentRow), out var writer);
-
-        Assert.True(found);
-        Assert.NotNull(writer);
+        Assert.NotNull(discriminator.PrebuiltBindings);
+        Assert.Same(discriminator.PrebuiltBindings, discriminator.GetBindings());
+        Assert.Equal(typeof(PaymentRow), discriminator.GetBindings()[typeof(PaymentRow)].RecordType);
     }
 
 
 
     [Fact]
-    public void TryGetWriter_when_direct_init_returns_false()
+    public void GetBindings_when_direct_init_builds_a_binding_per_mapped_type()
     {
         var discriminator = new CsvDiscriminator<LedgerRow>
         {
             Mapping = new Dictionary<string, Type> { ["PMT"] = typeof(PaymentRow) },
         };
 
-        Assert.False(discriminator.TryGetWriter(typeof(PaymentRow), out _));
+        Assert.Null(discriminator.PrebuiltBindings);
+        Assert.Equal(typeof(PaymentRow), Assert.Single(discriminator.GetBindings()).Key);
     }
 
 

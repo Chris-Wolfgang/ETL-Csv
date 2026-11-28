@@ -31,7 +31,7 @@ This is the command `license-audit.yaml` runs; run it locally to see the current
 | Reference | Version | License | Notes |
 |---|---|---|---|
 | AsyncFixer | 2.1.0 | Apache-2.0 | Analyzer — build-time only, not redistributed |
-| CsvHelper | 33.1.0 | MS-PL OR Apache-2.0 | Both MIT-compatible. Internal parser, not exposed publicly. |
+| CsvHelper | 34.1.0 | MS-PL OR Apache-2.0 | Both MIT-compatible. Internal parser, not exposed publicly. |
 | Meziantou.Analyzer | 3.0.58 | MIT | Analyzer — build-time only |
 | Microsoft.Bcl.AsyncInterfaces | 10.0.7 | MIT | Runtime dep |
 | Microsoft.Bcl.HashCode | 1.1.1 | MIT | Runtime dep (transitive) |

@@ -28,7 +28,7 @@ The wrapper types — `CsvTrimOptions`, `CsvBadDataInfo`, `CsvShouldQuoteContext
 **Positive:**
 - Day-one production-grade RFC 4180 + non-standard CSV coverage. Doesn't need its own parser test suite at the byte level.
 - Type-converter ecosystem comes for free (DateTime formats, enums, custom converters per property).
-- Mapping fluency (`ClassMap<T>`, attribute-driven, runtime-driven) is reusable inside our `CsvClassMapFactory` without inventing a parallel abstraction.
+- (Superseded in part by [ADR 0007](0007-csvhelper-34-and-library-owned-record-binding.md): CsvHelper 34 has no `ClassMap`, and the library now binds records itself.) Mapping fluency (`ClassMap<T>`, attribute-driven, runtime-driven) is reusable inside our `CsvClassMapFactory` without inventing a parallel abstraction.
 - License (MS-PL / Apache 2.0) is MIT-compatible — no consumer-side license fragmentation.
 - Future parser swap (e.g. to Sep, for an allocation-free 1.0) is internal-only: zero consumer breakage.
 

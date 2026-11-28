@@ -48,9 +48,9 @@ public class CsvRuntimeMapCacheTests
     {
         var maps = new List<CsvColumnMap> { new("Name") { Index = 0 } };
 
-        var first = CsvClassMapFactory.BuildFromColumnMaps<Pair>(maps);
+        var first = CsvRecordBindingFactory.FromColumnMaps(typeof(Pair), maps);
         maps[0] = new CsvColumnMap("Name") { Index = 1 };
-        var second = CsvClassMapFactory.BuildFromColumnMaps<Pair>(maps);
+        var second = CsvRecordBindingFactory.FromColumnMaps(typeof(Pair), maps);
 
         Assert.NotSame(first, second);
     }
@@ -75,7 +75,7 @@ public class CsvRuntimeMapCacheTests
     private static WeakReference<List<CsvColumnMap>> BuildAndForget()
     {
         var maps = new List<CsvColumnMap> { new("Name") { Index = 0 } };
-        CsvClassMapFactory.BuildFromColumnMaps<Pair>(maps);
+        CsvRecordBindingFactory.FromColumnMaps(typeof(Pair), maps);
         return new WeakReference<List<CsvColumnMap>>(maps);
     }
 

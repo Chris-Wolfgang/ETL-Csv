@@ -624,7 +624,7 @@ public sealed class EtlPipelineCsvExtensionsTests : IDisposable
         var badData = new SyncProgress<CsvBadDataInfo>();
         var readingExceptions = new SyncProgress<CsvReadingExceptionInfo>();
 
-        await Assert.ThrowsAsync<CsvHelper.TypeConversion.TypeConverterException>
+        await Assert.ThrowsAsync<CsvHelper.CsvFormatException>
         (
             async () => await EtlPipeline
                 .Create()

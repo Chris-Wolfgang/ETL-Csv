@@ -170,7 +170,7 @@ public class CsvExtractorWorkerTests
         using var reader = ReaderOver("FirstName,LastName\r\nAlice,Smith\r\n");
         var sut = new CsvExtractor<PersonRecord>(reader);
 
-        await Assert.ThrowsAsync<CsvHelper.HeaderValidationException>(async () => await ReadAllAsync(sut));
+        await Assert.ThrowsAsync<CsvHelper.CsvFormatException>(async () => await ReadAllAsync(sut));
     }
 
 
@@ -188,7 +188,7 @@ public class CsvExtractorWorkerTests
             }
         );
 
-        await Assert.ThrowsAsync<CsvHelper.MissingFieldException>(async () => await ReadAllAsync(sut));
+        await Assert.ThrowsAsync<CsvHelper.CsvFormatException>(async () => await ReadAllAsync(sut));
     }
 
 
@@ -329,7 +329,7 @@ public class CsvExtractorWorkerTests
         {
             await ReadAllAsync(sut);
         }
-        catch (CsvHelper.CsvHelperException)
+        catch (CsvHelper.CsvFormatException)
         {
             // A bad header also fails header validation; only the callback matters here.
         }
@@ -442,7 +442,7 @@ public class CsvExtractorWorkerTests
         var seen = new List<CsvReadingExceptionInfo>();
         sut.ReadingExceptionOccurred = seen.Add;
 
-        await Assert.ThrowsAnyAsync<CsvHelper.CsvHelperException>(async () => await ReadAllAsync(sut));
+        await Assert.ThrowsAnyAsync<CsvHelper.CsvFormatException>(async () => await ReadAllAsync(sut));
 
         return Assert.Single(seen);
     }

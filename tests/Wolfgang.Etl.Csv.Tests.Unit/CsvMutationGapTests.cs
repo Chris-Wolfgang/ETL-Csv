@@ -121,8 +121,8 @@ public sealed class CsvMutationGapTests
     {
         var maps = new[] { new CsvColumnMap(nameof(PersonRecord.FirstName)) { Index = 0 } };
 
-        var first = CsvClassMapFactory.BuildFromColumnMaps<PersonRecord>(maps);
-        var second = CsvClassMapFactory.BuildFromColumnMaps<PersonRecord>(maps);
+        var first = CsvRecordBindingFactory.FromColumnMaps(typeof(PersonRecord), maps);
+        var second = CsvRecordBindingFactory.FromColumnMaps(typeof(PersonRecord), maps);
 
         Assert.Same(first, second);
     }

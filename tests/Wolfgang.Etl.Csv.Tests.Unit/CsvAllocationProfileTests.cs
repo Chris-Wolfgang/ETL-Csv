@@ -68,6 +68,11 @@ public class CsvAllocationProfileTests
         await ExtractOnce();
 
         StabilizeBeforeMeasurement();
+
+        // CsvHelper 34 rents its read buffers from ArrayPool<T>.Shared, and the forced gen-2
+        // collections above trim that pool. One more run re-rents them, so the measured run sees the
+        // pooled steady state a long-running pipeline reads in, not a one-off buffer allocation.
+        await ExtractOnce();
         var before = GC.GetAllocatedBytesForCurrentThread();
 
         var count = await ExtractOnce();

@@ -149,7 +149,7 @@ public sealed record Person
 }
 ```
 
-`CsvColumnAttribute` accepts `Name`, `Index` (0-based), `Optional`, `Format`, and `Default`. `[CsvIgnore]` excludes a property entirely. Records without any of these attributes fall back to CsvHelper's default by-name mapping.
+`CsvColumnAttribute` accepts `Name`, `Index` (0-based), `Optional`, `Format`, and `Default`. `[CsvIgnore]` excludes a property entirely. Records without any of these attributes are mapped by property name: each public property reads the header column of the same name (an exact match first, then ignoring case and surrounding whitespace) and, without a header row, the column at its position.
 
 ### Example: Runtime column mapping (when the layout isn't known at compile time)
 
@@ -317,14 +317,14 @@ See the [NuGet package page](https://www.nuget.org/packages/Wolfgang.Etl.Csv/) f
 
 ### Trim / NativeAOT
 
-**Wolfgang.Etl.Csv is not trim-safe and not NativeAOT-compatible.** It depends on [CsvHelper](https://joshclose.github.io/CsvHelper/), which reflects over the record type's members (including type-converter constructors and members beyond what `DynamicallyAccessedMembers(PublicProperties)` can express) to build readers, writers, and type converters at runtime.
+**Wolfgang.Etl.Csv is not trim-safe and not NativeAOT-compatible.** [CsvHelper](https://joshclose.github.io/CsvHelper/) 34 parses and writes the fields, and the library binds them to the record type by reflection at run time: it reads the type's public properties and constructors, and falls back to a member type's `TypeConverter` for types it has no conversion rule for ([ADR 0007](docs/adr/0007-csvhelper-34-and-library-owned-record-binding.md)).
 
 The public `CsvExtractor` and `CsvLoader` constructors are annotated `[RequiresUnreferencedCode]`. Consumer projects with `PublishTrimmed=true` will see `IL2026` warnings on every call site, prompting the caller to either:
 - Suppress at the call site (acknowledges the risk), or
 - Annotate the calling method `[RequiresUnreferencedCode]` (propagates the contract), or
 - Avoid trimming for assemblies that use this library.
 
-A Native AOT publish (`PublishAot=true`) additionally reports `IL3050` (`[RequiresDynamicCode]`) warnings; they come from CsvHelper itself. The library's own reflection paths carry `[RequiresDynamicCode]` internally, so the public constructors surface only `IL2026`.
+The public constructors surface only `IL2026` (`[RequiresUnreferencedCode]`).
 
 ---
 
