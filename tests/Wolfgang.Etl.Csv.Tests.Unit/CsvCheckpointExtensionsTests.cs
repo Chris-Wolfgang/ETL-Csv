@@ -53,7 +53,7 @@ public class CsvCheckpointExtensionsTests
             await CsvCheckpointExtensions.WriteCheckpointAsync(path, 10);
 
             Assert.Equal(10, await CsvCheckpointExtensions.ReadCheckpointAsync(path));
-            Assert.False(File.Exists(path + ".tmp"), "the temp file should be renamed away, not left behind");
+            Assert.Empty(TempFilesFor(path));
         }
         finally
         {
@@ -162,7 +162,7 @@ public class CsvCheckpointExtensionsTests
             );
 
             Assert.True(ex is IOException or UnauthorizedAccessException, ex.GetType().FullName);
-            Assert.False(File.Exists(path + ".tmp"), "the temp file should be cleaned up when the replace fails");
+            Assert.Empty(TempFilesFor(path));
         }
         finally
         {
@@ -170,9 +170,6 @@ public class CsvCheckpointExtensionsTests
             {
                 Directory.Delete(path, recursive: true);
             }
-
-            // File.Delete is a no-op when the file does not exist.
-            File.Delete(path + ".tmp");
         }
     }
 
@@ -334,7 +331,7 @@ public class CsvCheckpointExtensionsTests
             );
 
             Assert.False(File.Exists(path), "a cancelled write should not create the checkpoint");
-            Assert.False(File.Exists(path + ".tmp"), "a cancelled write should not create the temp file");
+            Assert.Empty(TempFilesFor(path));
         }
         finally
         {
@@ -344,22 +341,54 @@ public class CsvCheckpointExtensionsTests
 
 
     [Fact]
-    public async Task WriteCheckpointAsync_writes_through_the_tmp_file_and_replaces_a_stale_one()
+    public async Task WriteCheckpointAsync_leaves_a_stale_fixed_name_tmp_file_alone()
     {
-        // A stale "<path>.tmp" from an earlier crash is overwritten and renamed away, which only
-        // happens when the write really goes through "<path>.tmp".
+        // A "<path>.tmp" left by an earlier version or another program is not the temp file this
+        // write uses, so it is neither opened nor renamed over the checkpoint.
         var path = NewTempPath();
+        var stale = path + ".tmp";
         try
         {
-            await WriteRawAsync(path + ".tmp", "stale");
+            await WriteRawAsync(stale, "stale");
 
             await CsvCheckpointExtensions.WriteCheckpointAsync(path, 8);
 
-            Assert.False(File.Exists(path + ".tmp"), "the stale temp file should be replaced and renamed away");
             Assert.Equal(8, await CsvCheckpointExtensions.ReadCheckpointAsync(path));
+            using (var reader = new StreamReader(stale))
+            {
+                Assert.Equal("stale", await reader.ReadToEndAsync());
+            }
+            Assert.Empty(TempFilesFor(path));
         }
         finally
         {
+            File.Delete(stale);
+            Cleanup(path);
+        }
+    }
+
+
+    [Fact]
+    public async Task WriteCheckpointAsync_when_another_writer_holds_a_temp_file_open_still_succeeds()
+    {
+        // Another writer mid-write holds its temp file open with no sharing. With a fixed "<path>.tmp"
+        // the second write would open that same file and fail with a sharing violation; with a name per
+        // call it writes its own file and never touches the other one.
+        var path = NewTempPath();
+        var other = path + ".tmp";
+        try
+        {
+            using (new FileStream(other, FileMode.Create, FileAccess.Write, FileShare.None))
+            {
+                await CsvCheckpointExtensions.WriteCheckpointAsync(path, 12);
+            }
+
+            Assert.Equal(12, await CsvCheckpointExtensions.ReadCheckpointAsync(path));
+            Assert.Empty(TempFilesFor(path));
+        }
+        finally
+        {
+            File.Delete(other);
             Cleanup(path);
         }
     }
@@ -378,7 +407,7 @@ public class CsvCheckpointExtensionsTests
 
             Assert.Equal("count", ex.ParamName);
             Assert.False(File.Exists(path));
-            Assert.False(File.Exists(path + ".tmp"));
+            Assert.Empty(TempFilesFor(path));
         }
         finally
         {
@@ -488,8 +517,10 @@ public class CsvCheckpointExtensionsTests
         {
             File.Delete(path);
         }
-
-        // File.Delete is a no-op when the file does not exist.
-        File.Delete(path + ".tmp");
     }
+
+
+    // The temp files WriteCheckpointAsync creates for path: "<name>.<random>.tmp" in the same folder.
+    private static string[] TempFilesFor(string path) =>
+        Directory.GetFiles(Path.GetDirectoryName(path)!, Path.GetFileName(path) + ".*.tmp");
 }
